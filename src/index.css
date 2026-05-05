@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+   * Selectors duplicated `:root, :host` so the Landi tokens resolve in BOTH
+   * mounting modes:
+   *   - mode B/C (React-canvas + React wrapper): mounts into the document's
+   *     light DOM; `:root` matches.
+   *   - mode L (Lit shell): mounts inside the agentable-canvas Shadow Root;
+   *     `:host` matches the shadow host. `:root` would NOT match inside the
+   *     shadow tree and tokens would silently fall through to their inline
+   *     `var(--token, #fallback)` defaults — losing tenant overrides.
+   * Shadow-DOM correctness flagged by architect-reviewer 2026-04-25.
+   */
+  :root, :host {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+
+    /* ------------------------------------------------------------------ *
+     * Landi Canvas Tokens
+     * Override any of these on the host page (`agentable-canvas { ... }`)
+     * or on `:root` to retheme the entire canvas. See EMBEDDING.md for a
+     * full theming reference.
+     * ------------------------------------------------------------------ */
+
+    /* --- Brand --- *
+     *
+     * Two forms per token: solid hex (legacy + non-Tailwind consumers) AND
+     * HSL components (`H S% L%` triplet, no `hsl(...)` wrapper, NO commas).
+     * The HSL form is what Tailwind's `<alpha-value>` placeholder pattern
+     * needs — see `config/landi-token-colors.cjs`. With both forms,
+     * embedders can override either:
+     *   - `--landi-color-primary: #ff0000;`   (overrides solid)
+     *   - `--landi-color-primary-hsl: 0 100% 50%;` (overrides alpha-aware)
+     *
+     * Default teal #0D7377 → hsl(183 80% 26%) — tenants override via
+     * the `primary-color` attribute or by setting the CSS variable directly.
+     */
+    --landi-color-primary: #0D7377;
+    /* HSL components computed via hexToHslComponents(#0D7377) — keep in
+       sync with the helper in `src/embed/agentable-canvas.ts` so a runtime
+       override via the `primary-color` attribute produces an HSL that
+       matches the static declaration here. */
+    --landi-color-primary-hsl: 182 80% 26%;
+    --landi-color-primary-hover: #095C5F;
+    --landi-color-primary-hover-hsl: 182 83% 20%;
+    /* Lighter teal for gradients (assistant avatar mid-stop, hover halos). */
+    --landi-color-primary-light: #14B8A6;
+    --landi-color-primary-light-hsl: 173 80% 40%;
+    /* Mint highlight for gradients (assistant avatar end-stop, glow tips). */
+    --landi-color-primary-soft: #2DD4BF;
+    --landi-color-primary-soft-hsl: 172 66% 50%;
+    /* Pale teal tint — pill/chip backgrounds when an item is active. */
+    --landi-color-primary-tint: #E6F4F1;
+    --landi-color-primary-tint-hsl: 169 39% 92%;
+    /* Accent — secondary brand color for "speaking" visualizer, highlights.
+       Default is a warm gold; tenants override via `--landi-color-accent`. */
+    --landi-color-accent: #C9A227;
+    --landi-color-accent-hsl: 45 70% 47%;
+
+    /* --- Surfaces --- */
+    --landi-color-surface: #FFFFFF;
+    /* Subtle surface tint — used for assistant-message bubbles, input
+       backgrounds, hover states. Slightly cooler than pure white so panels
+       have visual depth without crossing into the workspace surface. */
+    --landi-color-surface-subtle: #F7F9F9;
+    --landi-color-background: #F0F0EC;
+    /* Workspace surface — slightly off-white. The dot-grid + draggable
+       panels render against this. Named "workspace" not "canvas" because
+       "canvas" is overloaded (product name, the HTML element, the surface).
+       Distinct from --landi-color-background (the page surrounding the
+       canvas component) so embedders can theme the two independently. */
+    --landi-color-workspace-bg: #F5F5F2;
+    --landi-color-workspace-dot: #D0D0CC;
+    --landi-color-border: #E5E5E5;
+
+    /* --- Text ---
+     * `text-secondary` was originally #757575 (matching gray-500 ish).
+     * Architect-reviewer 2026-04-25 F.7.2 W2 flagged: when the Tier-B
+     * grayscale sweep mapped `text-gray-700` (#374151) → `text-canvas-muted`,
+     * the perceptual lightness jumped 24 points and small-text contrast on
+     * white dropped from 10.3:1 to 4.6:1 — barely above WCAG AA. Tightened
+     * to #4B5563 (gray-600 equivalent, contrast 7.6:1) so body metadata
+     * stays comfortably AA. Embedders can override per tenant. */
+    --landi-color-text: #1A1A1A;
+    --landi-color-text-secondary: #4B5563;
+    --landi-color-text-muted: #9CA3AF;
+
+    /* --- Status --- */
+    --landi-color-success: #10B981;
+    --landi-color-warning: #F59E0B;
+    --landi-color-error: #EF4444;
+
+    /* --- Radii --- */
+    --landi-radius-sm: 8px;
+    --landi-radius-md: 12px;
+    --landi-radius-lg: 16px;
+    --landi-radius-xl: 20px;
+
+    /* --- Shadows --- */
+    --landi-shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --landi-shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --landi-shadow-lg: 0 12px 40px rgba(0,0,0,0.08);
+
+    /* --- Spacing --- */
+    --landi-space-unit: 8px;
+
+    /* --- Typography --- */
+    --landi-font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* Infinite-canvas pan: stop viewport rubber-band when gestures overshoot edges
+   (macOS / iOS / fullscreen). Scoped to the shell root only — no html/body. */
+.agentable-canvas-root {
+  overscroll-behavior: none;
+}
+
+/*
+ * NOTE: rules that affect the host page (body, html, #root, global scrollbar
+ * + cursor resets) MUST live in standalone.css, NOT here. index.css is
+ * imported by the embed bundle (`src/embed/agentable-canvas.ts`), so anything
+ * we put on `body` / `html` / `#root` / `*` leaks onto the host page and can
+ * (e.g.) kill scroll. See standalone.css for the standalone-only rules.
+ */

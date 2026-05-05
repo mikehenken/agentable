@@ -1,0 +1,55 @@
+/**
+ * standalone.css — host-page rules that ONLY apply when agentable-canvas is
+ * the entire app (i.e. running its own dev server / standalone build via
+ * src/main.tsx + index.html). These rules MUST NOT ship with the embed,
+ * because they hijack the host page's body/html/scrollbars/cursor.
+ *
+ * If you find yourself adding a rule that targets `html`, `body`, `#root`,
+ * or any selector that hits the host document outside the canvas's own
+ * Shadow DOM / mount point, it goes here — not in index.css.
+ *
+ * NOTE: NO `@layer base { ... }` here. Tailwind's PostCSS plugin requires
+ * a matching `@tailwind base` directive in every stylesheet that opens a
+ * `@layer base` block — but this file is imported AFTER index.css (which
+ * already emits the base layer), so adding a second `@tailwind base`
+ * would duplicate it. Plain top-level CSS rules instead; they get
+ * source-order specificity which is exactly what we want for these
+ * standalone overrides.
+ */
+
+/* Hide scrollbars (standalone canvas is fullscreen — scrollbars are noise). */
+:where(*) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cursor defaults for the standalone shell. */
+:where(*) {
+  cursor: default;
+}
+
+button, a, [role="button"] {
+  cursor: pointer;
+}
+
+input, textarea {
+  cursor: text;
+}
+
+/* Standalone fills the viewport; host pages must NOT inherit these. */
+body {
+  @apply bg-background text-foreground;
+  overflow: hidden;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}

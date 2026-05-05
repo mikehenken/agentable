@@ -1,0 +1,25 @@
+# Internal development docs (not for npm publication)
+docs/
+
+# Build artifacts that are regenerated
+dist/embed/*.map
+
+# Test fixtures and config (not needed at runtime)
+tests/
+playwright.config.ts
+web-test-runner.config.js
+vitest.config.ts
+
+# Dev-only configs (not needed at runtime)
+.env*
+.eslintrc*
+eslint.config.*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# CI / scripts
+.github/
+scripts/
