@@ -1,6 +1,6 @@
 {
   "name": "agentable-canvas",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "description": "Embeddable AI canvas web component — Lit shell + React internals + voice (Gemini Live) + a draggable-panel workspace. Drop into any page; brand via CSS tokens; isolate with Shadow DOM.",
   "license": "MIT",
@@ -24,6 +24,25 @@
     "embeddable",
     "agent"
   ],
+  "files": [
+    "src",
+    "dist",
+    "scripts",
+    "vite.config.ts",
+    "vite.embed.config.ts",
+    "vite.embed-button.config.ts",
+    "tailwind.config.js",
+    "postcss.config.js",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "tsconfig.node.json",
+    "components.json",
+    "README.md",
+    "EMBEDDING.md",
+    "INSTALL.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "exports": {
     ".": "./src/react/index.tsx",
     "./react": "./src/react/index.tsx",
@@ -44,6 +63,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "prepare": "node scripts/prepare-install.mjs",
     "build:embed": "vite build --config vite.embed.config.ts && npm run build:embed:button",
     "build:embed:button": "vite build --config vite.embed-button.config.ts",
     "build:embed:all": "npm run build:embed && npm run build:styles && npm run check:bundle",

@@ -16,6 +16,7 @@ export function VoiceWidget() {
   const live = useGeminiLive({
     persona,
     mockScenario: persona.mockScenario,
+    tokenEndpoint: persona.tokenEndpoint,
   });
   const assistantName = persona.assistantName ?? 'Assistant';
 

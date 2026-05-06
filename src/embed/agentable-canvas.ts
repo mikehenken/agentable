@@ -57,6 +57,7 @@ type EmbedConfig = {
   snapGrid: boolean;
   systemPrompt: string;
   voiceGreeting: string;
+  tokenEndpoint: string;
 };
 
 const DEFAULT_CONFIG: EmbedConfig = {
@@ -73,6 +74,11 @@ const DEFAULT_CONFIG: EmbedConfig = {
   // demo persona). The Lit shell carries no tenant-specific defaults.
   systemPrompt: '',
   voiceGreeting: '',
+  // Empty string = "use VITE_GEMINI_API_KEY (dev) or fail in prod".
+  // Production deployments should set this to the URL of a backplane
+  // worker that mints ephemeral Gemini Live tokens — never bake the
+  // long-lived API key into the public bundle.
+  tokenEndpoint: '',
 };
 
 @customElement('agentable-canvas')
@@ -112,6 +118,9 @@ export class AgentableCanvasElement extends LitElement {
   @property({ type: String, attribute: 'voice-greeting' })
   declare voiceGreeting: string;
 
+  @property({ type: String, attribute: 'token-endpoint' })
+  declare tokenEndpoint: string;
+
   private _root: Root | null = null;
 
   constructor() {
@@ -126,6 +135,7 @@ export class AgentableCanvasElement extends LitElement {
     this.snapGrid = DEFAULT_CONFIG.snapGrid;
     this.systemPrompt = DEFAULT_CONFIG.systemPrompt;
     this.voiceGreeting = DEFAULT_CONFIG.voiceGreeting;
+    this.tokenEndpoint = DEFAULT_CONFIG.tokenEndpoint;
   }
 
   // Order matters: the inlined canvas/Tailwind sheet first (provides resets
@@ -185,7 +195,8 @@ export class AgentableCanvasElement extends LitElement {
     if (
       changed.has('tenant') ||
       changed.has('systemPrompt') ||
-      changed.has('voiceGreeting')
+      changed.has('voiceGreeting') ||
+      changed.has('tokenEndpoint')
     ) {
       this._renderReact();
     }
@@ -261,9 +272,14 @@ export class AgentableCanvasElement extends LitElement {
     // provider's default-merge kicks in. CanvasProvider accepts a deeply-
     // partial config (`PartialCanvasTenantConfig`), so this is type-safe
     // without casts.
-    const persona: { systemPrompt?: string; voiceGreeting?: string } = {};
+    const persona: {
+      systemPrompt?: string;
+      voiceGreeting?: string;
+      tokenEndpoint?: string;
+    } = {};
     if (this.systemPrompt) persona.systemPrompt = this.systemPrompt;
     if (this.voiceGreeting) persona.voiceGreeting = this.voiceGreeting;
+    if (this.tokenEndpoint) persona.tokenEndpoint = this.tokenEndpoint;
 
     this._root.render(
       createElement(

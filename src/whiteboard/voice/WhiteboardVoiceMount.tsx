@@ -27,6 +27,7 @@ export function WhiteboardVoiceMount(): ReactElement | null {
   useGeminiLive({
     persona,
     mockScenario: persona.mockScenario,
+    tokenEndpoint: persona.tokenEndpoint,
   });
   return null;
 }

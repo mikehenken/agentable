@@ -91,6 +91,15 @@ export interface CanvasPersona {
    * client defaults when unset.
    */
   geminiVoiceName?: string;
+  /**
+   * Backplane endpoint that mints ephemeral Gemini Live tokens. When set,
+   * the voice transport fetches a fresh short-lived token at session start
+   * instead of baking the long-lived `VITE_GEMINI_API_KEY` into the client
+   * bundle. Pass the worker's full URL, e.g.
+   * `https://your-canvas-token.workers.dev`. Production deployments should
+   * always use this rather than `VITE_GEMINI_API_KEY`.
+   */
+  tokenEndpoint?: string;
 }
 
 /**
@@ -188,6 +197,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
   const starterPrompts = config?.persona?.starterPrompts;
   const mockScenario = config?.persona?.mockScenario;
   const geminiVoiceName = config?.persona?.geminiVoiceName;
+  const tokenEndpoint = config?.persona?.tokenEndpoint;
   // Labels — each field optional, falls through to library default when
   // tenant doesn't override. Keeps OSS copy generic ("Share") while
   // letting tenants supply specific labels ("Send to recruiter") without
@@ -215,6 +225,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
         starterPrompts: starterPrompts ?? DEFAULT_TENANT_CONFIG.persona.starterPrompts,
         mockScenario,
         geminiVoiceName,
+        tokenEndpoint,
       },
       labels: {
         shareArtifact: lShareArtifact ?? DEFAULT_TENANT_CONFIG.labels.shareArtifact,
@@ -240,6 +251,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
       starterPrompts,
       mockScenario,
       geminiVoiceName,
+      tokenEndpoint,
       lShareArtifact,
       lSendMessage,
       lEmptyArtifacts,

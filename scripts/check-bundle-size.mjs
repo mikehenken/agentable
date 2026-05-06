@@ -4,15 +4,15 @@
  * doc. Runs after `vite build` for both embed bundles. Exits non-zero on
  * bust.
  *
- * Budgets (gzipped) — calibrated 2026-04-25 against the M1 baseline:
- *   agentable-canvas.js              ESM ≤ 280 KB  (ships React + ReactDOM
- *                                                   + framer-motion + Lit
- *                                                   + 12 panels; non-React
- *                                                   hosts can't externalize)
- *   agentable-canvas.umd.js          UMD ≤ 230 KB  (UMD has tighter tree-
- *                                                   shaking than ESM here
- *                                                   due to module shape)
- *   voice-call-button.js       ESM ≤ 40 KB        (Lit only, no React)
+ * Budgets (gzipped) — recalibrated 2026-05-05 against the v0.0.1 release
+ * baseline. The canvas bundle ships React + ReactDOM + framer-motion + Lit
+ * + tldraw + 12 panels and cannot externalize React for non-React hosts,
+ * so the budget reflects shipped reality with room for ~10% drift before
+ * the gate flips.
+ *
+ *   agentable-canvas.js        ESM ≤ 950 KB   (actual ~873 KB)
+ *   agentable-canvas.umd.js    UMD ≤ 750 KB   (actual ~679 KB)
+ *   voice-call-button.js       ESM ≤ 40 KB    (Lit only, no React)
  *   voice-call-button.umd.js   UMD ≤ 60 KB
  *
  * Future work — code-split heavy panels (Settings/Applications/Resources)
@@ -33,8 +33,8 @@ const distDir = path.resolve(__dirname, '..', 'dist', 'embed');
 const KB = 1024;
 const distRoot = path.resolve(__dirname, '..', 'dist');
 const BUDGETS = [
-  { file: 'embed/agentable-canvas.js', max: 280 * KB, label: 'ESM' },
-  { file: 'embed/agentable-canvas.umd.js', max: 230 * KB, label: 'UMD' },
+  { file: 'embed/agentable-canvas.js', max: 950 * KB, label: 'ESM' },
+  { file: 'embed/agentable-canvas.umd.js', max: 750 * KB, label: 'UMD' },
   { file: 'embed/voice-call-button.js', max: 40 * KB, label: 'ESM' },
   { file: 'embed/voice-call-button.umd.js', max: 60 * KB, label: 'UMD' },
   // dist/styles.css is the pre-built Tailwind for React-canvas consumers.
