@@ -22,10 +22,20 @@ export interface TopBarProps {
   onToggleTheme: () => void;
   /** Optional refresh action. When omitted, the button is hidden (no dead UI). */
   onRefresh?: () => void;
+  /** When true, the refresh icon spins to signal an in-flight reload. */
+  refreshing?: boolean;
   /** Optional search action. Hidden when omitted. */
   onSearch?: () => void;
   /** Initials shown in the avatar bubble. Hidden when omitted. */
   initials?: string;
+  /**
+   * When set, the avatar bubble becomes clickable and surfaces a
+   * mini popover with the email + a sign-out button. Hosts that
+   * don't wire auth leave this undefined and the bubble stays
+   * decorative.
+   */
+  user?: { email?: string | null };
+  onSignOut?: () => void | Promise<void>;
 }
 
 const IconBtn: React.FC<{ icon: React.ComponentProps<typeof Icon>["name"]; onClick?: () => void; active?: boolean; title?: string }> = ({
@@ -69,8 +79,20 @@ export const TopBar: React.FC<TopBarProps> = ({
   onToggleTheme,
   onSearch,
   onRefresh,
+  refreshing = false,
   initials,
-}) => (
+  user,
+  onSignOut,
+}) => {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [menuOpen]);
+
+  return (
   <div
     style={{
       height: 44,
@@ -177,28 +199,129 @@ export const TopBar: React.FC<TopBarProps> = ({
       }}
     >
       {onSearch && <IconBtn icon="search" onClick={onSearch} title="Search" />}
-      {onRefresh && <IconBtn icon="refresh" onClick={onRefresh} title="Refresh" />}
+      {onRefresh && (
+        <>
+          <style>{`@keyframes orchSpin { to { transform: rotate(360deg) } }`}</style>
+          <button
+            onClick={onRefresh}
+            title={refreshing ? "Refreshing…" : "Refresh"}
+            disabled={refreshing}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 6,
+              display: "grid",
+              placeItems: "center",
+              color: refreshing ? "var(--accent)" : "var(--fg-muted)",
+              background: "transparent",
+              cursor: refreshing ? "default" : "pointer",
+              transition: "all var(--t-fast) var(--ease-out)",
+            }}
+            onMouseEnter={(e) => {
+              if (!refreshing) (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)";
+            }}
+            onMouseLeave={(e) => {
+              if (!refreshing) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+            }}
+          >
+            <span style={{ display: "inline-block", animation: refreshing ? "orchSpin .9s linear infinite" : undefined }}>
+              <Icon name="refresh" size={15} />
+            </span>
+          </button>
+        </>
+      )}
       <IconBtn icon={theme === "dark" ? "sun" : "moon"} onClick={onToggleTheme} title="Toggle theme" />
       {initials && (
         <>
           <div style={{ width: 1, height: 18, background: "var(--border-subtle)", margin: "0 6px" }}></div>
-          <div
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: "50%",
-              background: "var(--accent)",
-              color: "var(--fg-on-accent)",
-              display: "grid",
-              placeItems: "center",
-              fontSize: 10.5,
-              fontWeight: 600,
-            }}
-          >
-            {initials}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={
+                onSignOut
+                  ? (e) => {
+                      e.stopPropagation();
+                      setMenuOpen((o) => !o);
+                    }
+                  : undefined
+              }
+              title={user?.email ?? undefined}
+              aria-label={user?.email ? `Account: ${user.email}` : "Account"}
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                background: "var(--accent)",
+                color: "var(--fg-on-accent)",
+                display: "grid",
+                placeItems: "center",
+                fontSize: 10.5,
+                fontWeight: 600,
+                border: 0,
+                cursor: onSignOut ? "pointer" : "default",
+                padding: 0,
+              }}
+            >
+              {initials}
+            </button>
+            {menuOpen && onSignOut && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  right: 0,
+                  minWidth: 200,
+                  background: "var(--bg-panel)",
+                  border: "1px solid var(--border-base)",
+                  borderRadius: 6,
+                  boxShadow: "0 8px 24px rgba(0,0,0,.18)",
+                  zIndex: 50,
+                  padding: 4,
+                }}
+              >
+                {user?.email && (
+                  <div
+                    style={{
+                      padding: "8px 10px",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 11,
+                      color: "var(--fg-muted)",
+                      borderBottom: "1px solid var(--border-subtle)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {user.email}
+                  </div>
+                )}
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    void onSignOut();
+                  }}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "7px 10px",
+                    fontSize: 12,
+                    color: "var(--fg-base)",
+                    background: "transparent",
+                    border: 0,
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+                >
+                  Sign out
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}
     </div>
   </div>
-);
+  );
+};

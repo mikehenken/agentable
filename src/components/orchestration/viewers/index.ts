@@ -8,6 +8,8 @@ export { CitationViewer } from "./citation-viewer";
 export type { CitationViewerProps } from "./citation-viewer";
 export { TldrawViewer } from "./tldraw-viewer";
 export { SourceViewer } from "./source-viewer";
+export { RawArtifactViewer } from "./raw-artifact-viewer";
+export type { RawArtifactViewerProps, RawArtifactBody } from "./raw-artifact-viewer";
 export { OverviewTab } from "./overview-tab";
 export type { OverviewTabProps, AgentTimelineEntry } from "./overview-tab";
 export { LogsTab } from "./logs-tab";

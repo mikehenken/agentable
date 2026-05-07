@@ -7,27 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Deps + caches
 node_modules
-.cache/
-.vite/
-.turbo/
-
-# Library-style: don't pin lockfile; consumers resolve fresh
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# TypeScript build info
-*.tsbuildinfo
-
-# Local env / secrets
-.env
-.env.*
-!.env.example
+dist
+dist-ssr
 *.local
 
-# OS / editor
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -37,16 +22,3 @@ pnpm-lock.yaml
 *.njsproj
 *.sln
 *.sw?
-
-# Build leftovers we DON'T ship
-dist-ssr/
-
-# NOTE: dist/ IS committed in this repo so `npm install github:mikehenken/agentable`
-# resolves the `./embed` and `./styles.css` exports without a build step. The
-# `prepare` lifecycle hook (scripts/prepare-install.mjs) is a fallback that
-# rebuilds if dist is ever missing on a fresh clone.
-
-# Test artifacts
-playwright-report/
-test-results/
-coverage/

@@ -421,19 +421,34 @@ export const WorkflowGraph: React.FC<WorkflowGraphProps> = ({
     setView({ z, x: rect.width / 2 - cx * z, y: rect.height / 2 - cy * z });
   }, [focusNodeId, board]);
 
-  const onWheel: React.WheelEventHandler<HTMLDivElement> = (e) => {
-    if (!e.ctrlKey && !e.metaKey) return;
-    e.preventDefault();
-    const rect = containerRef.current!.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
-    setView((v) => {
-      const z2 = Math.max(0.25, Math.min(2.5, v.z * factor));
-      const k = z2 / v.z;
-      return { z: z2, x: mx - (mx - v.x) * k, y: my - (my - v.y) * k };
-    });
-  };
+  // Wheel-to-zoom. React (since v17) attaches wheel listeners as PASSIVE
+  // at the document root, which makes `preventDefault()` on the
+  // synthetic event a silent no-op — the browser then page-zooms on top
+  // of our diagram zoom. We work around that by binding a native
+  // non-passive listener directly to the container in `useEffect`.
+  // Pinch-to-zoom on trackpads also dispatches `wheel` events with
+  // `ctrlKey=true`, so the same handler covers both ctrl/cmd-scroll AND
+  // trackpad pinch — and both must be intercepted to stop the browser
+  // from zooming the page.
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
+      setView((v) => {
+        const z2 = Math.max(0.25, Math.min(2.5, v.z * factor));
+        const k = z2 / v.z;
+        return { z: z2, x: mx - (mx - v.x) * k, y: my - (my - v.y) * k };
+      });
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, []);
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if ((e.target as HTMLElement).closest("[data-node]")) return;
@@ -459,7 +474,6 @@ export const WorkflowGraph: React.FC<WorkflowGraphProps> = ({
   return (
     <div
       ref={containerRef}
-      onWheel={onWheel}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}

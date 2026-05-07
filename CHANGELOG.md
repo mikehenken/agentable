@@ -5,39 +5,6 @@ All notable changes to `agentable-canvas` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] — 2026-05-05
-
-### Added
-
-- **Packaged for cross-project install.** `package.json` now ships a `files`
-  allowlist and a `prepare` lifecycle script (`scripts/prepare-install.mjs`)
-  so `npm install github:mikehenken/agentable#v0.1.0` resolves the `./embed`
-  and `./styles.css` exports immediately. The shipped `dist/` rides along
-  in git; `prepare` rebuilds only if missing.
-- **`INSTALL.md`** — install quickstart covering the three install modes
-  (script-tag CDN via jsDelivr, npm-from-github, git submodule), voice
-  setup, and verification steps.
-- **`token-endpoint` attribute / `persona.tokenEndpoint` config field** —
-  passes through to `useGeminiLive` so a server-minted ephemeral token
-  endpoint can be wired without rebuilding. Production hosts MUST use this
-  rather than `VITE_GEMINI_API_KEY` in client bundles.
-- **`panelData` config injection** — `<CanvasShell config.panelData>` now
-  accepts tenant-supplied mock data for Open Positions, Applications,
-  Growth Paths, and Resources panels, so the OSS defaults can be replaced
-  without forking the panel components.
-
-### Changed
-
-- **Bundle-size budget calibrated to v0.0.1 reality** — ESM raised from
-  280 KB to 950 KB gz, UMD raised from 230 KB to 750 KB gz. The previous
-  budget was set to an aspirational future code-split target and was
-  failing CI on every release. Voice-button budgets unchanged.
-
-### Notes
-
-- The `prepare` script is a fallback. The default install path is
-  zero-build because `dist/` ships in git for this repo.
-
 ## [0.0.1] — 2026-05-04
 
 ### Added

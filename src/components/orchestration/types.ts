@@ -158,10 +158,44 @@ export interface ChatSessionAdapter {
   seed: ChatMessages;
   /** Send a user message; returns the assistant reply. Pure async, host-implemented. */
   send(text: string, opts: { mode: ChatMode; profile: string; model: string }): Promise<ChatMessage>;
+  /**
+   * Streaming variant of `send`. Each text delta is passed to `onDelta`
+   * as it arrives; resolves with the final assistant message once the
+   * stream completes. Optional — adapters that don't support streaming
+   * (mocks, tests) leave it undefined and the chat panel falls back
+   * to `send`.
+   */
+  sendStream?(
+    text: string,
+    opts: { mode: ChatMode; profile: string; model: string },
+    onDelta: (delta: string) => void,
+  ): Promise<ChatMessage>;
   /** Persist mode/profile/model swap; PATCHes the session. */
   patch(opts: Partial<{ mode: ChatMode; profile: string; model: string }>): Promise<void>;
   /** Attach an R2 artifact key to the session context. */
   attach(artifactKey: string, label?: string): Promise<void>;
+  /**
+   * Upload a single document for this session. Returns the R2 key
+   * the worker assigned. The implementation owns scope resolution
+   * (e.g. routes scoped run uploads to `inputs/{runId}/…`, unscoped
+   * to `inputs/chat-{sessionId}/…`).
+   * Optional — adapters without a transport for uploads omit this
+   * and the panel hides the attach button.
+   */
+  upload?(file: File): Promise<{ key: string; label?: string }>;
+  /**
+   * The current worker session id (after at least one send or after
+   * an explicit `restore()`). Used by the panel to persist the tab
+   * across reloads.
+   */
+  getSessionId?(): string | null;
+  /**
+   * Resume a previously-saved worker session. Resolves with the
+   * persisted message history so the panel can rehydrate the tab.
+   * Returns null if the session is no longer reachable. Optional —
+   * adapters that don't persist sessions leave this unimplemented.
+   */
+  restore?(sessionId: string): Promise<{ messages: ChatMessages } | null>;
 }
 
 export interface WorkflowDef {

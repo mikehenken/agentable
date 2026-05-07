@@ -1,6 +1,11 @@
 import * as React from "react";
-import { Icon } from "../../general";
+import { Icon, useResizableSidebar } from "../../general";
 import type { Workspace, Project } from "../types";
+
+const DEFAULT_WIDTH = 260;
+const MIN_WIDTH = 200;
+const MAX_WIDTH = 520;
+const COLLAPSED_WIDTH = 36;
 
 const PICK_EMOJI = ["🏢", "🌐", "🛰️", "🧭", "🔬", "🪴", "📊", "🛒", "🚚", "🏗️", "🎯", "🧱"];
 const PROJECT_EMOJI = "📁";
@@ -215,13 +220,100 @@ const InlinePlus: React.FC<{ onClick: () => void; title: string; visible: boolea
   </button>
 );
 
+/**
+ * Hover-revealed refresh button. Sits in the same row affordance slot
+ * as `InlinePlus` — same visual weight, same opacity-on-hover pattern,
+ * so the discovery model matches and we don't introduce competing
+ * affordances. Spins while `busy` is true to acknowledge the click.
+ */
+const InlineRefresh: React.FC<{ onClick: () => void; title: string; visible: boolean; busy?: boolean }> = ({
+  onClick,
+  title,
+  visible,
+  busy = false,
+}) => (
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      if (!busy) onClick();
+    }}
+    title={busy ? "Refreshing…" : title}
+    style={{
+      width: 18,
+      height: 18,
+      borderRadius: 3,
+      display: "grid",
+      placeItems: "center",
+      color: busy ? "var(--accent)" : "var(--fg-faint)",
+      cursor: busy ? "default" : "pointer",
+      flexShrink: 0,
+      opacity: visible || busy ? 1 : 0,
+      transition: "opacity .12s, background .12s",
+    }}
+    onMouseEnter={(e) => {
+      if (!busy) (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-active)";
+    }}
+    onMouseLeave={(e) => {
+      if (!busy) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+    }}
+  >
+    <span
+      style={{
+        display: "inline-grid",
+        placeItems: "center",
+        animation: busy ? "orchSpin .9s linear infinite" : undefined,
+      }}
+    >
+      <Icon name="refresh" size={10} />
+    </span>
+  </button>
+);
+
 export interface LeftRailProps {
   workspaces: Workspace[];
   activeRunId: string | null;
   setActiveRunId: (id: string) => void;
+  /**
+   * Currently-selected workspace, if any. Drives the highlighted row
+   * and lets the host show a workspace overview in the center pane
+   * when no run is selected.
+   */
+  activeWorkspaceId?: string | null;
+  /** Same as `activeWorkspaceId` for projects. */
+  activeProjectId?: string | null;
+  /**
+   * Called when the user clicks a workspace row. Receives the new
+   * selection (or null to clear). Hosts that don't need workspace-
+   * level selection can omit this — the row will still expand/collapse.
+   */
+  onSelectWorkspace?: (workspaceId: string | null) => void;
+  /** Same as `onSelectWorkspace` for projects. */
+  onSelectProject?: (workspaceId: string, projectId: string | null) => void;
   onNewRun?: (workspace: Workspace, project: Project) => void;
   onCreateClient?: (value: InlineCreateValue) => void;
   onCreateProject?: (workspaceId: string, value: InlineCreateValue) => void;
+  /**
+   * Refresh handlers for each scope. Each is wrapped to spin its own
+   * inline icon while resolving so the user sees acknowledgement of
+   * the click. All optional — when omitted, the icon is hidden.
+   */
+  onRefreshTree?: () => Promise<void> | void;
+  onRefreshWorkspace?: (workspaceId: string) => Promise<void> | void;
+  onRefreshProject?: (workspaceId: string, projectId: string) => Promise<void> | void;
+  onRefreshRun?: (runId: string) => Promise<void> | void;
+  /**
+   * CRUD handlers — when wired, a kebab menu appears on hover next to
+   * the inline plus / refresh icons. Optional; rows with no handlers
+   * keep the read-only chrome they had before.
+   */
+  onRenameWorkspace?: (workspaceId: string, current: string) => void;
+  onArchiveWorkspace?: (workspaceId: string) => Promise<void> | void;
+  onDeleteWorkspace?: (workspaceId: string) => Promise<void> | void;
+  onRenameProject?: (workspaceId: string, projectId: string, current: string) => void;
+  onArchiveProject?: (workspaceId: string, projectId: string) => Promise<void> | void;
+  onDeleteProject?: (workspaceId: string, projectId: string) => Promise<void> | void;
+  /** Knowledge-base modal opener — surfaces a tool button in the rail header. */
+  onOpenKnowledge?: () => void;
   /** Footer status. Defaults to "Orchestrator healthy". */
   health?: { ok: boolean; label: string; version?: string };
   /** When true, renders a skeleton in place of the workspace tree. */
@@ -264,17 +356,149 @@ const SkeletonRow: React.FC<{ indent?: number; w?: number }> = ({ indent = 0, w 
   </div>
 );
 
+/**
+ * Hover-revealed three-dot kebab + dropdown menu used on workspace
+ * and project rows for rename/archive/delete. Closes on any outside
+ * click via the menuKey state in the parent.
+ */
+const KebabMenu: React.FC<{
+  visible: boolean;
+  open: boolean;
+  onToggle: () => void;
+  items: { label: string; onClick: () => void; danger?: boolean }[];
+}> = ({ visible, open, onToggle, items }) => (
+  <span style={{ position: "relative", flexShrink: 0 }}>
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggle();
+      }}
+      title="Actions"
+      aria-label="Actions"
+      style={{
+        width: 18,
+        height: 18,
+        borderRadius: 3,
+        background: open ? "var(--bg-active)" : "transparent",
+        border: 0,
+        cursor: "pointer",
+        color: "var(--fg-faint)",
+        display: "grid",
+        placeItems: "center",
+        opacity: visible || open ? 1 : 0,
+        transition: "opacity .12s, background .12s",
+        fontSize: 14,
+        lineHeight: 0.5,
+        padding: 0,
+      }}
+      onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-active)")}
+      onMouseLeave={(e) => {
+        if (!open) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+      }}
+    >
+      ⋯
+    </button>
+    {open && (
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "absolute",
+          top: 22,
+          right: 0,
+          minWidth: 160,
+          background: "var(--bg-panel)",
+          border: "1px solid var(--border-base)",
+          borderRadius: 6,
+          boxShadow: "0 8px 24px rgba(0,0,0,.18)",
+          padding: "4px 0",
+          zIndex: 20,
+        }}
+      >
+        {items.map((it, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              it.onClick();
+              onToggle();
+            }}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "5px 10px",
+              fontSize: 12,
+              color: it.danger ? "var(--negative-fg)" : "var(--fg-base)",
+              background: "transparent",
+              border: 0,
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+          >
+            {it.label}
+          </button>
+        ))}
+      </div>
+    )}
+  </span>
+);
+
 /** Notion-style page tree of Workspace → Project → Run. */
 export const LeftRail: React.FC<LeftRailProps> = ({
   workspaces,
   activeRunId,
   setActiveRunId,
+  activeWorkspaceId = null,
+  activeProjectId = null,
+  onSelectWorkspace,
+  onSelectProject,
   onNewRun,
   onCreateClient,
   onCreateProject,
+  onRefreshTree,
+  onRefreshWorkspace,
+  onRefreshProject,
+  onRefreshRun,
+  onRenameWorkspace,
+  onArchiveWorkspace,
+  onDeleteWorkspace,
+  onRenameProject,
+  onArchiveProject,
+  onDeleteProject,
+  onOpenKnowledge,
   health = { ok: true, label: "Orchestrator healthy", version: "v0.4.2" },
   loading = false,
 }) => {
+  // Single open-context-menu key — only one can be open at a time.
+  const [menuKey, setMenuKey] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (!menuKey) return;
+    const close = () => setMenuKey(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [menuKey]);
+  // Resize + collapse. Persisted under `agentable-orch:leftrail` so the
+  // user's preferred width survives reloads.
+  const sidebar = useResizableSidebar({
+    side: "left",
+    defaultWidth: DEFAULT_WIDTH,
+    minWidth: MIN_WIDTH,
+    maxWidth: MAX_WIDTH,
+    collapsedWidth: COLLAPSED_WIDTH,
+    storageKey: "agentable-orch:leftrail",
+  });
+  // Track which row's refresh is currently in flight so its icon spins.
+  const [busyKey, setBusyKey] = React.useState<string | null>(null);
+  const runRefresh = React.useCallback(
+    async (key: string, fn: () => Promise<void> | void) => {
+      setBusyKey(key);
+      try {
+        await fn();
+      } finally {
+        setBusyKey(null);
+      }
+    },
+    [],
+  );
   // Walk the tree to find which workspace + project contains the
   // active run, so those paths can be auto-expanded.
   const activePath = React.useMemo(() => {
@@ -319,37 +543,190 @@ export const LeftRail: React.FC<LeftRailProps> = ({
   const [hoverKey, setHoverKey] = React.useState<string | null>(null);
   const [creating, setCreating] = React.useState<{ kind: "client" } | { kind: "project"; clientId: string } | null>(null);
 
+  // Collapsed state: show a thin vertical strip with the section
+  // glyph + an outward chevron. Click anywhere on the strip expands —
+  // generous Fitts's-law target so the user doesn't have to land on a
+  // tiny icon. The strip preserves the same right-border so the
+  // chrome continues to read as a panel boundary.
+  if (sidebar.collapsed) {
+    return (
+      <aside
+        style={{
+          width: sidebar.width,
+          flexShrink: 0,
+          background: "var(--bg-app)",
+          borderRight: "1px solid var(--border-subtle)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "8px 0",
+          position: "relative",
+        }}
+      >
+        <button
+          onClick={sidebar.toggleCollapse}
+          title="Expand workspace sidebar"
+          aria-label="Expand workspace sidebar"
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: 5,
+            display: "grid",
+            placeItems: "center",
+            color: "var(--fg-muted)",
+            cursor: "pointer",
+            background: "transparent",
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+        >
+          <Icon name="chright" size={14} />
+        </button>
+        <button
+          onClick={sidebar.toggleCollapse}
+          title="Expand workspace sidebar"
+          aria-label="Workspaces (collapsed) — click to expand"
+          style={{
+            marginTop: 6,
+            flex: 1,
+            width: "100%",
+            display: "grid",
+            placeItems: "center",
+            cursor: "pointer",
+            color: "var(--fg-faint)",
+            background: "transparent",
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+        >
+          <Icon name="layers" size={14} />
+        </button>
+        {/* Health dot pinned at the bottom — keeps the connection
+            indicator readable even in the collapsed state. */}
+        <span
+          title={health.label}
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            background: health.ok ? "var(--positive)" : "var(--negative)",
+            boxShadow: `0 0 0 3px ${health.ok ? "var(--positive-soft)" : "var(--negative-soft)"}`,
+            marginBottom: 8,
+          }}
+        />
+      </aside>
+    );
+  }
+
   return (
     <aside
       style={{
-        width: 260,
+        width: sidebar.width,
         flexShrink: 0,
         background: "var(--bg-app)",
         borderRight: "1px solid var(--border-subtle)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        position: "relative",
       }}
     >
-      <div style={{ padding: "12px 12px 6px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <style>{`@keyframes orchSpin { to { transform: rotate(360deg) } }`}</style>
+      <div style={{ padding: "12px 12px 6px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
         <span style={{ fontSize: 11.5, fontWeight: 500, color: "var(--fg-faint)" }}>Workspace</span>
-        <button
-          onClick={() => setCreating({ kind: "client" })}
-          title="New client"
-          style={{
-            width: 20,
-            height: 20,
-            borderRadius: 4,
-            display: "grid",
-            placeItems: "center",
-            color: "var(--fg-faint)",
-            cursor: "pointer",
-          }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
-        >
-          <Icon name="plus" size={12} />
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {onOpenKnowledge && (
+            <button
+              onClick={onOpenKnowledge}
+              title="Knowledge base"
+              aria-label="Open knowledge base"
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 4,
+                display: "grid",
+                placeItems: "center",
+                color: "var(--fg-faint)",
+                cursor: "pointer",
+                background: "transparent",
+                border: 0,
+              }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+            >
+              <Icon name="layers" size={11} />
+            </button>
+          )}
+          {onRefreshTree && (
+            <button
+              onClick={() => runRefresh("__tree__", onRefreshTree)}
+              title={busyKey === "__tree__" ? "Refreshing workspaces…" : "Refresh workspaces"}
+              disabled={busyKey === "__tree__"}
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 4,
+                display: "grid",
+                placeItems: "center",
+                color: busyKey === "__tree__" ? "var(--accent)" : "var(--fg-faint)",
+                cursor: busyKey === "__tree__" ? "default" : "pointer",
+              }}
+              onMouseEnter={(e) => {
+                if (busyKey !== "__tree__")
+                  (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)";
+              }}
+              onMouseLeave={(e) => {
+                if (busyKey !== "__tree__")
+                  (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-grid",
+                  placeItems: "center",
+                  animation: busyKey === "__tree__" ? "orchSpin .9s linear infinite" : undefined,
+                }}
+              >
+                <Icon name="refresh" size={11} />
+              </span>
+            </button>
+          )}
+          <button
+            onClick={() => setCreating({ kind: "client" })}
+            title="New client"
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 4,
+              display: "grid",
+              placeItems: "center",
+              color: "var(--fg-faint)",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+          >
+            <Icon name="plus" size={12} />
+          </button>
+          <button
+            onClick={sidebar.toggleCollapse}
+            title="Collapse sidebar"
+            aria-label="Collapse sidebar"
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 4,
+              display: "grid",
+              placeItems: "center",
+              color: "var(--fg-faint)",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = "transparent")}
+          >
+            <Icon name="chevron" size={12} style={{ transform: "rotate(90deg)" }} />
+          </button>
+        </div>
       </div>
 
       <div style={{ overflowY: "auto", flex: 1, padding: "0 4px 8px" }}>
@@ -366,12 +743,21 @@ export const LeftRail: React.FC<LeftRailProps> = ({
         {workspaces.map((c) => {
           const open = !!openClients[c.id];
           const hover = hoverKey === `c:${c.id}`;
+          const wsActive = activeWorkspaceId === c.id;
           return (
             <div key={c.id} style={{ marginBottom: 1 }}>
               <div
                 onMouseEnter={() => setHoverKey(`c:${c.id}`)}
                 onMouseLeave={() => setHoverKey(null)}
-                onClick={() => setOpenClients((s) => ({ ...s, [c.id]: !s[c.id] }))}
+                onClick={() => {
+                  // Always toggle open state. If host wired selection,
+                  // also flip active workspace: clicking the active row
+                  // clears the selection (matching the run-row pattern).
+                  setOpenClients((s) => ({ ...s, [c.id]: !s[c.id] }));
+                  if (onSelectWorkspace) {
+                    onSelectWorkspace(activeWorkspaceId === c.id ? null : c.id);
+                  }
+                }}
                 style={{
                   padding: "4px 8px",
                   borderRadius: 4,
@@ -379,9 +765,23 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                   alignItems: "center",
                   gap: 6,
                   cursor: "pointer",
-                  background: hover ? "var(--bg-hover)" : "transparent",
+                  background: wsActive ? "var(--bg-active)" : hover ? "var(--bg-hover)" : "transparent",
+                  position: "relative",
                 }}
               >
+                {wsActive && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 4,
+                      bottom: 4,
+                      width: 2,
+                      borderRadius: 2,
+                      background: "var(--fg-base)",
+                    }}
+                  />
+                )}
                 <span style={{ color: "var(--fg-ghost)", fontSize: 9, width: 10, textAlign: "center", flexShrink: 0 }}>
                   {open ? "▾" : "▸"}
                 </span>
@@ -410,6 +810,14 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                 >
                   {c.tag}
                 </span>
+                {onRefreshWorkspace && (
+                  <InlineRefresh
+                    visible={hover}
+                    busy={busyKey === `ws:${c.id}`}
+                    title="Refresh workspace"
+                    onClick={() => runRefresh(`ws:${c.id}`, () => onRefreshWorkspace(c.id))}
+                  />
+                )}
                 <InlinePlus
                   visible={hover}
                   title="New project"
@@ -418,6 +826,24 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                     setCreating({ kind: "project", clientId: c.id });
                   }}
                 />
+                {(onRenameWorkspace || onArchiveWorkspace || onDeleteWorkspace) && (
+                  <KebabMenu
+                    visible={hover}
+                    open={menuKey === `ws-menu:${c.id}`}
+                    onToggle={() => setMenuKey(menuKey === `ws-menu:${c.id}` ? null : `ws-menu:${c.id}`)}
+                    items={[
+                      ...(onRenameWorkspace
+                        ? [{ label: "Rename…", onClick: () => onRenameWorkspace(c.id, c.name) }]
+                        : []),
+                      ...(onArchiveWorkspace
+                        ? [{ label: "Archive", onClick: () => void onArchiveWorkspace(c.id) }]
+                        : []),
+                      ...(onDeleteWorkspace
+                        ? [{ label: "Delete", onClick: () => { if (confirm(`Delete workspace "${c.name}"? This cannot be undone.`)) void onDeleteWorkspace(c.id); }, danger: true }]
+                        : []),
+                    ]}
+                  />
+                )}
               </div>
 
               {open &&
@@ -425,12 +851,18 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                   const pkey = `${c.id}/${p.id}`;
                   const popen = !!openProjects[pkey];
                   const phover = hoverKey === `p:${pkey}`;
+                  const projActive = activeProjectId === p.id && activeWorkspaceId === c.id;
                   return (
                     <div key={p.id}>
                       <div
                         onMouseEnter={() => setHoverKey(`p:${pkey}`)}
                         onMouseLeave={() => setHoverKey(null)}
-                        onClick={() => setOpenProjects((s) => ({ ...s, [pkey]: !s[pkey] }))}
+                        onClick={() => {
+                          setOpenProjects((s) => ({ ...s, [pkey]: !s[pkey] }));
+                          if (onSelectProject) {
+                            onSelectProject(c.id, projActive ? null : p.id);
+                          }
+                        }}
                         style={{
                           padding: "3px 8px 3px 26px",
                           borderRadius: 4,
@@ -438,9 +870,23 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                           alignItems: "center",
                           gap: 6,
                           cursor: "pointer",
-                          background: phover ? "var(--bg-hover)" : "transparent",
+                          background: projActive ? "var(--bg-active)" : phover ? "var(--bg-hover)" : "transparent",
+                          position: "relative",
                         }}
                       >
+                        {projActive && (
+                          <span
+                            style={{
+                              position: "absolute",
+                              left: 18,
+                              top: 4,
+                              bottom: 4,
+                              width: 2,
+                              borderRadius: 2,
+                              background: "var(--fg-base)",
+                            }}
+                          />
+                        )}
                         <span style={{ color: "var(--fg-ghost)", fontSize: 9, width: 10, textAlign: "center", flexShrink: 0 }}>
                           {popen ? "▾" : "▸"}
                         </span>
@@ -466,6 +912,14 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                         {p.status === "paused" && (
                           <span title="paused" style={{ width: 6, height: 6, borderRadius: 3, background: "var(--warn)", flexShrink: 0 }}></span>
                         )}
+                        {onRefreshProject && (
+                          <InlineRefresh
+                            visible={phover}
+                            busy={busyKey === `proj:${pkey}`}
+                            title="Refresh project"
+                            onClick={() => runRefresh(`proj:${pkey}`, () => onRefreshProject(c.id, p.id))}
+                          />
+                        )}
                         <InlinePlus
                           visible={phover}
                           title="New run"
@@ -474,15 +928,44 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                             onNewRun?.(c, p);
                           }}
                         />
+                        {(onRenameProject || onArchiveProject || onDeleteProject) && (
+                          <KebabMenu
+                            visible={phover}
+                            open={menuKey === `proj-menu:${pkey}`}
+                            onToggle={() => setMenuKey(menuKey === `proj-menu:${pkey}` ? null : `proj-menu:${pkey}`)}
+                            items={[
+                              ...(onRenameProject
+                                ? [{ label: "Rename…", onClick: () => onRenameProject(c.id, p.id, p.name) }]
+                                : []),
+                              ...(onArchiveProject
+                                ? [{ label: "Archive", onClick: () => void onArchiveProject(c.id, p.id) }]
+                                : []),
+                              ...(onDeleteProject
+                                ? [{ label: "Delete", onClick: () => { if (confirm(`Delete project "${p.name}"? This cannot be undone.`)) void onDeleteProject(c.id, p.id); }, danger: true }]
+                                : []),
+                            ]}
+                          />
+                        )}
                       </div>
 
                       {popen &&
                         p.runs.map((r) => {
                           const active = r.id === activeRunId;
+                          const rkey = `${pkey}/${r.id}`;
+                          const rhover = hoverKey === `r:${rkey}`;
+                          const refreshBusy = busyKey === `run:${r.id}`;
                           return (
                             <button
                               key={r.id}
                               onClick={() => setActiveRunId(r.id)}
+                              onMouseEnter={(e) => {
+                                if (!active) (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)";
+                                setHoverKey(`r:${rkey}`);
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!active) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                                setHoverKey(null);
+                              }}
                               style={{
                                 width: "100%",
                                 padding: "3px 8px 3px 44px",
@@ -493,12 +976,6 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                                 cursor: "pointer",
                                 background: active ? "var(--bg-active)" : "transparent",
                                 position: "relative",
-                              }}
-                              onMouseEnter={(e) => {
-                                if (!active) (e.currentTarget as HTMLButtonElement).style.background = "var(--bg-hover)";
-                              }}
-                              onMouseLeave={(e) => {
-                                if (!active) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
                               }}
                             >
                               {active && (
@@ -539,6 +1016,47 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                               )}
                               {r.status === "superseded" && (
                                 <span style={{ fontSize: 10, color: "var(--fg-ghost)", fontFamily: "var(--font-mono)", flexShrink: 0 }}>—</span>
+                              )}
+                              {onRefreshRun && (
+                                <span
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!refreshBusy) runRefresh(`run:${r.id}`, () => onRefreshRun(r.id));
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      if (!refreshBusy) runRefresh(`run:${r.id}`, () => onRefreshRun(r.id));
+                                    }
+                                  }}
+                                  title={refreshBusy ? "Refreshing run…" : "Refresh run"}
+                                  aria-label="Refresh run"
+                                  style={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: 3,
+                                    display: "grid",
+                                    placeItems: "center",
+                                    color: refreshBusy ? "var(--accent)" : "var(--fg-faint)",
+                                    cursor: refreshBusy ? "default" : "pointer",
+                                    flexShrink: 0,
+                                    opacity: rhover || refreshBusy ? 1 : 0,
+                                    transition: "opacity .12s, background .12s",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      display: "inline-grid",
+                                      placeItems: "center",
+                                      animation: refreshBusy ? "orchSpin .9s linear infinite" : undefined,
+                                    }}
+                                  >
+                                    <Icon name="refresh" size={9} />
+                                  </span>
+                                </span>
                               )}
                             </button>
                           );
@@ -668,6 +1186,31 @@ export const LeftRail: React.FC<LeftRailProps> = ({
           </span>
         )}
       </div>
+
+      {/* Resize handle — 5px hit strip on the right edge. Invisible at
+          rest; flashes a 1px accent line on hover/drag so the
+          affordance is discoverable without adding chrome. */}
+      <div
+        {...sidebar.handleProps}
+        style={{
+          position: "absolute",
+          top: 0,
+          right: -2,
+          bottom: 0,
+          width: 5,
+          cursor: "col-resize",
+          zIndex: 10,
+          background: "transparent",
+          touchAction: "none",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "inset -1px 0 0 0 var(--accent)";
+        }}
+        onMouseLeave={(e) => {
+          if (!sidebar.dragging)
+            (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+        }}
+      />
     </aside>
   );
 };

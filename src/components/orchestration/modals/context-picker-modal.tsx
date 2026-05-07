@@ -55,6 +55,13 @@ export interface ContextPickerModalProps {
   currentContext: FlatArtifact[];
   onAdd: (adds: FlatArtifact[]) => void;
   onClose: () => void;
+  /**
+   * Optional: bulk-fetch artifact lists for the runs in the current
+   * scope. Live adapters typically only have artifacts cached for
+   * the active run; this lets the picker hydrate the rest on demand.
+   * Called once per scope change, with a `runIds` filtered to that scope.
+   */
+  onPrefetch?: (runIds: string[]) => Promise<void>;
 }
 
 type Scope = "current-run" | "this-project" | "this-client" | "all";
@@ -72,10 +79,12 @@ export const ContextPickerModal: React.FC<ContextPickerModalProps> = ({
   currentContext,
   onAdd,
   onClose,
+  onPrefetch,
 }) => {
   const [scope, setScope] = React.useState<Scope>("current-run");
   const [query, setQuery] = React.useState("");
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
+  const [loading, setLoading] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   React.useEffect(() => {
     inputRef.current?.focus();
@@ -87,6 +96,40 @@ export const ContextPickerModal: React.FC<ContextPickerModalProps> = ({
         for (const r of p.runs) if (r.id === activeRunId) return { clientId: c.id, projectId: p.id };
     return { clientId: undefined, projectId: undefined };
   }, [workspaces, activeRunId]);
+
+  // Compute the runIds in the current scope so we can prefetch their
+  // artifact lists. Without this, the picker walks the workspaces
+  // tree and finds empty `r.artifacts` for every run except the
+  // currently-active one.
+  const scopeRunIds = React.useMemo(() => {
+    const ids: string[] = [];
+    for (const c of workspaces) {
+      if (scope === "this-client" && c.id !== activeRow.clientId) continue;
+      for (const p of c.projects) {
+        if (scope === "this-project" && p.id !== activeRow.projectId) continue;
+        for (const r of p.runs) {
+          if (scope === "current-run" && r.id !== activeRunId) continue;
+          ids.push(r.id);
+        }
+      }
+    }
+    return ids;
+  }, [workspaces, scope, activeRunId, activeRow.clientId, activeRow.projectId]);
+
+  // Hydrate artifacts for the in-scope runs whenever the scope
+  // changes. The adapter caches results so re-opening the picker is
+  // free; first open at a wider scope shows a brief spinner.
+  React.useEffect(() => {
+    if (!onPrefetch || scopeRunIds.length === 0) return;
+    let cancelled = false;
+    setLoading(true);
+    onPrefetch(scopeRunIds).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [onPrefetch, scopeRunIds]);
 
   const all = React.useMemo(() => flattenArtifacts(workspaces, activeRunId), [workspaces, activeRunId]);
 
@@ -201,7 +244,13 @@ export const ContextPickerModal: React.FC<ContextPickerModalProps> = ({
       <div style={{ flex: 1, overflow: "auto", padding: "8px 14px 12px" }}>
         {Object.keys(grouped).length === 0 && (
           <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--fg-faint)", fontSize: 12.5 }}>
-            No artifacts match.
+            {loading
+              ? "Loading artifacts…"
+              : query
+                ? "No artifacts match."
+                : scopeRunIds.length === 0
+                  ? "No runs in scope yet."
+                  : "No artifacts in this scope yet."}
           </div>
         )}
         {Object.entries(grouped).map(([groupLabel, items]) => (
