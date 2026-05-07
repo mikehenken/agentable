@@ -1,6 +1,6 @@
 {
   "name": "agentable-canvas",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Embeddable AI canvas web component — Lit shell + React internals + voice (Gemini Live) + a draggable-panel workspace. Drop into any page; brand via CSS tokens; isolate with Shadow DOM.",
   "license": "MIT",

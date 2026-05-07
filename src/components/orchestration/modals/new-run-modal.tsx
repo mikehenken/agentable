@@ -320,12 +320,113 @@ const PickStep: React.FC<{
   workflows: NewRunWorkflowDef[];
   wfId: string | null;
   onPick: (id: string) => void;
-}> = ({ workflows, wfId, onPick }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-    <p style={{ margin: "0 0 6px", color: "var(--fg-muted)", fontSize: 13 }}>
-      Pick a workflow to drive this run, or start a custom chat run.
-    </p>
-    {workflows.map((w) => {
+}> = ({ workflows, wfId, onPick }) => {
+  const [query, setQuery] = React.useState("");
+  // Case-insensitive substring match across the fields a user is most
+  // likely to remember: display name, the human blurb, and the worker
+  // binding code (so power users can search by `INTENT_WORKFLOW` etc.).
+  // Empty query falls through to the full catalog.
+  const filtered = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return workflows;
+    return workflows.filter((w) => {
+      return (
+        w.name.toLowerCase().includes(q) ||
+        w.blurb.toLowerCase().includes(q) ||
+        (w.binding ?? "").toLowerCase().includes(q) ||
+        w.id.toLowerCase().includes(q)
+      );
+    });
+  }, [workflows, query]);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <p style={{ margin: "0 0 6px", color: "var(--fg-muted)", fontSize: 13 }}>
+        Pick a workflow to drive this run, or start a custom chat run.
+      </p>
+      <div
+        style={{
+          position: "relative",
+          marginBottom: 4,
+        }}
+      >
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search workflows…"
+          aria-label="Search workflows"
+          autoFocus
+          style={{
+            width: "100%",
+            padding: "8px 12px 8px 32px",
+            borderRadius: 6,
+            border: "1px solid var(--border-base)",
+            background: "var(--bg-canvas)",
+            color: "var(--fg-base)",
+            fontSize: 13,
+            outline: "none",
+            fontFamily: "var(--font-sans)",
+          }}
+          onFocus={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = "var(--accent)")}
+          onBlur={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = "var(--border-base)")}
+        />
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: 10,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--fg-faint)",
+            fontSize: 14,
+            lineHeight: 1,
+            pointerEvents: "none",
+          }}
+        >
+          🔍
+        </span>
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            aria-label="Clear search"
+            style={{
+              position: "absolute",
+              right: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 20,
+              height: 20,
+              borderRadius: 4,
+              background: "transparent",
+              border: 0,
+              color: "var(--fg-faint)",
+              cursor: "pointer",
+              fontSize: 14,
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+        )}
+      </div>
+      {filtered.length === 0 && (
+        <div
+          style={{
+            padding: "16px 14px",
+            textAlign: "center",
+            color: "var(--fg-faint)",
+            fontSize: 12.5,
+            fontStyle: "italic",
+            border: "1px dashed var(--border-subtle)",
+            borderRadius: 8,
+          }}
+        >
+          No workflows match "{query}"
+        </div>
+      )}
+      {filtered.map((w) => {
       const on = w.id === wfId;
       return (
         <button
@@ -410,8 +511,9 @@ const PickStep: React.FC<{
         </button>
       );
     })}
-  </div>
-);
+    </div>
+  );
+};
 
 const ConfigureStep: React.FC<{
   wf: NewRunWorkflowDef;
