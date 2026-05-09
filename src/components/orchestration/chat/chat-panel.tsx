@@ -536,6 +536,109 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const setShowSettings = (v: boolean) => updateTab(active.id, { showSettings: v });
   const setCustomPrompt = (v: string) => updateTab(active.id, { customPrompt: v });
 
+  /**
+   * Send a literal text string as a synthetic user turn. Used by the
+   * Plan/Action/Question/Suggestion markers in the assistant's reply to
+   * post a follow-up message back to the agent in response to a click
+   * (e.g. "Run as coordinator" => sends "Execute the plan above…").
+   */
+  const sendText = async (text: string) => {
+    if (!text.trim() || active.sending) return;
+    const tabId = active.id;
+    const userMsg = { role: "user" as const, text } as ChatMessage;
+    updateTab(tabId, {
+      sending: true,
+      streamingText: "",
+      messages: [...active.messages, userMsg],
+    });
+    const meta = { mode: active.mode, profile: active.profile, model: active.model };
+    try {
+      if (active.session.sendStream) {
+        await active.session.sendStream(text, meta, (delta) => {
+          setTabs((ts) =>
+            ts.map((t) => (t.id === tabId ? { ...t, streamingText: t.streamingText + delta } : t)),
+          );
+        });
+        setTabs((ts) =>
+          ts.map((t) =>
+            t.id === tabId
+              ? {
+                  ...t,
+                  sending: false,
+                  messages: [...t.messages, { role: "assistant", text: t.streamingText, meta } as ChatMessage],
+                  streamingText: "",
+                }
+              : t,
+          ),
+        );
+      } else {
+        const reply = await active.session.send(text, meta);
+        setTabs((ts) =>
+          ts.map((t) =>
+            t.id === tabId ? { ...t, sending: false, messages: [...t.messages, reply] } : t,
+          ),
+        );
+      }
+    } catch (err) {
+      setTabs((ts) =>
+        ts.map((t) =>
+          t.id === tabId
+            ? {
+                ...t,
+                sending: false,
+                streamingText: "",
+                messages: [
+                  ...t.messages,
+                  {
+                    role: "assistant",
+                    text: `Failed to reach the orchestrator: ${err instanceof Error ? err.message : String(err)}`,
+                    meta,
+                  } as ChatMessage,
+                ],
+              }
+            : t,
+        ),
+      );
+    }
+  };
+
+  // ── Response action callbacks ────────────────────────────────────
+  // Markers in the assistant's reply (Plan, Actions, Question, Suggestion)
+  // post follow-up text on click. The agent picks up the new user turn
+  // through the same SSE pipeline and decides what to do next.
+  const onPlanRun = (plan: { title?: string; steps: { title: string }[]; planId?: string }) => {
+    const stepList = plan.steps.map((s, i) => `${i + 1}. ${s.title}`).join("\n");
+    void sendText(
+      `Execute this plan as the coordinator. Use the run lifecycle tools (create_run, run_phases) to dispatch the work, and report progress with tool cards as you go.\n\nPlan: ${plan.title ?? "(untitled)"}\n${stepList}`,
+    );
+  };
+  const onPlanRefine = (plan: { title?: string }) => {
+    void sendText(`Refine the plan "${plan.title ?? "(untitled)"}" — what would you adjust before running it?`);
+  };
+  const onAction = (a: { id: string; label: string; payload?: unknown }) => {
+    if (a.id === "run-plan") {
+      void sendText("Execute the plan above using the orchestration tools.");
+    } else if (a.id === "refine") {
+      void sendText("Walk me through how you'd refine the plan above.");
+    } else if (a.id === "cancel") {
+      void sendText("Cancel that — let's go a different direction.");
+    } else {
+      void sendText(`[${a.label}]`);
+    }
+  };
+  const onQuestionAnswer = (answer: string, label: string) => {
+    void sendText(label === answer ? answer : `${label} (${answer})`);
+  };
+  const onSuggest = (s: string) => {
+    void sendText(s);
+  };
+  const onHitmApprove = (phaseId: string) => {
+    void sendText(`Approve phase ${phaseId} — call approve_phase_hitm with approved=true.`);
+  };
+  const onHitmReject = (phaseId: string) => {
+    void sendText(`Reject phase ${phaseId} — call approve_phase_hitm with approved=false and a reason.`);
+  };
+
   const send = async () => {
     if ((!active.input.trim() && active.pendingAttachments.length === 0) || active.sending) return;
     const text = active.input;
@@ -1367,7 +1470,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               }
             >
               <MessageContent from="assistant">
-                <Response>{m.text}</Response>
+                <Response
+                  onPlanRun={onPlanRun}
+                  onPlanRefine={onPlanRefine}
+                  onAction={onAction}
+                  onQuestionAnswer={onQuestionAnswer}
+                  onSuggest={onSuggest}
+                  onHitmApprove={onHitmApprove}
+                  onHitmReject={onHitmReject}
+                >
+                  {m.text}
+                </Response>
               </MessageContent>
             </Message>
           );
@@ -1403,7 +1516,18 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             }
           >
             <MessageContent from="assistant">
-              <Response streaming>{active.streamingText}</Response>
+              <Response
+                streaming
+                onPlanRun={onPlanRun}
+                onPlanRefine={onPlanRefine}
+                onAction={onAction}
+                onQuestionAnswer={onQuestionAnswer}
+                onSuggest={onSuggest}
+                onHitmApprove={onHitmApprove}
+                onHitmReject={onHitmReject}
+              >
+                {active.streamingText}
+              </Response>
             </MessageContent>
           </Message>
         )}

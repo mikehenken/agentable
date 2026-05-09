@@ -28,7 +28,11 @@ export {
   PlanMarker,
   ConfirmationMarker,
   SourcesMarker,
+  ActionsMarker,
+  QuestionMarker,
+  SuggestionMarker,
 } from "./markers";
+export type { PlanData } from "./markers";
 
 export { parseMarkers } from "./parse-markers";
 export type { Block, MarkerKind, MarkerBlock, TextBlock } from "./parse-markers";

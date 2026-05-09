@@ -209,12 +209,20 @@ export const ReasoningMarker: React.FC<{ block: MarkerBlock }> = ({ block }) => 
 
 // ── Plan ────────────────────────────────────────────────────────────
 type PlanStep = { title: string; status?: "pending" | "in-progress" | "done"; detail?: string };
-export const PlanMarker: React.FC<{ block: MarkerBlock }> = ({ block }) => {
+export interface PlanData { title?: string; steps: PlanStep[]; planId?: string }
+
+export const PlanMarker: React.FC<{
+  block: MarkerBlock;
+  onRun?: (plan: PlanData) => void;
+  onRefine?: (plan: PlanData) => void;
+}> = ({ block, onRun, onRefine }) => {
   let title = "Plan";
+  let planId: string | undefined;
   let steps: PlanStep[] = [];
   if (block.json && typeof block.json === "object" && !Array.isArray(block.json)) {
-    const obj = block.json as { title?: string; steps?: PlanStep[] };
+    const obj = block.json as { title?: string; steps?: PlanStep[]; planId?: string };
     if (obj.title) title = obj.title;
+    if (obj.planId) planId = obj.planId;
     if (Array.isArray(obj.steps)) steps = obj.steps;
   } else if (Array.isArray(block.json)) {
     steps = block.json as PlanStep[];
@@ -242,6 +250,7 @@ export const PlanMarker: React.FC<{ block: MarkerBlock }> = ({ block }) => {
       : s === "in-progress"
         ? "var(--accent-fg)"
         : "var(--fg-faint)";
+  const planData: PlanData = { title, steps, planId };
   return (
     <Card
       icon="board"
@@ -275,7 +284,207 @@ export const PlanMarker: React.FC<{ block: MarkerBlock }> = ({ block }) => {
           </li>
         ))}
       </ol>
+      {(onRun || onRefine) && steps.length > 0 && (
+        <div style={{ display: "flex", gap: 6, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border-subtle)" }}>
+          {onRun && (
+            <button
+              onClick={() => onRun(planData)}
+              style={{
+                padding: "5px 12px",
+                borderRadius: 5,
+                background: "var(--accent)",
+                color: "var(--fg-on-accent)",
+                fontSize: 12,
+                fontWeight: 500,
+                border: 0,
+                cursor: "pointer",
+              }}
+            >
+              Run as coordinator
+            </button>
+          )}
+          {onRefine && (
+            <button
+              onClick={() => onRefine(planData)}
+              style={{
+                padding: "5px 12px",
+                borderRadius: 5,
+                background: "transparent",
+                border: "1px solid var(--border-base)",
+                color: "var(--fg-muted)",
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              Refine
+            </button>
+          )}
+        </div>
+      )}
     </Card>
+  );
+};
+
+// ── Actions ─────────────────────────────────────────────────────────
+type ActionItem = { label: string; id: string; style?: "primary" | "ghost" | "warn"; payload?: unknown };
+export const ActionsMarker: React.FC<{
+  block: MarkerBlock;
+  onAction?: (action: ActionItem) => void;
+}> = ({ block, onAction }) => {
+  let items: ActionItem[] = [];
+  if (Array.isArray(block.json)) items = block.json as ActionItem[];
+  else if (block.json && typeof block.json === "object" && Array.isArray((block.json as Record<string, unknown>).actions)) {
+    items = (block.json as { actions: ActionItem[] }).actions;
+  }
+  if (items.length === 0) return null;
+  const styleFor = (s?: string): React.CSSProperties => {
+    if (s === "primary")
+      return {
+        background: "var(--accent)",
+        color: "var(--fg-on-accent)",
+        border: 0,
+      };
+    if (s === "warn")
+      return {
+        background: "var(--warn)",
+        color: "var(--fg-on-accent)",
+        border: 0,
+      };
+    return {
+      background: "transparent",
+      color: "var(--fg-strong)",
+      border: "1px solid var(--border-base)",
+    };
+  };
+  return (
+    <div style={{ margin: "10px 0", display: "flex", flexWrap: "wrap", gap: 6 }}>
+      {items.map((a, i) => (
+        <button
+          key={i}
+          onClick={() => onAction?.(a)}
+          disabled={!onAction}
+          style={{
+            padding: "5px 12px",
+            borderRadius: 5,
+            fontSize: 12,
+            fontWeight: 500,
+            cursor: onAction ? "pointer" : "default",
+            opacity: onAction ? 1 : 0.6,
+            ...styleFor(a.style),
+          }}
+        >
+          {a.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// ── Question (model asks user to pick) ───────────────────────────────
+type QuestionOption = { label: string; value: string };
+export const QuestionMarker: React.FC<{
+  block: MarkerBlock;
+  onAnswer?: (answer: string, label: string) => void;
+}> = ({ block, onAnswer }) => {
+  const json = (block.json ?? {}) as { prompt?: string; options?: QuestionOption[]; allow_freeform?: boolean };
+  const prompt = json.prompt ?? block.body.split("\n")[0] ?? "Pick one";
+  const options = Array.isArray(json.options) ? json.options : [];
+  const [free, setFree] = React.useState("");
+  return (
+    <div
+      style={{
+        margin: "8px 0",
+        padding: "10px 12px",
+        background: "var(--bg-panel)",
+        border: "1px solid var(--border-subtle)",
+        borderLeft: "2px solid var(--accent)",
+        borderRadius: 8,
+      }}
+    >
+      <div style={{ fontWeight: 500, fontSize: 13, color: "var(--fg-strong)", marginBottom: 8 }}>{prompt}</div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {options.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => onAnswer?.(opt.value, opt.label)}
+            disabled={!onAnswer}
+            style={{
+              padding: "5px 12px",
+              borderRadius: 5,
+              fontSize: 12,
+              border: "1px solid var(--border-base)",
+              background: "var(--bg-sunken)",
+              color: "var(--fg-strong)",
+              cursor: onAnswer ? "pointer" : "default",
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+      {json.allow_freeform && (
+        <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+          <input
+            value={free}
+            onChange={(e) => setFree(e.target.value)}
+            placeholder="Or type your own…"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && free.trim() && onAnswer) {
+                onAnswer(free.trim(), free.trim());
+                setFree("");
+              }
+            }}
+            style={{
+              flex: 1,
+              padding: "5px 8px",
+              borderRadius: 5,
+              border: "1px solid var(--border-base)",
+              background: "var(--bg-sunken)",
+              color: "var(--fg-base)",
+              fontSize: 12,
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Suggestion (clickable prompt suggestions) ────────────────────────
+export const SuggestionMarker: React.FC<{
+  block: MarkerBlock;
+  onSuggest?: (suggestion: string) => void;
+}> = ({ block, onSuggest }) => {
+  let items: string[] = [];
+  if (Array.isArray(block.json)) {
+    items = (block.json as unknown[]).map((s) => String(s));
+  } else if (block.json && typeof block.json === "object" && Array.isArray((block.json as Record<string, unknown>).suggestions)) {
+    items = (block.json as { suggestions: unknown[] }).suggestions.map((s) => String(s));
+  } else {
+    items = block.body.split(/\n+/).map((s) => s.trim().replace(/^[-*]\s*/, "")).filter(Boolean);
+  }
+  if (items.length === 0) return null;
+  return (
+    <div style={{ margin: "8px 0", display: "flex", flexWrap: "wrap", gap: 6 }}>
+      {items.map((s, i) => (
+        <button
+          key={i}
+          onClick={() => onSuggest?.(s)}
+          disabled={!onSuggest}
+          style={{
+            padding: "4px 10px",
+            borderRadius: 999,
+            fontSize: 12,
+            border: "1px solid var(--border-base)",
+            background: "var(--bg-sunken)",
+            color: "var(--fg-muted)",
+            cursor: onSuggest ? "pointer" : "default",
+          }}
+        >
+          {s}
+        </button>
+      ))}
+    </div>
   );
 };
 

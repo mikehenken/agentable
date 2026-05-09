@@ -8,6 +8,10 @@ import {
   PlanMarker,
   ConfirmationMarker,
   SourcesMarker,
+  ActionsMarker,
+  QuestionMarker,
+  SuggestionMarker,
+  type PlanData,
 } from "./markers";
 
 export interface ResponseProps {
@@ -15,10 +19,20 @@ export interface ResponseProps {
   children: string;
   /** Whether the text is still streaming — hints to Streamdown. */
   streaming?: boolean;
-  /** Called when the user clicks "Approve" inside an HITM confirmation marker. */
+  /** HITM confirmation: "Approve" inside a `hitm-confirm` fence. */
   onHitmApprove?: (phaseId: string) => void;
   /** Optional reject handler — when omitted, the reject button is hidden. */
   onHitmReject?: (phaseId: string) => void;
+  /** Plan execution: clicked "Run as coordinator" on a `plan` fence. */
+  onPlanRun?: (plan: PlanData) => void;
+  /** Plan refine: clicked "Refine" on a `plan` fence. */
+  onPlanRefine?: (plan: PlanData) => void;
+  /** Action buttons in `actions` fence. */
+  onAction?: (action: { id: string; label: string; payload?: unknown }) => void;
+  /** User picked an option in a `question` fence. */
+  onQuestionAnswer?: (answer: string, label: string) => void;
+  /** User clicked a chip in a `suggestion` fence. */
+  onSuggest?: (suggestion: string) => void;
 }
 
 /**
@@ -34,7 +48,17 @@ export interface ResponseProps {
  * The renderer is safe to call on every keystroke during a stream —
  * the parser is lightweight and Streamdown is memoized internally.
  */
-export const Response: React.FC<ResponseProps> = ({ children, streaming, onHitmApprove, onHitmReject }) => {
+export const Response: React.FC<ResponseProps> = ({
+  children,
+  streaming,
+  onHitmApprove,
+  onHitmReject,
+  onPlanRun,
+  onPlanRefine,
+  onAction,
+  onQuestionAnswer,
+  onSuggest,
+}) => {
   const blocks = React.useMemo(() => parseMarkers(children), [children]);
 
   return (
@@ -89,8 +113,17 @@ export const Response: React.FC<ResponseProps> = ({ children, streaming, onHitmA
           font-size: 11.5px;
           line-height: 1.55;
           color: var(--code-fg);
+          white-space: pre;
+          tab-size: 2;
         }
-        .ui-ai-response pre code { background: transparent; padding: 0; }
+        .ui-ai-response pre code { background: transparent; padding: 0; display: block; }
+        /* Streamdown emits each rendered line as <span class="block">…</span>;
+           in a host without Tailwind, "block" has no effect, so all line spans
+           collapse onto a single line. Force display:block on direct line spans
+           and keep token spans inline. */
+        .ui-ai-response pre code > span { display: block; }
+        .ui-ai-response pre code > span > span { display: inline; }
+        .ui-ai-response pre code .line { display: block; }
         .ui-ai-response blockquote {
           margin: 8px 0;
           padding: 4px 12px;
@@ -128,7 +161,19 @@ export const Response: React.FC<ResponseProps> = ({ children, streaming, onHitmA
             </Streamdown>
           );
         }
-        return <Marker key={i} block={b} onApprove={onHitmApprove} onReject={onHitmReject} />;
+        return (
+          <Marker
+            key={i}
+            block={b}
+            onApprove={onHitmApprove}
+            onReject={onHitmReject}
+            onPlanRun={onPlanRun}
+            onPlanRefine={onPlanRefine}
+            onAction={onAction}
+            onQuestionAnswer={onQuestionAnswer}
+            onSuggest={onSuggest}
+          />
+        );
       })}
     </div>
   );
@@ -145,7 +190,12 @@ const Marker: React.FC<{
   block: MarkerBlock;
   onApprove?: (phaseId: string) => void;
   onReject?: (phaseId: string) => void;
-}> = ({ block, onApprove, onReject }) => {
+  onPlanRun?: (plan: PlanData) => void;
+  onPlanRefine?: (plan: PlanData) => void;
+  onAction?: (action: { id: string; label: string; payload?: unknown }) => void;
+  onQuestionAnswer?: (answer: string, label: string) => void;
+  onSuggest?: (suggestion: string) => void;
+}> = ({ block, onApprove, onReject, onPlanRun, onPlanRefine, onAction, onQuestionAnswer, onSuggest }) => {
   switch (block.kind) {
     case "tool":
       return <ToolMarker block={block} />;
@@ -154,11 +204,17 @@ const Marker: React.FC<{
     case "reasoning":
       return <ReasoningMarker block={block} />;
     case "plan":
-      return <PlanMarker block={block} />;
+      return <PlanMarker block={block} onRun={onPlanRun} onRefine={onPlanRefine} />;
     case "hitm-confirm":
       return <ConfirmationMarker block={block} onApprove={onApprove} onReject={onReject} />;
     case "sources":
       return <SourcesMarker block={block} />;
+    case "actions":
+      return <ActionsMarker block={block} onAction={onAction} />;
+    case "question":
+      return <QuestionMarker block={block} onAnswer={onQuestionAnswer} />;
+    case "suggestion":
+      return <SuggestionMarker block={block} onSuggest={onSuggest} />;
     default:
       return null;
   }

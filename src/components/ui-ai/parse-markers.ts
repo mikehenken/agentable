@@ -34,7 +34,10 @@ export type MarkerKind =
   | "reasoning"
   | "plan"
   | "hitm-confirm"
-  | "sources";
+  | "sources"
+  | "actions"
+  | "question"
+  | "suggestion";
 
 const MARKER_NAMES: readonly MarkerKind[] = [
   "tool",
@@ -43,6 +46,9 @@ const MARKER_NAMES: readonly MarkerKind[] = [
   "plan",
   "hitm-confirm",
   "sources",
+  "actions",
+  "question",
+  "suggestion",
 ];
 
 export interface TextBlock {
