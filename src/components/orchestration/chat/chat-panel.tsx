@@ -554,22 +554,25 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     const meta = { mode: active.mode, profile: active.profile, model: active.model };
     try {
       if (active.session.sendStream) {
-        await active.session.sendStream(text, meta, (delta) => {
+        const result = await active.session.sendStream(text, meta, (delta) => {
           setTabs((ts) =>
             ts.map((t) => (t.id === tabId ? { ...t, streamingText: t.streamingText + delta } : t)),
           );
         });
         setTabs((ts) =>
-          ts.map((t) =>
-            t.id === tabId
-              ? {
-                  ...t,
-                  sending: false,
-                  messages: [...t.messages, { role: "assistant", text: t.streamingText, meta } as ChatMessage],
-                  streamingText: "",
-                }
-              : t,
-          ),
+          ts.map((t) => {
+            if (t.id !== tabId) return t;
+            const finalText = result?.text && result.text.length > 0 ? result.text : t.streamingText;
+            return {
+              ...t,
+              sending: false,
+              messages: [
+                ...t.messages,
+                { role: "assistant", text: finalText, meta: result?.meta ?? meta } as ChatMessage,
+              ],
+              streamingText: "",
+            };
+          }),
         );
       } else {
         const reply = await active.session.send(text, meta);
@@ -668,28 +671,32 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       // renderer in the message list reads that field for the
       // last-message-on-the-fly view.
       if (active.session.sendStream) {
-        await active.session.sendStream(text, meta, (delta) => {
+        const result = await active.session.sendStream(text, meta, (delta) => {
           setTabs((ts) =>
             ts.map((t) => (t.id === tabId ? { ...t, streamingText: t.streamingText + delta } : t)),
           );
         });
-        // On stream done, fold the accumulator into a real assistant
-        // ChatMessage so it persists in the history list and clears
-        // the live "streaming" view.
+        // On stream done, persist the assistant turn from the adapter's
+        // returned ChatMessage rather than the streamed accumulator.
+        // The adapter returns the canonical (worker-cleaned) text — for
+        // models with leaky tool-call protocols (kimi, llama) this is
+        // the cleaned-up reply, while the streamed deltas may have
+        // carried leak garbage briefly. Falling back to streamingText
+        // when the adapter returns no text keeps older adapters working.
         setTabs((ts) =>
-          ts.map((t) =>
-            t.id === tabId
-              ? {
-                  ...t,
-                  sending: false,
-                  messages: [
-                    ...t.messages,
-                    { role: "assistant", text: t.streamingText, meta } as ChatMessage,
-                  ],
-                  streamingText: "",
-                }
-              : t,
-          ),
+          ts.map((t) => {
+            if (t.id !== tabId) return t;
+            const finalText = result?.text && result.text.length > 0 ? result.text : t.streamingText;
+            return {
+              ...t,
+              sending: false,
+              messages: [
+                ...t.messages,
+                { role: "assistant", text: finalText, meta: result?.meta ?? meta } as ChatMessage,
+              ],
+              streamingText: "",
+            };
+          }),
         );
       } else {
         const reply = await active.session.send(text, meta);
