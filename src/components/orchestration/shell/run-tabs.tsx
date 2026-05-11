@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Icon, type IconName } from "../../general";
 
-export type RunTabId = "feed" | "overview" | "workflow" | "artifacts" | "logs" | "config";
+export type RunTabId = "overview" | "events" | "workflow" | "artifacts" | "logs" | "config";
 
 export interface RunTabsProps {
   active: RunTabId;
@@ -12,8 +12,8 @@ export interface RunTabsProps {
 }
 
 const TABS: { id: RunTabId; label: string; icon: IconName }[] = [
-  { id: "feed", label: "Live feed", icon: "logs" },
   { id: "overview", label: "Overview", icon: "overview" },
+  { id: "events", label: "Events", icon: "logs" },
   { id: "workflow", label: "Workflow", icon: "board" },
   { id: "artifacts", label: "Artifacts", icon: "artifact" },
   { id: "logs", label: "Logs", icon: "logs" },
