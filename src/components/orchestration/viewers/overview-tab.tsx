@@ -75,7 +75,7 @@ export interface RunOverviewState {
   /** All artifacts (R2 keys). Rendered as a collapsible bulk list. */
   artifacts?: OverviewArtifact[];
   /** Completion-gates summary as returned by get_completion_gates. */
-  gates?: unknown;
+  gates?: Record<string, unknown> | null;
   /** External resources — links to dashboards, repos, docs. */
   resources?: Array<{ label: string; href: string; note?: string }>;
   /** HITM stops defined in the workflow YAML + their current state. */
