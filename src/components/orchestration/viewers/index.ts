@@ -11,7 +11,14 @@ export { SourceViewer } from "./source-viewer";
 export { RawArtifactViewer } from "./raw-artifact-viewer";
 export type { RawArtifactViewerProps, RawArtifactBody } from "./raw-artifact-viewer";
 export { OverviewTab } from "./overview-tab";
-export type { OverviewTabProps, AgentTimelineEntry } from "./overview-tab";
+export type {
+  OverviewTabProps,
+  AgentTimelineEntry,
+  RunOverviewState,
+  OverviewPhaseRow,
+  OverviewInput,
+  OverviewArtifact,
+} from "./overview-tab";
 export { LogsTab } from "./logs-tab";
 export type { LogsTabProps, LogLine } from "./logs-tab";
 export { ConfigTab } from "./config-tab";
