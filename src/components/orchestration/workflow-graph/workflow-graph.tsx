@@ -1,5 +1,16 @@
 import * as React from "react";
-import type { Board, BoardNode, BoardPhase, BoardBay, EdgeOpts } from "../types";
+import type { Board, BoardNode, BoardPhase, BoardBay, EdgeOpts, PhaseStatus } from "../types";
+
+const STATUS_COLORS: Record<PhaseStatus, { bar: string; bg: string; label: string; emoji: string }> = {
+  completed:     { bar: "var(--positive)",  bg: "color-mix(in oklab, var(--positive) 6%, transparent)", label: "Complete",  emoji: "✓" },
+  running:       { bar: "var(--accent)",    bg: "color-mix(in oklab, var(--accent) 6%, transparent)",   label: "Running",   emoji: "●" },
+  failed:        { bar: "var(--negative)",  bg: "color-mix(in oklab, var(--negative) 6%, transparent)", label: "Failed",    emoji: "✗" },
+  awaiting_hitm: { bar: "var(--warn)",      bg: "color-mix(in oklab, var(--warn) 6%, transparent)",     label: "Awaiting",  emoji: "⏸" },
+  paused:        { bar: "var(--warn)",      bg: "color-mix(in oklab, var(--warn) 4%, transparent)",     label: "Paused",    emoji: "⏸" },
+  cancelled:     { bar: "var(--fg-faint)",  bg: "transparent",                                          label: "Cancelled", emoji: "—" },
+  not_started:   { bar: "var(--fg-ghost)",  bg: "transparent",                                          label: "Pending",   emoji: "○" },
+  pending:       { bar: "var(--fg-ghost)",  bg: "transparent",                                          label: "Pending",   emoji: "○" },
+};
 
 const EMOJI: Record<string, string> = {
   trigger: "▶️",
@@ -92,8 +103,10 @@ interface NodeProps {
 const Node: React.FC<NodeProps> = ({ node, isHover, isActive, onClick, onHover }) => {
   const isCard = node.kind === "artifact-card";
   const clickable = !!node.artifact || !!node.link;
-  const ringTone =
-    node.kind === "decision" || node.kind === "wait" || node.kind === "human"
+  const sc = node.status ? STATUS_COLORS[node.status] : null;
+  const ringTone = sc
+    ? sc.bar
+    : node.kind === "decision" || node.kind === "wait" || node.kind === "human"
       ? "var(--warn)"
       : node.kind === "emit" || node.kind === "downstream"
         ? "var(--positive)"
@@ -112,7 +125,7 @@ const Node: React.FC<NodeProps> = ({ node, isHover, isActive, onClick, onHover }
         top: node.y,
         width: node.w,
         height: node.h,
-        background: "var(--bg-panel)",
+        background: sc ? sc.bg : "var(--bg-panel)",
         border: `1px solid ${isActive ? "var(--accent)" : "var(--border-subtle)"}`,
         borderRadius: isCard ? 6 : 8,
         padding: isCard ? "8px 10px" : "10px 12px",
@@ -179,6 +192,24 @@ const Node: React.FC<NodeProps> = ({ node, isHover, isActive, onClick, onHover }
               }}
             >
               open
+            </span>
+          )}
+          {sc && (
+            <span
+              title={sc.label}
+              style={{
+                fontSize: 9.5,
+                fontWeight: 500,
+                padding: "1px 6px",
+                borderRadius: 10,
+                color: sc.bar,
+                background: sc.bg,
+                flexShrink: 0,
+                fontFamily: "var(--font-mono)",
+                letterSpacing: ".02em",
+              }}
+            >
+              {sc.emoji} {sc.label}
             </span>
           )}
         </div>

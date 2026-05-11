@@ -18,3 +18,5 @@ export { ConfigTab } from "./config-tab";
 export type { ConfigTabProps } from "./config-tab";
 export { WorkflowTab } from "./workflow-tab";
 export type { WorkflowTabProps } from "./workflow-tab";
+export { LiveFeedTab } from "./live-feed-tab";
+export type { LiveFeedTabProps, FeedEvent } from "./live-feed-tab";

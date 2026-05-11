@@ -217,6 +217,16 @@ export interface WorkflowDef {
   runs: number | string;
 }
 
+export type PhaseStatus =
+  | "completed"
+  | "running"
+  | "failed"
+  | "awaiting_hitm"
+  | "paused"
+  | "cancelled"
+  | "not_started"
+  | "pending";
+
 export interface BoardNode {
   id: string;
   kind: string;
@@ -230,6 +240,8 @@ export interface BoardNode {
   detail?: string;
   artifact?: string;
   link?: string;
+  /** Live phase status — colors the node when present. */
+  status?: PhaseStatus;
 }
 
 export interface BoardPhase {
