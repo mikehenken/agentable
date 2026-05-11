@@ -27,7 +27,15 @@ export interface Run {
   id: string;
   name: string;
   status: RunStatus;
+  /** ISO timestamp when state.json was created, or the chat session ts
+   *  when no state.json (chat-scoped runs). May be null for legacy runs. */
   startedAt?: string;
+  /** ISO timestamp of last state.json mutation. Used for "last updated"
+   *  sort and display. Defaults to startedAt when no updates yet. */
+  updatedAt?: string;
+  /** Workflow this run is bound to (from state.json.workflowName).
+   *  Null for chat-scoped runs and legacy runs without state.json. */
+  workflowName?: string | null;
   durationMin?: number;
   iteration?: number;
   score?: number | null;

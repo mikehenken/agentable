@@ -10,6 +10,19 @@ const COLLAPSED_WIDTH = 36;
 const PICK_EMOJI = ["🏢", "🌐", "🛰️", "🧭", "🔬", "🪴", "📊", "🛒", "🚚", "🏗️", "🎯", "🧱"];
 const PROJECT_EMOJI = "📁";
 
+/**
+ * Compact run timestamp for the rail: `MM/DD/YY HH:MM`.
+ * Returns "" for invalid / missing input so the caller can choose to
+ * render nothing instead of a fallback.
+ */
+function formatRunStamp(iso: string | undefined | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const p2 = (n: number) => n.toString().padStart(2, "0");
+  return `${p2(d.getMonth() + 1)}/${p2(d.getDate())}/${String(d.getFullYear()).slice(-2)} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+}
+
 interface InlineCreateValue {
   name: string;
   tag?: string;
@@ -1002,9 +1015,24 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                                   textOverflow: "ellipsis",
                                   whiteSpace: "nowrap",
                                 }}
+                                title={r.updatedAt ? new Date(r.updatedAt).toLocaleString() : r.name}
                               >
                                 {r.name}
                               </span>
+                              {r.updatedAt && (
+                                <span
+                                  style={{
+                                    fontFamily: "var(--font-mono)",
+                                    fontSize: 10,
+                                    color: "var(--fg-ghost)",
+                                    flexShrink: 0,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                  title={new Date(r.updatedAt).toLocaleString()}
+                                >
+                                  {formatRunStamp(r.updatedAt)}
+                                </span>
+                              )}
                               {r.status === "complete" && r.verdict === "PASS" && (
                                 <Icon name="check" size={12} style={{ color: "var(--positive)", flexShrink: 0 }} />
                               )}
