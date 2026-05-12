@@ -6,3 +6,5 @@ export { RunTabs } from "./run-tabs";
 export type { RunTabsProps, RunTabId } from "./run-tabs";
 export { ArtifactTabs } from "./artifact-tabs";
 export type { ArtifactTabsProps } from "./artifact-tabs";
+export { ArtifactTree } from "./artifact-tree";
+export type { ArtifactTreeProps } from "./artifact-tree";
