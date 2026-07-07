@@ -39,6 +39,7 @@ import {
   type WhiteboardPanelRegistry,
 } from './shapes/whiteboardPanelRegistry';
 import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
+import { minimalTldrawUiComponents } from './minimalTldrawUiComponents';
 import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
 
 /** @deprecated Use `infinite-panels`. */
@@ -195,6 +196,7 @@ function WhiteboardShellInner({
         >
           <Tldraw
             hideUi={false}
+            components={minimalTldrawUiComponents}
             persistenceKey={persistenceKey}
             shapeUtils={shapeUtils}
             user={tldrawUser}
@@ -266,6 +268,7 @@ function SplitColumnLayout({
       >
         <Tldraw
           hideUi={false}
+          components={minimalTldrawUiComponents}
           persistenceKey={persistenceKey}
           shapeUtils={shapeUtils}
           user={tldrawUser}
