@@ -90,7 +90,6 @@ export {
 // reach into `shapes/`.
 export { PanelShapeUtil, createPanelShapeUtil, type PanelShape } from './shapes/PanelShape';
 
-export { CopilotKitBridge, type CopilotKitBridgeProps } from '../canvas/protocol/copilotkit-bridge';
 export {
   AG_UI_STATE_PATCH_EVENT,
   emitAgUiStatePatch,
