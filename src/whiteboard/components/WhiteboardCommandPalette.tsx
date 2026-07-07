@@ -2,8 +2,8 @@
  * WhiteboardCommandPalette — Cmd/Ctrl+P and Alt+P command surface for the whiteboard.
  */
 import { useCallback, useMemo, useState, type ReactElement } from 'react';
-import { CommandPalette, type CommandItem } from '../components/general/command-palette';
-import { useKeybindings } from '../components/general/use-keybindings';
+import { CommandPalette, type CommandItem } from '../../components/general/command-palette';
+import { useKeybindings } from '../../components/general/use-keybindings';
 import {
   WHITEBOARD_PALETTE_ENTITIES,
   useFrameContextStore,
