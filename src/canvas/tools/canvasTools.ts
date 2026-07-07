@@ -40,39 +40,14 @@ import {
  * Keep `parameters.type` as `'object'` — Gemini Live rejects top-level
  * schemas of any other type.
  */
-export interface ToolDeclaration {
-  name: string;
-  description: string;
-  parameters: {
-    type: 'object';
-    properties: Record<string, ToolParameterSchema>;
-    required?: string[];
-  };
-}
+import { emitAgUiStatePatch } from '../protocol/ag-ui';
+import {
+  LANDI_CANVAS_TOOL_ALLOWLIST,
+  LANDI_CANVAS_TOOLS,
+} from './landiCanvasTools';
+import type { ToolDeclaration, ToolDefinition, ToolHandler, ToolResult } from './canvasToolTypes';
 
-export interface ToolParameterSchema {
-  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
-  description?: string;
-  enum?: readonly string[];
-  items?: ToolParameterSchema;
-}
-
-/**
- * Result of a tool execution. Strings are returned directly to the agent
- * as `functionResponse.response.result`. Errors are surfaced as
- * `{ error: string }` so the agent can recover ("I tried that but…")
- * instead of silently dropping the call.
- */
-export type ToolResult =
-  | { ok: true; result: unknown }
-  | { ok: false; error: string };
-
-export type ToolHandler = (args: Record<string, unknown>) => ToolResult | Promise<ToolResult>;
-
-export interface ToolDefinition {
-  declaration: ToolDeclaration;
-  handler: ToolHandler;
-}
+export type { ToolDeclaration, ToolDefinition, ToolHandler, ToolParameterSchema, ToolResult } from './canvasToolTypes';
 
 const KNOWN_PANELS: readonly PanelId[] = [
   'nav', 'chat', 'artifacts',
@@ -426,12 +401,28 @@ export const CANVAS_TOOLS: readonly ToolDefinition[] = [
   },
 ] as const;
 
+let activeTenantId: string | null = null;
+
+/** Host apps call once when mounting CanvasProvider (e.g. landi-canvas-studio). */
+export function setCanvasToolsTenant(tenantId: string | null): void {
+  activeTenantId = tenantId;
+}
+
+function resolveActiveTools(): readonly ToolDefinition[] {
+  const merged: ToolDefinition[] = [...CANVAS_TOOLS, ...LANDI_CANVAS_TOOLS];
+  if (activeTenantId === 'landi-canvas-studio') {
+    const allow = new Set<string>(LANDI_CANVAS_TOOL_ALLOWLIST);
+    return merged.filter((tool) => allow.has(tool.declaration.name));
+  }
+  return merged;
+}
+
 /**
  * Lookup helper. Tools are flat (no namespaces yet) so the registry is
  * keyed on `declaration.name` directly.
  */
 export function getTool(name: string): ToolDefinition | undefined {
-  return CANVAS_TOOLS.find((t) => t.declaration.name === name);
+  return resolveActiveTools().find((t) => t.declaration.name === name);
 }
 
 /**
@@ -448,7 +439,14 @@ export async function executeTool(
     return { ok: false, error: `unknown tool "${name}"` };
   }
   try {
-    return await tool.handler(args ?? {});
+    const result = await tool.handler(args ?? {});
+    if (result.ok) {
+      emitAgUiStatePatch(
+        [{ op: 'replace', path: `/tools/${name}/lastResult`, value: result.result }],
+        { source: 'tool', toolName: name },
+      );
+    }
+    return result;
   } catch (err) {
     return { ok: false, error: `${name} threw: ${(err as Error).message}` };
   }
@@ -459,5 +457,5 @@ export async function executeTool(
  * AND Gemini text `tools[0].functionDeclarations`.
  */
 export function getFunctionDeclarations(): ToolDeclaration[] {
-  return CANVAS_TOOLS.map((t) => t.declaration);
+  return resolveActiveTools().map((t) => t.declaration);
 }

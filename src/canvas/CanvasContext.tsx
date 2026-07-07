@@ -20,7 +20,8 @@
  * still work out-of-the-box (with a no-op/demo persona) before a tenant
  * supplies one.
  */
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
+import { setCanvasToolsTenant } from './tools/canvasTools';
 
 /** Single starter-prompt chip rendered in the empty-state ChatPanel. */
 export interface CanvasStarterPrompt {
@@ -263,6 +264,10 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
       pdFeaturedResource,
     ]
   );
+  useEffect(() => {
+    setCanvasToolsTenant(merged.tenant ?? null);
+    return () => setCanvasToolsTenant(null);
+  }, [merged.tenant]);
   return <CanvasContext.Provider value={merged}>{children}</CanvasContext.Provider>;
 }
 

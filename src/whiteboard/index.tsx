@@ -89,3 +89,16 @@ export {
 // against a custom tldraw editor instance (e.g. for tests) don't need to
 // reach into `shapes/`.
 export { PanelShapeUtil, createPanelShapeUtil, type PanelShape } from './shapes/PanelShape';
+
+export { CopilotKitBridge, type CopilotKitBridgeProps } from '../canvas/protocol/copilotkit-bridge';
+export {
+  AG_UI_STATE_PATCH_EVENT,
+  emitAgUiStatePatch,
+  type AgUiStatePatch,
+  type AgUiStatePatchEventDetail,
+} from '../canvas/protocol/ag-ui';
+export {
+  CANVAS_ACTION_EVENT,
+  CANVAS_ACTION_RESPONSE_EVENT,
+  CANVAS_OPEN_FILE_MANAGER_EVENT,
+} from '../canvas/tools/landiCanvasTools';
