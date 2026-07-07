@@ -53,7 +53,7 @@ changelog:
 
 1. Checkout `main`
 2. Run **lint**, **typecheck**, and **unit tests** (gate)
-3. Bump `package.json` version (+ `package-lock.json` when present)
+3. Bump `package.json` version (lockfile updated when present)
 4. Commit `[release] vX.Y.Z`
 5. Create and push git tag `vX.Y.Z`
 6. `npm publish` to GitHub Packages
