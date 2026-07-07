@@ -1,9 +1,13 @@
 /**
- * WhiteboardCommandPalette — Cmd/Ctrl+P command surface for the whiteboard.
+ * WhiteboardCommandPalette — Cmd/Ctrl+P and Alt+P command surface for the whiteboard.
  */
-import { useCallback, useState, type ReactElement } from 'react';
+import { useCallback, useMemo, useState, type ReactElement } from 'react';
 import { CommandPalette, type CommandItem } from '../components/general/command-palette';
 import { useKeybindings } from '../components/general/use-keybindings';
+import {
+  WHITEBOARD_PALETTE_ENTITIES,
+  useFrameContextStore,
+} from '../context/frameContextStore';
 import {
   closePanelInCanvas,
   focusPanelInCanvas,
@@ -20,8 +24,30 @@ export function WhiteboardCommandPalette({
 }: WhiteboardCommandPaletteProps): ReactElement {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
+  const setActiveContextRef = useFrameContextStore((s) => s.setActiveContextRef);
+  const activeContextRef = useFrameContextStore((s) => s.activeContextRef);
+
+  const entityCommands = useMemo<CommandItem[]>(
+    () =>
+      WHITEBOARD_PALETTE_ENTITIES.map((entity) => ({
+        id: `insert-${entity.panelId}`,
+        label: `Insert ${entity.label}`,
+        group: 'Entities',
+        description: entity.id,
+        run: () => {
+          setActiveContextRef(entity.id);
+          openPanelInCanvas(entity.panelId, {
+            focus: true,
+            panelProps: { __title: entity.label, contextRef: entity.id },
+          });
+          close();
+        },
+      })),
+    [setActiveContextRef, close],
+  );
 
   const commands: CommandItem[] = [
+    ...entityCommands,
     {
       id: 'focus-chat',
       label: 'Focus chat panel',
@@ -44,20 +70,12 @@ export function WhiteboardCommandPalette({
       available: () => layout === 'infinite-panels',
     },
     {
-      id: 'focus-open-positions',
-      label: 'Open positions panel',
-      group: 'Panels',
+      id: 'clear-context',
+      label: 'Clear frame context scope',
+      group: 'Context',
+      description: activeContextRef ?? 'No active context',
       run: () => {
-        openPanelInCanvas('open-positions', { focus: true });
-        close();
-      },
-    },
-    {
-      id: 'focus-resources',
-      label: 'Resources panel',
-      group: 'Panels',
-      run: () => {
-        openPanelInCanvas('resources', { focus: true });
+        setActiveContextRef(null);
         close();
       },
     },
@@ -74,6 +92,11 @@ export function WhiteboardCommandPalette({
     {
       keys: 'mod+p',
       label: 'Command palette',
+      handler: () => setOpen((prev) => !prev),
+    },
+    {
+      keys: 'alt+p',
+      label: 'Command palette (Alt+P)',
       handler: () => setOpen((prev) => !prev),
     },
     {

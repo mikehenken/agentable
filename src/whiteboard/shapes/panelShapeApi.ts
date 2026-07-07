@@ -28,6 +28,7 @@ import {
   findNonOverlappingPosition,
   type LayoutRect,
 } from '../../canvas/panelLayoutEngine';
+import { getActiveContextRef } from '../context/frameContextStore';
 
 export interface OpenPanelOptions {
   /** After creating/updating, animate camera to the shape. Default true for tool calls. */
@@ -201,6 +202,12 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
 
   if (!existing) {
     const place = computePlacement(editor, options);
+    const contextRef =
+      (options.panelProps?.contextRef as string | undefined) ?? getActiveContextRef() ?? undefined;
+    const panelData = {
+      ...(options.panelProps ?? {}),
+      ...(contextRef ? { contextRef } : {}),
+    };
     editor.createShape({
       id,
       type: 'panel',
@@ -211,12 +218,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         h: place.h,
         panelId,
         minimized: false,
-        // Panel-specific overrides (e.g. selectedJobId) live nested under `data`
-        // because tldraw's RecordProps validator is strict — we can't spread
-        // arbitrary keys at the top level. Each panel component reads what it
-        // needs from `data`, falling back to `panelIntentStore` for shared
-        // cross-panel intents (selectedJobId, search, artifacts).
-        data: options.panelProps ?? {},
+        data: panelData,
       },
     });
   } else if (options.panelProps) {
