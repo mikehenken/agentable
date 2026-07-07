@@ -86,7 +86,12 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
   // creds change rarely (only on tenant config swap), so a memo on those
   // primitives keeps a single client across the panel's lifetime.
   const apiKey = (import.meta.env.VITE_GEMINI_API_KEY ?? '') as string;
-  const tokenEndpoint = ((import.meta.env.VITE_VOICE_TOKEN_ENDPOINT as string | undefined) ?? '').trim();
+  const tokenEndpoint = (
+    persona.tokenEndpoint ??
+    (import.meta.env.VITE_VOICE_TOKEN_ENDPOINT as string | undefined) ??
+    (import.meta.env.VITE_TOKEN_MINT_URL as string | undefined) ??
+    ''
+  ).trim();
   const isProd = (import.meta.env.MODE ?? import.meta.env.NODE_ENV) === 'production';
   const useMock = (import.meta.env.VITE_LANDI_MOCK ?? '') === '1' || (!apiKey && !tokenEndpoint && !isProd);
 
@@ -232,7 +237,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
             id: `a-${Date.now().toString(36)}`,
             role: 'assistant',
             text: useMock
-              ? '(Mock chat — set VITE_GEMINI_API_KEY or VITE_VOICE_TOKEN_ENDPOINT to enable real responses.)'
+              ? '(Mock chat — set VITE_TOKEN_MINT_URL or VITE_GEMINI_API_KEY to enable live responses.)'
               : '(Chat is not configured for this preview.)',
             source: 'text',
             createdAt: new Date().toISOString(),
@@ -328,7 +333,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
                 {chatClient
                   ? `Live ${assistantName} · responses are real`
                   : useMock
-                    ? `Mock ${assistantName} · set VITE_GEMINI_API_KEY for live responses`
+                    ? `Mock ${assistantName} · set VITE_TOKEN_MINT_URL for live responses`
                     : `${assistantName} chat unavailable`}
               </p>
             </div>
