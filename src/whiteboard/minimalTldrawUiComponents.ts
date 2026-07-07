@@ -26,4 +26,9 @@ export const minimalTldrawUiComponents = {
   Toasts: null,
   A11y: null,
   FollowingIndicator: null,
+  PeopleMenu: null,
+  PeopleMenuAvatar: null,
+  PeopleMenuItem: null,
+  PeopleMenuFacePile: null,
+  UserPresenceEditor: null,
 } satisfies TLUiComponents;
