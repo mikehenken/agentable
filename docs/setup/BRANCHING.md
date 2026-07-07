@@ -43,7 +43,7 @@ flowchart LR
 
 1. Branch from `main`: `git checkout -b feat/my-change main`
 2. Open a pull request into **`main`**
-3. CI (`.github/workflows/ci.yml`) runs lint, typecheck, and tests
+3. CI (`.github/workflows/ci.yml`) runs typecheck and tests (blocking); lint runs advisory until pre-existing debt is cleared
 4. Merge after review and green CI
 5. Release via [RELEASE.md](RELEASE.md) when ready to publish
 
@@ -58,7 +58,7 @@ git pull public main
 
 ## Branch protection
 
-`main` should be protected (require PR, require CI). On **GitHub Free** private repos, branch protection rules may return **403 Forbidden**. If so, enforce the same policy by convention:
+`main` should be protected (require PR, require CI). On **GitHub Free** private repos, branch protection rules may return **403 Forbidden** — the API call to enable protection returned **422** (invalid payload) on this public repo; enforce by convention until rules are configured in the GitHub UI.
 
 - No direct pushes to `main` except the release bot commit
 - All changes via PR with green CI
