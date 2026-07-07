@@ -26,19 +26,33 @@ export type PanelRegistry = Record<string, PanelLoader>;
 
 export const DEFAULT_PANEL_REGISTRY = {
   positions: () =>
-    import('./OpenPositionsPanel').then((m) => ({ default: m.OpenPositionsPanel })),
+    import('./OpenPositionsPanel').then((m) => ({
+      default: m.OpenPositionsPanel as ComponentType<unknown>,
+    })),
   applications: () =>
-    import('./ApplicationsPanel').then((m) => ({ default: m.ApplicationsPanel })),
+    import('./ApplicationsPanel').then((m) => ({
+      default: m.ApplicationsPanel as ComponentType<unknown>,
+    })),
   resources: () =>
-    import('./ResourcesPanel').then((m) => ({ default: m.ResourcesPanel })),
+    import('./ResourcesPanel').then((m) => ({
+      default: m.ResourcesPanel as ComponentType<unknown>,
+    })),
   tools: () =>
-    import('./CareerToolsPanel').then((m) => ({ default: m.CareerToolsPanel })),
+    import('./CareerToolsPanel').then((m) => ({
+      default: m.CareerToolsPanel as ComponentType<unknown>,
+    })),
   trajectories: () =>
-    import('./GrowthPathsPanel').then((m) => ({ default: m.GrowthPathsPanel })),
+    import('./GrowthPathsPanel').then((m) => ({
+      default: m.GrowthPathsPanel as ComponentType<unknown>,
+    })),
   journey: () =>
-    import('./JourneyPanel').then((m) => ({ default: m.JourneyPanel })),
+    import('./JourneyPanel').then((m) => ({
+      default: m.JourneyPanel as ComponentType<unknown>,
+    })),
   settings: () =>
-    import('./SettingsPanel').then((m) => ({ default: m.SettingsPanel })),
+    import('./SettingsPanel').then((m) => ({
+      default: m.SettingsPanel as ComponentType<unknown>,
+    })),
 } satisfies PanelRegistry;
 
 /**
