@@ -1,4 +1,5 @@
 /**
+ * @docs/development/ARCHITECTURE.md
  * whiteboardPanelRegistry — maps panelId → React component loader for
  * the whiteboard substrate.
  *

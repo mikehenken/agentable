@@ -12,6 +12,9 @@
   "bugs": {
     "url": "https://github.com/mikehenken/agentable/issues"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "keywords": [
     "ai",
     "web-component",
@@ -71,6 +74,7 @@
     "build:styles": "node scripts/build-styles.mjs",
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "lint": "eslint .",
+    "typecheck": "tsc -b --noEmit",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

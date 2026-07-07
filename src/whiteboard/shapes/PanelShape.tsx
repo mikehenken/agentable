@@ -1,4 +1,5 @@
 /**
+ * @docs/development/ARCHITECTURE.md
  * PanelShape — tldraw custom shape that renders one of the workspace
  * panels (open positions, job detail, resources, etc.) inside the
  * whiteboard.

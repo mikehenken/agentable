@@ -1,4 +1,5 @@
 /**
+ * @docs/development/ARCHITECTURE.md
  * agentable-canvas — Lit custom-element wrapper for the Agentable Canvas.
  *
  * Published contract (per EMBEDDING.md): a single `<agentable-canvas>` tag

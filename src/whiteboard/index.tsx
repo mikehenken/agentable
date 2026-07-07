@@ -1,4 +1,5 @@
 /**
+ * @docs/development/ARCHITECTURE.md
  * Whiteboard barrel — public surface for the whiteboard prototype.
  *
  * Exports:

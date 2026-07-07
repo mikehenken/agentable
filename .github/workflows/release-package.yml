@@ -1,0 +1,151 @@
+name: Release package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Semver version (e.g. 0.2.0) or bump keyword (patch|minor|major)"
+        required: true
+        type: string
+      prerelease:
+        description: "Mark GitHub release as prerelease"
+        required: false
+        type: boolean
+        default: false
+      release_notes:
+        description: "Optional release notes (appended to generated notes)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: release-package
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Bump, tag, publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Resolve release version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          INPUT="${{ inputs.version }}"
+          CURRENT=$(node -p "require('./package.json').version")
+
+          resolve_bump() {
+            local bump="$1"
+            node -e "
+              const [maj, min, pat] = process.argv[1].split('.').map(Number);
+              const bump = process.argv[2];
+              let next;
+              if (bump === 'major') next = [maj + 1, 0, 0];
+              else if (bump === 'minor') next = [maj, min + 1, 0];
+              else if (bump === 'patch') next = [maj, min, pat + 1];
+              else throw new Error('invalid bump');
+              console.log(next.join('.'));
+            " "$CURRENT" "$bump"
+          }
+
+          if [[ "$INPUT" =~ ^(patch|minor|major)$ ]]; then
+            NEXT=$(resolve_bump "$INPUT")
+          elif [[ "$INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            NEXT="$INPUT"
+          else
+            echo "::error::version must be semver (e.g. 0.2.0) or patch|minor|major"
+            exit 1
+          fi
+
+          TAG="v${NEXT}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists. Choose a new version."
+            exit 1
+          fi
+
+          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Bump package.json version
+        run: npm version "${{ steps.version.outputs.next }}" --no-git-tag-version
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json 2>/dev/null || git add package.json
+          git commit -m "[release] v${{ steps.version.outputs.next }}"
+
+      - name: Create git tag
+        run: git tag "${{ steps.version.outputs.tag }}"
+
+      - name: Push commit and tag
+        run: |
+          git push origin main
+          git push origin "${{ steps.version.outputs.tag }}"
+
+      - name: Publish to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.version.outputs.tag }}"
+          NOTES_FILE="$(mktemp)"
+          {
+            echo "## ${TAG}"
+            echo ""
+            echo "Published \`agentable-canvas@${{ steps.version.outputs.next }}\` to GitHub Packages."
+            echo ""
+            echo "### Consumer bump (landi-canvas-studio)"
+            echo '```json'
+            echo "\"agentable-canvas\": \"github:mikehenken/agentable#$(git rev-parse HEAD)\""
+            echo '```'
+            if [[ -n "${{ inputs.release_notes }}" ]]; then
+              echo ""
+              echo "### Notes"
+              echo "${{ inputs.release_notes }}"
+            fi
+          } > "$NOTES_FILE"
+
+          ARGS=( "$TAG" --title "$TAG" --notes-file "$NOTES_FILE" )
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
+            ARGS+=( --prerelease )
+          fi
+          gh release create "${ARGS[@]}"
