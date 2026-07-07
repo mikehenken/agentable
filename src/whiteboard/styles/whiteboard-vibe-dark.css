@@ -1,6 +1,9 @@
 /**
  * Vibe dark canvas — matches landibuild / landi-canvas-studio (#121212).
  * Import from host or whiteboard barrel when `darkCanvas` is enabled.
+ *
+ * tldraw UI + canvas use native dark mode via TLUserPreferences.colorScheme.
+ * Landi shell tokens and canvas background alignment use theme CSS variables.
  */
 .whiteboard-shell--vibe-dark {
   --landi-color-background: #121212;
@@ -13,10 +16,9 @@
   color: #fafafa;
 }
 
-.whiteboard-shell--vibe-dark .tl-container,
-.whiteboard-shell--vibe-dark .tl-background,
-.whiteboard-shell--vibe-dark .tl-canvas {
-  background-color: #121212 !important;
+/* Align tldraw native dark canvas with Landi vibe background. */
+.whiteboard-shell--vibe-dark .tl-theme__dark {
+  --tl-color-background: #121212;
 }
 
 .whiteboard-shell--vibe-dark .tl-watermark_SEE-LICENSE {

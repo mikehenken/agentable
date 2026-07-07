@@ -17,7 +17,7 @@
  *   drivers (canvasTools, voice) can spawn panels from non-React contexts.
  */
 import { useCallback, useEffect, useMemo, useRef, type ReactElement } from 'react';
-import { Tldraw, type Editor } from 'tldraw';
+import { Tldraw, type Editor, type TLUser } from 'tldraw';
 import 'tldraw/tldraw.css';
 import './styles/whiteboard-vibe-dark.css';
 import {
@@ -39,6 +39,7 @@ import {
   type WhiteboardPanelRegistry,
 } from './shapes/whiteboardPanelRegistry';
 import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
+import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
 
 /** @deprecated Use `infinite-panels`. */
 export type WhiteboardLayoutMode = 'infinite-panels' | 'split-column';
@@ -56,7 +57,7 @@ export interface WhiteboardShellProps {
    * `split-column`: legacy fixed chat column beside tldraw.
    */
   layout?: WhiteboardLayoutMode;
-  /** Use vibe dark canvas background (#121212) and token overrides. */
+  /** Enable tldraw native dark mode (colorScheme) and vibe #121212 token overrides. */
   darkCanvas?: boolean;
   /** Hide the slim WhiteboardTopBar chrome strip. */
   hideTopBar?: boolean;
@@ -108,6 +109,7 @@ function WhiteboardShellInner({
   openChatOnMount,
 }: WhiteboardShellInnerProps): ReactElement {
   const { tenant } = useCanvasConfig();
+  const tldrawUser = useWhiteboardTldrawUser(darkCanvas);
   const shapeUtils = useMemo(() => [createPanelShapeUtil(panels)], [panels]);
   const persistenceKey = `career-whiteboard-${tenant}`;
   const editorRef = useRef<Editor | null>(null);
@@ -195,6 +197,7 @@ function WhiteboardShellInner({
             hideUi={false}
             persistenceKey={persistenceKey}
             shapeUtils={shapeUtils}
+            user={tldrawUser}
             onMount={handleMount}
           />
         </div>
@@ -202,6 +205,7 @@ function WhiteboardShellInner({
         <SplitColumnLayout
           persistenceKey={persistenceKey}
           shapeUtils={shapeUtils}
+          tldrawUser={tldrawUser}
           onMount={handleMount}
           shellBackground={shellBackground}
         />
@@ -214,11 +218,13 @@ function WhiteboardShellInner({
 function SplitColumnLayout({
   persistenceKey,
   shapeUtils,
+  tldrawUser,
   onMount,
   shellBackground,
 }: {
   persistenceKey: string;
   shapeUtils: ReturnType<typeof createPanelShapeUtil>[];
+  tldrawUser: TLUser;
   onMount: (editor: Editor) => void;
   shellBackground: string;
 }): ReactElement {
@@ -262,6 +268,7 @@ function SplitColumnLayout({
           hideUi={false}
           persistenceKey={persistenceKey}
           shapeUtils={shapeUtils}
+          user={tldrawUser}
           onMount={onMount}
         />
       </div>
