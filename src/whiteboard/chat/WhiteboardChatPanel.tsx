@@ -20,10 +20,18 @@
  */
 import type { ReactElement } from 'react';
 import { ChatPanel } from '../../canvas/ChatPanel';
+import type { WhiteboardPanelProps } from '../shapes/whiteboardPanelRegistry';
 
-export function WhiteboardChatPanel(): ReactElement {
+/**
+ * Chat panel body for whiteboard PanelShape or legacy split-column aside.
+ * When `hostedInWhiteboard` is true, tldraw PanelChrome supplies the title bar.
+ */
+export function WhiteboardChatPanel({
+  hostedInWhiteboard = false,
+}: WhiteboardPanelProps): ReactElement {
   return (
     <div
+      data-testid={hostedInWhiteboard ? 'whiteboard-chat-panel' : 'whiteboard-chat-column'}
       style={{
         height: '100%',
         minHeight: 0,

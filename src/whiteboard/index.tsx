@@ -24,7 +24,7 @@ import type { WhiteboardShellProps } from './WhiteboardShell';
 
 /** Eager export. Pulls tldraw into the consumer's bundle. */
 export { WhiteboardShell } from './WhiteboardShell';
-export type { WhiteboardShellProps } from './WhiteboardShell';
+export type { WhiteboardShellProps, WhiteboardLayoutMode } from './WhiteboardShell';
 
 /**
  * Lazy WhiteboardShell. The dynamic import resolves to the same module as

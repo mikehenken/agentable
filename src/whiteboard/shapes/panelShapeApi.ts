@@ -24,6 +24,10 @@
  */
 import type { Editor } from 'tldraw';
 import { createShapeId } from 'tldraw';
+import {
+  findNonOverlappingPosition,
+  type LayoutRect,
+} from '../../canvas/panelLayoutEngine';
 
 export interface OpenPanelOptions {
   /** After creating/updating, animate camera to the shape. Default true for tool calls. */
@@ -131,11 +135,26 @@ export function updatePanelProps(
   return true;
 }
 
+function getPanelShapeBounds(editor: Editor): LayoutRect[] {
+  const rects: LayoutRect[] = [];
+  for (const shape of editor.getCurrentPageShapes()) {
+    if (shape.type !== 'panel') continue;
+    const bounds = editor.getShapePageBounds(shape.id);
+    if (!bounds) continue;
+    rects.push({
+      x: bounds.x,
+      y: bounds.y,
+      w: bounds.w,
+      h: bounds.h,
+    });
+  }
+  return rects;
+}
+
 /**
- * Default placement strategy: cascade new shapes from top-left of the
- * current viewport. tldraw's pan/zoom is the user's cue; we plant new
- * shapes within the visible area so an agent tool call is immediately
- * visible without a manual zoom-out.
+ * Default placement strategy: find the first non-overlapping slot within
+ * the current viewport. Falls back to stacking below existing panel shapes
+ * so agent tool calls never bury panels on top of each other.
  */
 function computePlacement(
   editor: Editor,
@@ -146,20 +165,31 @@ function computePlacement(
   }
   const w = options.size?.w ?? 480;
   const h = options.size?.h ?? 540;
-  const viewport = editor.getViewportPageBounds();
-  // Place at the top-left of the viewport with a small inset, then
-  // cascade by the count of existing panel shapes so a 4th tool call
-  // doesn't bury its shape under #1.
-  const existingCount = editor
-    .getCurrentPageShapes()
-    .filter((s) => s.type === 'panel').length;
-  const inset = 24 + (existingCount % 5) * 32;
-  return {
-    x: options.position?.x ?? viewport.x + inset,
-    y: options.position?.y ?? viewport.y + inset,
-    w,
-    h,
+  const viewportBounds = editor.getViewportPageBounds();
+  const inset = 24;
+  const gap = 16;
+
+  const viewport = {
+    left: viewportBounds.x + inset,
+    top: viewportBounds.y + inset,
+    right: viewportBounds.x + viewportBounds.w - inset,
+    bottom: viewportBounds.y + viewportBounds.h - inset,
+    gap,
   };
+
+  if (options.position) {
+    return {
+      x: options.position.x,
+      y: options.position.y,
+      w,
+      h,
+    };
+  }
+
+  const obstacles = getPanelShapeBounds(editor);
+  const { x, y } = findNonOverlappingPosition(w, h, obstacles, viewport);
+
+  return { x, y, w, h };
 }
 
 function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {

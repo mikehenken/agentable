@@ -165,6 +165,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
 
   return (
     <HTMLContainer
+      data-testid={`panel-shape-${panelId}`}
       style={{
         width: shape.props.w,
         height: isMinimized ? TITLE_BAR_HEIGHT : shape.props.h,

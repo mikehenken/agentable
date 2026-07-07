@@ -57,6 +57,10 @@ export type WhiteboardPanelRegistry = Record<string, WhiteboardPanelLoader>;
  * Day 3: job-detail, resources
  */
 export const DEFAULT_WHITEBOARD_PANEL_REGISTRY = {
+  chat: () =>
+    import('../chat/WhiteboardChatPanel').then((m) => ({
+      default: m.WhiteboardChatPanel,
+    })),
   'open-positions': () =>
     import('../../canvas/OpenPositionsPanel').then((m) => ({
       default:
@@ -66,5 +70,10 @@ export const DEFAULT_WHITEBOARD_PANEL_REGISTRY = {
     import('../../canvas/ResourcesPanel').then((m) => ({
       default:
         m.ResourcesPanel as unknown as ComponentType<WhiteboardPanelProps>,
+    })),
+  'growth-paths': () =>
+    import('../../canvas/GrowthPathsPanel').then((m) => ({
+      default:
+        m.GrowthPathsPanel as unknown as ComponentType<WhiteboardPanelProps>,
     })),
 } satisfies WhiteboardPanelRegistry;

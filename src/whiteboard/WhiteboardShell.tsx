@@ -1,47 +1,38 @@
 /**
  * WhiteboardShell — root component for the whiteboard prototype.
  *
- * Layout: CSS Grid, two columns.
- *   • Left:  fixed-width chat column (~360px). Conversation surface lives
- *            here permanently — never moved, never closed.
- *   • Right: tldraw whiteboard. Agent tools call `openPanelInCanvas` to
- *            spawn workspace panels (open positions, job detail, resources)
- *            as draggable/resizable/scribble-able tldraw shapes.
+ * Default layout (`infinite-panels`): full-viewport tldraw with workspace
+ * panels (chat, preview, open positions, …) as draggable/resizable
+ * `PanelShape` instances on the infinite canvas. Chat is NOT a fixed side
+ * column — it opens via `openPanelInCanvas('chat', …)` on editor mount.
  *
- * Why this shell exists alongside the existing `CanvasShell`:
- *   This prototype offers an alternative to absolute-positioned floating
- *   panels. It runs in parallel to the canvas substrate — both share the
- *   AI/data layer (geminiChatClient, voiceKernel, canvasTools) but disagree
- *   on the layout substrate.
+ * Legacy layout (`split-column`): fixed left chat column + tldraw grid.
+ * Kept for career-demo backward compatibility only.
  *
  * Persistence:
  *   `<Tldraw persistenceKey="...">` writes to IndexedDB automatically.
- *   The key is namespaced by tenant so test tenants don't bleed into
- *   each other.
  *
  * Editor binding:
- *   On mount we call `bindEditor(editor)` so the imperative
- *   `panelShapeApi.openPanelInCanvas(...)` driver — used by canvasTools
- *   from non-React contexts (voice callbacks, chat tool round-trips) —
- *   can resolve to a live editor. We unbind on unmount.
- *
- * Pending-request queue:
- *   `panelShapeApi` queues tool calls that arrive before the editor is
- *   bound (the canvas chunk is lazy-loaded; voice can fire its first turn
- *   during the load window). On `bindEditor`, the queue drains in arrival
- *   order — the agent never silently drops a tool call.
+ *   On mount we call `bindEditor(editor)` so imperative `panelShapeApi`
+ *   drivers (canvasTools, voice) can spawn panels from non-React contexts.
  */
 import { useCallback, useEffect, useMemo, useRef, type ReactElement } from 'react';
 import { Tldraw, type Editor } from 'tldraw';
 import 'tldraw/tldraw.css';
+import './styles/whiteboard-vibe-dark.css';
 import {
   CanvasProvider,
   useCanvasConfig,
   type PartialCanvasTenantConfig,
 } from '../canvas/CanvasContext';
 import { WhiteboardChatPanel } from './chat/WhiteboardChatPanel';
+import { WhiteboardCommandPalette } from './components/WhiteboardCommandPalette';
 import { WhiteboardTopBar } from './components/WhiteboardTopBar';
-import { bindEditor, unbindEditor } from './shapes/panelShapeApi';
+import {
+  bindEditor,
+  openPanelInCanvas,
+  unbindEditor,
+} from './shapes/panelShapeApi';
 import { createPanelShapeUtil } from './shapes/PanelShape';
 import {
   DEFAULT_WHITEBOARD_PANEL_REGISTRY,
@@ -49,74 +40,128 @@ import {
 } from './shapes/whiteboardPanelRegistry';
 import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
 
+/** @deprecated Use `infinite-panels`. */
+export type WhiteboardLayoutMode = 'infinite-panels' | 'split-column';
+
 export interface WhiteboardShellProps {
-  /** Tenant config. Same shape as the existing CanvasShell — system prompt,
-   *  voice greeting, persona, etc. Falls back to library defaults. */
+  /** Tenant config — persona, labels, panel data. */
   config?: PartialCanvasTenantConfig;
   /**
    * Whiteboard panel registry. Pass a stable module-scope reference; lazy
-   * components are memoised by registry identity so a fresh literal every
-   * render forces re-fetch + remount of every panel. Defaults to the
-   * built-in registry (empty for Day 1; populated as panels land).
+   * components are memoised by registry identity.
    */
   panels?: WhiteboardPanelRegistry;
+  /**
+   * `infinite-panels` (default): chat + tools as PanelShapes on canvas.
+   * `split-column`: legacy fixed chat column beside tldraw.
+   */
+  layout?: WhiteboardLayoutMode;
+  /** Use vibe dark canvas background (#121212) and token overrides. */
+  darkCanvas?: boolean;
+  /** Hide the slim WhiteboardTopBar chrome strip. */
+  hideTopBar?: boolean;
+  /** When true (default for infinite-panels), open chat PanelShape on mount. */
+  openChatOnMount?: boolean;
 }
 
 const DEFAULT_CHAT_COLUMN_WIDTH = '360px';
+const VIBE_CANVAS_BG = '#121212';
+const CHAT_PANEL_WIDTH = 360;
+const VIEWPORT_INSET = 24;
 
 export function WhiteboardShell({
   config,
   panels = DEFAULT_WHITEBOARD_PANEL_REGISTRY,
+  layout = 'infinite-panels',
+  darkCanvas = false,
+  hideTopBar = false,
+  openChatOnMount,
 }: WhiteboardShellProps = {}): ReactElement {
+  const shouldOpenChat = openChatOnMount ?? layout === 'infinite-panels';
+
   return (
     <CanvasProvider config={config}>
-      <WhiteboardShellInner panels={panels} />
+      <WhiteboardShellInner
+        panels={panels}
+        layout={layout}
+        darkCanvas={darkCanvas}
+        hideTopBar={hideTopBar}
+        openChatOnMount={shouldOpenChat}
+      />
     </CanvasProvider>
   );
 }
 
+interface WhiteboardShellInnerProps {
+  panels: WhiteboardPanelRegistry;
+  layout: WhiteboardLayoutMode;
+  darkCanvas: boolean;
+  hideTopBar: boolean;
+  openChatOnMount: boolean;
+}
+
 function WhiteboardShellInner({
   panels,
-}: {
-  panels: WhiteboardPanelRegistry;
-}): ReactElement {
+  layout,
+  darkCanvas,
+  hideTopBar,
+  openChatOnMount,
+}: WhiteboardShellInnerProps): ReactElement {
   const { tenant } = useCanvasConfig();
-
-  // Build the shape util once, captured against the registry. tldraw treats
-  // shapeUtils as identity-stable; we memoise on the registry reference so
-  // a stable module-scope registry yields one util for the editor lifetime.
   const shapeUtils = useMemo(() => [createPanelShapeUtil(panels)], [panels]);
-
-  // Persistence key namespaced by tenant. tldraw writes the document state
-  // to IndexedDB under this key; switching tenants gives a fresh canvas
-  // instead of bleeding state across tenants.
   const persistenceKey = `career-whiteboard-${tenant}`;
-
   const editorRef = useRef<Editor | null>(null);
+  const chatOpenedRef = useRef(false);
 
-  const handleMount = useCallback((editor: Editor) => {
-    editorRef.current = editor;
-    bindEditor(editor);
-  }, []);
+  const shellClassName = darkCanvas ? 'whiteboard-shell--vibe-dark' : undefined;
+  const shellBackground = darkCanvas
+    ? VIBE_CANVAS_BG
+    : 'var(--landi-color-background, #F0F0EC)';
 
-  // Unbind on unmount. We don't unbind on hot-reload of the registry —
-  // tldraw keeps the same editor and we want queued requests to keep
-  // flowing.
+  const openInitialChatPanel = useCallback((editor: Editor) => {
+    if (!openChatOnMount || chatOpenedRef.current) return;
+    chatOpenedRef.current = true;
+    const viewport = editor.getViewportPageBounds();
+    openPanelInCanvas('chat', {
+      focus: false,
+      position: {
+        x: viewport.x + VIEWPORT_INSET,
+        y: viewport.y + VIEWPORT_INSET,
+      },
+      size: {
+        w: CHAT_PANEL_WIDTH,
+        h: Math.max(320, viewport.h - VIEWPORT_INSET * 2),
+      },
+      panelProps: { __title: 'Chat' },
+    });
+  }, [openChatOnMount]);
+
+  const handleMount = useCallback(
+    (editor: Editor) => {
+      editorRef.current = editor;
+      bindEditor(editor);
+      if (layout === 'infinite-panels') {
+        openInitialChatPanel(editor);
+      }
+    },
+    [layout, openInitialChatPanel],
+  );
+
   useEffect(() => {
     return () => {
       unbindEditor();
       editorRef.current = null;
+      chatOpenedRef.current = false;
     };
   }, []);
 
+  const isInfinitePanels = layout === 'infinite-panels';
+
   return (
     <div
-      // Outer flex column: TopBar (fixed height) + grid below (chat + tldraw).
-      // The shell renders inside a host-supplied flex container
-      // (CareerWhiteboardPage → CareerWhiteboard → here), so we claim the
-      // full main-axis via `width: 100%` + `flex: 1`. Without `width: 100%`
-      // on a grid-display child of a flex parent, the intrinsic grid sizing
-      // collapses the `1fr` track to 0px and the tldraw zone goes invisible.
+      className={shellClassName}
+      data-testid="whiteboard-shell"
+      data-layout={layout}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -125,63 +170,101 @@ function WhiteboardShellInner({
         height: '100%',
         minWidth: 0,
         minHeight: 0,
-        background: 'var(--landi-color-background, #F0F0EC)',
+        background: shellBackground,
         overflow: 'hidden',
       }}
     >
-      {/* Side-effect mount: registers the voice transport against the
-          kernel so the TopBar's <VoiceChip> can toggle calls. Renders null. */}
       <WhiteboardVoiceMount />
+      {!hideTopBar ? <WhiteboardTopBar /> : null}
+      {isInfinitePanels ? <WhiteboardCommandPalette layout={layout} /> : null}
 
-      <WhiteboardTopBar />
-
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display: 'grid',
-          gridTemplateColumns: `${DEFAULT_CHAT_COLUMN_WIDTH} 1fr`,
-          width: '100%',
-          minWidth: 0,
-          overflow: 'hidden',
-        }}
-      >
-        <aside
-          style={{
-            height: '100%',
-            minHeight: 0,
-            minWidth: 0,
-            borderRight: '1px solid var(--landi-color-border, #E5E5E0)',
-            background: 'var(--landi-color-surface, #FFFFFF)',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-          }}
-        >
-          <WhiteboardChatPanel />
-        </aside>
-
+      {isInfinitePanels ? (
         <div
+          data-testid="whiteboard-tldraw-viewport"
           style={{
             position: 'relative',
+            flex: 1,
             minWidth: 0,
             minHeight: 0,
+            width: '100%',
             height: '100%',
+            background: shellBackground,
           }}
         >
           <Tldraw
-            // Tldraw's default toolbar IS visible — it's load-bearing for
-            // the prototype because it surfaces the pen tool, which is the
-            // user-facing differentiator vs the legacy canvas. A future
-            // pass may slim this down via tldraw's component overrides.
             hideUi={false}
             persistenceKey={persistenceKey}
             shapeUtils={shapeUtils}
             onMount={handleMount}
           />
         </div>
-      </div>
+      ) : (
+        <SplitColumnLayout
+          persistenceKey={persistenceKey}
+          shapeUtils={shapeUtils}
+          onMount={handleMount}
+          shellBackground={shellBackground}
+        />
+      )}
     </div>
   );
 }
 
+/** Legacy split-column layout — chat fixed left, tldraw right. */
+function SplitColumnLayout({
+  persistenceKey,
+  shapeUtils,
+  onMount,
+  shellBackground,
+}: {
+  persistenceKey: string;
+  shapeUtils: ReturnType<typeof createPanelShapeUtil>[];
+  onMount: (editor: Editor) => void;
+  shellBackground: string;
+}): ReactElement {
+  return (
+    <div
+      style={{
+        flex: 1,
+        minHeight: 0,
+        display: 'grid',
+        gridTemplateColumns: `${DEFAULT_CHAT_COLUMN_WIDTH} 1fr`,
+        width: '100%',
+        minWidth: 0,
+        overflow: 'hidden',
+      }}
+    >
+      <aside
+        style={{
+          height: '100%',
+          minHeight: 0,
+          minWidth: 0,
+          borderRight: '1px solid var(--landi-color-border, #E5E5E0)',
+          background: 'var(--landi-color-surface, #FFFFFF)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        <WhiteboardChatPanel />
+      </aside>
+
+      <div
+        style={{
+          position: 'relative',
+          minWidth: 0,
+          minHeight: 0,
+          height: '100%',
+          background: shellBackground,
+        }}
+      >
+        <Tldraw
+          hideUi={false}
+          persistenceKey={persistenceKey}
+          shapeUtils={shapeUtils}
+          onMount={onMount}
+        />
+      </div>
+    </div>
+  );
+}
