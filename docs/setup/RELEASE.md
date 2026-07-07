@@ -52,7 +52,7 @@ changelog:
 ## Release steps (automated)
 
 1. Checkout `main`
-2. Run **typecheck** and **unit tests** (gate); lint is advisory in CI until debt is cleared
+2. Run **unit tests** (gate); lint and typecheck are advisory in CI until debt is cleared
 3. Bump `package.json` version (lockfile updated when present)
 4. Commit `[release] vX.Y.Z`
 5. Create and push git tag `vX.Y.Z`

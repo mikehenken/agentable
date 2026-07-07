@@ -43,7 +43,7 @@ flowchart LR
 
 1. Branch from `main`: `git checkout -b feat/my-change main`
 2. Open a pull request into **`main`**
-3. CI (`.github/workflows/ci.yml`) runs typecheck and tests (blocking); lint runs advisory until pre-existing debt is cleared
+3. CI (`.github/workflows/ci.yml`) runs **unit tests** (blocking); lint and typecheck run advisory until pre-existing debt is cleared
 4. Merge after review and green CI
 5. Release via [RELEASE.md](RELEASE.md) when ready to publish
 

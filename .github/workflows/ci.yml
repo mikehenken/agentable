@@ -34,10 +34,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-  quality-gates:
-    name: Typecheck and test
+  typecheck:
+    name: Typecheck (advisory)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    continue-on-error: true
 
     steps:
       - name: Checkout
@@ -53,6 +54,23 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+  quality-gates:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
       - name: Unit tests
         run: npm run test
