@@ -25,7 +25,8 @@
     "gemini-live",
     "shadow-dom",
     "embeddable",
-    "agent"
+    "agent",
+    "whiteboard"
   ],
   "files": [
     "src",
