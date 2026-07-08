@@ -46,14 +46,28 @@ export interface ChatMessage {
 export type ApiKeySource = string | (() => Promise<string>);
 
 export interface ChatClientOptions {
-  /** API credential source (static key or token thunk). */
-  apiKeySource: ApiKeySource;
+  /**
+   * API credential source (static key or token thunk). Optional when
+   * `proxyUrl` is set — the server-side proxy holds the credential instead.
+   */
+  apiKeySource?: ApiKeySource;
+  /**
+   * Server-side text-chat proxy URL. When set, the client POSTs
+   * `{ model, contents, config }` to this endpoint instead of calling the
+   * Gemini API directly from the browser, so no key/token ships to the client.
+   */
+  proxyUrl?: string;
   /** System instruction passed to every generation. */
   systemInstruction: string;
   /** Model id. Defaults to `gemini-2.5-flash`. */
   model?: string;
   /** Max tool-call → response → generate loops per turn. Default 4. */
   maxToolRoundTrips?: number;
+}
+
+/** Minimal generate result shape shared by the SDK and the proxy path. */
+interface GenerateResult {
+  candidates?: Array<{ content?: { parts?: Part[] } }>;
 }
 
 export interface ChatTurnResult {
@@ -103,16 +117,50 @@ export function createChatClient(options: ChatClientOptions) {
     parametersJsonSchema: d.parameters,
   }));
 
-  async function send(
-    history: ChatMessage[],
-    userMessage: string,
-  ): Promise<ChatTurnResult> {
+  const generationConfig = {
+    systemInstruction: options.systemInstruction,
+    tools: [{ functionDeclarations }],
+  };
+
+  /**
+   * Run one `generateContent` round via the server proxy (preferred, keyless)
+   * or the browser SDK (when a credential source is supplied).
+   */
+  async function runGenerate(contents: Content[]): Promise<GenerateResult> {
+    if (options.proxyUrl) {
+      const res = await fetch(options.proxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model, contents, config: generationConfig }),
+      });
+      if (!res.ok) {
+        const detail = await res.text().catch(() => '');
+        throw new Error(
+          `Chat proxy responded ${res.status}${detail ? `: ${detail}` : ''}`,
+        );
+      }
+      return (await res.json()) as GenerateResult;
+    }
+
+    if (!options.apiKeySource) {
+      throw new Error('Chat client has no credential source or proxy URL.');
+    }
     const apiKey =
       typeof options.apiKeySource === 'function'
         ? await options.apiKeySource()
         : options.apiKeySource;
     const ai = new GoogleGenAI({ apiKey, apiVersion: 'v1beta' });
+    return ai.models.generateContent({
+      model,
+      contents,
+      config: generationConfig,
+    });
+  }
 
+  async function send(
+    history: ChatMessage[],
+    userMessage: string,
+  ): Promise<ChatTurnResult> {
     // Working contents: history → user message, then we may append model
     // turns + tool responses across the round-trip loop.
     const contents: Content[] = [
@@ -123,14 +171,7 @@ export function createChatClient(options: ChatClientOptions) {
     const toolCalls: ChatTurnResult['toolCalls'] = [];
 
     for (let round = 0; round < maxRoundTrips; round++) {
-      const response = await ai.models.generateContent({
-        model,
-        contents,
-        config: {
-          systemInstruction: options.systemInstruction,
-          tools: [{ functionDeclarations }],
-        },
-      });
+      const response = await runGenerate(contents);
 
       // Pull the first candidate's content. Defensive: SDK shapes can
       // include / omit candidates depending on safety filters.

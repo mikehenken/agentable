@@ -92,11 +92,28 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     (import.meta.env.VITE_TOKEN_MINT_URL as string | undefined) ??
     ''
   ).trim();
+  // Preferred text-chat path: a keyless server proxy. Ephemeral tokens are
+  // Live-API (voice) only and do NOT authorize `generateContent`, so text
+  // chat must route through the proxy (or a static dev key) rather than the
+  // voice token mint.
+  const chatProxyUrl = (
+    persona.chatProxyUrl ??
+    (import.meta.env.VITE_LANDI_CHAT_PROXY_URL as string | undefined) ??
+    ''
+  ).trim();
   const isProd = (import.meta.env.MODE ?? import.meta.env.NODE_ENV) === 'production';
-  const useMock = (import.meta.env.VITE_LANDI_MOCK ?? '') === '1' || (!apiKey && !tokenEndpoint && !isProd);
+  const useMock =
+    (import.meta.env.VITE_LANDI_MOCK ?? '') === '1' ||
+    (!apiKey && !chatProxyUrl && !isProd);
 
   const chatClient = useMemo(() => {
     if (useMock) return null;
+    if (chatProxyUrl) {
+      return createChatClient({
+        proxyUrl: chatProxyUrl,
+        systemInstruction: persona.systemPrompt,
+      });
+    }
     if (!apiKey && !tokenEndpoint) return null;
     return createChatClient({
       apiKeySource: tokenEndpoint
@@ -116,7 +133,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
         : apiKey,
       systemInstruction: persona.systemPrompt,
     });
-  }, [useMock, apiKey, tokenEndpoint, persona.systemPrompt]);
+  }, [useMock, apiKey, tokenEndpoint, chatProxyUrl, persona.systemPrompt]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -207,10 +224,6 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     };
   }, []);
 
-  // Visibility gate skipped in chromeless mode — host (e.g. WhiteboardShell)
-  // owns when the surface is mounted.
-  if (!chromeless && !layout?.visible) return null;
-
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed) return;
@@ -288,6 +301,11 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     void sendMessage(inputValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue]);
+
+  // Visibility gate skipped in chromeless mode — host (e.g. WhiteboardShell)
+  // owns when the surface is mounted. Placed after all hooks so hook order
+  // stays stable across renders (react-hooks/rules-of-hooks).
+  if (!chromeless && !layout?.visible) return null;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {

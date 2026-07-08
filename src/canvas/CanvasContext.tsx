@@ -101,6 +101,14 @@ export interface CanvasPersona {
    * always use this rather than `VITE_GEMINI_API_KEY`.
    */
   tokenEndpoint?: string;
+  /**
+   * Server-side text-chat proxy endpoint (e.g.
+   * `https://dev.landi.build/api/ai/gemini/chat`). When set, the chat client
+   * POSTs `{ model, contents, config }` to this endpoint instead of calling
+   * the Gemini API directly from the browser, so the raw API key / gateway
+   * token never ships to the client. Tool round-trips remain client-driven.
+   */
+  chatProxyUrl?: string;
 }
 
 /**
@@ -199,6 +207,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
   const mockScenario = config?.persona?.mockScenario;
   const geminiVoiceName = config?.persona?.geminiVoiceName;
   const tokenEndpoint = config?.persona?.tokenEndpoint;
+  const chatProxyUrl = config?.persona?.chatProxyUrl;
   // Labels — each field optional, falls through to library default when
   // tenant doesn't override. Keeps OSS copy generic ("Share") while
   // letting tenants supply specific labels ("Send to recruiter") without
@@ -227,6 +236,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
         mockScenario,
         geminiVoiceName,
         tokenEndpoint,
+        chatProxyUrl,
       },
       labels: {
         shareArtifact: lShareArtifact ?? DEFAULT_TENANT_CONFIG.labels.shareArtifact,
@@ -253,6 +263,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
       mockScenario,
       geminiVoiceName,
       tokenEndpoint,
+      chatProxyUrl,
       lShareArtifact,
       lSendMessage,
       lEmptyArtifacts,
