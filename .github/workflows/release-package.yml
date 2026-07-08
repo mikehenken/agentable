@@ -91,22 +91,47 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Bump package.json version
-        run: npm version "${{ steps.version.outputs.next }}" --no-git-tag-version
+        shell: bash
+        run: |
+          set -euo pipefail
+          CURRENT=$(node -p "require('./package.json').version")
+          NEXT="${{ steps.version.outputs.next }}"
+          if [[ "$CURRENT" == "$NEXT" ]]; then
+            echo "package.json already at ${NEXT} — skipping npm version bump"
+          else
+            npm version "$NEXT" --no-git-tag-version
+          fi
 
       - name: Commit version bump
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json
           if [ -f package-lock.json ]; then git add package-lock.json; fi
-          git commit -m "[release] v${{ steps.version.outputs.next }}"
+          if git diff --staged --quiet; then
+            echo "No version file changes to commit"
+          else
+            git commit -m "[release] v${{ steps.version.outputs.next }}"
+          fi
 
       - name: Create git tag
         run: git tag "${{ steps.version.outputs.tag }}"
 
       - name: Push commit and tag
+        shell: bash
         run: |
-          git push origin main
+          set -euo pipefail
+          if git rev-parse --verify origin/main >/dev/null 2>&1; then
+            LOCAL_HEAD=$(git rev-parse HEAD)
+            REMOTE_HEAD=$(git rev-parse origin/main)
+            if [[ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]]; then
+              git push origin main
+            else
+              echo "main unchanged — skipping push"
+            fi
+          fi
           git push origin "${{ steps.version.outputs.tag }}"
 
       - name: Publish to GitHub Packages
