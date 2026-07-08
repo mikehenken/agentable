@@ -43,6 +43,7 @@ jobs:
         with:
           node-version: "22"
           registry-url: https://npm.pkg.github.com
+          scope: "@mikehenken"
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
@@ -83,8 +84,10 @@ jobs:
 
           TAG="v${NEXT}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "::error::Tag $TAG already exists. Choose a new version."
-            exit 1
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Tag $TAG already exists — will skip tag push and retry publish/release."
+          else
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
           echo "next=$NEXT" >> "$GITHUB_OUTPUT"
@@ -117,6 +120,7 @@ jobs:
           fi
 
       - name: Create git tag
+        if: steps.version.outputs.tag_exists != 'true'
         run: git tag "${{ steps.version.outputs.tag }}"
 
       - name: Push commit and tag
@@ -132,12 +136,11 @@ jobs:
               echo "main unchanged — skipping push"
             fi
           fi
-          git push origin "${{ steps.version.outputs.tag }}"
-
-      - name: Publish to GitHub Packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish
+          if [[ "${{ steps.version.outputs.tag_exists }}" != "true" ]]; then
+            git push origin "${{ steps.version.outputs.tag }}"
+          else
+            echo "Tag ${{ steps.version.outputs.tag }} already on remote — skipping tag push"
+          fi
 
       - name: Create GitHub release
         env:
@@ -146,15 +149,20 @@ jobs:
         run: |
           set -euo pipefail
           TAG="${{ steps.version.outputs.tag }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "GitHub release $TAG already exists — skipping create"
+            exit 0
+          fi
+
           NOTES_FILE="$(mktemp)"
           {
             echo "## ${TAG}"
             echo ""
-            echo "Published \`agentable-canvas@${{ steps.version.outputs.next }}\` to GitHub Packages."
+            echo "Published \`agentable-canvas@${{ steps.version.outputs.next }}\`."
             echo ""
             echo "### Consumer bump (landi-canvas-studio)"
             echo '```json'
-            echo "\"agentable-canvas\": \"github:mikehenken/agentable#$(git rev-parse HEAD)\""
+            echo "\"agentable-canvas\": \"github:mikehenken/agentable#${TAG}\""
             echo '```'
             if [[ -n "${{ inputs.release_notes }}" ]]; then
               echo ""
@@ -168,3 +176,16 @@ jobs:
             ARGS+=( --prerelease )
           fi
           gh release create "${ARGS[@]}"
+
+      - name: Publish to GitHub Packages
+        continue-on-error: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # GitHub Packages requires owner-scoped names when package name != repo name.
+          # Primary consumer install path is github:mikehenken/agentable#<tag>.
+          npm publish --access public || {
+            echo "::warning::npm publish failed (expected until package is scoped to @mikehenken/*). GitHub release + git tag remain the supported install path."
+            exit 0
+          }
