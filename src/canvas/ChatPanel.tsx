@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Paperclip, Mic, Send, Sparkles, Wrench, Volume2, AlertTriangle } from 'lucide-react';
+import { Paperclip, Mic, Send, Sparkles, Wrench, Volume2, AlertTriangle, Copy, Check } from 'lucide-react';
+import { Streamdown } from 'streamdown';
 import { DraggablePanel } from './DraggablePanel';
 import { useLayoutStore } from '../stores/layoutStore';
 import { useCanvasConfig } from './CanvasContext';
 import { createChatClient, type ChatMessage } from './chat/geminiChatClient';
+import { PromptInput, Suggestions, Reasoning, type SuggestionItem } from '../components/ui-ai';
 
 interface ToolCallEvent {
   name: string;
@@ -19,20 +21,32 @@ interface VoiceTranscriptEvent {
   timestamp: string;
 }
 
-function AssistantAvatar({
-  size = 'sm',
-  initial,
-}: {
-  size?: 'sm' | 'lg';
-  initial: string;
-}) {
-  const dims = size === 'lg' ? 'w-16 h-16 text-2xl' : 'w-8 h-8 text-sm';
+/**
+ * shadcn.io/ai-style persona halo avatar — a coral gradient disc with a soft
+ * glow ring. `size="lg"` is used in the empty state; `sm` beside messages.
+ * Mirrors https://www.shadcn.io/ai/persona.
+ */
+function PersonaHalo({ size = 'sm', initial }: { size?: 'sm' | 'lg'; initial: string }) {
+  const dim = size === 'lg' ? 60 : 30;
+  const font = size === 'lg' ? 24 : 13;
   return (
     <div
-      className={`${dims} rounded-full flex items-center justify-center text-white font-bold shrink-0 shadow-canvas-primary-intense`}
       style={{
+        width: dim,
+        height: dim,
+        flexShrink: 0,
+        borderRadius: '50%',
+        display: 'grid',
+        placeItems: 'center',
+        color: '#fff',
+        fontWeight: 700,
+        fontSize: font,
         background:
-          'linear-gradient(135deg, var(--landi-color-primary, #0D7377) 0%, var(--landi-color-primary-light, #14B8A6) 60%, var(--landi-color-primary-soft, #2DD4BF) 100%)',
+          'linear-gradient(135deg, var(--vibe-accent, #ff6b57) 0%, var(--vibe-accent-2, #ff8f6b) 55%, #ffb199 100%)',
+        boxShadow:
+          size === 'lg'
+            ? '0 0 0 6px color-mix(in srgb, var(--vibe-accent, #ff6b57) 14%, transparent), 0 8px 30px color-mix(in srgb, var(--vibe-accent, #ff6b57) 35%, transparent)'
+            : '0 0 0 3px color-mix(in srgb, var(--vibe-accent, #ff6b57) 12%, transparent)',
       }}
     >
       {initial}
@@ -52,6 +66,37 @@ function summarizeToolArgs(args: Record<string, unknown>): string {
     parts.push(`${k}=${str}`);
   }
   return parts.join(', ');
+}
+
+/** Copy-to-clipboard message toolbar action — https://www.shadcn.io/ai/toolbar */
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      title={copied ? 'Copied' : 'Copy message'}
+      aria-label="Copy message"
+      onClick={() => {
+        void navigator.clipboard?.writeText(text).then(() => {
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 1400);
+        });
+      }}
+      style={{
+        display: 'grid',
+        placeItems: 'center',
+        width: 22,
+        height: 22,
+        borderRadius: 6,
+        border: 0,
+        background: 'transparent',
+        color: copied ? 'var(--vibe-accent, #ff6b57)' : 'var(--vibe-text-muted, #8a8a8a)',
+        cursor: 'pointer',
+      }}
+    >
+      {copied ? <Check size={13} /> : <Copy size={13} />}
+    </button>
+  );
 }
 
 export interface ChatPanelProps {
@@ -78,7 +123,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
   const [isAwaitingReply, setIsAwaitingReply] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const layout = panels.chat;
 
@@ -139,7 +184,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages.length]);
+  }, [messages.length, isAwaitingReply]);
 
   // --- Voice transcript ingestion ---
   // The agent's voice transcripts get mirrored into the chat thread so
@@ -250,7 +295,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
             id: `a-${Date.now().toString(36)}`,
             role: 'assistant',
             text: useMock
-              ? '(Mock chat — set VITE_TOKEN_MINT_URL or VITE_GEMINI_API_KEY to enable live responses.)'
+              ? '(Mock chat — set VITE_LANDI_CHAT_PROXY_URL or VITE_GEMINI_API_KEY to enable live responses.)'
               : '(Chat is not configured for this preview.)',
             source: 'text',
             createdAt: new Date().toISOString(),
@@ -307,174 +352,261 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
   // stays stable across renders (react-hooks/rules-of-hooks).
   if (!chromeless && !layout?.visible) return null;
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
   const isEmpty = messages.length === 0;
   const canSend = inputValue.trim().length > 0 && !isAwaitingReply;
 
+  // Quick-reply pills (shadcn Suggestion) shown above the composer once the
+  // conversation has started — derived from the persona's starter prompts.
+  const quickReplies: SuggestionItem[] = starterPrompts.slice(0, 4).map((p) => ({
+    text: p.text,
+    icon: p.emoji,
+  }));
+
   const body = (
-    <div className="flex flex-col h-full bg-gradient-to-b from-white via-white to-[#F7F9F9]">
-        {isEmpty ? (
-          <div className="flex-1 overflow-y-auto">
-            <div className="flex flex-col items-center justify-center px-6 pt-10 pb-6 text-center">
-              <AssistantAvatar size="lg" initial={avatarInitial} />
-              <h2 className="mt-5 text-[22px] font-semibold text-canvas tracking-tight">
-                Hi, I&apos;m {assistantName}.
-              </h2>
-              <p className="mt-1.5 text-sm text-[#6B7280] max-w-[340px] leading-relaxed">
-                Ask me anything, or start with one of these:
-              </p>
+    <div
+      style={
+        {
+          // Dark vibe theme surface — shared `--vibe-*` tokens drive the
+          // ui-ai primitives (prompt input, suggestions, reasoning, persona).
+          '--vibe-accent': 'var(--landi-color-primary, #ff6b57)',
+          '--vibe-accent-2': 'var(--landi-color-primary-light, #ff8f6b)',
+          '--vibe-surface': '#1a1a1a',
+          '--vibe-border': 'rgba(255,255,255,0.09)',
+          '--vibe-text': '#ececec',
+          '--vibe-text-muted': '#9a9a9a',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          background: '#121212',
+          color: 'var(--vibe-text)',
+        } as React.CSSProperties
+      }
+    >
+      {isEmpty ? (
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              padding: '40px 24px 24px',
+              textAlign: 'center',
+            }}
+          >
+            <PersonaHalo size="lg" initial={avatarInitial} />
+            <h2 style={{ marginTop: 20, fontSize: 22, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--vibe-text)' }}>
+              Hi, I&apos;m {assistantName}.
+            </h2>
+            <p style={{ marginTop: 6, fontSize: 13.5, color: 'var(--vibe-text-muted)', maxWidth: 340, lineHeight: 1.5 }}>
+              Ask me anything, or start with one of these:
+            </p>
 
-              <div className="mt-6 w-full max-w-[380px] space-y-2">
-                {starterPrompts.map((p) => (
-                  <button
-                    key={p.text}
-                    type="button"
-                    onClick={() => void sendMessage(p.text)}
-                    className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-canvas-border bg-canvas-surface hover:border-canvas-primary/40 hover:bg-canvas-surface-subtle hover:shadow-canvas-primary-soft transition-all text-left"
-                  >
-                    <span className="text-[20px] leading-none">{p.emoji}</span>
-                    <span className="flex-1 text-sm text-canvas font-medium group-hover:text-canvas-primary">
-                      {p.text}
-                    </span>
-                    <Sparkles size={14} className="text-canvas-faint group-hover:text-canvas-primary transition-colors" />
-                  </button>
-                ))}
-              </div>
-
-              <p className="mt-6 text-[11px] text-[#9CA3AF]">
-                {chatClient
-                  ? `Live ${assistantName} · responses are real`
-                  : useMock
-                    ? `Mock ${assistantName} · set VITE_TOKEN_MINT_URL for live responses`
-                    : `${assistantName} chat unavailable`}
-              </p>
+            <div style={{ marginTop: 24, width: '100%', maxWidth: 380, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {starterPrompts.map((p) => (
+                <StarterCard key={p.text} emoji={p.emoji} text={p.text} onClick={() => void sendMessage(p.text)} />
+              ))}
             </div>
+
+            <p style={{ marginTop: 24, fontSize: 11, color: '#6f6f6f' }}>
+              {chatClient
+                ? `Live ${assistantName} · responses are real`
+                : useMock
+                  ? `Mock ${assistantName} · set VITE_LANDI_CHAT_PROXY_URL for live responses`
+                  : `${assistantName} chat unavailable`}
+            </p>
           </div>
-        ) : (
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-            {messages.map((msg) => {
-              if (msg.source === 'tool' && msg.toolCall) {
-                return (
-                  <div key={msg.id} className="flex gap-2.5">
-                    <AssistantAvatar initial={avatarInitial} />
-                    <div className="flex-1 max-w-[85%]">
-                      <div className={`rounded-2xl rounded-tl-sm px-3 py-2 border text-xs flex items-center gap-2 ${
-                        msg.toolCall.ok
-                          ? 'bg-canvas-primary-tint border-canvas-primary/20 text-canvas-primary'
-                          : 'bg-rose-50 border-rose-200 text-rose-700'
-                      }`}>
-                        {msg.toolCall.ok
-                          ? <Wrench size={12} />
-                          : <AlertTriangle size={12} />}
-                        <span className="font-mono">{msg.text}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+        </div>
+      ) : (
+        <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {messages.map((msg) => {
+            if (msg.source === 'tool' && msg.toolCall) {
+              const ok = msg.toolCall.ok;
               return (
-                <div key={msg.id}>
-                  {msg.role === 'assistant' ? (
-                    <div className="flex gap-2.5">
-                      <AssistantAvatar initial={avatarInitial} />
-                      <div className="flex-1 max-w-[85%]">
-                        <div className="bg-canvas-surface-subtle border border-canvas-primary/10 rounded-2xl rounded-tl-sm px-4 py-3">
-                          {msg.source === 'voice' && (
-                            <p className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-canvas-faint mb-1">
-                              <Volume2 size={10} /> via voice
-                            </p>
-                          )}
-                          <p className="text-sm text-canvas leading-relaxed">{msg.text}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex justify-end">
-                      <div
-                        className="text-white rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%] shadow-sm"
-                        style={{ background: 'linear-gradient(135deg, var(--landi-color-primary, #0D7377) 0%, var(--landi-color-primary-hover, #095C5F) 100%)' }}
-                      >
-                        {msg.source === 'voice' && (
-                          <p className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-white/70 mb-0.5">
-                            <Volume2 size={10} /> via voice
-                          </p>
-                        )}
-                        <p className="text-sm leading-relaxed">{msg.text}</p>
-                      </div>
-                    </div>
-                  )}
+                <div key={msg.id} style={{ display: 'flex', gap: 10 }}>
+                  <PersonaHalo initial={avatarInitial} />
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '7px 11px',
+                      borderRadius: 12,
+                      borderTopLeftRadius: 4,
+                      fontSize: 12,
+                      fontFamily: 'var(--font-mono, ui-monospace, monospace)',
+                      background: ok ? 'color-mix(in srgb, var(--vibe-accent) 12%, #1a1a1a)' : 'rgba(244,63,94,0.12)',
+                      border: `1px solid ${ok ? 'color-mix(in srgb, var(--vibe-accent) 30%, transparent)' : 'rgba(244,63,94,0.35)'}`,
+                      color: ok ? 'var(--vibe-accent)' : '#fb7185',
+                    }}
+                  >
+                    {ok ? <Wrench size={12} /> : <AlertTriangle size={12} />}
+                    <span>{msg.text}</span>
+                  </div>
                 </div>
               );
-            })}
-            {isAwaitingReply && (
-              <div className="flex gap-2.5" role="status" aria-live="polite">
-                <AssistantAvatar initial={avatarInitial} />
-                <div className="bg-canvas-surface-subtle border border-canvas-primary/10 rounded-2xl rounded-tl-sm px-4 py-3 inline-flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-canvas-primary/60 animate-pulse" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-canvas-primary/60 animate-pulse" style={{ animationDelay: '0.2s' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-canvas-primary/60 animate-pulse" style={{ animationDelay: '0.4s' }} />
+            }
+            if (msg.role === 'assistant') {
+              return (
+                <div key={msg.id} className="landi-msg" style={{ display: 'flex', gap: 10 }}>
+                  <PersonaHalo initial={avatarInitial} />
+                  <div style={{ flex: 1, minWidth: 0, maxWidth: '88%' }}>
+                    <div
+                      style={{
+                        background: 'var(--vibe-surface)',
+                        border: '1px solid var(--vibe-border)',
+                        borderRadius: 14,
+                        borderTopLeftRadius: 4,
+                        padding: '10px 14px',
+                        fontSize: 13.5,
+                        lineHeight: 1.6,
+                        color: 'var(--vibe-text)',
+                      }}
+                    >
+                      {msg.source === 'voice' && (
+                        <p style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--vibe-text-muted)', marginBottom: 4 }}>
+                          <Volume2 size={10} /> via voice
+                        </p>
+                      )}
+                      <div className="landi-md">
+                        <Streamdown>{msg.text}</Streamdown>
+                      </div>
+                    </div>
+                    <div className="landi-msg__toolbar" style={{ display: 'flex', gap: 2, marginTop: 2, opacity: 0, transition: 'opacity .12s ease' }}>
+                      <CopyButton text={msg.text} />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            // user
+            return (
+              <div key={msg.id} className="landi-msg" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <div
+                  style={{
+                    maxWidth: '82%',
+                    padding: '9px 14px',
+                    borderRadius: 14,
+                    borderTopRightRadius: 4,
+                    color: '#fff',
+                    fontSize: 13.5,
+                    lineHeight: 1.55,
+                    background: 'linear-gradient(135deg, var(--vibe-accent) 0%, var(--vibe-accent-2) 100%)',
+                    boxShadow: '0 4px 16px color-mix(in srgb, var(--vibe-accent) 30%, transparent)',
+                  }}
+                >
+                  {msg.source === 'voice' && (
+                    <p style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.75)', marginBottom: 2 }}>
+                      <Volume2 size={10} /> via voice
+                    </p>
+                  )}
+                  <span style={{ whiteSpace: 'pre-wrap' }}>{msg.text}</span>
+                </div>
+                <div className="landi-msg__toolbar" style={{ opacity: 0, transition: 'opacity .12s ease' }}>
+                  <CopyButton text={msg.text} />
                 </div>
               </div>
-            )}
-            {error && (
-              <p role="alert" className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-md px-3 py-2">
-                {error}
-              </p>
-            )}
-          </div>
-        )}
+            );
+          })}
+          {isAwaitingReply && (
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }} role="status" aria-live="polite">
+              <PersonaHalo initial={avatarInitial} />
+              <div
+                style={{
+                  background: 'var(--vibe-surface)',
+                  border: '1px solid var(--vibe-border)',
+                  borderRadius: 14,
+                  borderTopLeftRadius: 4,
+                  padding: '8px 14px',
+                }}
+              >
+                <Reasoning streaming />
+              </div>
+            </div>
+          )}
+          {error && (
+            <p
+              role="alert"
+              style={{
+                fontSize: 12,
+                color: '#fb7185',
+                background: 'rgba(244,63,94,0.1)',
+                border: '1px solid rgba(244,63,94,0.3)',
+                borderRadius: 8,
+                padding: '8px 12px',
+              }}
+            >
+              {error}
+            </p>
+          )}
+        </div>
+      )}
 
-        <div className="border-t border-canvas-border px-3 py-2.5 shrink-0 bg-canvas-surface">
-          <div className="flex items-center gap-1.5 bg-canvas-surface-subtle border border-canvas-border rounded-xl px-2.5 py-1.5 focus-within:border-canvas-primary/40 focus-within:ring-2 focus-within:ring-canvas-primary/10 transition-all">
-            <button
-              type="button"
-              className="p-1.5 rounded-lg hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas-muted transition-colors shrink-0"
-              aria-label="Attach file"
-            >
-              <Paperclip size={16} />
-            </button>
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={`Ask ${assistantName} anything…`}
-              disabled={isAwaitingReply}
-              className="flex-1 bg-transparent text-sm text-canvas placeholder:text-canvas-faint outline-none min-w-0 py-1 disabled:opacity-60"
-            />
-            <button
-              type="button"
-              onClick={() => showPanel('voice')}
-              className="p-1.5 rounded-lg hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas-primary transition-colors shrink-0"
-              aria-label="Open voice conversation"
-              title="Voice conversation"
-            >
-              <Mic size={16} />
-            </button>
+      <div style={{ borderTop: '1px solid var(--vibe-border)', padding: 12, background: '#141414', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {!isEmpty && quickReplies.length > 0 && (
+          <Suggestions items={quickReplies} onSelect={(t) => void sendMessage(t)} />
+        )}
+        <PromptInput
+          value={inputValue}
+          onValueChange={setInputValue}
+          onSubmit={handleSend}
+          placeholder={`Ask ${assistantName} anything…`}
+          disabled={isAwaitingReply}
+          textareaRef={inputRef}
+          toolbar={
+            <>
+              <IconButton title="Attach file" ariaLabel="Attach file">
+                <Paperclip size={16} />
+              </IconButton>
+              <IconButton
+                title="Voice conversation"
+                ariaLabel="Open voice conversation"
+                onClick={() => showPanel('voice')}
+                accentOnHover
+              >
+                <Mic size={16} />
+              </IconButton>
+            </>
+          }
+          actions={
             <button
               type="button"
               onClick={handleSend}
               disabled={!canSend}
-              className="p-2 rounded-lg text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
-              style={{
-                background: canSend
-                  ? 'linear-gradient(135deg, var(--landi-color-primary, #0D7377) 0%, var(--landi-color-primary-light, #14B8A6) 100%)'
-                  : '#D1D5DB',
-              }}
               aria-label={labels.sendMessage}
+              style={{
+                display: 'grid',
+                placeItems: 'center',
+                width: 32,
+                height: 32,
+                borderRadius: 9,
+                border: 0,
+                color: '#fff',
+                cursor: canSend ? 'pointer' : 'not-allowed',
+                opacity: canSend ? 1 : 0.4,
+                transition: 'opacity .15s ease',
+                background: canSend
+                  ? 'linear-gradient(135deg, var(--vibe-accent) 0%, var(--vibe-accent-2) 100%)'
+                  : '#3a3a3a',
+              }}
             >
-              <Send size={14} />
+              <Send size={15} />
             </button>
-          </div>
-        </div>
+          }
+        />
       </div>
+
+      {/* Hover-reveal message toolbars + markdown spacing for the dark theme. */}
+      <style>{`
+        .landi-msg:hover .landi-msg__toolbar { opacity: 1 !important; }
+        .landi-md > *:first-child { margin-top: 0; }
+        .landi-md > *:last-child { margin-bottom: 0; }
+        .landi-md p { margin: 0 0 8px; }
+        .landi-md ul, .landi-md ol { margin: 0 0 8px; padding-left: 18px; }
+        .landi-md code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+        .landi-md pre { background: #0d0d0d; border: 1px solid var(--vibe-border); border-radius: 8px; padding: 10px; overflow-x: auto; }
+        .landi-md a { color: var(--vibe-accent); }
+      `}</style>
+    </div>
   );
 
   if (chromeless) {
@@ -485,5 +617,76 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     <DraggablePanel id="chat" title={`${assistantName} — ${tenantTitle}`}>
       {body}
     </DraggablePanel>
+  );
+}
+
+/** Dark-vibe starter-prompt card used in the empty state. */
+function StarterCard({ emoji, text, onClick }: { emoji: string; text: string; onClick: () => void }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        width: '100%',
+        padding: '12px 14px',
+        borderRadius: 12,
+        cursor: 'pointer',
+        textAlign: 'left',
+        background: hover ? 'color-mix(in srgb, var(--vibe-accent) 8%, #1a1a1a)' : '#1a1a1a',
+        border: `1px solid ${hover ? 'color-mix(in srgb, var(--vibe-accent) 45%, transparent)' : 'var(--vibe-border)'}`,
+        transition: 'all .15s ease',
+      }}
+    >
+      <span style={{ fontSize: 20, lineHeight: 1 }}>{emoji}</span>
+      <span style={{ flex: 1, fontSize: 13.5, fontWeight: 500, color: hover ? 'var(--vibe-accent)' : 'var(--vibe-text)' }}>{text}</span>
+      <Sparkles size={14} style={{ color: hover ? 'var(--vibe-accent)' : '#5a5a5a' }} />
+    </button>
+  );
+}
+
+/** Small ghost icon button used in the composer toolbar. */
+function IconButton({
+  children,
+  title,
+  ariaLabel,
+  onClick,
+  accentOnHover = false,
+}: {
+  children: React.ReactNode;
+  title: string;
+  ariaLabel: string;
+  onClick?: () => void;
+  accentOnHover?: boolean;
+}) {
+  const [hover, setHover] = useState(false);
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={ariaLabel}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'grid',
+        placeItems: 'center',
+        width: 30,
+        height: 30,
+        borderRadius: 8,
+        border: 0,
+        cursor: 'pointer',
+        background: hover ? 'rgba(255,255,255,0.06)' : 'transparent',
+        color: hover ? (accentOnHover ? 'var(--vibe-accent, #ff6b57)' : 'var(--vibe-text, #ececec)') : 'var(--vibe-text-muted, #8a8a8a)',
+        transition: 'all .14s ease',
+      }}
+    >
+      {children}
+    </button>
   );
 }

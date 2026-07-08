@@ -18,6 +18,15 @@ export type { ResponseProps } from "./response";
 
 export { Loader } from "./loader";
 
+export { PromptInput } from "./prompt-input";
+export type { PromptInputProps } from "./prompt-input";
+
+export { Suggestions } from "./suggestion";
+export type { SuggestionItem, SuggestionsProps } from "./suggestion";
+
+export { Reasoning } from "./reasoning";
+export type { ReasoningProps } from "./reasoning";
+
 export { Attachments } from "./attachments";
 export type { AttachmentItem, AttachmentsProps } from "./attachments";
 
