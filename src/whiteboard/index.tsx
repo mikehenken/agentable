@@ -89,7 +89,13 @@ export {
 // Shape util — re-exported so consumers wanting to register the shape
 // against a custom tldraw editor instance (e.g. for tests) don't need to
 // reach into `shapes/`.
-export { PanelShapeUtil, createPanelShapeUtil, type PanelShape } from './shapes/PanelShape';
+export {
+  attachPanelScrollWheelIsolation,
+  findScrollableWheelTarget,
+  handlePanelWheelCapture,
+  panelScrollWheelCaptureProps,
+  usePanelScrollWheelIsolation,
+} from './shapes/panelScrollWheel';
 
 export {
   AG_UI_STATE_PATCH_EVENT,

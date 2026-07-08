@@ -35,7 +35,7 @@
  *   - `props.data.__minimized` is reserved for the chrome's minimise
  *     toggle so the shape can show only the title bar without the body.
  */
-import { Suspense, type ReactElement } from 'react';
+import { Suspense, useEffect, useRef, type ReactElement } from 'react';
 import {
   BaseBoxShapeUtil,
   HTMLContainer,
@@ -44,6 +44,7 @@ import {
   type TLBaseShape,
 } from 'tldraw';
 import { PanelChrome } from './PanelChrome';
+import { attachPanelScrollWheelIsolation } from './panelScrollWheel';
 import { useLazyPanel } from './useLazyPanel';
 import {
   DEFAULT_WHITEBOARD_PANEL_REGISTRY,
@@ -110,6 +111,11 @@ export function createPanelShapeUtil(
     /** Whether tldraw can resize this shape. Day 1: yes — the user expects
      *  to grab corners and stretch panels. Day 3 may pin specific shapes
      *  (e.g. the voice shape) by overriding via shape data. */
+    /** Panel bodies host scrollable React content — opt out of canvas wheel. */
+    override canScroll(shape: PanelShape): boolean {
+      return !shape.props.minimized && !shape.props.data.__minimized;
+    }
+
     override canResize(_shape: PanelShape): boolean {
       return true;
     }
@@ -163,9 +169,17 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
   const Lazy = useLazyPanel(registry, panelId);
   const title = (data.__title as string | undefined) ?? friendlyTitle(panelId);
   const isMinimized = minimized || Boolean(data.__minimized);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || isMinimized) return undefined;
+    return attachPanelScrollWheelIsolation(el);
+  }, [isMinimized, panelId]);
 
   return (
     <HTMLContainer
+      ref={rootRef}
       data-testid={`panel-shape-${panelId}`}
       style={{
         width: shape.props.w,
@@ -195,7 +209,6 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           onPointerDown={(e) => e.stopPropagation()}
           onPointerMove={(e) => e.stopPropagation()}
           onPointerUp={(e) => e.stopPropagation()}
-          onWheel={(e) => e.stopPropagation()}
           style={{
             flex: 1,
             minHeight: 0,
