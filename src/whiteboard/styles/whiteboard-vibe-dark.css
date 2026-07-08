@@ -24,3 +24,19 @@
 .whiteboard-shell--vibe-dark .tl-watermark_SEE-LICENSE {
   opacity: 0.35;
 }
+
+/*
+ * P2 — Move the tldraw top-left menu zone (MainMenu + page/menu cluster) to
+ * top-center of the canvas, giving it a floating-toolbar feel. Scoped to the
+ * vibe-dark shell so it never leaks into other tldraw hosts. The `.tl-container`
+ * is `position: relative`, so absolute centering anchors to the canvas.
+ */
+.whiteboard-shell--vibe-dark .tlui-menu-zone {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  border-radius: 0.625rem;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.4);
+}
