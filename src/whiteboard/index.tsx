@@ -27,6 +27,12 @@ import type { WhiteboardShellProps } from './WhiteboardShell';
 export { WhiteboardShell } from './WhiteboardShell';
 export type { WhiteboardShellProps, WhiteboardLayoutMode } from './WhiteboardShell';
 export { minimalTldrawUiComponents } from './minimalTldrawUiComponents';
+export { createWhiteboardTldrawUiComponents } from './createWhiteboardTldrawUiComponents';
+export {
+  CANVAS_SITE_ACTIONS_PANEL_EVENT,
+  SITE_ACTIONS_TOOL_ID,
+  type CanvasSiteActionsPanelEventDetail,
+} from './tools/siteActionsEvents';
 
 /**
  * Lazy WhiteboardShell. The dynamic import resolves to the same module as

@@ -169,6 +169,8 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
   const Lazy = useLazyPanel(registry, panelId);
   const title = (data.__title as string | undefined) ?? friendlyTitle(panelId);
   const isMinimized = minimized || Boolean(data.__minimized);
+  const noBorder = Boolean(data.__noBorder);
+  const fullBleed = Boolean(data.__fullBleed);
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -187,7 +189,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
         display: 'flex',
         flexDirection: 'column',
         background: 'var(--landi-color-surface, #FFFFFF)',
-        border: '1px solid var(--landi-color-border, #E5E5E0)',
+        border: noBorder ? 'none' : '1px solid var(--landi-color-border, #E5E5E0)',
         borderRadius: 12,
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
@@ -212,9 +214,9 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           style={{
             flex: 1,
             minHeight: 0,
-            overflow: 'auto',
+            overflow: fullBleed ? 'hidden' : 'auto',
             touchAction: 'pan-y',
-            background: 'var(--landi-color-surface, #FFFFFF)',
+            background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #FFFFFF)',
           }}
         >
           {Lazy ? (

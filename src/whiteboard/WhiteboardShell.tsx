@@ -17,9 +17,10 @@
  *   drivers (canvasTools, voice) can spawn panels from non-React contexts.
  */
 import { useCallback, useEffect, useMemo, useRef, type ReactElement } from 'react';
-import { Tldraw, type Editor, type TLUser } from 'tldraw';
+import { Tldraw, type Editor, type TLUiComponents, type TLUiOverrides, type TLUser } from 'tldraw';
 import 'tldraw/tldraw.css';
 import './styles/whiteboard-vibe-dark.css';
+import { createWhiteboardTldrawUiComponents } from './createWhiteboardTldrawUiComponents';
 import {
   CanvasProvider,
   useCanvasConfig,
@@ -39,8 +40,9 @@ import {
   type WhiteboardPanelRegistry,
 } from './shapes/whiteboardPanelRegistry';
 import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
-import { minimalTldrawUiComponents } from './minimalTldrawUiComponents';
+import { SiteActionsTool } from './tools/SiteActionsTool';
 import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
+import { siteActionsTldrawOverrides } from './whiteboardTldrawOverrides';
 
 /** @deprecated Use `infinite-panels`. */
 export type WhiteboardLayoutMode = 'infinite-panels' | 'split-column';
@@ -64,6 +66,12 @@ export interface WhiteboardShellProps {
   hideTopBar?: boolean;
   /** When true (default for infinite-panels), open chat PanelShape on mount. */
   openChatOnMount?: boolean;
+  /**
+   * When true, register a "Site actions" item in tldraw's toolbar overflow menu.
+   * Selecting it emits `CANVAS_SITE_ACTIONS_PANEL_EVENT` for host overlays (e.g.
+   * landi-canvas-studio edit + publish bar).
+   */
+  enableSiteActionsTool?: boolean;
 }
 
 const DEFAULT_CHAT_COLUMN_WIDTH = '360px';
@@ -78,6 +86,7 @@ export function WhiteboardShell({
   darkCanvas = false,
   hideTopBar = false,
   openChatOnMount,
+  enableSiteActionsTool = false,
 }: WhiteboardShellProps = {}): ReactElement {
   const shouldOpenChat = openChatOnMount ?? layout === 'infinite-panels';
 
@@ -89,6 +98,7 @@ export function WhiteboardShell({
         darkCanvas={darkCanvas}
         hideTopBar={hideTopBar}
         openChatOnMount={shouldOpenChat}
+        enableSiteActionsTool={enableSiteActionsTool}
       />
     </CanvasProvider>
   );
@@ -100,6 +110,7 @@ interface WhiteboardShellInnerProps {
   darkCanvas: boolean;
   hideTopBar: boolean;
   openChatOnMount: boolean;
+  enableSiteActionsTool: boolean;
 }
 
 function WhiteboardShellInner({
@@ -108,10 +119,24 @@ function WhiteboardShellInner({
   darkCanvas,
   hideTopBar,
   openChatOnMount,
+  enableSiteActionsTool,
 }: WhiteboardShellInnerProps): ReactElement {
   const { tenant } = useCanvasConfig();
   const tldrawUser = useWhiteboardTldrawUser(darkCanvas);
   const shapeUtils = useMemo(() => [createPanelShapeUtil(panels)], [panels]);
+  const tldrawUiComponents = useMemo(
+    () => createWhiteboardTldrawUiComponents({ enableSiteActionsTool }),
+    [enableSiteActionsTool],
+  );
+  const extraTools = useMemo(
+    () => (enableSiteActionsTool ? [SiteActionsTool] : []),
+    [enableSiteActionsTool],
+  );
+  const tldrawOverrides = useMemo(
+    (): TLUiOverrides[] | undefined =>
+      enableSiteActionsTool ? [siteActionsTldrawOverrides] : undefined,
+    [enableSiteActionsTool],
+  );
   const persistenceKey = `career-whiteboard-${tenant}`;
   const editorRef = useRef<Editor | null>(null);
   const chatOpenedRef = useRef(false);
@@ -196,7 +221,9 @@ function WhiteboardShellInner({
         >
           <Tldraw
             hideUi={false}
-            components={minimalTldrawUiComponents}
+            components={tldrawUiComponents}
+            overrides={tldrawOverrides}
+            tools={extraTools}
             persistenceKey={persistenceKey}
             shapeUtils={shapeUtils}
             user={tldrawUser}
@@ -208,6 +235,9 @@ function WhiteboardShellInner({
           persistenceKey={persistenceKey}
           shapeUtils={shapeUtils}
           tldrawUser={tldrawUser}
+          tldrawUiComponents={tldrawUiComponents}
+          extraTools={extraTools}
+          tldrawOverrides={tldrawOverrides}
           onMount={handleMount}
           shellBackground={shellBackground}
         />
@@ -221,12 +251,18 @@ function SplitColumnLayout({
   persistenceKey,
   shapeUtils,
   tldrawUser,
+  tldrawUiComponents,
+  extraTools,
+  tldrawOverrides,
   onMount,
   shellBackground,
 }: {
   persistenceKey: string;
   shapeUtils: ReturnType<typeof createPanelShapeUtil>[];
   tldrawUser: TLUser;
+  tldrawUiComponents: TLUiComponents;
+  extraTools: typeof SiteActionsTool[];
+  tldrawOverrides: TLUiOverrides[] | undefined;
   onMount: (editor: Editor) => void;
   shellBackground: string;
 }): ReactElement {
@@ -268,7 +304,9 @@ function SplitColumnLayout({
       >
         <Tldraw
           hideUi={false}
-          components={minimalTldrawUiComponents}
+          components={tldrawUiComponents}
+          overrides={tldrawOverrides}
+          tools={extraTools}
           persistenceKey={persistenceKey}
           shapeUtils={shapeUtils}
           user={tldrawUser}
