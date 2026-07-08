@@ -222,7 +222,12 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
     <HTMLContainer
       ref={rootRef}
       data-testid={`panel-shape-${panelId}`}
-      className={fullBleed ? 'panel-shape--full-bleed' : undefined}
+      className={[
+        'panel-shape',
+        fullBleed ? 'panel-shape--full-bleed' : 'panel-shape--chrome',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={{
         width: shape.props.w,
         height: isMinimized ? TITLE_BAR_HEIGHT : shape.props.h,
@@ -230,10 +235,10 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
         flexDirection: 'column',
         background: fullBleed
           ? 'var(--landi-color-background, #121212)'
-          : 'var(--landi-color-surface, #FFFFFF)',
-        border: edgeToEdge ? 'none' : '1px solid var(--landi-color-border, #E5E5E0)',
+          : 'var(--landi-color-surface, #1f1f1f)',
+        border: edgeToEdge ? 'none' : '1px solid var(--landi-color-border, #3a3a3a)',
         borderRadius: edgeToEdge ? 0 : 12,
-        boxShadow: edgeToEdge ? 'none' : '0 4px 16px rgba(0, 0, 0, 0.08)',
+        boxShadow: edgeToEdge ? 'none' : '0 8px 24px rgb(0 0 0 / 0.35)',
         overflow: 'hidden',
         // Pointer events on the container itself flow to tldraw — that's
         // how the user grabs the shape. The body div below intercepts
@@ -267,7 +272,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
             flexDirection: 'column',
             overflow: fullBleed ? 'hidden' : 'auto',
             touchAction: 'pan-y',
-            background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #FFFFFF)',
+            background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #1f1f1f)',
           }}
         >
           <div className="panel-shape__content">

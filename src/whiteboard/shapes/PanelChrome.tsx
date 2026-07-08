@@ -27,29 +27,9 @@ export interface PanelChromeProps {
 
 export function PanelChrome({ panelId, title, minimized }: PanelChromeProps): ReactElement {
   return (
-    <div
-      style={{
-        height: 32,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 8px 0 12px',
-        borderBottom: '1px solid var(--landi-color-border, #E5E5E0)',
-        background: 'var(--landi-color-surface, #FAFAF7)',
-        fontSize: 13,
-        fontWeight: 500,
-        color: 'var(--landi-color-text, #1A1A1A)',
-        userSelect: 'none',
-        cursor: 'grab',
-        // No `pointer-events: none` — we want the title bar to be hoverable
-        // by tldraw for drag selection. We also don't stopPropagation so
-        // the drag actually works.
-      }}
-    >
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        {title}
-      </span>
-      <div style={{ display: 'flex', gap: 4 }}>
+    <div className="panel-chrome" data-testid={`panel-chrome-${panelId}`}>
+      <span className="panel-chrome__title">{title}</span>
+      <div className="panel-chrome__actions">
         <ChromeButton
           aria-label={minimized ? 'Restore panel' : 'Minimize panel'}
           onClick={() => updatePanelProps(panelId, { __minimized: !minimized })}
@@ -77,6 +57,7 @@ function ChromeButton(props: ChromeButtonProps): ReactElement {
   return (
     <button
       type="button"
+      className="panel-chrome__btn"
       aria-label={props['aria-label']}
       onPointerDown={(e) => {
         // Prevent tldraw from starting a drag when the user clicks a chrome
@@ -87,26 +68,6 @@ function ChromeButton(props: ChromeButtonProps): ReactElement {
       onClick={(e) => {
         e.stopPropagation();
         props.onClick();
-      }}
-      style={{
-        width: 22,
-        height: 22,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        border: 'none',
-        borderRadius: 4,
-        background: 'transparent',
-        color: 'var(--landi-color-text-muted, #6B6B66)',
-        cursor: 'pointer',
-        padding: 0,
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.background =
-          'var(--landi-color-hover, rgba(0,0,0,0.05))';
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
       }}
     >
       {props.children}
