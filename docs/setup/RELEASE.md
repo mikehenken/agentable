@@ -1,7 +1,7 @@
 ---
 doc_type: guide
 title: Release Process
-description: Manual GitHub Actions workflow for semver bumps, git tags, GitHub Packages publish, and consumer SHA pinning in landi-canvas-studio.
+description: GitHub Actions workflow for automatic releases on package.json version bumps, manual dispatch, git tags, and consumer SHA pinning in landi-canvas-studio.
 created_at: "2026-07-07"
 version: "1.0.0"
 updated_at: "2026-07-07"
@@ -22,17 +22,26 @@ changelog:
 
 # Release Process
 
-`agentable-canvas` ships from the [`mikehenken/agentable`](https://github.com/mikehenken/agentable) repository on the **`main`** branch. Releases are **manual** via GitHub Actions — never triggered automatically on merge.
+`agentable-canvas` ships from the [`mikehenken/agentable`](https://github.com/mikehenken/agentable) repository on the **`main`** branch.
 
 ## Workflow
 
 | Item | Value |
 |------|-------|
 | Workflow file | `.github/workflows/release-package.yml` |
-| Trigger | `workflow_dispatch` (Actions → **Release package** → **Run workflow**) |
+| Auto trigger | Push/merge to `main` when `package.json` **version** changes |
+| Manual trigger | `workflow_dispatch` (Actions → **Release package** → **Run workflow**) |
 | Target branch | `main` |
 | Tag format | `vX.Y.Z` (e.g. `v0.2.0`) |
-| Registry | GitHub Packages (`npm.pkg.github.com`) |
+| Registry | GitHub Packages (`npm.pkg.github.com`, advisory until scoped) |
+
+## Automatic release (recommended)
+
+1. Bump `version` in `package.json` (and `package-lock.json` when present) in your PR or commit.
+2. Merge to `main`.
+3. The **Release package** workflow detects `HEAD^` vs `HEAD` version change, runs unit tests, tags `vX.Y.Z`, creates a GitHub Release, and attempts npm publish.
+
+Pushes that only change `package.json` without a version bump are skipped. Pushes from `github-actions[bot]` (manual dispatch version commits) do not re-trigger auto-release.
 
 ## Inputs
 
@@ -51,13 +60,21 @@ changelog:
 
 ## Release steps (automated)
 
+**On version bump merge to `main`:**
+
 1. Checkout `main`
-2. Run **unit tests** (gate); lint and typecheck are advisory in CI until debt is cleared
-3. Bump `package.json` version (lockfile updated when present)
-4. Commit `[release] vX.Y.Z`
-5. Create and push git tag `vX.Y.Z`
-6. `npm publish` to GitHub Packages
-7. Create GitHub Release via `gh release create` with consumer bump instructions
+2. Detect version change in `package.json`
+3. Run **unit tests** (gate); lint and typecheck are advisory in CI until debt is cleared
+4. Create and push git tag `vX.Y.Z` at the merge commit
+5. Create GitHub Release via `gh release create` with consumer bump instructions
+6. Attempt `npm publish` to GitHub Packages (advisory)
+
+**On manual `workflow_dispatch`:**
+
+1. Resolve bump keyword or explicit semver
+2. Bump `package.json` version (lockfile updated when present)
+3. Commit `[release] vX.Y.Z` and push to `main`
+4. Tag, release, and publish as above
 
 ## Required GitHub configuration
 
@@ -96,6 +113,6 @@ After a release:
 
 See [BRANCHING.md](BRANCHING.md) for the `main`-only contribution flow.
 
-## Do not run accidentally
+## Day-to-day validation
 
-The release workflow **pushes tags and publishes packages**. Only run it when you intend to ship a new version. For day-to-day validation, use the **CI** workflow (`.github/workflows/ci.yml`) on PRs and pushes to `main`.
+Use the **CI** workflow (`.github/workflows/ci.yml`) on PRs and pushes to `main`. Only bump `package.json` version when you intend to ship a new release.

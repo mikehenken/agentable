@@ -1,6 +1,11 @@
 name: Release package
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
   workflow_dispatch:
     inputs:
       version:
@@ -27,62 +32,84 @@ concurrency:
 
 jobs:
   release:
-    name: Bump, tag, publish
+    name: Tag, publish, release
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Auto-release only for human merges; manual dispatch may push a version commit.
+    if: github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]'
 
     steps:
-      - name: Checkout main
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          registry-url: https://npm.pkg.github.com
-          scope: "@mikehenken"
-
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Unit tests
-        run: npm run test
 
       - name: Resolve release version
         id: version
         shell: bash
         run: |
           set -euo pipefail
-          INPUT="${{ inputs.version }}"
-          CURRENT=$(node -p "require('./package.json').version")
 
-          resolve_bump() {
-            local bump="$1"
-            node -e "
-              const [maj, min, pat] = process.argv[1].split('.').map(Number);
-              const bump = process.argv[2];
-              let next;
-              if (bump === 'major') next = [maj + 1, 0, 0];
-              else if (bump === 'minor') next = [maj, min + 1, 0];
-              else if (bump === 'patch') next = [maj, min, pat + 1];
-              else throw new Error('invalid bump');
-              console.log(next.join('.'));
-            " "$CURRENT" "$bump"
+          read_version() {
+            node -e "const fs=require('fs');const p=process.argv[1];console.log(JSON.parse(fs.readFileSync(p,'utf8')).version)" "$1"
           }
 
-          if [[ "$INPUT" =~ ^(patch|minor|major)$ ]]; then
-            NEXT=$(resolve_bump "$INPUT")
-          elif [[ "$INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
-            NEXT="$INPUT"
+          CURRENT=$(read_version package.json)
+          EVENT="${{ github.event_name }}"
+          TAG="v${CURRENT}"
+
+          if [[ "$EVENT" == "workflow_dispatch" ]]; then
+            INPUT="${{ inputs.version }}"
+
+            resolve_bump() {
+              local bump="$1"
+              node -e "
+                const [maj, min, pat] = process.argv[1].split('.').map(Number);
+                const bump = process.argv[2];
+                let next;
+                if (bump === 'major') next = [maj + 1, 0, 0];
+                else if (bump === 'minor') next = [maj, min + 1, 0];
+                else if (bump === 'patch') next = [maj, min, pat + 1];
+                else throw new Error('invalid bump');
+                console.log(next.join('.'));
+              " "$CURRENT" "$bump"
+            }
+
+            if [[ "$INPUT" =~ ^(patch|minor|major)$ ]]; then
+              NEXT=$(resolve_bump "$INPUT")
+            elif [[ "$INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+              NEXT="$INPUT"
+            else
+              echo "::error::version must be semver (e.g. 0.2.0) or patch|minor|major"
+              exit 1
+            fi
+
+            TAG="v${NEXT}"
+            echo "mode=manual" >> "$GITHUB_OUTPUT"
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           else
-            echo "::error::version must be semver (e.g. 0.2.0) or patch|minor|major"
-            exit 1
+            PREVIOUS=""
+            if git rev-parse HEAD^ >/dev/null 2>&1; then
+              git show HEAD^:package.json > /tmp/previous-package.json
+              PREVIOUS=$(read_version /tmp/previous-package.json)
+            fi
+
+            if [[ "$CURRENT" == "$PREVIOUS" ]]; then
+              echo "package.json version unchanged (${CURRENT}) — skipping release"
+              echo "mode=auto" >> "$GITHUB_OUTPUT"
+              echo "should_release=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Detected version bump: ${PREVIOUS:-<none>} -> ${CURRENT}"
+            echo "mode=auto" >> "$GITHUB_OUTPUT"
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "next=$CURRENT" >> "$GITHUB_OUTPUT"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           fi
 
-          TAG="v${NEXT}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "tag_exists=true" >> "$GITHUB_OUTPUT"
             echo "::warning::Tag $TAG already exists — will skip tag push and retry publish/release."
@@ -90,10 +117,28 @@ jobs:
             echo "tag_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Skip when no release needed
+        if: steps.version.outputs.should_release != 'true'
+        run: echo "No release required for this push."
+
+      - name: Setup Node.js
+        if: steps.version.outputs.should_release == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: https://npm.pkg.github.com
+          scope: "@mikehenken"
+
+      - name: Install dependencies
+        if: steps.version.outputs.should_release == 'true'
+        run: npm install --no-audit --no-fund
+
+      - name: Unit tests
+        if: steps.version.outputs.should_release == 'true'
+        run: npm run test
 
       - name: Bump package.json version
+        if: steps.version.outputs.should_release == 'true' && steps.version.outputs.mode == 'manual'
         shell: bash
         run: |
           set -euo pipefail
@@ -106,6 +151,7 @@ jobs:
           fi
 
       - name: Commit version bump
+        if: steps.version.outputs.should_release == 'true' && steps.version.outputs.mode == 'manual'
         shell: bash
         run: |
           set -euo pipefail
@@ -120,20 +166,23 @@ jobs:
           fi
 
       - name: Create git tag
-        if: steps.version.outputs.tag_exists != 'true'
+        if: steps.version.outputs.should_release == 'true' && steps.version.outputs.tag_exists != 'true'
         run: git tag "${{ steps.version.outputs.tag }}"
 
       - name: Push commit and tag
+        if: steps.version.outputs.should_release == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          if git rev-parse --verify origin/main >/dev/null 2>&1; then
-            LOCAL_HEAD=$(git rev-parse HEAD)
-            REMOTE_HEAD=$(git rev-parse origin/main)
-            if [[ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]]; then
-              git push origin main
-            else
-              echo "main unchanged — skipping push"
+          if [[ "${{ steps.version.outputs.mode }}" == "manual" ]]; then
+            if git rev-parse --verify origin/main >/dev/null 2>&1; then
+              LOCAL_HEAD=$(git rev-parse HEAD)
+              REMOTE_HEAD=$(git rev-parse origin/main)
+              if [[ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]]; then
+                git push origin main
+              else
+                echo "main unchanged — skipping push"
+              fi
             fi
           fi
           if [[ "${{ steps.version.outputs.tag_exists }}" != "true" ]]; then
@@ -143,6 +192,7 @@ jobs:
           fi
 
       - name: Create GitHub release
+        if: steps.version.outputs.should_release == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
@@ -178,6 +228,7 @@ jobs:
           gh release create "${ARGS[@]}"
 
       - name: Publish to GitHub Packages
+        if: steps.version.outputs.should_release == 'true'
         continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
