@@ -115,6 +115,32 @@ export function focusPanelInCanvas(panelId: string): boolean {
   return true;
 }
 
+/**
+ * Group panel shapes so they move together on the canvas. Reuses an
+ * existing group when one already contains any of the panel ids.
+ */
+export function groupPanelsInCanvas(panelIds: string[]): boolean {
+  const editor = editorRef;
+  if (!editor || panelIds.length < 2) return false;
+
+  const shapeIds = panelIds.map((panelId) => createShapeId(`panel:${panelId}`));
+  const existing = shapeIds.filter((id) => Boolean(editor.getShape(id)));
+  if (existing.length < 2) return false;
+
+  for (const shapeId of existing) {
+    const parentId = editor.getShape(shapeId)?.parentId;
+    if (parentId && editor.getShape(parentId)?.type === 'group') {
+      const siblings = editor.getSortedChildIdsForParent(parentId);
+      if (existing.every((id) => siblings.includes(id))) {
+        return true;
+      }
+    }
+  }
+
+  editor.groupShapes(existing);
+  return true;
+}
+
 export function updatePanelProps(
   panelId: string,
   patch: Record<string, unknown>,

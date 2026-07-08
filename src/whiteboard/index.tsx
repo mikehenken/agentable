@@ -83,6 +83,7 @@ export {
   openPanelInCanvas,
   closePanelInCanvas,
   focusPanelInCanvas,
+  groupPanelsInCanvas,
   updatePanelProps,
   __resetPanelShapeApiForTests__,
   type OpenPanelOptions,

@@ -202,6 +202,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
   const isMinimized = minimized || Boolean(data.__minimized);
   const noBorder = Boolean(data.__noBorder);
   const fullBleed = Boolean(data.__fullBleed);
+  const hideChrome = Boolean(data.__hideChrome) || fullBleed;
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -230,7 +231,9 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
         pointerEvents: 'all',
       }}
     >
-      <PanelChrome panelId={panelId} title={title} minimized={isMinimized} />
+      {!hideChrome ? (
+        <PanelChrome panelId={panelId} title={title} minimized={isMinimized} />
+      ) : null}
 
       {!isMinimized && (
         <div
@@ -245,6 +248,9 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           style={{
             flex: 1,
             minHeight: 0,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
             overflow: fullBleed ? 'hidden' : 'auto',
             touchAction: 'pan-y',
             background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #FFFFFF)',
