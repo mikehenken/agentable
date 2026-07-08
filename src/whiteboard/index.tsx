@@ -33,6 +33,11 @@ export {
   SITE_ACTIONS_TOOL_ID,
   type CanvasSiteActionsPanelEventDetail,
 } from './tools/siteActionsEvents';
+export {
+  CANVAS_LAYERS_PANEL_EVENT,
+  LAYERS_TOOL_ID,
+  type CanvasLayersPanelEventDetail,
+} from './tools/layersEvents';
 
 /**
  * Lazy WhiteboardShell. The dynamic import resolves to the same module as

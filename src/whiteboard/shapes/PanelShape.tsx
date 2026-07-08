@@ -40,6 +40,9 @@ import {
   BaseBoxShapeUtil,
   HTMLContainer,
   T,
+  track,
+  useEditor,
+  useValue,
   type RecordProps,
   type TLBaseShape,
 } from 'tldraw';
@@ -68,6 +71,8 @@ export type PanelShape = TLBaseShape<
 >;
 
 const TITLE_BAR_HEIGHT = 32;
+const PANEL_INDICATOR_STROKE = 'rgba(255, 140, 122, 0.55)';
+const PANEL_INDICATOR_STROKE_WIDTH = 1.5;
 
 /**
  * Build a `BaseBoxShapeUtil<PanelShape>` subclass with the registry
@@ -130,17 +135,7 @@ export function createPanelShapeUtil(
     }
 
     override indicator(shape: PanelShape): ReactElement {
-      // Selection outline drawn by tldraw — slightly inset so the visible
-      // panel border isn't doubled.
-      return (
-        <rect
-          width={shape.props.w}
-          height={shape.props.h}
-          rx={12}
-          ry={12}
-          fill="none"
-        />
-      );
+      return <PanelShapeIndicator shape={shape} />;
     }
   }
 
@@ -154,6 +149,42 @@ export function createPanelShapeUtil(
  * a registry.
  */
 export const PanelShapeUtil = createPanelShapeUtil();
+
+const PanelShapeIndicator = track(function PanelShapeIndicator({
+  shape,
+}: {
+  shape: PanelShape;
+}): ReactElement {
+  const editor = useEditor();
+  const showOutline = useValue(
+    'panelIndicator',
+    () => {
+      const selectedIds = editor.getSelectedShapeIds();
+      if (selectedIds.includes(shape.id)) return true;
+      const onlySelected = editor.getOnlySelectedShape();
+      if (!onlySelected || onlySelected.id !== shape.id) return false;
+      const toolId = editor.getCurrentToolId();
+      return toolId === 'select' || toolId.startsWith('select.');
+    },
+    [editor, shape.id],
+  );
+
+  if (!showOutline) {
+    return <g />;
+  }
+
+  return (
+    <rect
+      width={shape.props.w}
+      height={shape.props.h}
+      rx={12}
+      ry={12}
+      fill="none"
+      stroke={PANEL_INDICATOR_STROKE}
+      strokeWidth={PANEL_INDICATOR_STROKE_WIDTH}
+    />
+  );
+});
 
 interface PanelShapeBodyProps {
   shape: PanelShape;

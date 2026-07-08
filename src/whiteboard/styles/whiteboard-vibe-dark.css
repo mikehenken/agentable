@@ -19,6 +19,21 @@
 /* Align tldraw native dark canvas with Landi vibe background. */
 .whiteboard-shell--vibe-dark .tl-theme__dark {
   --tl-color-background: #121212;
+  --tl-color-selection-stroke: rgb(255 140 122 / 0.55);
+  --tl-color-selection-fill: rgb(255 140 122 / 0.08);
+  --tl-color-hint: rgb(147 197 253 / 0.45);
+}
+
+/* Softer selection chrome for panel manipulation in vibe-dark. */
+.whiteboard-shell--vibe-dark .tl-selection__fg__outline {
+  stroke: rgb(255 140 122 / 0.45);
+  stroke-width: calc(1px * var(--tl-scale));
+}
+
+.whiteboard-shell--vibe-dark .tl-corner-handle,
+.whiteboard-shell--vibe-dark .tl-text-handle {
+  stroke: rgb(255 140 122 / 0.5);
+  stroke-width: calc(1px * var(--tl-scale));
 }
 
 .whiteboard-shell--vibe-dark .tl-watermark_SEE-LICENSE {

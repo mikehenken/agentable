@@ -13,6 +13,17 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      classnames: path.resolve(__dirname, "./src/shims/classnames.ts"),
+      "classnames-original": path.resolve(__dirname, "./node_modules/classnames/index.js"),
     },
+  },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "tldraw",
+      "@tldraw/editor",
+      "classnames",
+    ],
   },
 });

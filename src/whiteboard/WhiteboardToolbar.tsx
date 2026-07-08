@@ -5,14 +5,25 @@ import {
   ToolbarItem,
   type DefaultToolbarProps,
 } from 'tldraw';
+import { LAYERS_TOOL_ID } from './tools/layersEvents';
 import { SITE_ACTIONS_TOOL_ID } from './tools/siteActionsEvents';
 
-/** Default tldraw toolbar plus site-actions item (overflows on narrow viewports). */
-export function WhiteboardToolbar(props: DefaultToolbarProps): ReactElement {
+export interface WhiteboardToolbarProps extends DefaultToolbarProps {
+  enableSiteActionsTool?: boolean;
+  enableLayersPanel?: boolean;
+}
+
+/** Default tldraw toolbar plus optional overflow tools (layers, site-actions). */
+export function WhiteboardToolbar({
+  enableSiteActionsTool = false,
+  enableLayersPanel = false,
+  ...props
+}: WhiteboardToolbarProps): ReactElement {
   return (
     <DefaultToolbar {...props}>
       <DefaultToolbarContent />
-      <ToolbarItem tool={SITE_ACTIONS_TOOL_ID} />
+      {enableLayersPanel ? <ToolbarItem tool={LAYERS_TOOL_ID} /> : null}
+      {enableSiteActionsTool ? <ToolbarItem tool={SITE_ACTIONS_TOOL_ID} /> : null}
     </DefaultToolbar>
   );
 }

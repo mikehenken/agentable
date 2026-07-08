@@ -41,8 +41,10 @@ import {
 } from './shapes/whiteboardPanelRegistry';
 import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
 import { SiteActionsTool } from './tools/SiteActionsTool';
+import { LayersTool } from './tools/LayersTool';
 import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
 import { siteActionsTldrawOverrides } from './whiteboardTldrawOverrides';
+import { layersTldrawOverrides } from './layersTldrawOverrides';
 
 /** @deprecated Use `infinite-panels`. */
 export type WhiteboardLayoutMode = 'infinite-panels' | 'split-column';
@@ -72,6 +74,11 @@ export interface WhiteboardShellProps {
    * landi-canvas-studio edit + publish bar).
    */
   enableSiteActionsTool?: boolean;
+  /**
+   * When true, register a "Layers" toolbar item and fixed-right shape tree.
+   * Defaults to `true` for `infinite-panels` layout or when site-actions is enabled.
+   */
+  enableLayersPanel?: boolean;
 }
 
 const DEFAULT_CHAT_COLUMN_WIDTH = '360px';
@@ -87,8 +94,11 @@ export function WhiteboardShell({
   hideTopBar = false,
   openChatOnMount,
   enableSiteActionsTool = false,
+  enableLayersPanel,
 }: WhiteboardShellProps = {}): ReactElement {
   const shouldOpenChat = openChatOnMount ?? layout === 'infinite-panels';
+  const shouldEnableLayersPanel =
+    enableLayersPanel ?? (layout === 'infinite-panels' || enableSiteActionsTool);
 
   return (
     <CanvasProvider config={config}>
@@ -99,6 +109,7 @@ export function WhiteboardShell({
         hideTopBar={hideTopBar}
         openChatOnMount={shouldOpenChat}
         enableSiteActionsTool={enableSiteActionsTool}
+        enableLayersPanel={shouldEnableLayersPanel}
       />
     </CanvasProvider>
   );
@@ -111,6 +122,7 @@ interface WhiteboardShellInnerProps {
   hideTopBar: boolean;
   openChatOnMount: boolean;
   enableSiteActionsTool: boolean;
+  enableLayersPanel: boolean;
 }
 
 function WhiteboardShellInner({
@@ -120,23 +132,31 @@ function WhiteboardShellInner({
   hideTopBar,
   openChatOnMount,
   enableSiteActionsTool,
+  enableLayersPanel,
 }: WhiteboardShellInnerProps): ReactElement {
   const { tenant } = useCanvasConfig();
   const tldrawUser = useWhiteboardTldrawUser(darkCanvas);
   const shapeUtils = useMemo(() => [createPanelShapeUtil(panels)], [panels]);
   const tldrawUiComponents = useMemo(
-    () => createWhiteboardTldrawUiComponents({ enableSiteActionsTool }),
-    [enableSiteActionsTool],
+    () =>
+      createWhiteboardTldrawUiComponents({
+        enableSiteActionsTool,
+        enableLayersPanel,
+      }),
+    [enableSiteActionsTool, enableLayersPanel],
   );
-  const extraTools = useMemo(
-    () => (enableSiteActionsTool ? [SiteActionsTool] : []),
-    [enableSiteActionsTool],
-  );
-  const tldrawOverrides = useMemo(
-    (): TLUiOverrides[] | undefined =>
-      enableSiteActionsTool ? [siteActionsTldrawOverrides] : undefined,
-    [enableSiteActionsTool],
-  );
+  const extraTools = useMemo(() => {
+    const tools = [];
+    if (enableLayersPanel) tools.push(LayersTool);
+    if (enableSiteActionsTool) tools.push(SiteActionsTool);
+    return tools;
+  }, [enableSiteActionsTool, enableLayersPanel]);
+  const tldrawOverrides = useMemo((): TLUiOverrides[] | undefined => {
+    const overrides: TLUiOverrides[] = [];
+    if (enableLayersPanel) overrides.push(layersTldrawOverrides);
+    if (enableSiteActionsTool) overrides.push(siteActionsTldrawOverrides);
+    return overrides.length > 0 ? overrides : undefined;
+  }, [enableSiteActionsTool, enableLayersPanel]);
   const persistenceKey = `career-whiteboard-${tenant}`;
   const editorRef = useRef<Editor | null>(null);
   const chatOpenedRef = useRef(false);
@@ -261,7 +281,7 @@ function SplitColumnLayout({
   shapeUtils: ReturnType<typeof createPanelShapeUtil>[];
   tldrawUser: TLUser;
   tldrawUiComponents: TLUiComponents;
-  extraTools: typeof SiteActionsTool[];
+  extraTools: (typeof SiteActionsTool | typeof LayersTool)[];
   tldrawOverrides: TLUiOverrides[] | undefined;
   onMount: (editor: Editor) => void;
   shellBackground: string;
