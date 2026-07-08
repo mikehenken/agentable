@@ -55,3 +55,33 @@
   border-radius: 0.625rem;
   box-shadow: 0 6px 20px rgb(0 0 0 / 0.4);
 }
+
+/* PanelShape — stretch hosted panel bodies to fill available height. */
+.panel-shape__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.panel-shape__body[data-full-bleed='true'] {
+  overflow: hidden;
+}
+
+.whiteboard-shell--vibe-dark .panel-shape__body {
+  background: #121212;
+}
+
+.whiteboard-shell--vibe-dark .panel-shape--full-bleed {
+  background: #121212;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.whiteboard-shell--vibe-dark .panel-shape--full-bleed .panel-shape__body {
+  background: transparent;
+}

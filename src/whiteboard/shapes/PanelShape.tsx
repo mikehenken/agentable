@@ -47,7 +47,10 @@ import {
   type TLBaseShape,
 } from 'tldraw';
 import { PanelChrome } from './PanelChrome';
-import { attachPanelScrollWheelIsolation } from './panelScrollWheel';
+import {
+  attachPanelScrollWheelIsolation,
+  panelCapturesHorizontalWheel,
+} from './panelScrollWheel';
 import { useLazyPanel } from './useLazyPanel';
 import {
   DEFAULT_WHITEBOARD_PANEL_REGISTRY,
@@ -204,26 +207,33 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
   const fullBleed = Boolean(data.__fullBleed);
   const hideChrome = Boolean(data.__hideChrome) || fullBleed;
   const rootRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const captureHorizontalWheel = panelCapturesHorizontalWheel(panelId);
 
   useEffect(() => {
-    const el = rootRef.current;
+    const el = bodyRef.current;
     if (!el || isMinimized) return undefined;
-    return attachPanelScrollWheelIsolation(el);
-  }, [isMinimized, panelId]);
+    return attachPanelScrollWheelIsolation(el, { captureHorizontalWheel });
+  }, [isMinimized, panelId, captureHorizontalWheel]);
+
+  const edgeToEdge = noBorder || fullBleed;
 
   return (
     <HTMLContainer
       ref={rootRef}
       data-testid={`panel-shape-${panelId}`}
+      className={fullBleed ? 'panel-shape--full-bleed' : undefined}
       style={{
         width: shape.props.w,
         height: isMinimized ? TITLE_BAR_HEIGHT : shape.props.h,
         display: 'flex',
         flexDirection: 'column',
-        background: 'var(--landi-color-surface, #FFFFFF)',
-        border: noBorder ? 'none' : '1px solid var(--landi-color-border, #E5E5E0)',
-        borderRadius: 12,
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+        background: fullBleed
+          ? 'var(--landi-color-background, #121212)'
+          : 'var(--landi-color-surface, #FFFFFF)',
+        border: edgeToEdge ? 'none' : '1px solid var(--landi-color-border, #E5E5E0)',
+        borderRadius: edgeToEdge ? 0 : 12,
+        boxShadow: edgeToEdge ? 'none' : '0 4px 16px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         // Pointer events on the container itself flow to tldraw — that's
         // how the user grabs the shape. The body div below intercepts
@@ -237,6 +247,10 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
 
       {!isMinimized && (
         <div
+          ref={bodyRef}
+          className="panel-shape__body"
+          data-full-bleed={fullBleed ? 'true' : undefined}
+          data-panel-id={panelId || undefined}
           // Body wrapper. Stops pointer/wheel events so panel inputs scroll
           // & receive focus normally without fighting tldraw's pan/zoom.
           // `touchAction: 'pan-y'` opts the body out of tldraw's pinch
@@ -256,13 +270,15 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
             background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #FFFFFF)',
           }}
         >
-          {Lazy ? (
-            <Suspense fallback={<PanelLoadingPlaceholder />}>
-              <Lazy data={data} hostedInWhiteboard />
-            </Suspense>
-          ) : (
-            <PanelMissingPlaceholder panelId={panelId} />
-          )}
+          <div className="panel-shape__content">
+            {Lazy ? (
+              <Suspense fallback={<PanelLoadingPlaceholder />}>
+                <Lazy data={data} hostedInWhiteboard />
+              </Suspense>
+            ) : (
+              <PanelMissingPlaceholder panelId={panelId} />
+            )}
+          </div>
         </div>
       )}
     </HTMLContainer>
