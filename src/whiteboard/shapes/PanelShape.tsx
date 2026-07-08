@@ -119,9 +119,9 @@ export function createPanelShapeUtil(
     /** Whether tldraw can resize this shape. Day 1: yes — the user expects
      *  to grab corners and stretch panels. Day 3 may pin specific shapes
      *  (e.g. the voice shape) by overriding via shape data. */
-    /** Panel bodies host scrollable React content — opt out of canvas wheel. */
-    override canScroll(shape: PanelShape): boolean {
-      return !shape.props.minimized && !shape.props.data.__minimized;
+    /** Wheel scroll is handled selectively via panelScrollWheel capture — never block canvas pan/zoom globally. */
+    override canScroll(_shape: PanelShape): boolean {
+      return false;
     }
 
     override canResize(_shape: PanelShape): boolean {
