@@ -5,26 +5,39 @@
  * (`useGestureEvents`) that always preventDefault + pans/zooms unless the
  * pointer is over an *editing* shape with `canScroll() === true`. Panel
  * shapes are interactive but not in edit mode, so we intercept wheel in
- * **capture** phase on the panel root and stop propagation before tldraw
- * sees the event.
+ * **capture** phase on the panel body and stop propagation before tldraw
+ * sees the event — but only when a scrollable descendant can absorb the
+ * wheel delta.
  *
- * Pattern aligned with tldraw's scroll example + `usePassThroughWheelEvents`:
- * scrollable descendants consume the wheel; everything else over the panel
- * still blocks canvas zoom.
+ * Policy:
+ * - Empty canvas / panel chrome: pass through → canvas pan/zoom
+ * - Panel body with vertical overflow: vertical wheel scrolls the panel
+ * - Preview/draft panels only: horizontal wheel captured when tab strip
+ *   (or other descendant) has horizontal overflow
  */
 import { useEffect, type RefObject, type WheelEvent as ReactWheelEvent } from 'react';
 
-function isElementScrollable(el: HTMLElement): boolean {
+export interface PanelWheelCaptureOptions {
+  /** When true, horizontal wheel may be captured by horizontally scrollable descendants. */
+  captureHorizontalWheel?: boolean;
+}
+
+function isElementVerticallyScrollable(el: HTMLElement): boolean {
   const style = getComputedStyle(el);
   const overflowY = style.overflowY || el.style.overflowY;
-  const overflowX = style.overflowX || el.style.overflowX;
-  const scrollableY =
+  return (
     (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') &&
-    el.scrollHeight > el.clientHeight + 1;
-  const scrollableX =
+    el.scrollHeight > el.clientHeight + 1
+  );
+}
+
+function isElementHorizontallyScrollable(el: HTMLElement): boolean {
+  const style = getComputedStyle(el);
+  const overflowX = style.overflowX || el.style.overflowX;
+  return (
     (overflowX === 'auto' || overflowX === 'scroll' || overflowX === 'overlay') &&
-    el.scrollWidth > el.clientWidth + 1;
-  return scrollableY || scrollableX;
+    el.scrollWidth > el.clientWidth + 1
+  );
 }
 
 function canScrollVertically(el: HTMLElement, deltaY: number): boolean {
@@ -52,23 +65,31 @@ export function findScrollableWheelTarget(
   target: EventTarget | null,
   deltaX: number,
   deltaY: number,
+  options: PanelWheelCaptureOptions = {},
 ): HTMLElement | null {
+  const { captureHorizontalWheel = false } = options;
   let node = target instanceof HTMLElement ? target : null;
   while (node && panelRoot.contains(node)) {
-    if (isElementScrollable(node)) {
-      const canScroll =
-        (deltaY !== 0 && canScrollVertically(node, deltaY)) ||
-        (deltaX !== 0 && canScrollHorizontally(node, deltaX));
-      if (canScroll) return node;
-    }
+    const canScrollY =
+      isElementVerticallyScrollable(node) && deltaY !== 0 && canScrollVertically(node, deltaY);
+    const canScrollX =
+      captureHorizontalWheel &&
+      isElementHorizontallyScrollable(node) &&
+      deltaX !== 0 &&
+      canScrollHorizontally(node, deltaX);
+    if (canScrollY || canScrollX) return node;
     if (node === panelRoot) break;
     node = node.parentElement;
   }
   return null;
 }
 
-/** Capture-phase wheel handler for panel roots. */
-export function handlePanelWheelCapture(panelRoot: HTMLElement, event: WheelEvent): void {
+/** Capture-phase wheel handler for panel body roots. */
+export function handlePanelWheelCapture(
+  panelRoot: HTMLElement,
+  event: WheelEvent,
+  options: PanelWheelCaptureOptions = {},
+): void {
   if (!panelRoot.contains(event.target as Node)) return;
 
   const scrollTarget = findScrollableWheelTarget(
@@ -76,25 +97,24 @@ export function handlePanelWheelCapture(panelRoot: HTMLElement, event: WheelEven
     event.target,
     event.deltaX,
     event.deltaY,
+    options,
   );
 
   if (scrollTarget) {
     event.stopPropagation();
-    return;
   }
-
-  // Over the panel but nothing scrollable can absorb — block canvas pan/zoom.
-  event.stopPropagation();
-  event.preventDefault();
 }
 
 /**
  * Attach capture-phase wheel isolation on `panelRoot`. Returns a cleanup fn.
  * Safe to call from React useEffect.
  */
-export function attachPanelScrollWheelIsolation(panelRoot: HTMLElement): () => void {
+export function attachPanelScrollWheelIsolation(
+  panelRoot: HTMLElement,
+  options: PanelWheelCaptureOptions = {},
+): () => void {
   const onWheelCapture = (event: WheelEvent): void => {
-    handlePanelWheelCapture(panelRoot, event);
+    handlePanelWheelCapture(panelRoot, event, options);
   };
   panelRoot.addEventListener('wheel', onWheelCapture, { capture: true, passive: false });
   return () => {
@@ -103,12 +123,14 @@ export function attachPanelScrollWheelIsolation(panelRoot: HTMLElement): () => v
 }
 
 /** React props helper for optional nested scroll regions outside PanelShape. */
-export function panelScrollWheelCaptureProps(): {
+export function panelScrollWheelCaptureProps(
+  options: PanelWheelCaptureOptions = {},
+): {
   onWheelCapture: (event: ReactWheelEvent<HTMLElement>) => void;
 } {
   return {
     onWheelCapture: (event) => {
-      handlePanelWheelCapture(event.currentTarget, event.nativeEvent);
+      handlePanelWheelCapture(event.currentTarget, event.nativeEvent, options);
     },
   };
 }
@@ -117,11 +139,19 @@ export function panelScrollWheelCaptureProps(): {
 export function usePanelScrollWheelIsolation(
   ref: RefObject<HTMLElement | null>,
   enabled = true,
+  options: PanelWheelCaptureOptions = {},
 ): void {
   useEffect(() => {
     if (!enabled) return undefined;
     const el = ref.current;
     if (!el) return undefined;
-    return attachPanelScrollWheelIsolation(el);
-  }, [ref, enabled]);
+    return attachPanelScrollWheelIsolation(el, options);
+  }, [ref, enabled, options.captureHorizontalWheel]);
+}
+
+/** Panel ids whose tab strip may capture horizontal wheel when overflowing. */
+export const HORIZONTAL_WHEEL_PANEL_IDS = new Set(['web-preview', 'draft-preview']);
+
+export function panelCapturesHorizontalWheel(panelId: string): boolean {
+  return HORIZONTAL_WHEEL_PANEL_IDS.has(panelId);
 }

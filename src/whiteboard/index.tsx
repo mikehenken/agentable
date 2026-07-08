@@ -105,8 +105,11 @@ export {
   attachPanelScrollWheelIsolation,
   findScrollableWheelTarget,
   handlePanelWheelCapture,
+  HORIZONTAL_WHEEL_PANEL_IDS,
+  panelCapturesHorizontalWheel,
   panelScrollWheelCaptureProps,
   usePanelScrollWheelIsolation,
+  type PanelWheelCaptureOptions,
 } from './shapes/panelScrollWheel';
 
 export {
