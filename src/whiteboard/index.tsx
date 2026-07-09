@@ -80,6 +80,7 @@ export {
   bindEditor,
   unbindEditor,
   getEditor,
+  loadWhiteboardSnapshot,
   openPanelInCanvas,
   closePanelInCanvas,
   focusPanelInCanvas,
@@ -88,6 +89,25 @@ export {
   __resetPanelShapeApiForTests__,
   type OpenPanelOptions,
 } from './shapes/panelShapeApi';
+
+export {
+  assignPanelsToContextGroup,
+  assignPanelsToSiteGroup,
+  contextGroupFrameId,
+  resolveSiteIdFromPanelData,
+  type ContextGroupKind,
+  type ContextGroupRef,
+} from './context/contextGroupApi';
+
+export { configureWhiteboardSnap } from './hooks/configureWhiteboardSnap';
+
+export { GRID_SIZE, snapToGrid, snapRect } from '../canvas/panelLayoutEngine';
+
+export {
+  useFrameContextStore,
+  getActiveContextRef,
+  WHITEBOARD_PALETTE_ENTITIES,
+} from './context/frameContextStore';
 
 // Registry types — consumers (tests, alternative tenants) need these
 // to define their own panel registries.
@@ -123,3 +143,7 @@ export {
   CANVAS_ACTION_RESPONSE_EVENT,
   CANVAS_OPEN_FILE_MANAGER_EVENT,
 } from '../canvas/tools/landiCanvasTools';
+export {
+  CANVAS_RESTORE_SNAPSHOT_EVENT,
+  type CanvasRestoreSnapshotEventDetail,
+} from './snapshot/canvasSnapshotEvents';

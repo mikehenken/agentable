@@ -48,10 +48,22 @@ interface QueuedRequest {
 
 let editorRef: Editor | null = null;
 const pendingQueue: QueuedRequest[] = [];
+let pendingSnapshot: unknown | null = null;
 
 /** Called from WhiteboardShell.onMount. Flushes any queued requests. */
 export function bindEditor(editor: Editor): void {
   editorRef = editor;
+
+  if (pendingSnapshot !== null) {
+    const snapshot = pendingSnapshot;
+    pendingSnapshot = null;
+    try {
+      editor.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
+    } catch (err) {
+      console.error('[panelShapeApi] pending snapshot load failed', err);
+    }
+  }
+
   if (pendingQueue.length === 0) return;
   // Flush in arrival order so a "show jobs then select #2" sequence
   // doesn't reorder. Drain into a local copy so re-entrant calls during
@@ -73,6 +85,28 @@ export function unbindEditor(): void {
 
 export function getEditor(): Editor | null {
   return editorRef;
+}
+
+/**
+ * Load a persisted tldraw snapshot onto the bound editor. Queues until
+ * `bindEditor` when the whiteboard chunk is still loading (Stage 10).
+ */
+export function loadWhiteboardSnapshot(snapshot: unknown): boolean {
+  if (typeof window === 'undefined') return false;
+  if (!snapshot || typeof snapshot !== 'object') return false;
+
+  if (editorRef) {
+    try {
+      editorRef.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
+      return true;
+    } catch (err) {
+      console.error('[panelShapeApi] loadWhiteboardSnapshot failed', err);
+      return false;
+    }
+  }
+
+  pendingSnapshot = snapshot;
+  return true;
 }
 
 /**
@@ -286,4 +320,5 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
 export function __resetPanelShapeApiForTests__(): void {
   editorRef = null;
   pendingQueue.length = 0;
+  pendingSnapshot = null;
 }

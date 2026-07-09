@@ -16,7 +16,7 @@
  *   On mount we call `bindEditor(editor)` so imperative `panelShapeApi`
  *   drivers (canvasTools, voice) can spawn panels from non-React contexts.
  */
-import { useCallback, useEffect, useMemo, useRef, type ReactElement } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { Tldraw, type Editor, type TLUiComponents, type TLUiOverrides, type TLUser } from 'tldraw';
 import 'tldraw/tldraw.css';
 import './styles/whiteboard-vibe-dark.css';
@@ -43,6 +43,7 @@ import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
 import { SiteActionsTool } from './tools/SiteActionsTool';
 import { LayersTool } from './tools/LayersTool';
 import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
+import { useWhiteboardSnapshotSync } from './hooks/useWhiteboardSnapshotSync';
 import { siteActionsTldrawOverrides } from './whiteboardTldrawOverrides';
 import { layersTldrawOverrides } from './layersTldrawOverrides';
 
@@ -79,6 +80,11 @@ export interface WhiteboardShellProps {
    * Defaults to `true` for `infinite-panels` layout or when site-actions is enabled.
    */
   enableLayersPanel?: boolean;
+  /**
+   * Optional host scope (e.g. site id) appended to tldraw IndexedDB persistenceKey
+   * so local + server restore stay aligned per site (Stage 10).
+   */
+  persistenceScope?: string;
 }
 
 const DEFAULT_CHAT_COLUMN_WIDTH = '360px';
