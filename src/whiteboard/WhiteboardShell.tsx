@@ -34,7 +34,9 @@ import {
   openPanelInCanvas,
   unbindEditor,
 } from './shapes/panelShapeApi';
+import { configureWhiteboardSnap } from './hooks/configureWhiteboardSnap';
 import { createPanelShapeUtil } from './shapes/PanelShape';
+import { snapToGrid } from '../canvas/panelLayoutEngine';
 import {
   DEFAULT_WHITEBOARD_PANEL_REGISTRY,
   type WhiteboardPanelRegistry,
@@ -101,6 +103,7 @@ export function WhiteboardShell({
   openChatOnMount,
   enableSiteActionsTool = false,
   enableLayersPanel,
+  persistenceScope,
 }: WhiteboardShellProps = {}): ReactElement {
   const shouldOpenChat = openChatOnMount ?? layout === 'infinite-panels';
   const shouldEnableLayersPanel =
@@ -116,6 +119,7 @@ export function WhiteboardShell({
         openChatOnMount={shouldOpenChat}
         enableSiteActionsTool={enableSiteActionsTool}
         enableLayersPanel={shouldEnableLayersPanel}
+        persistenceScope={persistenceScope}
       />
     </CanvasProvider>
   );
@@ -129,6 +133,7 @@ interface WhiteboardShellInnerProps {
   openChatOnMount: boolean;
   enableSiteActionsTool: boolean;
   enableLayersPanel: boolean;
+  persistenceScope?: string;
 }
 
 function WhiteboardShellInner({
@@ -139,6 +144,7 @@ function WhiteboardShellInner({
   openChatOnMount,
   enableSiteActionsTool,
   enableLayersPanel,
+  persistenceScope,
 }: WhiteboardShellInnerProps): ReactElement {
   const { tenant } = useCanvasConfig();
   const tldrawUser = useWhiteboardTldrawUser(darkCanvas);
@@ -163,9 +169,14 @@ function WhiteboardShellInner({
     if (enableSiteActionsTool) overrides.push(siteActionsTldrawOverrides);
     return overrides.length > 0 ? overrides : undefined;
   }, [enableSiteActionsTool, enableLayersPanel]);
-  const persistenceKey = `career-whiteboard-${tenant}`;
+  const persistenceKey = persistenceScope
+    ? `career-whiteboard-${tenant}-${persistenceScope}`
+    : `career-whiteboard-${tenant}`;
   const editorRef = useRef<Editor | null>(null);
+  const [boundEditor, setBoundEditor] = useState<Editor | null>(null);
   const chatOpenedRef = useRef(false);
+
+  useWhiteboardSnapshotSync(boundEditor);
 
   const shellClassName = darkCanvas ? 'whiteboard-shell--vibe-dark' : undefined;
   const shellBackground = darkCanvas
@@ -179,8 +190,8 @@ function WhiteboardShellInner({
     openPanelInCanvas('chat', {
       focus: false,
       position: {
-        x: viewport.x + VIEWPORT_INSET,
-        y: viewport.y + VIEWPORT_INSET,
+        x: snapToGrid(viewport.x + VIEWPORT_INSET),
+        y: snapToGrid(viewport.y + VIEWPORT_INSET),
       },
       size: {
         w: CHAT_PANEL_WIDTH,
@@ -193,6 +204,8 @@ function WhiteboardShellInner({
   const handleMount = useCallback(
     (editor: Editor) => {
       editorRef.current = editor;
+      setBoundEditor(editor);
+      configureWhiteboardSnap(editor);
       bindEditor(editor);
       if (layout === 'infinite-panels') {
         openInitialChatPanel(editor);
@@ -205,6 +218,7 @@ function WhiteboardShellInner({
     return () => {
       unbindEditor();
       editorRef.current = null;
+      setBoundEditor(null);
       chatOpenedRef.current = false;
     };
   }, []);

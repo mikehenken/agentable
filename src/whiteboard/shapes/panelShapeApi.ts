@@ -26,8 +26,14 @@ import type { Editor } from 'tldraw';
 import { createShapeId } from 'tldraw';
 import {
   findNonOverlappingPosition,
+  snapRect,
   type LayoutRect,
 } from '../../canvas/panelLayoutEngine';
+import {
+  assignPanelsToSiteGroup,
+  groupPanelsWithContext,
+  resolveSiteIdFromPanelData,
+} from '../context/contextGroupApi';
 import { getActiveContextRef } from '../context/frameContextStore';
 
 export interface OpenPanelOptions {
@@ -37,9 +43,19 @@ export interface OpenPanelOptions {
   position?: { x: number; y: number };
   /** Override default size. */
   size?: { w: number; h: number };
+  /** Snap placement to the 20px grid. Default true for whiteboard panels. */
+  snapGrid?: boolean;
   /** Pass-through panel-specific props (e.g. { selectedJobId: 2 }). */
   panelProps?: Record<string, unknown>;
+  /** When true (default), assign new panels to a site context frame when siteId is present. */
+  assignToSiteGroup?: boolean;
+  /** Optional agency id for nesting site frames under an agency workspace frame. */
+  agencyId?: string | null;
+  /** Human-readable site label for the context frame heading. */
+  siteLabel?: string;
 }
+
+const DEFAULT_SNAP_GRID = true;
 
 interface QueuedRequest {
   panelId: string;
@@ -153,26 +169,17 @@ export function focusPanelInCanvas(panelId: string): boolean {
  * Group panel shapes so they move together on the canvas. Reuses an
  * existing group when one already contains any of the panel ids.
  */
-export function groupPanelsInCanvas(panelIds: string[]): boolean {
+export function groupPanelsInCanvas(
+  panelIds: string[],
+  options: {
+    siteId?: string;
+    agencyId?: string | null;
+    siteLabel?: string;
+  } = {},
+): boolean {
   const editor = editorRef;
   if (!editor || panelIds.length < 2) return false;
-
-  const shapeIds = panelIds.map((panelId) => createShapeId(`panel:${panelId}`));
-  const existing = shapeIds.filter((id) => Boolean(editor.getShape(id)));
-  if (existing.length < 2) return false;
-
-  for (const shapeId of existing) {
-    const parentId = editor.getShape(shapeId)?.parentId;
-    if (parentId && editor.getShape(parentId)?.type === 'group') {
-      const siblings = editor.getSortedChildIdsForParent(parentId);
-      if (existing.every((id) => siblings.includes(id))) {
-        return true;
-      }
-    }
-  }
-
-  editor.groupShapes(existing);
-  return true;
+  return groupPanelsWithContext(editor, panelIds, options);
 }
 
 export function updatePanelProps(
@@ -221,8 +228,10 @@ function computePlacement(
   editor: Editor,
   options: OpenPanelOptions,
 ): { x: number; y: number; w: number; h: number } {
+  const snapGrid = options.snapGrid ?? DEFAULT_SNAP_GRID;
   if (options.position && options.size) {
-    return { ...options.position, ...options.size };
+    const rect = { ...options.position, ...options.size };
+    return snapGrid ? snapRect(rect) : rect;
   }
   const w = options.size?.w ?? 480;
   const h = options.size?.h ?? 540;
@@ -239,18 +248,14 @@ function computePlacement(
   };
 
   if (options.position) {
-    return {
-      x: options.position.x,
-      y: options.position.y,
-      w,
-      h,
-    };
+    const rect = { x: options.position.x, y: options.position.y, w, h };
+    return snapGrid ? snapRect(rect) : rect;
   }
 
   const obstacles = getPanelShapeBounds(editor);
-  const { x, y } = findNonOverlappingPosition(w, h, obstacles, viewport);
-
-  return { x, y, w, h };
+  const { x, y } = findNonOverlappingPosition(w, h, obstacles, viewport, { snapGrid });
+  const rect = { x, y, w, h };
+  return snapGrid ? snapRect(rect) : rect;
 }
 
 function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
@@ -281,6 +286,15 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         data: panelData,
       },
     });
+
+    const assignToSiteGroup = options.assignToSiteGroup ?? true;
+    const siteId = resolveSiteIdFromPanelData(panelData);
+    if (assignToSiteGroup && siteId) {
+      assignPanelsToSiteGroup(editor, [panelId], siteId, {
+        agencyId: options.agencyId,
+        siteLabel: options.siteLabel,
+      });
+    }
   } else if (options.panelProps) {
     // Existing shape — apply any prop patch (e.g. selectedJobId update).
     const prev = (existing.props as { data?: Record<string, unknown> }).data ?? {};

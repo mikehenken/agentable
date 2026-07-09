@@ -133,6 +133,24 @@ export function createPanelShapeUtil(
       return false;
     }
 
+    /** Corner + edge snap points for panel-to-panel alignment (tldraw custom snapping). */
+    override getBoundsSnapGeometry(shape: PanelShape) {
+      const { w, h } = shape.props;
+      return {
+        points: [
+          { x: 0, y: 0 },
+          { x: w / 2, y: 0 },
+          { x: w, y: 0 },
+          { x: 0, y: h / 2 },
+          { x: w / 2, y: h / 2 },
+          { x: w, y: h / 2 },
+          { x: 0, y: h },
+          { x: w / 2, y: h },
+          { x: w, y: h },
+        ],
+      };
+    }
+
     override component(shape: PanelShape): ReactElement {
       return <PanelShapeBody shape={shape} registry={registry} />;
     }
