@@ -18,7 +18,7 @@ import {
   closeCanvasTextSearch,
   showTextSearchAtom,
   textSearchQueryAtom,
-} from './textSearchStore';
+} from '../textSearch/textSearchStore';
 import {
   focusShapeInCanvas,
   searchCanvasText,
