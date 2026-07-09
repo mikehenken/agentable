@@ -48,8 +48,8 @@ import {
 } from 'tldraw';
 import { PanelChrome } from './PanelChrome';
 import {
+  attachIframeWheelGuards,
   attachPanelScrollWheelIsolation,
-  panelCapturesHorizontalWheel,
 } from './panelScrollWheel';
 import { useLazyPanel } from './useLazyPanel';
 import {
@@ -274,6 +274,7 @@ interface PanelShapeBodyProps {
  * (`useLazyPanel`) sits in a function component, not a method.
  */
 function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement {
+  const editor = useEditor();
   const { panelId, data, minimized } = shape.props;
   const Lazy = useLazyPanel(registry, panelId);
   const title = (data.__title as string | undefined) ?? friendlyTitle(panelId);
@@ -283,13 +284,17 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
   const hideChrome = Boolean(data.__hideChrome) || fullBleed;
   const rootRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const captureHorizontalWheel = panelCapturesHorizontalWheel(panelId);
-
   useEffect(() => {
     const el = bodyRef.current;
     if (!el || isMinimized) return undefined;
-    return attachPanelScrollWheelIsolation(el, { captureHorizontalWheel });
-  }, [isMinimized, panelId, captureHorizontalWheel]);
+    return attachPanelScrollWheelIsolation(el);
+  }, [isMinimized, panelId]);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || isMinimized) return undefined;
+    return attachIframeWheelGuards(el);
+  }, [isMinimized, panelId]);
 
   const edgeToEdge = noBorder || fullBleed;
 
@@ -329,6 +334,9 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           data-panel-drag-handle="true"
           aria-label="Drag panel"
           title="Drag to move panel"
+          onPointerDown={() => {
+            editor.select(shape.id);
+          }}
         />
       )}
 
@@ -359,6 +367,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
             display: 'flex',
             flexDirection: 'column',
             overflow: fullBleed ? 'hidden' : 'auto',
+            overscrollBehavior: 'contain',
             touchAction: 'pan-y',
             background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #1f1f1f)',
           }}

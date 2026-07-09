@@ -3,6 +3,7 @@ import {
   findScrollableWheelTarget,
   handlePanelWheelCapture,
   panelCapturesHorizontalWheel,
+  resolvePanelWheelBlock,
 } from '../../src/whiteboard/shapes/panelScrollWheel';
 
 function makeScrollable(
@@ -48,7 +49,7 @@ function wheelEvent(target: EventTarget, deltaX = 0, deltaY = 0): WheelEvent & {
 }
 
 describe('panelScrollWheel', () => {
-  it('finds a scrollable descendant that can absorb vertical wheel delta', () => {
+  it('finds a scrollable descendant for vertical wheel delta', () => {
     const root = document.createElement('div');
     const scroll = makeScrollable(100, 400, 0);
     root.appendChild(scroll);
@@ -59,16 +60,20 @@ describe('panelScrollWheel', () => {
     expect(target).toBe(scroll);
   });
 
-  it('returns null when scrollable region is at vertical boundary', () => {
+  it('blocks vertical wheel at scroll boundary when region remains scrollable', () => {
     const root = document.createElement('div');
     const scroll = makeScrollable(100, 400, 0);
     root.appendChild(scroll);
 
     const target = findScrollableWheelTarget(root, scroll, 0, -40);
-    expect(target).toBeNull();
+    expect(target).toBe(scroll);
+
+    const block = resolvePanelWheelBlock(root, scroll, 0, -40);
+    expect(block.blockVertical).toBe(true);
+    expect(block.block).toBe(true);
   });
 
-  it('stopPropagation when scrollable child can scroll vertically', () => {
+  it('stopPropagation when scrollable child has vertical overflow', () => {
     const root = document.createElement('div');
     const scroll = makeScrollable(100, 400, 50);
     root.appendChild(scroll);
@@ -88,43 +93,41 @@ describe('panelScrollWheel', () => {
     expect(event.wasStopped()).toBe(false);
   });
 
-  it('does not capture horizontal wheel unless captureHorizontalWheel is enabled', () => {
+  it('captures horizontal wheel when a descendant is horizontally scrollable', () => {
     const root = document.createElement('div');
     const scroll = makeHorizontallyScrollable(100, 400, 0);
     root.appendChild(scroll);
 
-    const withoutCapture = findScrollableWheelTarget(root, scroll, 40, 0);
-    expect(withoutCapture).toBeNull();
+    const target = findScrollableWheelTarget(root, scroll, 40, 0);
+    expect(target).toBe(scroll);
 
-    const withCapture = findScrollableWheelTarget(root, scroll, 40, 0, {
-      captureHorizontalWheel: true,
-    });
-    expect(withCapture).toBe(scroll);
+    const block = resolvePanelWheelBlock(root, scroll, 40, 0);
+    expect(block.blockHorizontal).toBe(true);
+    expect(block.blockVertical).toBe(false);
   });
 
-  it('passes horizontal wheel through when preview capture is disabled', () => {
+  it('does not block horizontal wheel when only vertical overflow exists', () => {
+    const root = document.createElement('div');
+    const scroll = makeScrollable(100, 400, 0);
+    root.appendChild(scroll);
+
+    const block = resolvePanelWheelBlock(root, scroll, 40, 0);
+    expect(block.block).toBe(false);
+  });
+
+  it('captures horizontal wheel for preview-style tab strips', () => {
     const root = document.createElement('div');
     const scroll = makeHorizontallyScrollable(100, 400, 0);
     root.appendChild(scroll);
 
     const event = wheelEvent(scroll, 40, 0);
     handlePanelWheelCapture(root, event);
-    expect(event.wasStopped()).toBe(false);
-  });
-
-  it('captures horizontal wheel for preview panels when overflow exists', () => {
-    const root = document.createElement('div');
-    const scroll = makeHorizontallyScrollable(100, 400, 0);
-    root.appendChild(scroll);
-
-    const event = wheelEvent(scroll, 40, 0);
-    handlePanelWheelCapture(root, event, { captureHorizontalWheel: true });
     expect(event.wasStopped()).toBe(true);
   });
 
-  it('identifies preview panel ids for horizontal wheel capture', () => {
+  it('panelCapturesHorizontalWheel is always enabled for layout detection', () => {
     expect(panelCapturesHorizontalWheel('web-preview')).toBe(true);
     expect(panelCapturesHorizontalWheel('draft-preview')).toBe(true);
-    expect(panelCapturesHorizontalWheel('chat')).toBe(false);
+    expect(panelCapturesHorizontalWheel('chat')).toBe(true);
   });
 });

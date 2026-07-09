@@ -68,6 +68,10 @@
   height: 100%;
 }
 
+.panel-shape__body {
+  overscroll-behavior: contain;
+}
+
 .panel-shape__body[data-full-bleed='true'] {
   overflow: hidden;
 }
