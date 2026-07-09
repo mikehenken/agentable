@@ -3,45 +3,18 @@ import {
   track,
   useEditor,
   useValue,
-  type Editor,
-  type TLShape,
   type TLShapeId,
 } from 'tldraw';
-import type { PanelShape } from '../shapes/PanelShape';
 import { LAYERS_TOOL_ID } from '../tools/layersEvents';
+import {
+  focusShapeInCanvas,
+  getShapeLabel,
+  isPanelShape,
+} from '../utils/shapeTextUtils';
 
 const PANEL_STROKE = 'rgba(255, 140, 122, 0.55)';
 const SELECTED_BG = 'rgb(255 140 122 / 0.14)';
 const HOVER_BG = 'rgb(255 255 255 / 0.06)';
-
-function friendlyPanelTitle(panelId: string, data: Record<string, unknown>): string {
-  const title = data.__title;
-  if (typeof title === 'string' && title.trim()) {
-    return title;
-  }
-  if (!panelId) return 'Panel';
-  return panelId
-    .split(/[-_]/)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(' ');
-}
-
-function isPanelShape(shape: TLShape): shape is PanelShape {
-  return (shape.type as string) === 'panel';
-}
-
-function getShapeLabel(editor: Editor, shape: TLShape): string {
-  if (isPanelShape(shape)) {
-    return friendlyPanelTitle(shape.props.panelId, shape.props.data);
-  }
-  const metaName = shape.meta.name;
-  if (typeof metaName === 'string' && metaName.trim()) {
-    return metaName;
-  }
-  const text = editor.getShapeUtil(shape).getText(shape);
-  if (text) return text;
-  return shape.type.charAt(0).toUpperCase() + shape.type.slice(1);
-}
 
 interface ShapeListProps {
   shapeIds: TLShapeId[];
@@ -94,11 +67,7 @@ function ShapeListItem({ shapeId, depth }: ShapeListItemProps): ReactElement | n
   const label = getShapeLabel(editor, shape);
 
   const handleSelect = (): void => {
-    editor.select(shape.id);
-    const bounds = editor.getShapePageBounds(shape.id);
-    if (bounds) {
-      editor.zoomToBounds(bounds, { inset: 64, animation: { duration: 220 } });
-    }
+    focusShapeInCanvas(editor, shape.id);
   };
 
   return (

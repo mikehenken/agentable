@@ -48,6 +48,7 @@ import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
 import { useWhiteboardSnapshotSync } from './hooks/useWhiteboardSnapshotSync';
 import { siteActionsTldrawOverrides } from './whiteboardTldrawOverrides';
 import { layersTldrawOverrides } from './layersTldrawOverrides';
+import { textSearchTldrawOverrides } from './textSearch/textSearchTldrawOverrides';
 
 /** @deprecated Use `infinite-panels`. */
 export type WhiteboardLayoutMode = 'infinite-panels' | 'split-column';
@@ -164,10 +165,10 @@ function WhiteboardShellInner({
     return tools;
   }, [enableSiteActionsTool, enableLayersPanel]);
   const tldrawOverrides = useMemo((): TLUiOverrides[] | undefined => {
-    const overrides: TLUiOverrides[] = [];
+    const overrides: TLUiOverrides[] = [textSearchTldrawOverrides];
     if (enableLayersPanel) overrides.push(layersTldrawOverrides);
     if (enableSiteActionsTool) overrides.push(siteActionsTldrawOverrides);
-    return overrides.length > 0 ? overrides : undefined;
+    return overrides;
   }, [enableSiteActionsTool, enableLayersPanel]);
   const persistenceKey = persistenceScope
     ? `career-whiteboard-${tenant}-${persistenceScope}`

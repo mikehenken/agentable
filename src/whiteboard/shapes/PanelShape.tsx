@@ -158,6 +158,28 @@ export function createPanelShapeUtil(
     override indicator(shape: PanelShape): ReactElement {
       return <PanelShapeIndicator shape={shape} />;
     }
+
+    override getText(shape: PanelShape): string | undefined {
+      const parts: string[] = [];
+      if (shape.props.panelId.trim()) {
+        parts.push(shape.props.panelId);
+      }
+      const title = shape.props.data.__title;
+      if (typeof title === 'string' && title.trim()) {
+        parts.push(title);
+      }
+      for (const [key, value] of Object.entries(shape.props.data)) {
+        if (key.startsWith('__')) continue;
+        if (typeof value === 'string' && value.trim()) {
+          parts.push(value);
+        }
+      }
+      const metaName = shape.meta.name;
+      if (typeof metaName === 'string' && metaName.trim()) {
+        parts.push(metaName);
+      }
+      return parts.length > 0 ? parts.join(' ') : undefined;
+    }
   }
 
   return PanelShapeUtil;

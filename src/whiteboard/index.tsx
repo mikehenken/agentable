@@ -38,6 +38,23 @@ export {
   LAYERS_TOOL_ID,
   type CanvasLayersPanelEventDetail,
 } from './tools/layersEvents';
+export {
+  TEXT_SEARCH_ACTION_ID,
+  textSearchTldrawOverrides,
+} from './textSearch/textSearchTldrawOverrides';
+export {
+  closeCanvasTextSearch,
+  openCanvasTextSearch,
+  showTextSearchAtom,
+  textSearchQueryAtom,
+} from './textSearch/textSearchStore';
+export {
+  getShapeLabel,
+  getShapeSearchText,
+  searchCanvasText,
+  focusShapeInCanvas,
+  type CanvasTextSearchResult,
+} from './utils/shapeTextUtils';
 
 /**
  * Lazy WhiteboardShell. The dynamic import resolves to the same module as
