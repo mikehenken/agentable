@@ -5,6 +5,7 @@
  * this package stays free of landing-editor imports. Tools block on a
  * host response event with a matching requestId.
  */
+import { emitAgUiStatePatch } from '../protocol/ag-ui';
 import { useCanvasFileStore } from '../../stores/canvasFileStore';
 import { getEditor as getWhiteboardEditor, openPanelInCanvas } from '../../whiteboard/shapes/panelShapeApi';
 import type { ToolDefinition, ToolResult } from './canvasToolTypes';
@@ -51,6 +52,14 @@ function dispatchHostAction(action: string, args: Record<string, unknown>): Prom
         composed: true,
       }),
     );
+  });
+}
+
+function emitFilesStatePatch(toolName: string): void {
+  const files = useCanvasFileStore.getState().files;
+  emitAgUiStatePatch([{ op: 'replace', path: '/files', value: files }], {
+    source: 'tool',
+    toolName,
   });
 }
 
@@ -101,6 +110,7 @@ export const LANDI_CANVAS_TOOLS: readonly ToolDefinition[] = [
             url: typeof payload.url === 'string' ? payload.url : undefined,
             updatedAt: new Date().toISOString(),
           });
+          emitFilesStatePatch('generate_site_image');
         }
       }
       return result;
@@ -117,6 +127,7 @@ export const LANDI_CANVAS_TOOLS: readonly ToolDefinition[] = [
       const result = await dispatchHostAction('list_site_files', {});
       if (result.ok && Array.isArray(result.result)) {
         useCanvasFileStore.getState().setFiles(result.result as never);
+        emitFilesStatePatch('list_site_files');
       }
       return result;
     },
