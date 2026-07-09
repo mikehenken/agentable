@@ -77,6 +77,41 @@ const TITLE_BAR_HEIGHT = 32;
 const PANEL_INDICATOR_STROKE = 'rgba(255, 140, 122, 0.55)';
 const PANEL_INDICATOR_STROKE_WIDTH = 1.5;
 
+/** True when the event target is interactive panel content (not a tldraw drag/resize hit). */
+function panelBodyShouldCapturePointer(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  if (
+    target.closest(
+      [
+        '.panel-shape__drag-rail',
+        '.panel-shape__drag-handle',
+        '.draft-preview-panel__header',
+        '.panel-chrome',
+      ].join(', '),
+    )
+  ) {
+    return false;
+  }
+  return Boolean(
+    target.closest(
+      [
+        'iframe',
+        'button',
+        'input',
+        'textarea',
+        'select',
+        'a',
+        '[contenteditable="true"]',
+        '[data-panel-interactive]',
+        '.panel-tab-bar',
+        '.draft-preview-panel__add-tab',
+        '.draft-preview-panel__body',
+        '.panel-shape__content',
+      ].join(', '),
+    ),
+  );
+}
+
 /**
  * Build a `BaseBoxShapeUtil<PanelShape>` subclass with the registry
  * captured in closure. We accept the registry up-front so the shape util
@@ -288,7 +323,14 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
     >
       {!hideChrome ? (
         <PanelChrome panelId={panelId} title={title} minimized={isMinimized} />
-      ) : null}
+      ) : (
+        <div
+          className="panel-shape__drag-rail"
+          data-panel-drag-handle="true"
+          aria-label="Drag panel"
+          title="Drag to move panel"
+        />
+      )}
 
       {!isMinimized && (
         <div
@@ -301,9 +343,15 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           // `touchAction: 'pan-y'` opts the body out of tldraw's pinch
           // gesture so mobile users can scroll inside without the canvas
           // also zooming.
-          onPointerDown={(e) => e.stopPropagation()}
-          onPointerMove={(e) => e.stopPropagation()}
-          onPointerUp={(e) => e.stopPropagation()}
+          onPointerDown={(e) => {
+            if (panelBodyShouldCapturePointer(e.target)) e.stopPropagation();
+          }}
+          onPointerMove={(e) => {
+            if (panelBodyShouldCapturePointer(e.target)) e.stopPropagation();
+          }}
+          onPointerUp={(e) => {
+            if (panelBodyShouldCapturePointer(e.target)) e.stopPropagation();
+          }}
           style={{
             flex: 1,
             minHeight: 0,

@@ -46,6 +46,7 @@ import { SiteActionsTool } from './tools/SiteActionsTool';
 import { LayersTool } from './tools/LayersTool';
 import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
 import { useWhiteboardSnapshotSync } from './hooks/useWhiteboardSnapshotSync';
+import { useContextGroupAutoResize } from './hooks/useContextGroupAutoResize';
 import { siteActionsTldrawOverrides } from './whiteboardTldrawOverrides';
 import { layersTldrawOverrides } from './layersTldrawOverrides';
 import { textSearchTldrawOverrides } from './textSearch/textSearchTldrawOverrides';
@@ -79,6 +80,11 @@ export interface WhiteboardShellProps {
    */
   enableSiteActionsTool?: boolean;
   /**
+   * When true, show a floating contextual toolbar when a site context frame (or
+   * panel inside it) is selected. Defaults to `enableSiteActionsTool`.
+   */
+  enableSiteContextToolbar?: boolean;
+  /**
    * When true, register a "Layers" toolbar item and fixed-right shape tree.
    * Defaults to `true` for `infinite-panels` layout or when site-actions is enabled.
    */
@@ -103,12 +109,14 @@ export function WhiteboardShell({
   hideTopBar = false,
   openChatOnMount,
   enableSiteActionsTool = false,
+  enableSiteContextToolbar,
   enableLayersPanel,
   persistenceScope,
 }: WhiteboardShellProps = {}): ReactElement {
   const shouldOpenChat = openChatOnMount ?? layout === 'infinite-panels';
   const shouldEnableLayersPanel =
     enableLayersPanel ?? (layout === 'infinite-panels' || enableSiteActionsTool);
+  const shouldEnableSiteContextToolbar = enableSiteContextToolbar ?? enableSiteActionsTool;
 
   return (
     <CanvasProvider config={config}>
@@ -119,6 +127,7 @@ export function WhiteboardShell({
         hideTopBar={hideTopBar}
         openChatOnMount={shouldOpenChat}
         enableSiteActionsTool={enableSiteActionsTool}
+        enableSiteContextToolbar={shouldEnableSiteContextToolbar}
         enableLayersPanel={shouldEnableLayersPanel}
         persistenceScope={persistenceScope}
       />
@@ -133,6 +142,7 @@ interface WhiteboardShellInnerProps {
   hideTopBar: boolean;
   openChatOnMount: boolean;
   enableSiteActionsTool: boolean;
+  enableSiteContextToolbar: boolean;
   enableLayersPanel: boolean;
   persistenceScope?: string;
 }
@@ -144,6 +154,7 @@ function WhiteboardShellInner({
   hideTopBar,
   openChatOnMount,
   enableSiteActionsTool,
+  enableSiteContextToolbar,
   enableLayersPanel,
   persistenceScope,
 }: WhiteboardShellInnerProps): ReactElement {
@@ -154,9 +165,10 @@ function WhiteboardShellInner({
     () =>
       createWhiteboardTldrawUiComponents({
         enableSiteActionsTool,
+        enableSiteContextToolbar,
         enableLayersPanel,
       }),
-    [enableSiteActionsTool, enableLayersPanel],
+    [enableSiteActionsTool, enableSiteContextToolbar, enableLayersPanel],
   );
   const extraTools = useMemo(() => {
     const tools = [];
@@ -178,6 +190,7 @@ function WhiteboardShellInner({
   const chatOpenedRef = useRef(false);
 
   useWhiteboardSnapshotSync(boundEditor);
+  useContextGroupAutoResize(boundEditor);
 
   const shellClassName = darkCanvas ? 'whiteboard-shell--vibe-dark' : undefined;
   const shellBackground = darkCanvas

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 
 export interface ModalShellProps {
   onClose: () => void;
@@ -22,16 +23,21 @@ export const ModalShell: React.FC<ModalShellProps> = ({ onClose, width = 720, ma
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  return (
+  const overlay = (
     <div
+      role="dialog"
+      aria-modal="true"
+      data-testid="modal-shell-overlay"
       onClick={onClose}
       style={{
         position: "fixed",
         inset: 0,
         zIndex: 100,
         background: "rgba(15,15,15,0.32)",
-        display: "grid",
-        placeItems: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
         animation: "orchestrationModalFadeIn .14s ease-out",
       }}
     >
@@ -56,4 +62,10 @@ export const ModalShell: React.FC<ModalShellProps> = ({ onClose, width = 720, ma
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(overlay, document.body);
 };

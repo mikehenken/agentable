@@ -5,7 +5,11 @@ import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { createShapeId } from 'tldraw';
 import {
   assignPanelsToSiteGroup,
+  collectPanelShapeIdsFromStoreDiff,
   contextGroupFrameId,
+  ensurePanelInSiteContextFrame,
+  fitContextGroupFrameToContent,
+  fitSiteContextGroupForShape,
   groupPanelsWithContext,
   resolveSiteIdFromPanelData,
 } from '../../src/whiteboard/context/contextGroupApi';
@@ -207,5 +211,83 @@ describe('groupPanelsWithContext', () => {
     expect(groupPanelsWithContext(editor as never, ['chat', 'resources'])).toBe(true);
     expect(editor.setCurrentTool).toHaveBeenCalledWith('select');
     expect(editor.groupShapes).toHaveBeenCalled();
+  });
+});
+
+describe('ensurePanelInSiteContextFrame', () => {
+  it('reparents a site panel into the site frame when it drifted to the page', () => {
+    const editor = makeStubEditor();
+    seedSitePanels(editor);
+    const frameId = contextGroupFrameId({ kind: 'site', id: 'site-1' });
+    editor.__panels.set('shape:panel:chat', {
+      id: 'shape:panel:chat',
+      type: 'panel',
+      x: 20,
+      y: 20,
+      parentId: 'page:page',
+      props: { w: 400, h: 500, panelId: 'chat', data: { __siteId: 'site-1' } },
+    });
+
+    ensurePanelInSiteContextFrame(editor as never, 'shape:panel:chat', frameId);
+    expect(editor.reparentShapes).toHaveBeenCalledWith(['shape:panel:chat'], frameId);
+  });
+});
+
+describe('fitContextGroupFrameToContent', () => {
+  it('fits only context group frames', () => {
+    const editor = makeStubEditor();
+    const frameId = contextGroupFrameId({ kind: 'site', id: 'site-1' });
+    editor.__frames.set(frameId, {
+      id: frameId,
+      type: 'frame',
+      x: 0,
+      y: 0,
+      parentId: 'page:page',
+      props: { w: 800, h: 600, name: 'Site', color: 'blue' },
+      meta: { landiContextGroup: { kind: 'site', id: 'site-1' } },
+    });
+
+    expect(fitContextGroupFrameToContent(editor as never, frameId)).toBe(true);
+    expect(fitContextGroupFrameToContent(editor as never, 'shape:missing')).toBe(false);
+  });
+});
+
+describe('fitSiteContextGroupForShape', () => {
+  it('fits the site frame for a site-scoped panel', () => {
+    const editor = makeStubEditor();
+    seedSitePanels(editor);
+    const frameId = contextGroupFrameId({ kind: 'site', id: 'site-1' });
+    editor.__frames.set(frameId, {
+      id: frameId,
+      type: 'frame',
+      x: 0,
+      y: 0,
+      parentId: 'page:page',
+      props: { w: 800, h: 600, name: 'Site', color: 'blue' },
+      meta: { landiContextGroup: { kind: 'site', id: 'site-1' } },
+    });
+
+    expect(fitSiteContextGroupForShape(editor as never, 'shape:panel:chat')).toBe(true);
+  });
+});
+
+describe('collectPanelShapeIdsFromStoreDiff', () => {
+  it('collects panel ids from added and updated records', () => {
+    const ids = collectPanelShapeIdsFromStoreDiff({
+      added: {
+        'shape:panel:chat': {
+          id: 'shape:panel:chat',
+          typeName: 'shape',
+          type: 'panel',
+        },
+      },
+      updated: {
+        'shape:panel:brief': [
+          { id: 'shape:panel:brief', typeName: 'shape', type: 'panel' },
+          { id: 'shape:panel:brief', typeName: 'shape', type: 'panel' },
+        ],
+      },
+    });
+    expect(ids).toEqual(['shape:panel:chat', 'shape:panel:brief']);
   });
 });

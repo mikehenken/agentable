@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { formatKeys } from "./use-keybindings";
 
 export interface KeyboardHelpEntry {
@@ -34,15 +35,21 @@ export const KeyboardHelp: React.FC<KeyboardHelpProps> = ({ open, onClose, group
 
   if (!open) return null;
 
-  return (
+  const overlay = (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Keyboard shortcuts"
+      data-testid="keyboard-help-overlay"
       onClick={onClose}
       style={{
         position: "fixed",
         inset: 0,
         background: "rgba(0,0,0,.45)",
-        display: "grid",
-        placeItems: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
         zIndex: 1100,
       }}
     >
@@ -159,4 +166,10 @@ export const KeyboardHelp: React.FC<KeyboardHelpProps> = ({ open, onClose, group
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(overlay, document.body);
 };

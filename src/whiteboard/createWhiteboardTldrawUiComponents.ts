@@ -1,7 +1,7 @@
 import { createElement, type ReactElement } from 'react';
 import type { TLUiComponents } from 'tldraw';
-import { LayersPanel } from './components/LayersPanel';
 import { TextSearchPanel } from './components/TextSearchPanel';
+import { WhiteboardOverlays } from './components/WhiteboardOverlays';
 import { minimalTldrawUiComponents } from './minimalTldrawUiComponents';
 import { WhiteboardToolbar } from './WhiteboardToolbar';
 
@@ -10,12 +10,10 @@ export interface WhiteboardTldrawUiOptions {
   enableSiteActionsTool?: boolean;
   /** Register layers tree panel + toolbar toggle (default on infinite-panels). */
   enableLayersPanel?: boolean;
+  /** Floating toolbar when a site context frame (or its panels) is selected. */
+  enableSiteContextToolbar?: boolean;
   /** Canvas text search via HelperButtons + Ctrl/Cmd+F (default true). */
   enableTextSearch?: boolean;
-}
-
-function WhiteboardInFrontOfTheCanvas(): ReactElement {
-  return createElement(LayersPanel);
 }
 
 /** Build tldraw UI component overrides for WhiteboardShell. */
@@ -25,11 +23,13 @@ export function createWhiteboardTldrawUiComponents(
   const {
     enableSiteActionsTool = false,
     enableLayersPanel = false,
+    enableSiteContextToolbar = false,
     enableTextSearch = true,
   } = options;
   const useCustomToolbar = enableSiteActionsTool || enableLayersPanel;
+  const useOverlays = enableLayersPanel || enableSiteContextToolbar;
 
-  if (!useCustomToolbar && !enableLayersPanel && !enableTextSearch) {
+  if (!useCustomToolbar && !useOverlays && !enableTextSearch) {
     return minimalTldrawUiComponents;
   }
 
@@ -46,6 +46,14 @@ export function createWhiteboardTldrawUiComponents(
             }),
         }
       : {}),
-    ...(enableLayersPanel ? { InFrontOfTheCanvas: WhiteboardInFrontOfTheCanvas } : {}),
+    ...(useOverlays
+      ? {
+          InFrontOfTheCanvas: () =>
+            createElement(WhiteboardOverlays, {
+              enableLayersPanel,
+              enableSiteContextToolbar,
+            }),
+        }
+      : {}),
   };
 }

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { Icon, type IconName } from "./icon-set/icon";
 import { formatKeys } from "./use-keybindings";
 
@@ -147,16 +148,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   let runningIdx = 0;
 
-  return (
+  const overlay = (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      data-testid="command-palette-overlay"
       onClick={onClose}
       style={{
         position: "fixed",
         inset: 0,
         background: "rgba(0,0,0,.45)",
-        display: "grid",
-        placeItems: "start center",
-        paddingTop: "12vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
         zIndex: 1000,
       }}
     >
@@ -327,4 +333,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(overlay, document.body);
 };

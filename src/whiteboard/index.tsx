@@ -112,9 +112,46 @@ export {
   assignPanelsToSiteGroup,
   contextGroupFrameId,
   resolveSiteIdFromPanelData,
+  resolveSiteContextFromSelection,
+  findSiteContextGroupForShape,
+  getContextGroupMeta,
+  CONTEXT_META_KEY,
+  CONTEXT_FRAME_PADDING,
+  ensurePanelInSiteContextFrame,
+  fitContextGroupFrameToContent,
+  fitSiteContextGroupForShape,
+  collectPanelShapeIdsFromStoreDiff,
   type ContextGroupKind,
   type ContextGroupRef,
+  type ContextGroupMeta,
+  type ResolvedSiteContextGroup,
 } from './context/contextGroupApi';
+
+export {
+  computeInitialSiteContextLayout,
+  computePanelPlacementInSiteContext,
+  resolveInsertionSiteContext,
+  defaultSitePanelSize,
+  SITE_CHAT_WIDTH,
+  SITE_BRIEF_WIDTH,
+  SITE_PREVIEW_WIDTH,
+  SITE_PREVIEW_HEIGHT,
+  SITE_FILE_MANAGER_WIDTH,
+  SITE_FILE_MANAGER_HEIGHT,
+  SITE_CONTEXT_PANEL_GAP,
+  SITE_CONTEXT_VIEWPORT_INSET,
+  type SiteContextPanelKind,
+  type SiteContextPanelPlacement,
+  type SiteContextLayoutOptions,
+} from './context/siteContextPanelLayout';
+
+export {
+  CANVAS_SITE_CONTEXT_TOOLBAR_EVENT,
+  emitSiteContextToolbarAction,
+  type SiteContextToolbarAction,
+  type SiteContextToolbarEventDetail,
+  type SiteContextToolbarPanelId,
+} from './context/siteContextToolbarEvents';
 
 export { configureWhiteboardSnap } from './hooks/configureWhiteboardSnap';
 

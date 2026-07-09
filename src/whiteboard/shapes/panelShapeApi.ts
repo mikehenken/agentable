@@ -31,9 +31,15 @@ import {
 } from '../../canvas/panelLayoutEngine';
 import {
   assignPanelsToSiteGroup,
+  fitSiteContextGroupForShape,
   groupPanelsWithContext,
   resolveSiteIdFromPanelData,
 } from '../context/contextGroupApi';
+import {
+  computePanelPlacementInSiteContext,
+  defaultSitePanelSize,
+  resolveInsertionSiteContext,
+} from '../context/siteContextPanelLayout';
 import { getActiveContextRef } from '../context/frameContextStore';
 
 export interface OpenPanelOptions {
@@ -226,15 +232,33 @@ function getPanelShapeBounds(editor: Editor): LayoutRect[] {
  */
 function computePlacement(
   editor: Editor,
+  panelId: string,
   options: OpenPanelOptions,
 ): { x: number; y: number; w: number; h: number } {
   const snapGrid = options.snapGrid ?? DEFAULT_SNAP_GRID;
+  const defaults = defaultSitePanelSize(panelId);
+  const w = options.size?.w ?? defaults.w;
+  const h = options.size?.h ?? defaults.h;
+
   if (options.position && options.size) {
     const rect = { ...options.position, ...options.size };
     return snapGrid ? snapRect(rect) : rect;
   }
-  const w = options.size?.w ?? 480;
-  const h = options.size?.h ?? 540;
+
+  const siteContext = resolveInsertionSiteContext(editor, options.panelProps);
+  if (siteContext && !options.position) {
+    const { x, y } = computePanelPlacementInSiteContext(editor, siteContext, { w, h }, {
+      snapGrid,
+    });
+    const rect = { x, y, w, h };
+    return snapGrid ? snapRect(rect) : rect;
+  }
+
+  if (options.position) {
+    const rect = { x: options.position.x, y: options.position.y, w, h };
+    return snapGrid ? snapRect(rect) : rect;
+  }
+
   const viewportBounds = editor.getViewportPageBounds();
   const inset = 24;
   const gap = 16;
@@ -246,11 +270,6 @@ function computePlacement(
     bottom: viewportBounds.y + viewportBounds.h - inset,
     gap,
   };
-
-  if (options.position) {
-    const rect = { x: options.position.x, y: options.position.y, w, h };
-    return snapGrid ? snapRect(rect) : rect;
-  }
 
   const obstacles = getPanelShapeBounds(editor);
   const { x, y } = findNonOverlappingPosition(w, h, obstacles, viewport, { snapGrid });
@@ -266,7 +285,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
   const focus = options.focus ?? true;
 
   if (!existing) {
-    const place = computePlacement(editor, options);
+    const place = computePlacement(editor, panelId, options);
     const contextRef =
       (options.panelProps?.contextRef as string | undefined) ?? getActiveContextRef() ?? undefined;
     const panelData = {
@@ -294,26 +313,41 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         agencyId: options.agencyId,
         siteLabel: options.siteLabel,
       });
+      fitSiteContextGroupForShape(editor, id);
     }
-  } else if (options.panelProps) {
-    // Existing shape — apply any prop patch (e.g. selectedJobId update).
+  } else {
     const prev = (existing.props as { data?: Record<string, unknown> }).data ?? {};
-    editor.updateShape({
-      id,
-      type: 'panel',
-      props: {
-        ...(existing.props as Record<string, unknown>),
-        minimized: false,
-        data: { ...prev, ...options.panelProps },
-      },
-    });
-  } else if ((existing.props as { minimized?: boolean }).minimized) {
-    // Re-expand a minimised shape so a second tool call rehydrates it.
-    editor.updateShape({
-      id,
-      type: 'panel',
-      props: { ...(existing.props as Record<string, unknown>), minimized: false },
-    });
+    const mergedData = options.panelProps ? { ...prev, ...options.panelProps } : prev;
+
+    if (options.panelProps) {
+      // Existing shape — apply any prop patch (e.g. selectedJobId update).
+      editor.updateShape({
+        id,
+        type: 'panel',
+        props: {
+          ...(existing.props as Record<string, unknown>),
+          minimized: false,
+          data: mergedData,
+        },
+      });
+    } else if ((existing.props as { minimized?: boolean }).minimized) {
+      // Re-expand a minimised shape so a second tool call rehydrates it.
+      editor.updateShape({
+        id,
+        type: 'panel',
+        props: { ...(existing.props as Record<string, unknown>), minimized: false },
+      });
+    }
+
+    const assignToSiteGroup = options.assignToSiteGroup ?? true;
+    const siteId = resolveSiteIdFromPanelData(mergedData);
+    if (assignToSiteGroup && siteId) {
+      assignPanelsToSiteGroup(editor, [panelId], siteId, {
+        agencyId: options.agencyId,
+        siteLabel: options.siteLabel,
+      });
+      fitSiteContextGroupForShape(editor, id);
+    }
   }
 
   if (focus) {
