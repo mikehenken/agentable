@@ -129,6 +129,8 @@ export {
 
 export {
   listSiteContextLayers,
+  resolveSelectedSiteContextLayerId,
+  selectSiteContextLayer,
   toggleSiteContextLayerVisibility,
   deleteSiteContextLayer,
   isSiteContextLayerVisible,

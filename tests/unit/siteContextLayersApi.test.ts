@@ -7,6 +7,8 @@ import {
   deleteSiteContextLayer,
   isSiteContextLayerVisible,
   listSiteContextLayers,
+  resolveSelectedSiteContextLayerId,
+  selectSiteContextLayer,
   toggleSiteContextLayerVisibility,
 } from '../../src/whiteboard/context/siteContextLayersApi';
 import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
@@ -30,6 +32,11 @@ interface StubShape {
 interface StubEditor {
   getShape: Mock;
   getSortedChildIdsForParent: Mock;
+  getSelectedShapeIds: Mock;
+  setCurrentTool: Mock;
+  select: Mock;
+  getShapePageBounds: Mock;
+  zoomToBounds: Mock;
   updateShape: Mock;
   deleteShapes: Mock;
   __shapes: Map<string, StubShape>;
@@ -46,6 +53,11 @@ function makeStubEditor(): StubEditor {
         .filter((shape) => shape.parentId === parentId)
         .map((shape) => shape.id),
     ),
+    getSelectedShapeIds: vi.fn(() => []),
+    setCurrentTool: vi.fn(),
+    select: vi.fn(),
+    getShapePageBounds: vi.fn(() => ({ x: 0, y: 0, w: 100, h: 100 })),
+    zoomToBounds: vi.fn(),
     updateShape: vi.fn((patch: { id: string; type: string; opacity?: number }) => {
       const existing = shapes.get(patch.id);
       if (!existing) return;
@@ -166,5 +178,29 @@ describe('siteContextLayersApi', () => {
     expect(deleted).toBe(true);
     expect(editor.deleteShapes).toHaveBeenCalledWith([shapeId]);
     expect(editor.__shapes.has(shapeId)).toBe(false);
+  });
+
+  it('resolveSelectedSiteContextLayerId returns the first selected listed layer', () => {
+    editor.getSelectedShapeIds.mockReturnValue(['shape:panel:brief', 'shape:panel:chat']);
+    expect(resolveSelectedSiteContextLayerId(editor as never, siteId)).toBe('shape:panel:brief');
+  });
+
+  it('resolveSelectedSiteContextLayerId returns null when selection is outside site layers', () => {
+    editor.getSelectedShapeIds.mockReturnValue(['shape:unrelated']);
+    expect(resolveSelectedSiteContextLayerId(editor as never, siteId)).toBeNull();
+  });
+
+  it('selectSiteContextLayer selects and focuses a listed layer', () => {
+    const selected = selectSiteContextLayer(editor as never, 'shape:panel:chat', siteId);
+    expect(selected).toBe(true);
+    expect(editor.setCurrentTool).toHaveBeenCalledWith('select');
+    expect(editor.select).toHaveBeenCalledWith('shape:panel:chat');
+    expect(editor.zoomToBounds).toHaveBeenCalled();
+  });
+
+  it('selectSiteContextLayer rejects shapes that are not site context layers', () => {
+    const selected = selectSiteContextLayer(editor as never, 'shape:unrelated', siteId);
+    expect(selected).toBe(false);
+    expect(editor.select).not.toHaveBeenCalled();
   });
 });

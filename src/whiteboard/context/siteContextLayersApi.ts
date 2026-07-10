@@ -3,7 +3,7 @@
  * site's tldraw context frame. Consumed by the studio sidebar CONTEXT list.
  */
 import type { Editor, TLShape, TLShapeId } from 'tldraw';
-import { getShapeLabel } from '../utils/shapeTextUtils';
+import { focusShapeInCanvas, getShapeLabel } from '../utils/shapeTextUtils';
 import { contextGroupFrameId, fitContextGroupFrameToContent } from './contextGroupApi';
 
 export interface SiteContextLayer {
@@ -58,6 +58,41 @@ export function listSiteContextLayers(editor: Editor, siteId: string): SiteConte
   }
 
   return layers;
+}
+
+/**
+ * First selected shape id that is a direct child layer of the site context frame,
+ * or null when selection is empty or does not match a listed layer.
+ */
+export function resolveSelectedSiteContextLayerId(
+  editor: Editor,
+  siteId: string,
+): TLShapeId | null {
+  const layerIds = new Set(
+    listSiteContextLayers(editor, siteId).map((layer) => layer.shapeId),
+  );
+  if (layerIds.size === 0) return null;
+
+  for (const shapeId of editor.getSelectedShapeIds()) {
+    if (layerIds.has(shapeId)) return shapeId;
+  }
+
+  return null;
+}
+
+/** Select and focus a site context layer shape on the canvas. */
+export function selectSiteContextLayer(
+  editor: Editor,
+  shapeId: TLShapeId,
+  siteId: string,
+): boolean {
+  const isLayer = listSiteContextLayers(editor, siteId).some(
+    (layer) => layer.shapeId === shapeId,
+  );
+  if (!isLayer) return false;
+
+  focusShapeInCanvas(editor, shapeId);
+  return true;
 }
 
 /** Toggle layer visibility via tldraw shape opacity. */
