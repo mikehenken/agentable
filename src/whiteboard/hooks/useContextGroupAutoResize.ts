@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { Editor, TLShapeId } from 'tldraw';
+import type { Editor, TLEventInfo, TLShapeId } from 'tldraw';
 import {
   collectPanelShapeIdsFromStoreDiff,
   findSiteContextGroupForShape,
@@ -103,17 +103,17 @@ export function useContextGroupAutoResize(editor: Editor | null): void {
       scheduleFit(panelIds, { final: true });
     };
 
-    const onEditorEvent = (info: { name: string }): void => {
+    const onEditorEvent = (info: TLEventInfo): void => {
       if (info.name === 'pointer_up') {
         handlePointerUp();
       }
     };
 
-    const unsubscribeEvent = editor.on('event', onEditorEvent);
+    editor.on('event', onEditorEvent);
 
     return () => {
       unsubscribeStore();
-      unsubscribeEvent();
+      editor.off('event', onEditorEvent);
       if (rafRef.current !== null) {
         window.cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
