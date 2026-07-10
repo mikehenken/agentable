@@ -128,6 +128,14 @@ export {
 } from './context/contextGroupApi';
 
 export {
+  listSiteContextLayers,
+  toggleSiteContextLayerVisibility,
+  deleteSiteContextLayer,
+  isSiteContextLayerVisible,
+  type SiteContextLayer,
+} from './context/siteContextLayersApi';
+
+export {
   computeInitialSiteContextLayout,
   computePanelPlacementInSiteContext,
   resolveInsertionSiteContext,
