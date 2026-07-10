@@ -2,7 +2,7 @@
  * Site context panel layout — initial site-open grid and in-context insertion.
  *
  * Arranges chat, brief, preview, and file-manager inside the blue site frame
- * without overlap. Files uses a narrow column; primary panels flow horizontally.
+ * on a 12-column grid without overlap. Files stacks under brief in the same column.
  */
 import type { Editor, TLShapeId } from 'tldraw';
 import {
@@ -14,23 +14,36 @@ import {
   findSiteContextGroupForShape,
 } from './contextGroupApi';
 import {
-  findNonOverlappingPosition,
   GRID_SIZE,
-  snapRect,
   snapToGrid,
   type LayoutRect,
 } from '../../canvas/panelLayoutEngine';
+import {
+  createGridSpec,
+  findNextGridSlot,
+  getPanelGridSpan,
+  getReferenceGridSpec,
+  gridPlacementToRect,
+  gridSpanToSize,
+  GRID_COLUMNS,
+  GRID_GUTTER,
+  markGridOccupancy,
+  type GridCellPlacement,
+  type GridSpec,
+} from '../../canvas/gridLayout';
 
-export const SITE_CONTEXT_PANEL_GAP = 16;
+export const SITE_CONTEXT_PANEL_GAP = GRID_GUTTER;
 export const SITE_CONTEXT_VIEWPORT_INSET = 24;
 
-/** Default widths — file-manager is intentionally narrow. */
-export const SITE_CHAT_WIDTH = 400;
-export const SITE_BRIEF_WIDTH = 380;
-export const SITE_PREVIEW_WIDTH = 960;
-export const SITE_PREVIEW_HEIGHT = 720;
-export const SITE_FILE_MANAGER_WIDTH = 280;
-export const SITE_FILE_MANAGER_HEIGHT = 480;
+const refGrid = getReferenceGridSpec();
+
+/** Default widths — derived from 12-column grid spans at reference width. */
+export const SITE_CHAT_WIDTH = gridSpanToSize(refGrid, getPanelGridSpan('chat')).w;
+export const SITE_BRIEF_WIDTH = gridSpanToSize(refGrid, getPanelGridSpan('project-brief')).w;
+export const SITE_PREVIEW_WIDTH = gridSpanToSize(refGrid, getPanelGridSpan('web-preview')).w;
+export const SITE_PREVIEW_HEIGHT = gridSpanToSize(refGrid, getPanelGridSpan('web-preview')).h;
+export const SITE_FILE_MANAGER_WIDTH = gridSpanToSize(refGrid, getPanelGridSpan('file-manager')).w;
+export const SITE_FILE_MANAGER_HEIGHT = gridSpanToSize(refGrid, getPanelGridSpan('file-manager')).h;
 
 export type SiteContextPanelKind =
   | 'chat'
@@ -68,26 +81,79 @@ export interface SiteContextPanelPlacement {
   h: number;
 }
 
-function panelHeightsForViewport(maxHeight: number): {
-  chatH: number;
-  briefH: number;
-} {
-  const tall = Math.max(480, maxHeight);
-  const briefH = Math.max(520, maxHeight);
-  return {
-    chatH: snapToGrid(tall),
-    briefH: snapToGrid(briefH),
-  };
+interface InitialGridSlot {
+  panelId: SiteContextPanelKind;
+  placement: GridCellPlacement;
+}
+
+/**
+ * Fixed initial layout on the 12-column grid:
+ *   Row 0: [Chat? 3] [Brief 3] [Preview 6 or 9]
+ *   Row 7: [Files 3] under brief column
+ */
+function buildInitialGridSlots(options: {
+  includeChat: boolean;
+  includeBrief: boolean;
+  includePreview: boolean;
+  includeFiles: boolean;
+}): InitialGridSlot[] {
+  const { includeChat, includeBrief, includePreview, includeFiles } = options;
+  const slots: InitialGridSlot[] = [];
+
+  let col = 0;
+  let briefCol = 0;
+
+  if (includeChat) {
+    slots.push({
+      panelId: 'chat',
+      placement: { col, row: 0, colSpan: 3, rowSpan: 6 },
+    });
+    col += 3;
+  }
+
+  if (includeBrief) {
+    briefCol = col;
+    slots.push({
+      panelId: 'project-brief',
+      placement: { col, row: 0, colSpan: 3, rowSpan: 7 },
+    });
+    col += 3;
+  }
+
+  if (includePreview) {
+    const previewSpan = GRID_COLUMNS - col;
+    slots.push({
+      panelId: 'web-preview',
+      placement: { col, row: 0, colSpan: previewSpan, rowSpan: 8 },
+    });
+  }
+
+  if (includeFiles) {
+    const filesCol = includeBrief ? briefCol : col;
+    slots.push({
+      panelId: 'file-manager',
+      placement: { col: filesCol, row: 7, colSpan: 3, rowSpan: 4 },
+    });
+  }
+
+  return slots;
+}
+
+function placementFromGridSlot(
+  spec: GridSpec,
+  origin: { x: number; y: number },
+  slot: InitialGridSlot,
+  snapGrid: boolean,
+): SiteContextPanelPlacement {
+  const rect = gridPlacementToRect(spec, origin, slot.placement, snapGrid);
+  return { panelId: slot.panelId, ...rect };
 }
 
 /**
  * Compute initial panel positions for a site context group open.
  *
- * Layout:
- *   Row 1 (horizontal): [Chat?] [Brief] [Preview]
- *   Row 2 (vertical stack under brief): [Files narrow]
- *
- * All coordinates are page-space, grid-snapped when enabled.
+ * All coordinates are page-space, snapped to the 20px grid when enabled.
+ * Panel heights are capped by row spans — never stretched to viewport height.
  */
 export function computeInitialSiteContextLayout(
   anchor: SiteContextLayoutAnchor,
@@ -102,66 +168,19 @@ export function computeInitialSiteContextLayout(
     snapGrid = true,
   } = options;
 
-  const { chatH, briefH } = panelHeightsForViewport(anchor.maxHeight);
+  const spec = createGridSpec(anchor.maxWidth, gap);
   const originX = snapGrid ? snapToGrid(anchor.x) : anchor.x;
   const originY = snapGrid ? snapToGrid(anchor.y) : anchor.y;
+  const origin = { x: originX, y: originY };
 
-  const placements: SiteContextPanelPlacement[] = [];
-  let cursorX = originX;
-  let briefX = originX;
-  let briefY = originY;
-  let briefPlaced = false;
+  const slots = buildInitialGridSlots({
+    includeChat,
+    includeBrief,
+    includePreview,
+    includeFiles,
+  });
 
-  if (includeChat) {
-    const rect = snapGrid
-      ? snapRect({ x: cursorX, y: originY, w: SITE_CHAT_WIDTH, h: chatH })
-      : { x: cursorX, y: originY, w: SITE_CHAT_WIDTH, h: chatH };
-    placements.push({ panelId: 'chat', ...rect });
-    cursorX += rect.w + gap;
-  }
-
-  if (includeBrief) {
-    const rect = snapGrid
-      ? snapRect({ x: cursorX, y: originY, w: SITE_BRIEF_WIDTH, h: briefH })
-      : { x: cursorX, y: originY, w: SITE_BRIEF_WIDTH, h: briefH };
-    placements.push({ panelId: 'project-brief', ...rect });
-    briefX = rect.x;
-    briefY = rect.y;
-    briefPlaced = true;
-    cursorX += rect.w + gap;
-  }
-
-  if (includePreview) {
-    const previewH = snapGrid ? snapToGrid(SITE_PREVIEW_HEIGHT) : SITE_PREVIEW_HEIGHT;
-    const rect = snapGrid
-      ? snapRect({ x: cursorX, y: originY, w: SITE_PREVIEW_WIDTH, h: previewH })
-      : { x: cursorX, y: originY, w: SITE_PREVIEW_WIDTH, h: previewH };
-    placements.push({ panelId: 'web-preview', ...rect });
-    cursorX += rect.w + gap;
-  }
-
-  if (includeFiles) {
-    const filesY = briefPlaced
-      ? briefY + (snapGrid ? snapToGrid(briefH) : briefH) + gap
-      : originY;
-    const filesX = briefPlaced ? briefX : cursorX;
-    const rect = snapGrid
-      ? snapRect({
-          x: filesX,
-          y: filesY,
-          w: SITE_FILE_MANAGER_WIDTH,
-          h: SITE_FILE_MANAGER_HEIGHT,
-        })
-      : {
-          x: filesX,
-          y: filesY,
-          w: SITE_FILE_MANAGER_WIDTH,
-          h: SITE_FILE_MANAGER_HEIGHT,
-        };
-    placements.push({ panelId: 'file-manager', ...rect });
-  }
-
-  return placements;
+  return slots.map((slot) => placementFromGridSlot(spec, origin, slot, snapGrid));
 }
 
 function getPanelObstaclesInFrame(editor: Editor, frameId: TLShapeId): LayoutRect[] {
@@ -217,30 +236,22 @@ export function resolveInsertionSiteContext(
   return null;
 }
 
-/** Default size hints per panel kind for in-context insertion. */
+/** Default size hints per panel kind — from grid spans, not viewport height. */
 export function defaultSitePanelSize(panelId: string): { w: number; h: number } {
-  switch (panelId) {
-    case 'chat':
-      return { w: SITE_CHAT_WIDTH, h: 520 };
-    case 'project-brief':
-      return { w: SITE_BRIEF_WIDTH, h: 560 };
-    case 'web-preview':
-      return { w: SITE_PREVIEW_WIDTH, h: SITE_PREVIEW_HEIGHT };
-    case 'file-manager':
-      return { w: SITE_FILE_MANAGER_WIDTH, h: SITE_FILE_MANAGER_HEIGHT };
-    default:
-      return { w: 480, h: 540 };
-  }
+  const spec = getReferenceGridSpec();
+  const span = getPanelGridSpan(panelId);
+  return gridSpanToSize(spec, span);
 }
 
 /**
- * Find a non-overlapping page position for a panel inside (or beside) a site context frame.
+ * Find a non-overlapping page position for a panel inside a site context frame
+ * using the 12-column grid.
  */
 export function computePanelPlacementInSiteContext(
   editor: Editor,
   context: ResolvedSiteContextGroup,
   size: { w: number; h: number },
-  options: { snapGrid?: boolean } = {},
+  options: { snapGrid?: boolean; panelId?: string } = {},
 ): { x: number; y: number } {
   const snapGrid = options.snapGrid ?? true;
   const frameBounds = editor.getShapePageBounds(context.frameId);
@@ -248,30 +259,77 @@ export function computePanelPlacementInSiteContext(
 
   if (!frameBounds) {
     const viewport = editor.getViewportPageBounds();
-    return findNonOverlappingPosition(size.w, size.h, [], {
-      left: viewport.x + SITE_CONTEXT_VIEWPORT_INSET,
-      top: viewport.y + SITE_CONTEXT_VIEWPORT_INSET,
-      right: viewport.x + viewport.w - SITE_CONTEXT_VIEWPORT_INSET,
-      bottom: viewport.y + viewport.h - SITE_CONTEXT_VIEWPORT_INSET,
-      gap: SITE_CONTEXT_PANEL_GAP,
-    }, { snapGrid });
+    const origin = {
+      x: viewport.x + SITE_CONTEXT_VIEWPORT_INSET,
+      y: viewport.y + SITE_CONTEXT_VIEWPORT_INSET,
+    };
+    const spec = createGridSpec(viewport.w - SITE_CONTEXT_VIEWPORT_INSET * 2);
+    const span = options.panelId
+      ? getPanelGridSpan(options.panelId)
+      : inferSpanFromSize(spec, size);
+    const slot = findNextGridSlot(spec, new Set(), span.colSpan, span.rowSpan);
+    if (!slot) {
+      return snapGrid
+        ? { x: snapToGrid(origin.x), y: snapToGrid(origin.y) }
+        : origin;
+    }
+    const rect = gridPlacementToRect(spec, origin, slot, snapGrid);
+    return { x: rect.x, y: rect.y };
   }
 
-  const obstacles = getPanelObstaclesInFrame(editor, context.frameId);
-  const viewport = {
-    left: frameBounds.x + innerPadding,
-    top: frameBounds.y + innerPadding,
-    right: frameBounds.x + frameBounds.w - innerPadding,
-    bottom: frameBounds.y + frameBounds.h - innerPadding,
-    gap: SITE_CONTEXT_PANEL_GAP,
+  const innerLeft = frameBounds.x + innerPadding;
+  const innerTop = frameBounds.y + innerPadding;
+  const innerWidth = Math.max(
+    GRID_COLUMNS * GRID_SIZE,
+    frameBounds.w - innerPadding * 2,
+  );
+  const origin = {
+    x: snapGrid ? snapToGrid(innerLeft) : innerLeft,
+    y: snapGrid ? snapToGrid(innerTop) : innerTop,
   };
 
-  if (obstacles.length === 0) {
-    const origin = snapGrid
-      ? { x: snapToGrid(viewport.left), y: snapToGrid(viewport.top) }
-      : { x: viewport.left, y: viewport.top };
+  const spec = createGridSpec(innerWidth);
+  const obstacles = getPanelObstaclesInFrame(editor, context.frameId);
+  const occupied = new Set<string>();
+  for (const obstacle of obstacles) {
+    markGridOccupancy(occupied, spec, origin, obstacle);
+  }
+
+  const span = options.panelId
+    ? getPanelGridSpan(options.panelId)
+    : inferSpanFromSize(spec, size);
+
+  const slot =
+    findNextGridSlot(spec, occupied, span.colSpan, span.rowSpan) ??
+    findNextGridSlot(spec, occupied, span.colSpan, span.rowSpan, 96);
+
+  if (!slot) {
     return origin;
   }
 
-  return findNonOverlappingPosition(size.w, size.h, obstacles, viewport, { snapGrid });
+  const rect = gridPlacementToRect(spec, origin, slot, snapGrid);
+  return { x: rect.x, y: rect.y };
 }
+
+/** Infer nearest grid span from a pixel size (for unknown panel kinds). */
+function inferSpanFromSize(
+  spec: GridSpec,
+  size: { w: number; h: number },
+): { colSpan: number; rowSpan: number } {
+  const cellStrideX = spec.colWidth + spec.gutter;
+  const cellStrideY = spec.rowHeight + spec.gutter;
+  const colSpan = Math.min(
+    GRID_COLUMNS,
+    Math.max(1, Math.round(size.w / cellStrideX)),
+  );
+  const rowSpan = Math.max(1, Math.round(size.h / cellStrideY));
+  return { colSpan, rowSpan };
+}
+
+export {
+  GRID_COLUMNS,
+  GRID_ROW_HEIGHT,
+  GRID_GUTTER,
+  getPanelGridSpan,
+  createGridSpec,
+} from '../../canvas/gridLayout';

@@ -6,16 +6,28 @@ import {
   computeInitialSiteContextLayout,
   computePanelPlacementInSiteContext,
   resolveInsertionSiteContext,
-  SITE_FILE_MANAGER_WIDTH,
+  getPanelGridSpan,
+  GRID_ROW_HEIGHT,
+  GRID_GUTTER,
 } from '../../src/whiteboard/context/siteContextPanelLayout';
 import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
+import { rectsOverlapWithGap } from '../../src/canvas/gridLayout';
+
+const ANCHOR = { x: 100, y: 80, maxWidth: 1600, maxHeight: 900 };
+
+function maxBriefHeight(): number {
+  const span = getPanelGridSpan('project-brief');
+  return span.rowSpan * GRID_ROW_HEIGHT + (span.rowSpan - 1) * GRID_GUTTER;
+}
 
 describe('computeInitialSiteContextLayout', () => {
-  it('places brief, preview, and narrow files without chat', () => {
-    const layouts = computeInitialSiteContextLayout(
-      { x: 100, y: 80, maxWidth: 1600, maxHeight: 800 },
-      { includeChat: false, includeBrief: true, includePreview: true, includeFiles: true },
-    );
+  it('places brief, preview, and files without chat on the 12-column grid', () => {
+    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+      includeChat: false,
+      includeBrief: true,
+      includePreview: true,
+      includeFiles: true,
+    });
 
     expect(layouts.map((l) => l.panelId)).toEqual([
       'project-brief',
@@ -23,20 +35,79 @@ describe('computeInitialSiteContextLayout', () => {
       'file-manager',
     ]);
 
+    const brief = layouts.find((l) => l.panelId === 'project-brief');
+    const preview = layouts.find((l) => l.panelId === 'web-preview');
     const files = layouts.find((l) => l.panelId === 'file-manager');
-    expect(files?.w).toBe(SITE_FILE_MANAGER_WIDTH);
-    expect(files?.y).toBeGreaterThan(layouts[0]?.y ?? 0);
+
+    expect(brief).toBeDefined();
+    expect(preview).toBeDefined();
+    expect(files).toBeDefined();
+
+    expect(files?.y).toBeGreaterThan((brief?.y ?? 0) + (brief?.h ?? 0));
+    expect(preview?.w).toBeGreaterThan(brief?.w ?? 0);
+  });
+
+  it('does not stretch brief to viewport height', () => {
+    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+      includeChat: false,
+      includeBrief: true,
+      includePreview: false,
+      includeFiles: false,
+    });
+
+    const brief = layouts.find((l) => l.panelId === 'project-brief');
+    expect(brief).toBeDefined();
+    expect(brief?.h).toBeLessThan(ANCHOR.maxHeight * 0.6);
+    expect(brief?.h).toBeLessThanOrEqual(maxBriefHeight() + 40);
   });
 
   it('includes chat in the primary row when requested', () => {
-    const layouts = computeInitialSiteContextLayout(
-      { x: 0, y: 0, maxWidth: 1800, maxHeight: 900 },
-      { includeChat: true, includeBrief: true, includePreview: true, includeFiles: true },
-    );
+    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+      includeChat: true,
+      includeBrief: true,
+      includePreview: true,
+      includeFiles: true,
+    });
 
-    expect(layouts[0]?.panelId).toBe('chat');
-    expect(layouts[1]?.panelId).toBe('project-brief');
-    expect(layouts[2]?.panelId).toBe('web-preview');
+    expect(layouts.map((l) => l.panelId)).toEqual([
+      'chat',
+      'project-brief',
+      'web-preview',
+      'file-manager',
+    ]);
+  });
+
+  it('produces non-overlapping panel placements', () => {
+    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+      includeChat: true,
+      includeBrief: true,
+      includePreview: true,
+      includeFiles: true,
+    });
+
+    for (let i = 0; i < layouts.length; i += 1) {
+      for (let j = i + 1; j < layouts.length; j += 1) {
+        const a = layouts[i];
+        const b = layouts[j];
+        expect(rectsOverlapWithGap(a, b, GRID_GUTTER)).toBe(false);
+      }
+    }
+  });
+
+  it('snaps all coordinates to the 20px grid', () => {
+    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+      includeChat: true,
+      includeBrief: true,
+      includePreview: true,
+      includeFiles: true,
+    });
+
+    for (const layout of layouts) {
+      expect(layout.x % 20).toBe(0);
+      expect(layout.y % 20).toBe(0);
+      expect(layout.w % 20).toBe(0);
+      expect(layout.h % 20).toBe(0);
+    }
   });
 });
 
@@ -90,7 +161,7 @@ function makeLayoutEditor(): StubEditor {
     x: 40,
     y: 40,
     parentId: frameId,
-    props: { w: 400, h: 500, panelId: 'chat', data: { __siteId: 'site-abc' } },
+    props: { w: 280, h: 240, panelId: 'chat', data: { __siteId: 'site-abc' } },
   });
 
   const editor: StubEditor = {
@@ -133,16 +204,33 @@ describe('resolveInsertionSiteContext', () => {
 });
 
 describe('computePanelPlacementInSiteContext', () => {
-  it('places beside existing panels without overlap', () => {
+  it('places new panels on the grid without overlapping existing panels', () => {
     const editor = makeLayoutEditor();
     const frameId = contextGroupFrameId({ kind: 'site', id: 'site-abc' });
+    const span = getPanelGridSpan('project-brief');
+    const size = {
+      w: span.colSpan * 80,
+      h: span.rowSpan * GRID_ROW_HEIGHT,
+    };
+
     const placement = computePanelPlacementInSiteContext(
       editor as never,
       { siteId: 'site-abc', frameId, label: 'Site' },
-      { w: 380, h: 520 },
+      size,
+      { panelId: 'project-brief' },
     );
 
-    expect(placement.x + 380).toBeLessThanOrEqual(2000);
-    expect(placement.x >= 440 + 16 || placement.y >= 540).toBe(true);
+    const existing = editor.getShapePageBounds('shape:panel:chat');
+    expect(existing).toBeDefined();
+    if (!existing) return;
+
+    const candidate = {
+      x: placement.x,
+      y: placement.y,
+      w: size.w,
+      h: size.h,
+    };
+
+    expect(rectsOverlapWithGap(candidate, existing, GRID_GUTTER)).toBe(false);
   });
 });

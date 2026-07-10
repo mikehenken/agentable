@@ -168,6 +168,22 @@ export { configureWhiteboardSnap } from './hooks/configureWhiteboardSnap';
 export { GRID_SIZE, snapToGrid, snapRect } from '../canvas/panelLayoutEngine';
 
 export {
+  GRID_COLUMNS,
+  GRID_ROW_HEIGHT,
+  GRID_GUTTER,
+  GRID_REFERENCE_WIDTH,
+  createGridSpec,
+  getPanelGridSpan,
+  gridPlacementToRect,
+  gridSpanToSize,
+  findNextGridSlot,
+  SITE_PANEL_GRID_SPANS,
+  type GridSpec,
+  type GridCellPlacement,
+  type GridPanelSpan,
+} from '../canvas/gridLayout';
+
+export {
   useFrameContextStore,
   getActiveContextRef,
   WHITEBOARD_PALETTE_ENTITIES,

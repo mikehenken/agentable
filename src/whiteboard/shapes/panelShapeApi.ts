@@ -249,6 +249,7 @@ function computePlacement(
   if (siteContext && !options.position) {
     const { x, y } = computePanelPlacementInSiteContext(editor, siteContext, { w, h }, {
       snapGrid,
+      panelId,
     });
     const rect = { x, y, w, h };
     return snapGrid ? snapRect(rect) : rect;
