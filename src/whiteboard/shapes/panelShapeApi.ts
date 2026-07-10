@@ -184,7 +184,7 @@ export function groupPanelsInCanvas(
   } = {},
 ): boolean {
   const editor = editorRef;
-  if (!editor || panelIds.length < 2) return false;
+  if (!editor || panelIds.length === 0) return false;
   return groupPanelsWithContext(editor, panelIds, options);
 }
 

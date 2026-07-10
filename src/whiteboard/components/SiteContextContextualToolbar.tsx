@@ -47,7 +47,7 @@ export const SiteContextContextualToolbar = track(function SiteContextContextual
   const siteContext = useValue(
     'siteContextToolbar',
     () => {
-      if (!editor.isIn('select.idle')) return null;
+      if (!editor.isInAny('select.idle', 'select.pointing_shape')) return null;
       return resolveSiteContextFromSelection(editor);
     },
     [editor],
@@ -57,7 +57,7 @@ export const SiteContextContextualToolbar = track(function SiteContextContextual
     if (!siteContext) return undefined;
     const frameBounds = getSiteFrameScreenBounds(editor, siteContext.frameId);
     if (frameBounds) return frameBounds;
-    const fullBounds = editor.getSelectionRotatedScreenBounds();
+    const fullBounds = editor.getSelectionScreenBounds();
     if (!fullBounds) return undefined;
     return new Box(fullBounds.x, fullBounds.y, fullBounds.width, 0);
   }, [editor, siteContext]);

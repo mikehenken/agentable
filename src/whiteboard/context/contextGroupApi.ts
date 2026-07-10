@@ -528,11 +528,19 @@ export function groupPanelsWithContext(
   panelIds: string[],
   options: AssignPanelsOptions & { siteId?: string } = {},
 ): boolean {
-  if (panelIds.length < 2) return false;
+  if (panelIds.length === 0) return false;
 
   const shapeIds = panelIds.map((panelId) => createShapeId(`panel:${panelId}`));
   const existing = shapeIds.filter((id) => Boolean(editor.getShape(id)));
-  if (existing.length < 2) return false;
+  if (existing.length === 0) return false;
+
+  if (existing.length === 1) {
+    const siteId = options.siteId ?? inferCommonSiteId(editor, panelIds);
+    if (siteId) {
+      return assignPanelsToSiteGroup(editor, panelIds, siteId, options);
+    }
+    return false;
+  }
 
   if (panelsAlreadyInContextFrame(editor, existing)) {
     return true;
