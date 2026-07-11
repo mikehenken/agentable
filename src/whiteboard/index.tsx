@@ -138,6 +138,13 @@ export {
 } from './context/siteContextLayersApi';
 
 export {
+  repairAllInvalidSiteContextLayouts,
+  repairSiteContextFrameLayout,
+  isSiteContextLayoutInvalid,
+  siteContextFrameIdForSite,
+} from './context/siteContextLayoutRepair';
+
+export {
   computeInitialSiteContextLayout,
   computePanelPlacementInSiteContext,
   resolveInsertionSiteContext,

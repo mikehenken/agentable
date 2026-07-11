@@ -35,6 +35,7 @@ import {
   groupPanelsWithContext,
   resolveSiteIdFromPanelData,
 } from '../context/contextGroupApi';
+import { repairAllInvalidSiteContextLayouts } from '../context/siteContextLayoutRepair';
 import {
   computePanelPlacementInSiteContext,
   defaultSitePanelSize,
@@ -81,6 +82,9 @@ export function bindEditor(editor: Editor): void {
     pendingSnapshot = null;
     try {
       editor.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
+      window.requestAnimationFrame(() => {
+        repairAllInvalidSiteContextLayouts(editor);
+      });
     } catch (err) {
       console.error('[panelShapeApi] pending snapshot load failed', err);
     }
@@ -120,6 +124,9 @@ export function loadWhiteboardSnapshot(snapshot: unknown): boolean {
   if (editorRef) {
     try {
       editorRef.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
+      window.requestAnimationFrame(() => {
+        repairAllInvalidSiteContextLayouts(editorRef!);
+      });
       return true;
     } catch (err) {
       console.error('[panelShapeApi] loadWhiteboardSnapshot failed', err);
