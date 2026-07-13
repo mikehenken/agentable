@@ -20,13 +20,16 @@ describe('loadWhiteboardSnapshot', () => {
     expect(loadWhiteboardSnapshot(snapshot)).toBe(true);
 
     const loadSnapshot = vi.fn();
-    bindEditor({ loadSnapshot } as never);
+    // `bindEditor` schedules a post-load auto-arrange + layout repair pass
+    // (requestAnimationFrame) that iterates the page; stub those readers so
+    // the deferred work no-ops instead of throwing on a bare mock.
+    bindEditor({ loadSnapshot, getCurrentPageShapes: () => [], getSelectedShapeIds: () => [] } as never);
     expect(loadSnapshot).toHaveBeenCalledWith(snapshot);
   });
 
   it('loads immediately when editor is already bound', () => {
     const loadSnapshot = vi.fn();
-    bindEditor({ loadSnapshot } as never);
+    bindEditor({ loadSnapshot, getCurrentPageShapes: () => [], getSelectedShapeIds: () => [] } as never);
 
     const snapshot = { document: { store: {} }, session: {} };
     expect(loadWhiteboardSnapshot(snapshot)).toBe(true);

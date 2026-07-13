@@ -9,7 +9,7 @@
  *   - `getShape(id)` / `createShape(shape)` / `updateShape(shape)` /
  *     `deleteShapes([id])`
  *   - `getShapePageBounds(id)` / `getViewportPageBounds()` /
- *     `getCurrentPageShapes()`
+ *     `getCurrentPageShapes()` / `getSelectedShapeIds()`
  *   - `select(id)` / `zoomToBounds(bounds, opts)`
  *
  * That keeps tests fast and decoupled from tldraw's runtime — the contract
@@ -70,6 +70,7 @@ interface StubEditor {
   getShapePageBounds: Mock;
   getViewportPageBounds: Mock;
   getCurrentPageShapes: Mock;
+  getSelectedShapeIds: Mock;
   select: Mock;
   zoomToBounds: Mock;
   // Test-only inspector
@@ -114,6 +115,7 @@ function makeStubEditor(): StubEditor {
       h: 900,
     })),
     getCurrentPageShapes: vi.fn(() => Array.from(shapes.values())),
+    getSelectedShapeIds: vi.fn(() => [] as string[]),
     select: vi.fn(),
     zoomToBounds: vi.fn(),
   };
