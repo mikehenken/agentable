@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react';
 import { LayersPanel } from './LayersPanel';
+import { PanelDockHighlightOverlay } from './PanelDockHighlightOverlay';
 import { SiteContextContextualToolbar } from './SiteContextContextualToolbar';
 
 export interface WhiteboardOverlaysProps {
@@ -14,6 +15,7 @@ export function WhiteboardOverlays({
 }: WhiteboardOverlaysProps): ReactElement {
   return (
     <>
+      <PanelDockHighlightOverlay />
       {enableSiteContextToolbar ? <SiteContextContextualToolbar /> : null}
       {enableLayersPanel ? <LayersPanel /> : null}
     </>

@@ -116,20 +116,29 @@ function layoutOptionsFromPanels(
 
 function applyPlacements(
   editor: Editor,
+  frameId: TLShapeId,
   panels: SiteContextPanelSnapshot[],
   placements: SiteContextPanelPlacement[],
 ): void {
   const byPanelId = new Map(placements.map((p) => [p.panelId, p]));
+  const frame = editor.getShape(frameId);
   for (const panel of panels) {
     const target = byPanelId.get(panel.panelId);
     if (!target) continue;
+    const existing = editor.getShape(panel.shapeId);
+    // Placements are page-space; panels are children of the frame, so convert
+    // into the frame's local space before writing shape x/y.
+    const local =
+      frame && existing?.parentId === frameId
+        ? editor.getPointInShapeSpace(frame, { x: target.x, y: target.y })
+        : { x: target.x, y: target.y };
     editor.updateShape({
       id: panel.shapeId,
       type: 'panel',
-      x: target.x,
-      y: target.y,
+      x: local.x,
+      y: local.y,
       props: {
-        ...(editor.getShape(panel.shapeId)?.props as Record<string, unknown>),
+        ...(existing?.props as Record<string, unknown>),
         w: target.w,
         h: target.h,
       },
@@ -166,7 +175,7 @@ export function repairSiteContextFrameLayout(
     layoutOptionsFromPanels(panels),
   );
 
-  applyPlacements(editor, panels, placements);
+  applyPlacements(editor, frameId, panels, placements);
   fitContextGroupFrameToContent(editor, frameId, { mode: 'final' });
   return true;
 }

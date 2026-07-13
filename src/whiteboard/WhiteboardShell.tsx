@@ -47,6 +47,7 @@ import { LayersTool } from './tools/LayersTool';
 import { useWhiteboardTldrawUser } from './useWhiteboardTldrawUser';
 import { useWhiteboardSnapshotSync } from './hooks/useWhiteboardSnapshotSync';
 import { useContextGroupAutoResize } from './hooks/useContextGroupAutoResize';
+import { usePanelDocking } from './hooks/usePanelDocking';
 import { siteActionsTldrawOverrides } from './whiteboardTldrawOverrides';
 import { layersTldrawOverrides } from './layersTldrawOverrides';
 import { textSearchTldrawOverrides } from './textSearch/textSearchTldrawOverrides';
@@ -191,6 +192,7 @@ function WhiteboardShellInner({
 
   useWhiteboardSnapshotSync(boundEditor);
   useContextGroupAutoResize(boundEditor);
+  usePanelDocking(boundEditor);
 
   const shellClassName = darkCanvas ? 'whiteboard-shell--vibe-dark' : undefined;
   const shellBackground = darkCanvas

@@ -27,7 +27,7 @@ export function createWhiteboardTldrawUiComponents(
     enableTextSearch = true,
   } = options;
   const useCustomToolbar = enableSiteActionsTool || enableLayersPanel;
-  const useOverlays = enableLayersPanel || enableSiteContextToolbar;
+  const useOverlays = true;
 
   if (!useCustomToolbar && !useOverlays && !enableTextSearch) {
     return minimalTldrawUiComponents;

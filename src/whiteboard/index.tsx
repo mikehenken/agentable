@@ -145,6 +145,55 @@ export {
 } from './context/siteContextLayoutRepair';
 
 export {
+  autoArrangeSiteContextPanels,
+  autoArrangeSiteContextPanelsByFrameId,
+  autoArrangeAllSiteContextPanels,
+  hasSiteContextPanels,
+} from './context/siteContextAutoArrange';
+
+export {
+  enterSiteWorkspaceMode,
+  type SiteWorkspaceModeOptions,
+} from './context/siteWorkspaceMode';
+
+export {
+  CANVAS_GLOBAL_PANEL_IDS,
+  isCanvasGlobalPanel,
+  ejectGlobalPanelsFromSiteFrames,
+  filterSiteContextPanelIds,
+  isPanelInsideSiteContextFrame,
+} from './context/canvasGlobalPanels';
+
+export {
+  PANEL_DOCK_META_KEY,
+  DOCK_HIT_THRESHOLD,
+  getPanelDock,
+  setPanelDock,
+  hitTestPanelDock,
+  previewPanelDockHighlight,
+  applyPanelDock,
+  resolveDock,
+  resolveDockTree,
+  cascadeDockedPanelsInFrame,
+  collectDockedPanelsInFrame,
+  getFrameInnerRect,
+  type PanelDock,
+  type PanelDockTarget,
+  type PanelDockEdge,
+  type DockTreeNode,
+  type DockTreePlacement,
+  type DockZoneHighlight,
+} from './context/panelDockEngine';
+
+export {
+  buildAdminSiteDockTree,
+  sizesFromPlacements,
+  type SiteDockPresetOptions,
+} from './context/siteContextDockPresets';
+
+export { usePanelDocking } from './hooks/usePanelDocking';
+
+export {
   computeInitialSiteContextLayout,
   computePanelPlacementInSiteContext,
   resolveInsertionSiteContext,

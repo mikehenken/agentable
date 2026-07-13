@@ -16,6 +16,7 @@ import {
   type UnknownRecord,
 } from 'tldraw';
 import { GRID_SIZE, snapToGrid } from '../../canvas/panelLayoutEngine';
+import { filterSiteContextPanelIds, isCanvasGlobalPanel } from './canvasGlobalPanels';
 
 export type ContextGroupKind = 'site' | 'agency';
 
@@ -32,7 +33,12 @@ export interface AssignPanelsOptions {
   agencyId?: string | null;
 }
 
-export const CONTEXT_FRAME_PADDING = 40;
+/**
+ * Padding between a context frame's border and its panel content. Zero so
+ * edge-docked panels (chat left, file-manager right) sit flush to the group
+ * inner edges with no gap, matching the admin-shell default layout.
+ */
+export const CONTEXT_FRAME_PADDING = 0;
 
 /** Minimum page-unit change before a preview resize is applied (reduces jitter). */
 export const CONTEXT_FRAME_PREVIEW_MIN_DELTA = 12;
@@ -209,6 +215,8 @@ export function ensurePanelInSiteContextFrame(
 ): void {
   const panel = editor.getShape(panelShapeId);
   if (!panel || panel.type !== 'panel') return;
+  const panelId = (panel.props as { panelId?: unknown }).panelId;
+  if (typeof panelId === 'string' && isCanvasGlobalPanel(panelId)) return;
   if (panel.parentId === frameId) return;
   editor.reparentShapes([panelShapeId], frameId);
 }
@@ -408,7 +416,27 @@ function isPanelShapeRecord(record: UnknownRecord): record is TLShape {
   return record.typeName === 'shape' && (record as TLShape).type === 'panel';
 }
 
-/** Collect panel shape ids from a tldraw store diff (added + updated). */
+/**
+ * True when a panel update changed its geometry (position/size/parent) rather
+ * than only its content props (e.g. a new chat message, preview refreshKey).
+ *
+ * Content-only updates must NOT trigger a group refit — otherwise sending a
+ * chat message would resize the whole site group and reload the preview.
+ */
+function panelGeometryChanged(prev: TLShape, next: TLShape): boolean {
+  if (prev.x !== next.x || prev.y !== next.y) return true;
+  if (prev.parentId !== next.parentId) return true;
+  const prevProps = (prev.props ?? {}) as { w?: number; h?: number };
+  const nextProps = (next.props ?? {}) as { w?: number; h?: number };
+  return prevProps.w !== nextProps.w || prevProps.h !== nextProps.h;
+}
+
+/**
+ * Collect panel shape ids from a tldraw store diff for auto-resize.
+ *
+ * Includes newly added panels and panels whose geometry changed; skips
+ * content-only updates so chat/preview content changes don't refit the group.
+ */
 export function collectPanelShapeIdsFromStoreDiff(diff: RecordsDiffLike): TLShapeId[] {
   const ids = new Set<TLShapeId>();
 
@@ -419,10 +447,54 @@ export function collectPanelShapeIdsFromStoreDiff(diff: RecordsDiffLike): TLShap
   }
 
   for (const pair of Object.values(diff.updated)) {
+    const prev = pair[0];
     const next = pair[1];
-    if (isPanelShapeRecord(next)) {
-      ids.add(next.id);
-    }
+    if (!isPanelShapeRecord(next)) continue;
+    // Treat panel→panel updates as fit-worthy only on geometry change. When the
+    // previous record wasn't a panel (type change), fall back to refitting.
+    if (isPanelShapeRecord(prev) && !panelGeometryChanged(prev, next)) continue;
+    ids.add(next.id);
+  }
+
+  return [...ids];
+}
+
+function isContextGroupFrameRecord(record: UnknownRecord): record is TLShape {
+  if (record.typeName !== 'shape') return false;
+  const shape = record as TLShape;
+  if (shape.type !== 'frame') return false;
+  return getContextGroupMeta(shape) !== null;
+}
+
+/**
+ * True when a frame update changed its inner size (w/h). Pure translations
+ * (x/y only) are ignored: child panels move with the frame, so no reflow is
+ * needed — only a size change alters the inner bounds docked panels track.
+ */
+function frameGeometryChanged(prev: TLShape, next: TLShape): boolean {
+  const prevProps = (prev.props ?? {}) as { w?: number; h?: number };
+  const nextProps = (next.props ?? {}) as { w?: number; h?: number };
+  return prevProps.w !== nextProps.w || prevProps.h !== nextProps.h;
+}
+
+/**
+ * Collect context-group frame ids whose inner size (w/h) changed in a store
+ * diff — used to reflow docked panels + centered preview when the GROUP itself
+ * is resized (not just when a panel is resized).
+ */
+export function collectContextGroupFrameIdsFromStoreDiff(
+  diff: RecordsDiffLike,
+): TLShapeId[] {
+  const ids = new Set<TLShapeId>();
+
+  for (const pair of Object.values(diff.updated)) {
+    const prev = pair[0];
+    const next = pair[1];
+    if (!isContextGroupFrameRecord(next)) continue;
+    // Only refit on an actual size change; ignore pure moves and no-op writes
+    // (e.g. a fit that re-writes the same w/h) so we never loop.
+    if (isContextGroupFrameRecord(prev) && !frameGeometryChanged(prev, next)) continue;
+    ids.add(next.id);
   }
 
   return [...ids];
@@ -480,9 +552,10 @@ export function assignPanelsToContextGroup(
   panelIds: string[],
   ref: ContextGroupRef,
 ): boolean {
-  if (panelIds.length === 0) return false;
+  const scopedIds = filterSiteContextPanelIds(panelIds);
+  if (scopedIds.length === 0) return false;
 
-  const panelShapeIds = panelIds
+  const panelShapeIds = scopedIds
     .map((panelId) => createShapeId(`panel:${panelId}`))
     .filter((id) => Boolean(editor.getShape(id)));
 
@@ -543,6 +616,10 @@ export function groupPanelsWithContext(
   }
 
   if (panelsAlreadyInContextFrame(editor, existing)) {
+    const siteId = options.siteId ?? inferCommonSiteId(editor, panelIds);
+    if (siteId) {
+      return assignPanelsToSiteGroup(editor, panelIds, siteId, options);
+    }
     return true;
   }
 

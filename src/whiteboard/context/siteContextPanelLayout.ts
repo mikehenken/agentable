@@ -2,7 +2,8 @@
  * Site context panel layout — initial site-open grid and in-context insertion.
  *
  * Arranges chat, brief, preview, and file-manager inside the blue site frame
- * on a 12-column grid without overlap. Files stacks under brief in the same column.
+ * on a 12-column grid without overlap. Files sit to the right of preview.
+ * Chat (when docked) is placed flush-left outside the grid column flow.
  */
 import type { Editor, TLShapeId } from 'tldraw';
 import {
@@ -69,6 +70,8 @@ export interface SiteContextLayoutOptions {
   includeBrief?: boolean;
   includePreview?: boolean;
   includeFiles?: boolean;
+  /** When true, chat is docked flush-left and does not consume grid columns. */
+  dockChatLeft?: boolean;
   gap?: number;
   snapGrid?: boolean;
 }
@@ -87,52 +90,59 @@ interface InitialGridSlot {
 }
 
 /**
- * Fixed initial layout on the 12-column grid:
- *   Row 0: [Chat? 3] [Brief 3] [Preview 6 or 9]
- *   Row 7: [Files 3] under brief column
+ * Fixed initial layout on the 12-column grid (chat excluded when dockChatLeft):
+ *   Row 0: [Brief? 3] [Preview flex] [Files 3]
  */
 function buildInitialGridSlots(options: {
   includeChat: boolean;
   includeBrief: boolean;
   includePreview: boolean;
   includeFiles: boolean;
+  dockChatLeft: boolean;
 }): InitialGridSlot[] {
-  const { includeChat, includeBrief, includePreview, includeFiles } = options;
+  const { includeChat, includeBrief, includePreview, includeFiles, dockChatLeft } = options;
   const slots: InitialGridSlot[] = [];
 
   let col = 0;
-  let briefCol = 0;
 
-  if (includeChat) {
+  if (includeChat && !dockChatLeft) {
+    const chatSpan = getPanelGridSpan('chat');
     slots.push({
       panelId: 'chat',
-      placement: { col, row: 0, colSpan: 3, rowSpan: 6 },
+      placement: { col, row: 0, colSpan: chatSpan.colSpan, rowSpan: chatSpan.rowSpan },
     });
-    col += 3;
+    col += chatSpan.colSpan;
   }
 
   if (includeBrief) {
-    briefCol = col;
+    const briefSpan = getPanelGridSpan('project-brief');
     slots.push({
       panelId: 'project-brief',
-      placement: { col, row: 0, colSpan: 3, rowSpan: 7 },
+      placement: { col, row: 0, colSpan: briefSpan.colSpan, rowSpan: briefSpan.rowSpan },
     });
-    col += 3;
+    col += briefSpan.colSpan;
   }
 
+  const filesSpan = getPanelGridSpan('file-manager');
+  const filesCol = includeFiles ? GRID_COLUMNS - filesSpan.colSpan : GRID_COLUMNS;
+
   if (includePreview) {
-    const previewSpan = GRID_COLUMNS - col;
+    const previewSpan = getPanelGridSpan('web-preview');
+    const endCol = includeFiles ? filesCol : GRID_COLUMNS;
+    const maxAvailable = endCol - col;
+    const colSpan = includeFiles
+      ? maxAvailable
+      : Math.max(previewSpan.colSpan, maxAvailable);
     slots.push({
       panelId: 'web-preview',
-      placement: { col, row: 0, colSpan: previewSpan, rowSpan: 8 },
+      placement: { col, row: 0, colSpan, rowSpan: previewSpan.rowSpan },
     });
   }
 
   if (includeFiles) {
-    const filesCol = includeBrief ? briefCol : col;
     slots.push({
       panelId: 'file-manager',
-      placement: { col: filesCol, row: 7, colSpan: 3, rowSpan: 4 },
+      placement: { col: filesCol, row: 0, colSpan: filesSpan.colSpan, rowSpan: filesSpan.rowSpan },
     });
   }
 
@@ -164,23 +174,49 @@ export function computeInitialSiteContextLayout(
     includeBrief = true,
     includePreview = true,
     includeFiles = true,
+    dockChatLeft = false,
     gap = SITE_CONTEXT_PANEL_GAP,
     snapGrid = true,
   } = options;
 
-  const spec = createGridSpec(anchor.maxWidth, gap);
   const originX = snapGrid ? snapToGrid(anchor.x) : anchor.x;
   const originY = snapGrid ? snapToGrid(anchor.y) : anchor.y;
-  const origin = { x: originX, y: originY };
+  const placements: SiteContextPanelPlacement[] = [];
+
+  let gridOriginX = originX;
+  let gridMaxWidth = anchor.maxWidth;
+
+  if (includeChat && dockChatLeft) {
+    const fullSpec = createGridSpec(anchor.maxWidth, gap);
+    const chatSpan = getPanelGridSpan('chat');
+    const chatSize = gridSpanToSize(fullSpec, chatSpan, snapGrid);
+    placements.push({
+      panelId: 'chat',
+      x: originX,
+      y: originY,
+      w: chatSize.w,
+      h: chatSize.h,
+    });
+    gridOriginX = originX + chatSize.w + gap;
+    gridMaxWidth = Math.max(GRID_COLUMNS * GRID_SIZE, anchor.maxWidth - chatSize.w - gap);
+  }
+
+  const spec = createGridSpec(gridMaxWidth, gap);
+  const gridOrigin = { x: gridOriginX, y: originY };
 
   const slots = buildInitialGridSlots({
     includeChat,
     includeBrief,
     includePreview,
     includeFiles,
+    dockChatLeft,
   });
 
-  return slots.map((slot) => placementFromGridSlot(spec, origin, slot, snapGrid));
+  for (const slot of slots) {
+    placements.push(placementFromGridSlot(spec, gridOrigin, slot, snapGrid));
+  }
+
+  return placements;
 }
 
 function getPanelObstaclesInFrame(editor: Editor, frameId: TLShapeId): LayoutRect[] {

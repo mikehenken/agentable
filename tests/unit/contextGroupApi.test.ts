@@ -5,6 +5,7 @@ import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { createShapeId } from 'tldraw';
 import {
   assignPanelsToSiteGroup,
+  collectContextGroupFrameIdsFromStoreDiff,
   collectPanelShapeIdsFromStoreDiff,
   contextGroupFrameId,
   ensurePanelInSiteContextFrame,
@@ -272,7 +273,7 @@ describe('fitSiteContextGroupForShape', () => {
 });
 
 describe('collectPanelShapeIdsFromStoreDiff', () => {
-  it('collects panel ids from added and updated records', () => {
+  it('collects added panels and updated panels whose geometry changed', () => {
     const ids = collectPanelShapeIdsFromStoreDiff({
       added: {
         'shape:panel:chat': {
@@ -282,12 +283,109 @@ describe('collectPanelShapeIdsFromStoreDiff', () => {
         },
       },
       updated: {
+        // Geometry change (height) → collected.
         'shape:panel:brief': [
-          { id: 'shape:panel:brief', typeName: 'shape', type: 'panel' },
-          { id: 'shape:panel:brief', typeName: 'shape', type: 'panel' },
+          { id: 'shape:panel:brief', typeName: 'shape', type: 'panel', x: 0, y: 0, props: { w: 280, h: 400 } },
+          { id: 'shape:panel:brief', typeName: 'shape', type: 'panel', x: 0, y: 0, props: { w: 280, h: 500 } },
         ],
       },
     });
     expect(ids).toEqual(['shape:panel:chat', 'shape:panel:brief']);
+  });
+
+  it('skips content-only panel updates (no geometry change) so chat messages do not refit', () => {
+    const ids = collectPanelShapeIdsFromStoreDiff({
+      added: {},
+      updated: {
+        // Same x/y/w/h, only content props (data) changed → NOT collected.
+        'shape:panel:chat': [
+          {
+            id: 'shape:panel:chat',
+            typeName: 'shape',
+            type: 'panel',
+            x: 10,
+            y: 20,
+            props: { w: 280, h: 400, data: { messages: 1 } },
+          },
+          {
+            id: 'shape:panel:chat',
+            typeName: 'shape',
+            type: 'panel',
+            x: 10,
+            y: 20,
+            props: { w: 280, h: 400, data: { messages: 2 } },
+          },
+        ],
+      },
+    });
+    expect(ids).toEqual([]);
+  });
+});
+
+describe('collectContextGroupFrameIdsFromStoreDiff', () => {
+  const frameMeta = { landiContextGroup: { kind: 'site', id: 'site-1' } };
+
+  it('collects context-group frames whose size (w/h) changed on GROUP resize', () => {
+    const ids = collectContextGroupFrameIdsFromStoreDiff({
+      added: {},
+      updated: {
+        'shape:context:site:site-1': [
+          {
+            id: 'shape:context:site:site-1',
+            typeName: 'shape',
+            type: 'frame',
+            x: 0,
+            y: 0,
+            meta: frameMeta,
+            props: { w: 800, h: 600 },
+          },
+          {
+            id: 'shape:context:site:site-1',
+            typeName: 'shape',
+            type: 'frame',
+            x: 0,
+            y: 0,
+            meta: frameMeta,
+            props: { w: 1200, h: 720 },
+          },
+        ],
+      },
+    });
+    expect(ids).toEqual(['shape:context:site:site-1']);
+  });
+
+  it('ignores pure moves (x/y only) and non-context frames', () => {
+    const ids = collectContextGroupFrameIdsFromStoreDiff({
+      added: {},
+      updated: {
+        // Same size, only moved → child panels move with it, no reflow needed.
+        'shape:context:site:site-1': [
+          {
+            id: 'shape:context:site:site-1',
+            typeName: 'shape',
+            type: 'frame',
+            x: 0,
+            y: 0,
+            meta: frameMeta,
+            props: { w: 800, h: 600 },
+          },
+          {
+            id: 'shape:context:site:site-1',
+            typeName: 'shape',
+            type: 'frame',
+            x: 120,
+            y: 80,
+            meta: frameMeta,
+            props: { w: 800, h: 600 },
+          },
+        ],
+        // Plain frame without context-group meta → ignored even on resize.
+        'shape:frame:plain': [
+          { id: 'shape:frame:plain', typeName: 'shape', type: 'frame', props: { w: 100, h: 100 } },
+          { id: 'shape:frame:plain', typeName: 'shape', type: 'frame', props: { w: 300, h: 300 } },
+        ],
+      },
+    });
+    expect(ids).toEqual([]);
   });
 });

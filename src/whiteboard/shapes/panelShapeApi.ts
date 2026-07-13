@@ -36,16 +36,24 @@ import {
   resolveSiteIdFromPanelData,
 } from '../context/contextGroupApi';
 import { repairAllInvalidSiteContextLayouts } from '../context/siteContextLayoutRepair';
+import { autoArrangeAllSiteContextPanels } from '../context/siteContextAutoArrange';
 import {
   computePanelPlacementInSiteContext,
   defaultSitePanelSize,
   resolveInsertionSiteContext,
 } from '../context/siteContextPanelLayout';
+import {
+  filterSiteContextPanelIds,
+  isCanvasGlobalPanel,
+  ejectGlobalPanelsFromSiteFrames,
+} from '../context/canvasGlobalPanels';
 import { getActiveContextRef } from '../context/frameContextStore';
 
 export interface OpenPanelOptions {
   /** After creating/updating, animate camera to the shape. Default true for tool calls. */
   focus?: boolean;
+  /** When true with focus, pan to reveal the shape without changing zoom level. */
+  preserveZoom?: boolean;
   /** Override default placement. Useful for tests or pinning a shape (e.g. voice). */
   position?: { x: number; y: number };
   /** Override default size. */
@@ -83,6 +91,7 @@ export function bindEditor(editor: Editor): void {
     try {
       editor.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
       window.requestAnimationFrame(() => {
+        autoArrangeAllSiteContextPanels(editor);
         repairAllInvalidSiteContextLayouts(editor);
       });
     } catch (err) {
@@ -167,15 +176,46 @@ export function closePanelInCanvas(panelId: string): boolean {
   return true;
 }
 
-export function focusPanelInCanvas(panelId: string): boolean {
+export function focusPanelInCanvas(panelId: string, preserveZoom: boolean = false): boolean {
   const editor = editorRef;
   if (!editor) return false;
   const id = createShapeId(`panel:${panelId}`);
   const bounds = editor.getShapePageBounds(id);
   if (!bounds) return false;
   editor.select(id);
-  editor.zoomToBounds(bounds, { animation: { duration: 350 } });
+  focusPanelShape(editor, id, preserveZoom);
   return true;
+}
+
+/** Pan or zoom camera to reveal a panel shape. */
+function focusPanelShape(editor: Editor, shapeId: ReturnType<typeof createShapeId>, preserveZoom: boolean): void {
+  const bounds = editor.getShapePageBounds(shapeId);
+  if (!bounds) return;
+  if (preserveZoom) {
+    const camera = editor.getCamera();
+    const viewport = editor.getViewportPageBounds();
+    const shapeCenterX = bounds.x + bounds.w / 2;
+    const shapeCenterY = bounds.y + bounds.h / 2;
+    const vpCenterX = viewport.x + viewport.w / 2;
+    const vpCenterY = viewport.y + viewport.h / 2;
+    const margin = 0.15;
+    const outsideX =
+      bounds.x > viewport.x + viewport.w * (1 - margin) ||
+      bounds.x + bounds.w < viewport.x + viewport.w * margin;
+    const outsideY =
+      bounds.y > viewport.y + viewport.h * (1 - margin) ||
+      bounds.y + bounds.h < viewport.y + viewport.h * margin;
+    if (outsideX || outsideY) {
+      const dx = shapeCenterX - vpCenterX;
+      const dy = shapeCenterY - vpCenterY;
+      editor.setCamera(
+        { x: camera.x - dx * camera.z, y: camera.y - dy * camera.z, z: camera.z },
+        { animation: { duration: 350 } },
+      );
+    }
+    return;
+  }
+  editor.zoomToBounds(bounds, { animation: { duration: 350 } });
 }
 
 /**
@@ -192,7 +232,9 @@ export function groupPanelsInCanvas(
 ): boolean {
   const editor = editorRef;
   if (!editor || panelIds.length === 0) return false;
-  return groupPanelsWithContext(editor, panelIds, options);
+  const scopedIds = filterSiteContextPanelIds(panelIds);
+  if (scopedIds.length === 0) return false;
+  return groupPanelsWithContext(editor, scopedIds, options);
 }
 
 export function updatePanelProps(
@@ -252,7 +294,22 @@ function computePlacement(
     return snapGrid ? snapRect(rect) : rect;
   }
 
-  const siteContext = resolveInsertionSiteContext(editor, options.panelProps);
+  // Canvas-global panels (e.g. all-sites) always open at viewport origin — never
+  // inside a site context frame via selection-based insertion.
+  if (isCanvasGlobalPanel(panelId) && !options.position) {
+    const viewportBounds = editor.getViewportPageBounds();
+    const inset = 24;
+    const rect = {
+      x: viewportBounds.x + inset,
+      y: viewportBounds.y + inset,
+      w,
+      h,
+    };
+    return snapGrid ? snapRect(rect) : rect;
+  }
+
+  const siteContext =
+    isCanvasGlobalPanel(panelId) ? null : resolveInsertionSiteContext(editor, options.panelProps);
   if (siteContext && !options.position) {
     const { x, y } = computePanelPlacementInSiteContext(editor, siteContext, { w, h }, {
       snapGrid,
@@ -314,7 +371,8 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
       },
     });
 
-    const assignToSiteGroup = options.assignToSiteGroup ?? true;
+    const assignToSiteGroup =
+      isCanvasGlobalPanel(panelId) ? false : (options.assignToSiteGroup ?? true);
     const siteId = resolveSiteIdFromPanelData(panelData);
     if (assignToSiteGroup && siteId) {
       assignPanelsToSiteGroup(editor, [panelId], siteId, {
@@ -326,8 +384,24 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
   } else {
     const prev = (existing.props as { data?: Record<string, unknown> }).data ?? {};
     const mergedData = options.panelProps ? { ...prev, ...options.panelProps } : prev;
+    const hasForcedLayout = Boolean(options.position && options.size);
 
-    if (options.panelProps) {
+    if (hasForcedLayout) {
+      const place = computePlacement(editor, panelId, options);
+      editor.updateShape({
+        id,
+        type: 'panel',
+        x: place.x,
+        y: place.y,
+        props: {
+          ...(existing.props as Record<string, unknown>),
+          w: place.w,
+          h: place.h,
+          minimized: false,
+          data: mergedData,
+        },
+      });
+    } else if (options.panelProps) {
       // Existing shape — apply any prop patch (e.g. selectedJobId update).
       editor.updateShape({
         id,
@@ -347,7 +421,8 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
       });
     }
 
-    const assignToSiteGroup = options.assignToSiteGroup ?? true;
+    const assignToSiteGroup =
+      isCanvasGlobalPanel(panelId) ? false : (options.assignToSiteGroup ?? true);
     const siteId = resolveSiteIdFromPanelData(mergedData);
     if (assignToSiteGroup && siteId) {
       assignPanelsToSiteGroup(editor, [panelId], siteId, {
@@ -359,11 +434,12 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
   }
 
   if (focus) {
-    const bounds = editor.getShapePageBounds(id);
-    if (bounds) {
-      editor.select(id);
-      editor.zoomToBounds(bounds, { animation: { duration: 350 } });
-    }
+    editor.select(id);
+    focusPanelShape(editor, id, options.preserveZoom ?? false);
+  }
+
+  if (isCanvasGlobalPanel(panelId)) {
+    ejectGlobalPanelsFromSiteFrames(editor);
   }
 
   return true;

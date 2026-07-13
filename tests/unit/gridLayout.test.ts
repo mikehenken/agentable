@@ -75,6 +75,14 @@ describe('getPanelGridSpan', () => {
     expect(size.h).toBeLessThan(600);
     expect(span.rowSpan).toBeLessThanOrEqual(8);
   });
+
+  it('uses taller default row span for web-preview', () => {
+    const span = getPanelGridSpan('web-preview');
+    // Preview drives the uniform row height; a tall span (~720px) gives the
+    // site group a viewport-like aspect ratio for full-screen zoom-to-fit.
+    expect(span.rowSpan).toBe(13);
+    expect(span.rowSpan).toBeGreaterThan(getPanelGridSpan('chat').rowSpan);
+  });
 });
 
 describe('rectsOverlapWithGap', () => {

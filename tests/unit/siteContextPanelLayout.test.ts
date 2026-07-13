@@ -10,6 +10,7 @@ import {
   GRID_ROW_HEIGHT,
   GRID_GUTTER,
 } from '../../src/whiteboard/context/siteContextPanelLayout';
+import { createGridSpec, gridSpanToSize } from '../../src/canvas/gridLayout';
 import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
 import { rectsOverlapWithGap } from '../../src/canvas/gridLayout';
 
@@ -43,7 +44,8 @@ describe('computeInitialSiteContextLayout', () => {
     expect(preview).toBeDefined();
     expect(files).toBeDefined();
 
-    expect(files?.y).toBeGreaterThan((brief?.y ?? 0) + (brief?.h ?? 0));
+    expect(files?.y).toBe(brief?.y);
+    expect(files?.x).toBeGreaterThan((preview?.x ?? 0) + (preview?.w ?? 0) - 1);
     expect(preview?.w).toBeGreaterThan(brief?.w ?? 0);
   });
 
@@ -61,12 +63,34 @@ describe('computeInitialSiteContextLayout', () => {
     expect(brief?.h).toBeLessThanOrEqual(maxBriefHeight() + 40);
   });
 
-  it('includes chat in the primary row when requested', () => {
+  it('expands preview to fill remaining columns without chat', () => {
+    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+      includeChat: false,
+      includeBrief: true,
+      includePreview: true,
+      includeFiles: false,
+    });
+
+    const brief = layouts.find((l) => l.panelId === 'project-brief');
+    const preview = layouts.find((l) => l.panelId === 'web-preview');
+    expect(brief).toBeDefined();
+    expect(preview).toBeDefined();
+
+    const briefSpan = getPanelGridSpan('project-brief');
+    const refSpec = createGridSpec(ANCHOR.maxWidth);
+    const briefW = gridSpanToSize(refSpec, briefSpan).w;
+    const expectedPreviewW = ANCHOR.maxWidth - briefW - GRID_GUTTER;
+    expect(preview?.w).toBeGreaterThan(gridSpanToSize(refSpec, getPanelGridSpan('web-preview')).w - 40);
+    expect(preview?.w).toBeCloseTo(expectedPreviewW, -1);
+  });
+
+  it('uses docked chat + brief + preview + files with gutter after chat', () => {
     const layouts = computeInitialSiteContextLayout(ANCHOR, {
       includeChat: true,
       includeBrief: true,
       includePreview: true,
       includeFiles: true,
+      dockChatLeft: true,
     });
 
     expect(layouts.map((l) => l.panelId)).toEqual([
@@ -75,6 +99,13 @@ describe('computeInitialSiteContextLayout', () => {
       'web-preview',
       'file-manager',
     ]);
+
+    const chat = layouts.find((l) => l.panelId === 'chat');
+    const brief = layouts.find((l) => l.panelId === 'project-brief');
+    expect(chat).toBeDefined();
+    expect(brief).toBeDefined();
+    const gap = (brief?.x ?? 0) - ((chat?.x ?? 0) + (chat?.w ?? 0));
+    expect(gap).toBeGreaterThanOrEqual(GRID_GUTTER - 1);
   });
 
   it('produces non-overlapping panel placements', () => {
@@ -83,6 +114,7 @@ describe('computeInitialSiteContextLayout', () => {
       includeBrief: true,
       includePreview: true,
       includeFiles: true,
+      dockChatLeft: true,
     });
 
     for (let i = 0; i < layouts.length; i += 1) {

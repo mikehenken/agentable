@@ -5,6 +5,37 @@ All notable changes to `agentable-canvas` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-07-13
+
+### Added
+
+Panel docking, auto-arrange, and workspace-mode layout system for the tldraw
+whiteboard substrate (`./whiteboard`).
+
+- **Panel docking engine** (`panelDockEngine.ts`, `usePanelDocking.ts`,
+  `panelDockUiState.ts`, `PanelDockHighlightOverlay.tsx`) — flush edge docking
+  and dock-to-sibling with live drop-target highlight overlay.
+- **Auto-arrange** (`siteContextAutoArrange.ts`) — toolbar button plus
+  arrange-on-open placement over the 12-column site-context grid, with symmetric
+  gutters. Adding a panel preserves the current zoom.
+- **Dock presets & workspace mode** (`siteContextDockPresets.ts`,
+  `siteWorkspaceMode.ts`) — chat defaults docked left full-height, file manager
+  docked right; docked panels track group resize; workspace zoom-to-fit.
+- **Global panels isolation** (`canvasGlobalPanels.ts`) — all-sites panel
+  isolation so global panels are not scoped to a single site context.
+
+### Changed
+
+- 12-column grid (`gridLayout.ts`) now underpins site-context panel placement.
+- Site-context panel layout, layout-repair, and context-group auto-resize updated
+  to cooperate with docking and workspace mode.
+
+### Tests
+
+- New unit coverage: `panelDockEngine`, `siteContextAutoArrange`,
+  `siteWorkspaceMode`, `canvasGlobalPanels`; expanded `contextGroupApi`,
+  `gridLayout`, `siteContextPanelLayout`.
+
 ## [0.0.1] — 2026-05-04
 
 ### Added

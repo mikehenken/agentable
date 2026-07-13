@@ -1,8 +1,8 @@
 import { useCallback, type ReactElement } from 'react';
+import { LayoutGrid, Plus, Share2 } from 'lucide-react';
 import {
   Box,
   TldrawUiButton,
-  TldrawUiButtonIcon,
   TldrawUiContextualToolbar,
   TldrawUiDropdownMenuCheckboxItem,
   TldrawUiDropdownMenuContent,
@@ -76,7 +76,7 @@ export const SiteContextContextualToolbar = track(function SiteContextContextual
         <TldrawUiDropdownMenuRoot id="site-context-add-panel">
           <TldrawUiDropdownMenuTrigger>
             <TldrawUiToolbarButton type="menu" title="Add panel">
-              <TldrawUiButtonIcon icon="plus" />
+              <Plus size={16} aria-hidden />
             </TldrawUiToolbarButton>
           </TldrawUiDropdownMenuTrigger>
           <TldrawUiDropdownMenuContent side="bottom" align="start">
@@ -94,10 +94,19 @@ export const SiteContextContextualToolbar = track(function SiteContextContextual
 
         <TldrawUiToolbarButton
           type="icon"
+          title="Auto-arrange panels"
+          data-testid="site-context-auto-arrange"
+          onClick={() => emitSiteContextToolbarAction({ type: 'auto-arrange', siteId })}
+        >
+          <LayoutGrid size={16} aria-hidden />
+        </TldrawUiToolbarButton>
+
+        <TldrawUiToolbarButton
+          type="icon"
           title="Publish"
           onClick={() => emitSiteContextToolbarAction({ type: 'publish', siteId })}
         >
-          <TldrawUiButtonIcon icon="play" />
+          <Share2 size={16} aria-hidden />
         </TldrawUiToolbarButton>
 
         <TldrawUiButton

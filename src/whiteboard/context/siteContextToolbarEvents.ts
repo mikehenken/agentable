@@ -10,6 +10,7 @@ export type SiteContextToolbarPanelId =
 
 export type SiteContextToolbarAction =
   | { type: 'open-panel'; panelId: SiteContextToolbarPanelId; siteId: string }
+  | { type: 'auto-arrange'; siteId: string }
   | { type: 'publish'; siteId: string }
   | { type: 'save'; siteId: string };
 

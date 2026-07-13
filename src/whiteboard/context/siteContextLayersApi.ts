@@ -5,6 +5,7 @@
 import type { Editor, TLShape, TLShapeId } from 'tldraw';
 import { focusShapeInCanvas, getShapeLabel } from '../utils/shapeTextUtils';
 import { contextGroupFrameId, fitContextGroupFrameToContent } from './contextGroupApi';
+import { isCanvasGlobalPanel } from './canvasGlobalPanels';
 
 export interface SiteContextLayer {
   shapeId: TLShapeId;
@@ -48,6 +49,9 @@ export function listSiteContextLayers(editor: Editor, siteId: string): SiteConte
     const shape = editor.getShape(shapeId);
     if (!shape) continue;
     if (shape.type === 'frame') continue;
+
+    const panelId = panelIdFromShape(shape);
+    if (panelId && isCanvasGlobalPanel(panelId)) continue;
 
     layers.push({
       shapeId: shape.id,

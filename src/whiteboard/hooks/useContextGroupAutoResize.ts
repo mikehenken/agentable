@@ -7,6 +7,7 @@ import {
   ensurePanelInSiteContextFrame,
   type ContextGroupFitMode,
 } from '../context/contextGroupApi';
+import { isReflowInProgress } from '../context/panelDockEngine';
 
 /** Minimum ms between preview fits while dragging (throttles store-driven churn). */
 const PREVIEW_FIT_INTERVAL_MS = 48;
@@ -91,6 +92,14 @@ export function useContextGroupAutoResize(editor: Editor | null): void {
 
     const unsubscribeStore = editor.store.listen(
       (entry) => {
+        if (isPanelDragInProgress(editor)) {
+          return;
+        }
+        // A reflow already sizes panels to the frame; skip so its geometry
+        // writes don't schedule a fit (reflow output is already frame-fitted).
+        if (isReflowInProgress()) {
+          return;
+        }
         const panelIds = collectPanelShapeIdsFromStoreDiff(entry.changes);
         scheduleFit(panelIds);
       },

@@ -41,7 +41,10 @@ export interface GridPanelSpan {
 export const SITE_PANEL_GRID_SPANS: Record<string, GridPanelSpan> = {
   chat: { colSpan: 3, rowSpan: 6 },
   'project-brief': { colSpan: 3, rowSpan: 7 },
-  'web-preview': { colSpan: 6, rowSpan: 8 },
+  // Preview drives the uniform row height. A taller span (≈720px) gives the
+  // site group an aspect ratio close to the viewport so zoom-to-fit fills the
+  // screen vertically too (not just horizontally) and the preview is readable.
+  'web-preview': { colSpan: 6, rowSpan: 13 },
   'file-manager': { colSpan: 3, rowSpan: 4 },
   settings: { colSpan: 3, rowSpan: 6 },
   assets: { colSpan: 3, rowSpan: 6 },
