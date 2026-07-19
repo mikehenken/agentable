@@ -6,7 +6,8 @@
  * host promises its callers: `whenReady` settles on engine readiness,
  * `whenRestoreSettled` settles only after ready plus a completed restore
  * attempt, restores run once per scope, and saves are debounced, ordered
- * after in-flight restores, and survive adapter failures.
+ * after every in-flight restore including ones that start mid-hold, and
+ * survive both export and adapter failures.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
@@ -23,6 +24,7 @@ class FakeEngine implements EngineHandle {
   snapshot: JsonObject = { shapes: ['current'] };
   imported: JsonObject[] = [];
   importError: Error | null = null;
+  exportError: Error | null = null;
   private ready = false;
   private listeners: Record<EngineLifecycleEvent, Set<() => void>> = {
     ready: new Set(),
@@ -41,12 +43,14 @@ class FakeEngine implements EngineHandle {
   }
 
   exportSnapshot(): JsonObject {
+    if (this.exportError) throw this.exportError;
     return this.snapshot;
   }
 
   importSnapshot(snapshot: JsonObject): void {
     if (this.importError) throw this.importError;
     this.imported.push(snapshot);
+    this.snapshot = snapshot;
   }
 
   becomeReady(): void {
@@ -294,6 +298,64 @@ describe('persisted saves', () => {
 
     expect(adapter.save).toHaveBeenCalledTimes(1);
     expect(adapter.save).toHaveBeenCalledWith(scopeA, engine.snapshot);
+  });
+
+  it('drains a restore that starts during the hold before saving', async () => {
+    vi.useFakeTimers();
+    const engine = new FakeEngine();
+    engine.becomeReady();
+    const releases = new Map<string, (snapshot: JsonObject | null) => void>();
+    const adapter = makeAdapter({
+      load: (scope) =>
+        new Promise<JsonObject | null>((resolve) => {
+          releases.set(scope.contextId ?? '', resolve);
+        }),
+    });
+    const host = createCanvasHost({ engine, persistence: adapter });
+
+    const restoreA = host.whenRestoreSettled(scopeA);
+    await flushMicrotasks();
+
+    engine.emitChange();
+    await vi.advanceTimersByTimeAsync(SAVE_DEBOUNCE_MS);
+
+    // Context switch while the flush is already holding for restore A.
+    const restoreB = host.whenRestoreSettled(scopeB);
+    await flushMicrotasks();
+
+    releases.get('ctx-a')?.({ shapes: ['a-stored'] });
+    await restoreA;
+    await flushMicrotasks();
+    // Saving here would persist scope A's canvas under scope B's key.
+    expect(adapter.save).not.toHaveBeenCalled();
+
+    releases.get('ctx-b')?.({ shapes: ['b-stored'] });
+    await restoreB;
+    await flushMicrotasks();
+
+    expect(adapter.save).toHaveBeenCalledTimes(1);
+    expect(adapter.save).toHaveBeenCalledWith(scopeB, { shapes: ['b-stored'] });
+  });
+
+  it('keeps saving after exportSnapshot throws', async () => {
+    vi.useFakeTimers();
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const engine = new FakeEngine();
+    engine.becomeReady();
+    const adapter = makeAdapter();
+    createCanvasHost({ engine, persistence: adapter });
+
+    engine.exportError = new Error('editor torn down');
+    engine.emitChange();
+    await vi.advanceTimersByTimeAsync(SAVE_DEBOUNCE_MS);
+    expect(adapter.save).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalledOnce();
+
+    engine.exportError = null;
+    engine.emitChange();
+    await vi.advanceTimersByTimeAsync(SAVE_DEBOUNCE_MS);
+    expect(adapter.save).toHaveBeenCalledTimes(1);
+    expect(adapter.save).toHaveBeenCalledWith(null, engine.snapshot);
   });
 
   it('keeps saving after an adapter failure', async () => {

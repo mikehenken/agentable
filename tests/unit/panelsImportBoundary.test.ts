@@ -6,9 +6,12 @@
  *
  * The suite walks every module in the directory, collects each import,
  * export-from, dynamic import, and require specifier via the TypeScript
- * compiler API, and rejects forbidden ones. A fixture case proves the
- * collector actually detects violations, so the rule cannot rot into a
- * vacuous green.
+ * compiler API, and rejects forbidden ones. Relative specifiers resolve
+ * against the importing file and are tested for containment in the
+ * whiteboard directory itself, so the rule holds at any nesting depth
+ * under src/panels. Fixture cases prove the collector actually detects
+ * violations, flat and nested, so the rule cannot rot into a vacuous
+ * green.
  */
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -19,6 +22,10 @@ function panelsDir(): string {
   const testPath = expect.getState().testPath;
   if (!testPath) throw new Error('vitest did not report a testPath');
   return resolve(dirname(testPath), '../../src/panels');
+}
+
+function whiteboardDir(): string {
+  return resolve(panelsDir(), '..', 'whiteboard');
 }
 
 function listModules(dir: string): string[] {
@@ -68,7 +75,7 @@ function collectSpecifiers(fileName: string, sourceText: string): string[] {
   return specifiers;
 }
 
-function isForbidden(specifier: string, importingFile: string): boolean {
+function isForbidden(specifier: string, importingFile: string, forbiddenDir: string): boolean {
   if (specifier === 'tldraw' || specifier.startsWith('tldraw/')) return true;
   if (specifier === '@tldraw' || specifier.startsWith('@tldraw/')) return true;
   if (specifier.startsWith('@/')) {
@@ -76,15 +83,14 @@ function isForbidden(specifier: string, importingFile: string): boolean {
   }
   if (specifier.startsWith('.')) {
     const target = resolve(dirname(importingFile), specifier);
-    const fromSrc = relative(resolve(dirname(importingFile), '..', '..'), target);
-    return fromSrc === join('src', 'whiteboard') || fromSrc.startsWith(join('src', 'whiteboard') + sep);
+    return target === forbiddenDir || target.startsWith(forbiddenDir + sep);
   }
   return false;
 }
 
-function violationsIn(fileName: string, sourceText: string): string[] {
+function violationsIn(fileName: string, sourceText: string, forbiddenDir: string): string[] {
   return collectSpecifiers(fileName, sourceText).filter((specifier) =>
-    isForbidden(specifier, fileName),
+    isForbidden(specifier, fileName, forbiddenDir),
   );
 }
 
@@ -96,8 +102,9 @@ describe('panels engine boundary', () => {
   });
 
   it('keeps every panels module free of tldraw and whiteboard imports', () => {
+    const forbiddenDir = whiteboardDir();
     const offending = listModules(panelsDir()).flatMap((file) => {
-      const found = violationsIn(file, readFileSync(file, 'utf8'));
+      const found = violationsIn(file, readFileSync(file, 'utf8'), forbiddenDir);
       return found.map((specifier) => `${relative(panelsDir(), file)} -> ${specifier}`);
     });
     expect(offending).toEqual([]);
@@ -116,13 +123,28 @@ describe('panels engine boundary', () => {
       "import type { PanelScope } from './types';",
     ].join('\n');
 
-    expect(violationsIn(fixturePath, fixture)).toEqual([
+    expect(violationsIn(fixturePath, fixture, whiteboardDir())).toEqual([
       'tldraw',
       '@tldraw/editor',
       '../whiteboard/shapes/panelShapeApi',
       'tldraw/store',
       '@/whiteboard/shapes/panelShapeApi',
       'tldraw',
+    ]);
+  });
+
+  it('catches whiteboard imports from nested panels modules', () => {
+    const fixturePath = join(panelsDir(), 'spec', 'fixture.ts');
+    const fixture = [
+      "export { bindEditor } from '../../whiteboard/shapes/panelShapeApi';",
+      "import { loadWhiteboardSnapshot } from '../../whiteboard';",
+      "import type { PanelScope } from '../types';",
+      "import { validateSpec } from './validate';",
+    ].join('\n');
+
+    expect(violationsIn(fixturePath, fixture, whiteboardDir())).toEqual([
+      '../../whiteboard/shapes/panelShapeApi',
+      '../../whiteboard',
     ]);
   });
 });

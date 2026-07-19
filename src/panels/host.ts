@@ -21,7 +21,7 @@ export type EngineLifecycleEvent = 'ready' | 'change';
  * containers, camera, capabilities) is specified in the panel system spec
  * section 14 and lands in src/engine with the SPI task; this type migrates
  * there and existing consumers keep the same shape.
- */ 
+ */
 export interface EngineHandle {
   /** True once the underlying editor is bound. */
   isReady(): boolean;
@@ -133,13 +133,15 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
     if (!persistence) return;
     saveChain = saveChain.then(async () => {
       // Never persist over a workspace whose restore is still in flight;
-      // exporting after the restores settle captures the restored state.
-      if (pendingRestores.size > 0) {
+      // drain until quiescent because a scope switch can start another
+      // restore during the wait, and exporting before that one settles
+      // would save the previous scope's canvas under the new scope's key.
+      while (pendingRestores.size > 0) {
         await Promise.all([...pendingRestores]);
       }
       const scope = activeScope;
-      const snapshot = engine.exportSnapshot();
       try {
+        const snapshot = engine.exportSnapshot();
         await persistence.save(scope, snapshot);
       } catch (err) {
         console.error('[canvasHost] workspace save failed', scope, err);
