@@ -8,7 +8,7 @@ function renderState(state: SpecNodeContextValue['state'], children: React.React
   
   return (
     <>
-      {children}
+      <span data-testid="populated-content">{children}</span>
       {state === 'dirty' && <span data-testid="dirty-indicator">Unsaved changes</span>}
       {state === 'saving' && <span data-testid="saving-spinner">Saving...</span>}
       {state === 'stale' && <span data-testid="stale-banner-inline">Data is stale</span>}

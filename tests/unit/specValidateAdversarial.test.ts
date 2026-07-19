@@ -36,13 +36,6 @@ function buildCatalog(): Map<string, SpecCatalogEntry> {
       label: z.string(),
     }),
   });
-  // The adversarial test expects actions array to support nested objects just to test references
-  map.set('action-row', {
-    name: 'action-row',
-    props: z.object({
-      actions: z.array(z.union([z.string(), z.object({ action: z.string() })])),
-    }),
-  });
   return map;
 }
 

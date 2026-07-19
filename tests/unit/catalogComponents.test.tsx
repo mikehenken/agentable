@@ -59,7 +59,9 @@ describe('catalog component state matrix', () => {
             expect(screen.queryByTestId('error-card')).not.toBeInTheDocument();
             expect(screen.queryByTestId('empty-placeholder')).not.toBeInTheDocument();
 
-            if (state === 'dirty') {
+            if (state === 'populated') {
+              expect(screen.getByTestId('populated-content')).toBeInTheDocument();
+            } else if (state === 'dirty') {
               expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument();
             } else if (state === 'saving') {
               expect(screen.getByTestId('saving-spinner')).toBeInTheDocument();

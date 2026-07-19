@@ -35,8 +35,8 @@ describe('v1 catalog entries', () => {
     it('validates panel-body', () => {
       const entry = v1CatalogEntries.get('panel-body')!;
       expect(entry.props.safeParse({}).success).toBe(true);
-      // z.object({}) strips extra props by default if not strict, so this passes but strips them
-      expect(entry.props.safeParse({ random: true }).success).toBe(true); 
+      // strict() rejects extra props
+      expect(entry.props.safeParse({ random: true }).success).toBe(false); 
     });
 
     it('validates header', () => {
@@ -67,6 +67,8 @@ describe('v1 catalog entries', () => {
       const entry = v1CatalogEntries.get('list')!;
       expect(entry.props.safeParse({ bind: 's', row: { title: 'hello' } }).success).toBe(true);
       expect(entry.props.safeParse({ bind: 's', row: {}, search: true }).success).toBe(true);
+      expect(entry.props.safeParse({ bind: 's', row: {}, filters: [{ bind: 'status', label: 'Status' }] }).success).toBe(true);
+      expect(entry.props.safeParse({ bind: 's', row: {}, filters: "not-an-array" }).success).toBe(false);
       expect(entry.props.safeParse({ row: {} }).success).toBe(false);
     });
 
@@ -96,11 +98,13 @@ describe('v1 catalog entries', () => {
     it('validates confirm', () => {
       const entry = v1CatalogEntries.get('confirm')!;
       expect(entry.props.safeParse({}).success).toBe(true);
+      expect(entry.props.safeParse({ extra: 1 }).success).toBe(false);
     });
 
     it('validates stale-banner', () => {
       const entry = v1CatalogEntries.get('stale-banner')!;
       expect(entry.props.safeParse({}).success).toBe(true);
+      expect(entry.props.safeParse({ extra: 1 }).success).toBe(false);
     });
 
     it('validates empty-state', () => {

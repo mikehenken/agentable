@@ -7,7 +7,8 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
     'panel-body',
     {
       name: 'panel-body',
-      props: z.object({}), // children are handled structurally in SpecNode
+      // Strict policy: panel-body accepts no props directly
+      props: z.object({}).strict(), 
       component: Components.PanelBody,
       agentHint: 'Vertical layout root, padding, scroll region',
     },
@@ -67,7 +68,12 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
           rowActions: z.array(z.string()).optional(),
         }).catchall(z.unknown()), // tighter than z.any()
         search: z.boolean().optional(),
-        filters: z.unknown().optional(),
+        filters: z.array(z.object({
+          bind: z.string().optional(),
+          type: z.string().optional(),
+          label: z.string().optional(),
+          placeholder: z.string().optional(),
+        }).catchall(z.unknown())).optional(),
       }),
       component: Components.List,
       agentHint: 'Searchable list with row template',
@@ -120,7 +126,7 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
     'confirm',
     {
       name: 'confirm',
-      props: z.object({}), // no props needed
+      props: z.object({}).strict(), // no props needed
       component: Components.Confirm,
       internal: true,
     },
@@ -129,7 +135,7 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
     'stale-banner',
     {
       name: 'stale-banner',
-      props: z.object({}), // no props needed
+      props: z.object({}).strict(), // no props needed
       component: Components.StaleBanner,
       internal: true,
     },
