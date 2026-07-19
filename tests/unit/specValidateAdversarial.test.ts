@@ -4,6 +4,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
+import { v1CatalogEntries } from '../../src/panels/catalog/v1-entries';
 import {
   CURRENT_SPEC_VERSION,
   SPEC_MAX_DEPTH,
@@ -20,47 +21,29 @@ import {
 import type { PanelSpec, SpecMigration } from '../../src/panels/types';
 
 function buildCatalog(): Map<string, SpecCatalogEntry> {
-  const entries: SpecCatalogEntry[] = [
-    {
-      name: 'panel-body',
-      props: z.object({}).passthrough(),
-    },
-    {
-      name: 'action-row',
-      props: z.object({
-        actions: z.array(z.union([z.string(), z.object({ action: z.string() })])),
-      }),
-    },
-    {
-      name: 'field-form',
-      props: z.object({
-        bind: z.string(),
-        fields: z.array(z.object({ path: z.string(), type: z.string() })).optional(),
-      }),
-    },
-    {
-      name: 'empty-state',
-      props: z.object({
-        message: z.string(),
-        action: z.string().optional(),
-      }),
-    },
-    {
-      name: 'content',
-      props: z.object({
-        link: z.string().optional(),
-        website: z.string().optional(),
-      }),
-    },
-    {
-      name: 'typed-counter',
-      props: z.object({
-        count: z.number(),
-        label: z.string(),
-      }),
-    },
-  ];
-  return new Map(entries.map((entry) => [entry.name, entry]));
+  const map = new Map<string, SpecCatalogEntry>(v1CatalogEntries);
+  map.set('content', {
+    name: 'content',
+    props: z.object({
+      link: z.string().optional(),
+      website: z.string().optional(),
+    }),
+  });
+  map.set('typed-counter', {
+    name: 'typed-counter',
+    props: z.object({
+      count: z.number(),
+      label: z.string(),
+    }),
+  });
+  // The adversarial test expects actions array to support nested objects just to test references
+  map.set('action-row', {
+    name: 'action-row',
+    props: z.object({
+      actions: z.array(z.union([z.string(), z.object({ action: z.string() })])),
+    }),
+  });
+  return map;
 }
 
 function baseContext(overrides: Partial<SpecValidationContext> = {}): SpecValidationContext {
