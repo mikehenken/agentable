@@ -84,6 +84,12 @@ export interface CreateDataLifecycleOptions {
   adapter: DataAdapter;
   /** Backoff before the single `unavailable` retry. Default 250ms. */
   retryBackoffMs?: number;
+  /**
+   * Fired after an `invalidate` call has cleared matching entries and
+   * kicked off mounted refetches. Hosts use this to emit AG-UI patches
+   * (and later to notify subscribed agent sessions).
+   */
+  onInvalidate?: (source: string, scope?: PanelScope) => void;
 }
 
 export interface DataLifecycle {

@@ -117,6 +117,7 @@ function abortableDelay(ms: number, signal: AbortSignal): Promise<boolean> {
 export function createDataLifecycle(options: CreateDataLifecycleOptions): DataLifecycle {
   const { adapter } = options;
   const retryBackoffMs = options.retryBackoffMs ?? DEFAULT_RETRY_BACKOFF_MS;
+  const onInvalidate = options.onInvalidate;
   const cache = new Map<string, CacheEntry>();
   let disposed = false;
 
@@ -336,6 +337,7 @@ export function createDataLifecycle(options: CreateDataLifecycleOptions): DataLi
         cache.delete(entry.key);
       }
     }
+    onInvalidate?.(source, scope);
   };
 
   const mutate = (

@@ -1,13 +1,16 @@
 /**
  * createCanvasHost: the panel system's runtime entry point. The host owns
- * lifecycle (readiness, workspace restore), the persistence seam, and the
- * panel registry, and drives the canvas exclusively through an engine
- * handle, so nothing in this module knows which engine implementation is
- * mounted.
+ * lifecycle (readiness, workspace restore), the persistence seam, the
+ * panel registry, and the shared data store (`host.data`), and drives the
+ * canvas exclusively through an engine handle, so nothing in this module
+ * knows which engine implementation is mounted.
  */
 import type { EngineLifecycleHandle } from '../engine/types';
+import { emitAgUiStatePatch } from '../canvas/protocol/ag-ui';
 import { createPanelRegistry, type PanelRegistry } from './registry';
 import { registerHostActions, type ToolDefinition } from './tools';
+import { createDataLifecycle } from './renderer/dataLifecycle';
+import type { DataAdapter, DataLifecycle } from './renderer/types';
 import type {
   CatalogEntry,
   JsonObject,
@@ -80,6 +83,13 @@ export interface CreateCanvasHostOptions {
   engine: EngineLifecycleHandle;
   persistence?: WorkspacePersistenceAdapter;
   /**
+   * Host `DataAdapter` for panel source bindings. When provided, the host
+   * owns one shared `createDataLifecycle` store exposed as
+   * `host.data.lifecycle`. Omit for hosts that do not yet mount
+   * schema-panel data (panel open / restore still work).
+   */
+  adapter?: DataAdapter;
+  /**
    * Panels available on this host. `kind: 'react'` definitions wrap the
    * loader shape shells register today (`reactPanelDefinitions` converts
    * an existing loader map). On id collision the later definition wins.
@@ -99,12 +109,35 @@ export interface CreateCanvasHostOptions {
   catalog?: ReadonlyMap<string, CatalogEntry>;
 }
 
+/**
+ * Framework-owned data seam on the host (02 section 8). `invalidate`
+ * clears matching cache entries, refetches every mounted consumer of
+ * that source, and emits an AG-UI state patch so host bridges and agent
+ * sessions learn about the change without bespoke refreshKey bridges.
+ */
+export interface CanvasHostData {
+  /**
+   * Shared per-host data lifecycle. Non-null when `createCanvasHost`
+   * received an `adapter`. SpecRenderer and other consumers acquire
+   * bindings from this store so invalidate fans out across them.
+   */
+  readonly lifecycle: DataLifecycle | null;
+  /**
+   * Clear matching cache entries and refetch every mounted binding for
+   * `source`. Always emits an AG-UI `/data/<source>` patch (source:
+   * `host`), including when no adapter was configured.
+   */
+  invalidate(source: string, scope?: PanelScope): void;
+}
+
 export interface CanvasHost {
   /**
    * The resolved catalog instance in use.
    */
   catalog: ReadonlyMap<string, CatalogEntry>;
   panels: CanvasHostPanels;
+  /** Data lifecycle + invalidate (02 section 8, P1-T5). */
+  data: CanvasHostData;
   /** Resolves once the engine reports readiness, then stays resolved. */
   whenReady(): Promise<void>;
   /**
@@ -118,13 +151,33 @@ export interface CanvasHost {
    */
   whenRestoreSettled(scope: PanelScope): Promise<void>;
   /**
-   * Removes this host's actions from the tool registry, stops observing
-   * engine changes, and flushes any scheduled save. Lifecycle promises
-   * already handed out settle on their own terms; restores that have not
-   * reached the engine yet are abandoned.
+   * Removes this host's actions from the tool registry, disposes the data
+   * lifecycle, stops observing engine changes, and flushes any scheduled
+   * save. Lifecycle promises already handed out settle on their own
+   * terms; restores that have not reached the engine yet are abandoned.
    */
   dispose(): void;
 }
+
+/** AG-UI path prefix for data-source invalidation announcements. */
+export const AG_UI_DATA_INVALIDATE_PATH_PREFIX = '/data/';
+
+function emitDataInvalidatePatch(source: string, scope?: PanelScope): void {
+  const value: JsonObject = {
+    invalidatedAt: new Date().toISOString(),
+  };
+  if (scope !== undefined) {
+    const scoped: JsonObject = {};
+    if (scope.contextId !== undefined) scoped.contextId = scope.contextId;
+    if (scope.entityId !== undefined) scoped.entityId = scope.entityId;
+    value.scope = scoped;
+  }
+  emitAgUiStatePatch(
+    [{ op: 'replace', path: `${AG_UI_DATA_INVALIDATE_PATH_PREFIX}${source}`, value }],
+    { source: 'host' },
+  );
+}
+
 
 /** Matches the debounce the whiteboard snapshot sync used before the host owned saving. */
 const SAVE_DEBOUNCE_MS = 1200;
@@ -140,6 +193,27 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const unregisterHostActions = options.hostActions?.length
     ? registerHostActions(options.hostActions)
     : null;
+  let disposed = false;
+
+  const dataLifecycle: DataLifecycle | null =
+    options.adapter !== undefined
+      ? createDataLifecycle({
+          adapter: options.adapter,
+          onInvalidate: emitDataInvalidatePatch,
+        })
+      : null;
+
+  const data: CanvasHostData = {
+    lifecycle: dataLifecycle,
+    invalidate(source: string, scope?: PanelScope): void {
+      if (disposed) return;
+      if (dataLifecycle !== null) {
+        dataLifecycle.invalidate(source, scope);
+        return;
+      }
+      emitDataInvalidatePatch(source, scope);
+    },
+  };
 
   const ready = new Promise<void>((resolve) => {
     if (engine.isReady()) {
@@ -155,7 +229,6 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const restores = new Map<string, Promise<void>>();
   const pendingRestores = new Set<Promise<void>>();
   let activeScope: PanelScope | null = null;
-  let disposed = false;
 
   const runRestore = async (scope: PanelScope): Promise<void> => {
     await ready;
@@ -223,6 +296,7 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
     if (disposed) return;
     disposed = true;
     unregisterHostActions?.();
+    dataLifecycle?.dispose();
     offChange?.();
     if (saveTimer !== null) {
       clearTimeout(saveTimer);
@@ -256,6 +330,7 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
       ids: registry.ids,
       definitions: registry.definitions,
     },
+    data,
     whenReady: () => ready,
     whenRestoreSettled,
     dispose,

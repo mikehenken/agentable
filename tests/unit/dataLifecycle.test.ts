@@ -246,6 +246,25 @@ describe('invalidate', () => {
     expect(adapter.queryCount('paths')).toBe(1);
     lifecycle.dispose();
   });
+
+  it('invokes onInvalidate after cache work with the same arguments', () => {
+    const adapter = createMockDataAdapter();
+    const calls: Array<{ source: string; scope?: PanelScope }> = [];
+    const lifecycle = createDataLifecycle({
+      adapter,
+      onInvalidate: (source, scope) => {
+        calls.push(scope !== undefined ? { source, scope } : { source });
+      },
+    });
+    lifecycle.invalidate('jobs', { contextId: 'site-1' });
+    expect(calls).toEqual([{ source: 'jobs', scope: { contextId: 'site-1' } }]);
+    lifecycle.invalidate('paths');
+    expect(calls).toHaveLength(2);
+    expect(calls[1]).toEqual({ source: 'paths' });
+    lifecycle.dispose();
+    lifecycle.invalidate('jobs');
+    expect(calls).toHaveLength(2);
+  });
 });
 
 describe('retry policy', () => {
