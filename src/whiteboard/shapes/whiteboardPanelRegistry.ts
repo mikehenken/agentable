@@ -21,6 +21,9 @@
  * by registry identity. Define module-scope; never inline-literal.
  */
 import type { ComponentType } from 'react';
+import type { CanvasHost } from '../../panels/host';
+import { reactPanelDefinitions } from '../../panels/registry';
+import type { PanelDefinition } from '../../panels/types';
 
 /** A `React.lazy()`-compatible loader. */
 export type WhiteboardPanelLoader = () => Promise<{
@@ -48,7 +51,8 @@ export type WhiteboardPanelRegistry = Record<string, WhiteboardPanelLoader>;
 /**
  * Default registry. Example career-themed loaders — same arrangement as
  * the existing `canvas/panelImports.ts` `DEFAULT_PANEL_REGISTRY`. Tenant
- * wrappers supply their own via `<WhiteboardShell registry={...}>`.
+ * wrappers supply their own panels through `createCanvasHost({ panels })`
+ * (or the deprecated `<WhiteboardShell panels={...}>` alias).
  *
  * Each loader resolves to the panel's content component. The component
  * MUST honour `hostedInWhiteboard` (skip its own DraggablePanel wrapper)
@@ -78,3 +82,48 @@ export const DEFAULT_WHITEBOARD_PANEL_REGISTRY = {
         m.GrowthPathsPanel as unknown as ComponentType<WhiteboardPanelProps>,
     })),
 } satisfies WhiteboardPanelRegistry;
+
+const loaderMapByDefinitions = new WeakMap<
+  readonly PanelDefinition[],
+  WhiteboardPanelRegistry
+>();
+
+/**
+ * Project registry definitions onto the loader map the panel shape util
+ * consumes. Only `kind: 'react'` entries carry a loader; spec-tier
+ * definitions have no component to mount here and are skipped. Results
+ * are cached by definitions identity so `useLazyPanel`'s per-registry
+ * memoisation keeps holding across shell remounts.
+ */
+export function whiteboardLoadersForDefinitions(
+  definitions: readonly PanelDefinition[],
+): WhiteboardPanelRegistry {
+  const cached = loaderMapByDefinitions.get(definitions);
+  if (cached) return cached;
+  const map: WhiteboardPanelRegistry = {};
+  for (const definition of definitions) {
+    if (definition.kind !== 'react') continue;
+    // Definition loaders resolve components typed against the full panel
+    // contract; the shape body supplies the `data` + `hostedInWhiteboard`
+    // subset, the same narrowing every default-registry loader above
+    // already relies on.
+    map[definition.id] = definition.loader as WhiteboardPanelLoader;
+  }
+  loaderMapByDefinitions.set(definitions, map);
+  return map;
+}
+
+/**
+ * One code path for both shell wirings: the host's registry when a host
+ * is provided, otherwise the deprecated loader-map prop wrapped into
+ * `kind: 'react'` definitions.
+ */
+export function resolveWhiteboardPanelLoaders(
+  host: CanvasHost | undefined,
+  loaders: WhiteboardPanelRegistry,
+): WhiteboardPanelRegistry {
+  const definitions = host
+    ? host.panels.definitions()
+    : reactPanelDefinitions(loaders);
+  return whiteboardLoadersForDefinitions(definitions);
+}

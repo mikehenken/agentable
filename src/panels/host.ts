@@ -1,10 +1,12 @@
 /**
  * createCanvasHost: the panel system's runtime entry point. The host owns
- * lifecycle (readiness, workspace restore) and the persistence seam, and
- * drives the canvas exclusively through an engine handle, so nothing in
- * this module knows which engine implementation is mounted.
+ * lifecycle (readiness, workspace restore), the persistence seam, and the
+ * panel registry, and drives the canvas exclusively through an engine
+ * handle, so nothing in this module knows which engine implementation is
+ * mounted.
  */
-import type { JsonObject, PanelScope } from './types';
+import { createPanelRegistry, type PanelRegistry } from './registry';
+import type { JsonObject, PanelDefinition, PanelScope } from './types';
 
 /**
  * Lifecycle signals the host consumes from the engine. `ready` fires once
@@ -31,6 +33,44 @@ export interface EngineHandle {
   exportSnapshot(): JsonObject;
   /** Load a previously persisted native snapshot onto the bound editor. */
   importSnapshot(snapshot: JsonObject): void;
+  /**
+   * Place a registered panel on the canvas, creating its container or
+   * refocusing an existing one. Optional because not every engine hosts
+   * panel containers; `host.panels.open` rejects on engines without it
+   * rather than dropping the request silently.
+   */
+  openPanel?(request: PanelOpenRequest): void;
+}
+
+/** Caller-facing options for `host.panels.open`. */
+export interface PanelOpenOptions {
+  /** Host-defined scope the panel instance binds to. */
+  scope?: PanelScope;
+  /** Instance data, persisted with the panel container. JSON only. */
+  data?: JsonObject;
+  /** Override the engine's default placement. */
+  position?: { x: number; y: number };
+  /** Override the panel's default size. */
+  size?: { w: number; h: number };
+  /** Move the camera to reveal the panel after placing it. */
+  focus?: boolean;
+}
+
+/** What the engine receives when the host opens a panel. */
+export interface PanelOpenRequest extends PanelOpenOptions {
+  panelId: string;
+}
+
+/** Registry access plus the open entry point, exposed as `host.panels`. */
+export interface CanvasHostPanels extends PanelRegistry {
+  /**
+   * Open a registered panel. Rejects for ids missing from the registry,
+   * for hosts already disposed, and for engines without panel placement;
+   * otherwise waits for engine readiness and resolves once the engine
+   * has accepted the placement request. The typed `PanelHandle` facade
+   * from the panel system spec rides in with the chrome options work.
+   */
+  open(id: string, options?: PanelOpenOptions): Promise<void>;
 }
 
 /**
@@ -48,9 +88,17 @@ export interface WorkspacePersistenceAdapter {
 export interface CreateCanvasHostOptions {
   engine: EngineHandle;
   persistence?: WorkspacePersistenceAdapter;
+  /**
+   * Panels available on this host. `kind: 'react'` definitions wrap the
+   * loader shape shells register today (`reactPanelDefinitions` converts
+   * an existing loader map). On id collision the later definition wins.
+   */
+  panels?: readonly PanelDefinition[];
 }
 
 export interface CanvasHost {
+  /** Registered panels: lookup plus the open entry point. */
+  panels: CanvasHostPanels;
   /** Resolves once the engine reports readiness, then stays resolved. */
   whenReady(): Promise<void>;
   /**
@@ -80,6 +128,7 @@ function scopeKey(scope: PanelScope): string {
 
 export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const { engine, persistence } = options;
+  const registry = createPanelRegistry(options.panels ?? []);
 
   const ready = new Promise<void>((resolve) => {
     if (engine.isReady()) {
@@ -169,7 +218,31 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
     }
   };
 
+  const openPanel = async (
+    id: string,
+    openOptions: PanelOpenOptions = {},
+  ): Promise<void> => {
+    if (!registry.has(id)) {
+      throw new Error(`no panel registered for id "${id}"`);
+    }
+    await ready;
+    if (disposed) {
+      throw new Error(`host disposed before panel "${id}" could open`);
+    }
+    if (!engine.openPanel) {
+      throw new Error('engine does not implement panel placement');
+    }
+    engine.openPanel({ panelId: id, ...openOptions });
+  };
+
   return {
+    panels: {
+      open: openPanel,
+      has: registry.has,
+      get: registry.get,
+      ids: registry.ids,
+      definitions: registry.definitions,
+    },
     whenReady: () => ready,
     whenRestoreSettled,
     dispose,

@@ -9,6 +9,12 @@
  * Legacy layout (`split-column`): fixed left chat column + tldraw grid.
  * Kept for career-demo backward compatibility only.
  *
+ * Panels:
+ *   The shell renders whatever the resolved registry holds: the panel
+ *   definitions registered on a `host` (preferred), or the deprecated
+ *   `panels` loader map wrapped into definitions. Both wirings resolve
+ *   through `resolveWhiteboardPanelLoaders`, one code path.
+ *
  * Persistence:
  *   `<Tldraw persistenceKey="...">` writes to IndexedDB automatically.
  *
@@ -37,8 +43,10 @@ import {
 import { configureWhiteboardSnap } from './hooks/configureWhiteboardSnap';
 import { createPanelShapeUtil } from './shapes/PanelShape';
 import { snapToGrid } from '../canvas/panelLayoutEngine';
+import type { CanvasHost } from '../panels/host';
 import {
   DEFAULT_WHITEBOARD_PANEL_REGISTRY,
+  resolveWhiteboardPanelLoaders,
   type WhiteboardPanelRegistry,
 } from './shapes/whiteboardPanelRegistry';
 import { WhiteboardVoiceMount } from './voice/WhiteboardVoiceMount';
@@ -59,8 +67,19 @@ export interface WhiteboardShellProps {
   /** Tenant config — persona, labels, panel data. */
   config?: PartialCanvasTenantConfig;
   /**
+   * Canvas host whose panel registry drives the shell. Preferred wiring:
+   * register panels through `createCanvasHost({ panels })` and pass the
+   * host here. Takes precedence over the deprecated `panels` prop.
+   */
+  host?: CanvasHost;
+  /**
    * Whiteboard panel registry. Pass a stable module-scope reference; lazy
    * components are memoised by registry identity.
+   *
+   * @deprecated Register panels on a `CanvasHost` and pass it via `host`.
+   * Kept as an alias for one minor release; the loaders are wrapped into
+   * `kind: 'react'` registry definitions internally, so both props share
+   * one code path.
    */
   panels?: WhiteboardPanelRegistry;
   /**
@@ -104,6 +123,7 @@ const VIEWPORT_INSET = 24;
 
 export function WhiteboardShell({
   config,
+  host,
   panels = DEFAULT_WHITEBOARD_PANEL_REGISTRY,
   layout = 'infinite-panels',
   darkCanvas = false,
@@ -118,11 +138,15 @@ export function WhiteboardShell({
   const shouldEnableLayersPanel =
     enableLayersPanel ?? (layout === 'infinite-panels' || enableSiteActionsTool);
   const shouldEnableSiteContextToolbar = enableSiteContextToolbar ?? enableSiteActionsTool;
+  const panelLoaders = useMemo(
+    () => resolveWhiteboardPanelLoaders(host, panels),
+    [host, panels],
+  );
 
   return (
     <CanvasProvider config={config}>
       <WhiteboardShellInner
-        panels={panels}
+        panels={panelLoaders}
         layout={layout}
         darkCanvas={darkCanvas}
         hideTopBar={hideTopBar}
