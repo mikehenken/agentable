@@ -38,7 +38,8 @@ export function WhiteboardCommandPalette({
           setActiveContextRef(entity.id);
           openPanelInCanvas(entity.panelId, {
             focus: true,
-            panelProps: { __title: entity.label, contextRef: entity.id },
+            chrome: { title: entity.label },
+            panelProps: { contextRef: entity.id },
           });
           close();
         },
@@ -54,7 +55,7 @@ export function WhiteboardCommandPalette({
       group: 'Panels',
       keys: 'mod+shift+c',
       run: () => {
-        openPanelInCanvas('chat', { focus: true, panelProps: { __title: 'Chat' } });
+        openPanelInCanvas('chat', { focus: true, chrome: { title: 'Chat' } });
         close();
       },
       available: () => layout === 'infinite-panels',

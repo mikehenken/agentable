@@ -103,6 +103,7 @@ export {
   focusPanelInCanvas,
   groupPanelsInCanvas,
   updatePanelProps,
+  updatePanelChrome,
   __resetPanelShapeApiForTests__,
   type OpenPanelOptions,
 } from './shapes/panelShapeApi';

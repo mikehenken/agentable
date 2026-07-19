@@ -140,7 +140,7 @@ describe('host.panels.open', () => {
     expect(engine.requests.map((request) => request.panelId)).toEqual(['chat']);
   });
 
-  it('forwards scope, data, and placement options to the engine', async () => {
+  it('forwards scope, chrome, data, and placement options to the engine', async () => {
     const engine = new FakeEngine();
     engine.becomeReady();
     const host = createCanvasHost({
@@ -150,6 +150,7 @@ describe('host.panels.open', () => {
 
     await host.panels.open('web-preview', {
       scope: { contextId: 'ctx-1', entityId: 'ent-9' },
+      chrome: { title: 'Draft Preview', fullBleed: true },
       data: { url: 'https://example.com/draft' },
       position: { x: 120, y: 80 },
       size: { w: 640, h: 480 },
@@ -160,6 +161,7 @@ describe('host.panels.open', () => {
       {
         panelId: 'web-preview',
         scope: { contextId: 'ctx-1', entityId: 'ent-9' },
+        chrome: { title: 'Draft Preview', fullBleed: true },
         data: { url: 'https://example.com/draft' },
         position: { x: 120, y: 80 },
         size: { w: 640, h: 480 },

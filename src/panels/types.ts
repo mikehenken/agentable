@@ -106,6 +106,8 @@ export interface PanelChromeOptions {
   hideChrome?: boolean;
   fullBleed?: boolean;
   noBorder?: boolean;
+  /** Collapse the instance to its title bar. Chrome state, not a style. */
+  minimized?: boolean;
 }
 
 export interface PanelFillResult {

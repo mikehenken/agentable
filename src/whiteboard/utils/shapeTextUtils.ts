@@ -1,8 +1,9 @@
 import type { Editor, TLShape } from 'tldraw';
+import { resolvePanelChrome } from '../../panels/chrome';
 import type { PanelShape } from '../shapes/PanelShape';
 
 export function friendlyPanelTitle(panelId: string, data: Record<string, unknown>): string {
-  const title = data.__title;
+  const title = resolvePanelChrome(data).title;
   if (typeof title === 'string' && title.trim()) {
     return title;
   }
@@ -39,7 +40,7 @@ export function getShapeSearchText(editor: Editor, shape: TLShape): string | und
   if (isPanelShape(shape)) {
     const parts: string[] = [];
     if (shape.props.panelId) parts.push(shape.props.panelId);
-    const title = shape.props.data.__title;
+    const title = resolvePanelChrome(shape.props.data).title;
     if (typeof title === 'string' && title.trim()) parts.push(title);
     for (const [key, value] of Object.entries(shape.props.data)) {
       if (key.startsWith('__')) continue;

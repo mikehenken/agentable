@@ -24,6 +24,8 @@
  */
 import type { Editor } from 'tldraw';
 import { createShapeId } from 'tldraw';
+import { withPanelChrome } from '../../panels/chrome';
+import type { PanelChromeOptions } from '../../panels/types';
 import {
   findNonOverlappingPosition,
   snapRect,
@@ -62,6 +64,12 @@ export interface OpenPanelOptions {
   snapGrid?: boolean;
   /** Pass-through panel-specific props (e.g. { selectedJobId: 2 }). */
   panelProps?: Record<string, unknown>;
+  /**
+   * Typed chrome options for the shape (title, minimize, bleed, border).
+   * Persisted under `data.chrome`; the source of truth, replacing the
+   * reserved `__*` panelProps keys older callers passed.
+   */
+  chrome?: PanelChromeOptions;
   /** When true (default), assign new panels to a site context frame when siteId is present. */
   assignToSiteGroup?: boolean;
   /** Optional agency id for nesting site frames under an agency workspace frame. */
@@ -258,6 +266,23 @@ export function updatePanelProps(
   return true;
 }
 
+/**
+ * Patch a panel shape's typed chrome options. Fields left out of the
+ * patch keep their current value; the write lands under `data.chrome`
+ * with legacy-key mirrors per the chrome module's compat contract.
+ */
+export function updatePanelChrome(
+  panelId: string,
+  patch: PanelChromeOptions,
+): boolean {
+  const editor = editorRef;
+  if (!editor) return false;
+  const existing = editor.getShape(createShapeId(`panel:${panelId}`));
+  if (!existing) return false;
+  const prev = (existing.props as { data?: Record<string, unknown> }).data ?? {};
+  return updatePanelProps(panelId, withPanelChrome(prev, patch));
+}
+
 function getPanelShapeBounds(editor: Editor): LayoutRect[] {
   const rects: LayoutRect[] = [];
   for (const shape of editor.getCurrentPageShapes()) {
@@ -353,10 +378,11 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
     const place = computePlacement(editor, panelId, options);
     const contextRef =
       (options.panelProps?.contextRef as string | undefined) ?? getActiveContextRef() ?? undefined;
-    const panelData = {
+    const baseData = {
       ...(options.panelProps ?? {}),
       ...(contextRef ? { contextRef } : {}),
     };
+    const panelData = options.chrome ? withPanelChrome(baseData, options.chrome) : baseData;
     editor.createShape({
       id,
       type: 'panel',
@@ -383,7 +409,8 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
     }
   } else {
     const prev = (existing.props as { data?: Record<string, unknown> }).data ?? {};
-    const mergedData = options.panelProps ? { ...prev, ...options.panelProps } : prev;
+    const patched = options.panelProps ? { ...prev, ...options.panelProps } : prev;
+    const mergedData = options.chrome ? withPanelChrome(patched, options.chrome) : patched;
     const hasForcedLayout = Boolean(options.position && options.size);
 
     if (hasForcedLayout) {
@@ -401,7 +428,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
           data: mergedData,
         },
       });
-    } else if (options.panelProps) {
+    } else if (options.panelProps || options.chrome) {
       // Existing shape — apply any prop patch (e.g. selectedJobId update).
       editor.updateShape({
         id,

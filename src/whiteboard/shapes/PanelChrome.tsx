@@ -15,7 +15,7 @@
  */
 import type { ReactElement } from 'react';
 import { Minus, X } from 'lucide-react';
-import { closePanelInCanvas, updatePanelProps } from './panelShapeApi';
+import { closePanelInCanvas, updatePanelChrome } from './panelShapeApi';
 
 export interface PanelChromeProps {
   panelId: string;
@@ -32,7 +32,7 @@ export function PanelChrome({ panelId, title, minimized }: PanelChromeProps): Re
       <div className="panel-chrome__actions">
         <ChromeButton
           aria-label={minimized ? 'Restore panel' : 'Minimize panel'}
-          onClick={() => updatePanelProps(panelId, { __minimized: !minimized })}
+          onClick={() => updatePanelChrome(panelId, { minimized: !minimized })}
         >
           <Minus size={12} />
         </ChromeButton>

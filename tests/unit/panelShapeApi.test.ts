@@ -40,8 +40,10 @@ import {
   closePanelInCanvas,
   focusPanelInCanvas,
   updatePanelProps,
+  updatePanelChrome,
   __resetPanelShapeApiForTests__,
 } from '../../src/whiteboard/shapes/panelShapeApi';
+import { resolvePanelChrome } from '../../src/panels/chrome';
 
 // ──────────────────────────────────────────────────────────────────────
 // Stub editor — implements just the methods panelShapeApi calls
@@ -329,6 +331,32 @@ describe('openPanelInCanvas — create + idempotency', () => {
     expect(new Set(xs).size).toBeGreaterThan(1);
   });
 
+  it('persists typed chrome options under data.chrome on create', () => {
+    const editor = makeStubEditor();
+    bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
+
+    openPanelInCanvas('chat', { chrome: { title: 'Chat', fullBleed: true } });
+
+    const created = editor.createShape.mock.calls[0][0] as StubShape;
+    expect(resolvePanelChrome(created.props.data)).toEqual({
+      title: 'Chat',
+      fullBleed: true,
+    });
+    expect(created.props.data.chrome).toEqual({ title: 'Chat', fullBleed: true });
+  });
+
+  it('applies chrome options to an existing shape without panelProps', () => {
+    const editor = makeStubEditor();
+    bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
+
+    openPanelInCanvas('chat', { panelProps: { search: 'IT' } });
+    openPanelInCanvas('chat', { chrome: { title: 'Support Chat' } });
+
+    const final = editor.__shapes.get('shape:panel:chat');
+    expect(resolvePanelChrome(final?.props.data).title).toBe('Support Chat');
+    expect(final?.props.data.search).toBe('IT');
+  });
+
   it('re-expands a minimised shape on a fresh tool call', () => {
     const editor = makeStubEditor();
     bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
@@ -438,6 +466,50 @@ describe('updatePanelProps', () => {
       search: 'IT',
       filter: 'open',
       selectedJobId: 9,
+    });
+  });
+});
+
+describe('updatePanelChrome', () => {
+  it('returns false when no editor is bound', () => {
+    expect(updatePanelChrome('chat', { minimized: true })).toBe(false);
+  });
+
+  it('returns false when the shape does not exist', () => {
+    const editor = makeStubEditor();
+    bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
+    expect(updatePanelChrome('chat', { minimized: true })).toBe(false);
+  });
+
+  it('patches chrome while keeping panel data and other chrome fields', () => {
+    const editor = makeStubEditor();
+    bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
+    openPanelInCanvas('chat', {
+      chrome: { title: 'Chat' },
+      panelProps: { search: 'IT' },
+    });
+
+    expect(updatePanelChrome('chat', { minimized: true })).toBe(true);
+
+    const final = editor.__shapes.get('shape:panel:chat');
+    expect(resolvePanelChrome(final?.props.data)).toEqual({
+      title: 'Chat',
+      minimized: true,
+    });
+    expect(final?.props.data.search).toBe('IT');
+  });
+
+  it('reads chrome written by an older host through the legacy keys', () => {
+    const editor = makeStubEditor();
+    bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
+    openPanelInCanvas('chat', { panelProps: { __title: 'Legacy Chat' } });
+
+    expect(updatePanelChrome('chat', { minimized: true })).toBe(true);
+
+    const final = editor.__shapes.get('shape:panel:chat');
+    expect(resolvePanelChrome(final?.props.data)).toEqual({
+      title: 'Legacy Chat',
+      minimized: true,
     });
   });
 });

@@ -16,6 +16,7 @@ import {
   type UnknownRecord,
 } from 'tldraw';
 import { GRID_SIZE, snapToGrid } from '../../canvas/panelLayoutEngine';
+import { resolvePanelScope } from '../../panels/scope';
 import { filterSiteContextPanelIds, isCanvasGlobalPanel } from './canvasGlobalPanels';
 
 export type ContextGroupKind = 'site' | 'agency';
@@ -171,7 +172,9 @@ export function resolveSiteIdFromPanelData(
   data: Record<string, unknown> | undefined,
 ): string | null {
   if (!data) return null;
-  const siteId = data.__siteId ?? data.siteId;
+  // Typed scope first (contextId is the siteId on landi hosts), then the
+  // plain siteId key host panels have always passed in panelProps.
+  const siteId = resolvePanelScope(data).contextId ?? data.siteId;
   return typeof siteId === 'string' && siteId.trim().length > 0 ? siteId.trim() : null;
 }
 

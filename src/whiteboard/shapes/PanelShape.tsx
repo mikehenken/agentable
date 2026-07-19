@@ -32,8 +32,10 @@
  *   - `props.data` is a free-form bag passed in via
  *     `openPanelInCanvas({ panelProps })`. The shape util forwards it to
  *     the panel component as a prop.
- *   - `props.data.__minimized` is reserved for the chrome's minimise
- *     toggle so the shape can show only the title bar without the body.
+ *   - Chrome behaviour (title, minimize, hideChrome, fullBleed, noBorder)
+ *     resolves through `resolvePanelChrome`: typed options under
+ *     `data.chrome` are the source of truth, with the legacy reserved
+ *     `__*` keys still readable for documents older hosts wrote.
  */
 import { Suspense, useEffect, useRef, type ReactElement } from 'react';
 import {
@@ -46,6 +48,7 @@ import {
   type RecordProps,
   type TLBaseShape,
 } from 'tldraw';
+import { resolvePanelChrome } from '../../panels/chrome';
 import { PanelChrome } from './PanelChrome';
 import {
   attachIframeWheelGuards,
@@ -199,7 +202,7 @@ export function createPanelShapeUtil(
       if (shape.props.panelId.trim()) {
         parts.push(shape.props.panelId);
       }
-      const title = shape.props.data.__title;
+      const title = resolvePanelChrome(shape.props.data).title;
       if (typeof title === 'string' && title.trim()) {
         parts.push(title);
       }
@@ -277,11 +280,12 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
   const editor = useEditor();
   const { panelId, data, minimized } = shape.props;
   const Lazy = useLazyPanel(registry, panelId);
-  const title = (data.__title as string | undefined) ?? friendlyTitle(panelId);
-  const isMinimized = minimized || Boolean(data.__minimized);
-  const noBorder = Boolean(data.__noBorder);
-  const fullBleed = Boolean(data.__fullBleed);
-  const hideChrome = Boolean(data.__hideChrome) || fullBleed;
+  const chrome = resolvePanelChrome(data);
+  const title = chrome.title ?? friendlyTitle(panelId);
+  const isMinimized = minimized || chrome.minimized === true;
+  const noBorder = chrome.noBorder === true;
+  const fullBleed = chrome.fullBleed === true;
+  const hideChrome = chrome.hideChrome === true || fullBleed;
   const rootRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   useEffect(() => {

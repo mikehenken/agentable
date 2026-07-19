@@ -237,7 +237,7 @@ function WhiteboardShellInner({
         w: CHAT_PANEL_WIDTH,
         h: Math.max(320, viewport.h - VIEWPORT_INSET * 2),
       },
-      panelProps: { __title: 'Chat' },
+      chrome: { title: 'Chat' },
     });
   }, [openChatOnMount]);
 

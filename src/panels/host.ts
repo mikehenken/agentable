@@ -6,7 +6,12 @@
  * mounted.
  */
 import { createPanelRegistry, type PanelRegistry } from './registry';
-import type { JsonObject, PanelDefinition, PanelScope } from './types';
+import type {
+  JsonObject,
+  PanelChromeOptions,
+  PanelDefinition,
+  PanelScope,
+} from './types';
 
 /**
  * Lifecycle signals the host consumes from the engine. `ready` fires once
@@ -46,6 +51,8 @@ export interface EngineHandle {
 export interface PanelOpenOptions {
   /** Host-defined scope the panel instance binds to. */
   scope?: PanelScope;
+  /** Typed chrome options, replacing the reserved `__*` data keys. */
+  chrome?: PanelChromeOptions;
   /** Instance data, persisted with the panel container. JSON only. */
   data?: JsonObject;
   /** Override the engine's default placement. */
@@ -68,7 +75,7 @@ export interface CanvasHostPanels extends PanelRegistry {
    * for hosts already disposed, and for engines without panel placement;
    * otherwise waits for engine readiness and resolves once the engine
    * has accepted the placement request. The typed `PanelHandle` facade
-   * from the panel system spec rides in with the chrome options work.
+   * from the panel system spec arrives with the panel handle work.
    */
   open(id: string, options?: PanelOpenOptions): Promise<void>;
 }
