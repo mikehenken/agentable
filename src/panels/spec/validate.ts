@@ -32,6 +32,7 @@ const envelopeSchema = z.object({
 const URL_SCHEME_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
 const JAVASCRIPT_SCHEME = /^javascript:/i;
 const HTTP_SCHEME = /^https?:\/\//i;
+const DANGEROUS_OBJECT_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 function issue(
   code: SpecIssue['code'],
@@ -46,13 +47,30 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function containsDangerousObjectKey(record: Record<string, unknown>): boolean {
+  return Object.keys(record).some((key) => DANGEROUS_OBJECT_KEYS.has(key));
+}
+
+function setSafeJsonProperty(target: JsonObject, key: string, value: JsonValue): void {
+  if (DANGEROUS_OBJECT_KEYS.has(key)) return;
+  Object.defineProperty(target, key, {
+    value,
+    enumerable: true,
+    configurable: true,
+    writable: true,
+  });
+}
+
 function parseNode(raw: unknown): SpecNode | null {
   if (!isRecord(raw) || typeof raw.type !== 'string' || raw.type.length === 0) {
     return null;
   }
+  if (containsDangerousObjectKey(raw)) {
+    return null;
+  }
   const node: SpecNode = { type: raw.type };
   if (raw.props !== undefined) {
-    if (!isRecord(raw.props)) return null;
+    if (!isRecord(raw.props) || containsDangerousObjectKey(raw.props)) return null;
     node.props = raw.props as JsonObject;
   }
   if (raw.children !== undefined) {
@@ -72,7 +90,8 @@ function parseNode(raw: unknown): SpecNode | null {
     if (node.props === undefined) node.props = {};
     for (const key of Object.keys(raw)) {
       if (!['type', 'props', 'children', 'showIf'].includes(key)) {
-        (node.props as JsonObject)[key] = raw[key] as JsonValue;
+        if (DANGEROUS_OBJECT_KEYS.has(key)) return null;
+        setSafeJsonProperty(node.props as JsonObject, key, raw[key] as JsonValue);
       }
     }
   }
@@ -189,8 +208,94 @@ function collectActionRefs(value: JsonValue, path: string, refs: Array<{ ref: st
   }
 }
 
+function normalizeActionRef(ref: string): string {
+  return ref.normalize('NFKC');
+}
+
 function isSmuggledActionRef(ref: string): boolean {
-  return ref.includes(':') || ref.includes('/') || ref.startsWith('//');
+  const normalized = normalizeActionRef(ref);
+  return normalized.includes(':') || normalized.includes('/') || normalized.startsWith('//');
+}
+
+function scanStringForSanitizationIssues(
+  text: string,
+  path: string,
+  errors: SpecIssue[],
+  nodeId?: string,
+): void {
+  if (JAVASCRIPT_SCHEME.test(text.trim())) {
+    errors.push(
+      issue(
+        'SPEC_SANITIZE_JAVASCRIPT_URL',
+        `Forbidden javascript: URL at ${path}`,
+        'error',
+        { nodeId, path },
+      ),
+    );
+  } else if (looksLikeUrl(text) && !isAllowedHttpUrl(text)) {
+    errors.push(
+      issue(
+        'SPEC_SANITIZE_URL_SCHEME',
+        `Disallowed URL scheme at ${path}`,
+        'error',
+        { nodeId, path, hint: 'Use http or https URLs only' },
+      ),
+    );
+  }
+  if (containsControlChar(text)) {
+    errors.push(
+      issue(
+        'SPEC_SANITIZE_CONTROL_CHAR',
+        `Control characters are not allowed at ${path}`,
+        'error',
+        { nodeId, path },
+      ),
+    );
+  }
+}
+
+function walkJsonStringsForSanitization(
+  value: JsonValue,
+  pathPrefix: string,
+  errors: SpecIssue[],
+  nodeId?: string,
+): void {
+  walkJsonStrings(value, (text, subPath) => {
+    const fullPath = pathPrefix ? `${pathPrefix}.${subPath}` : subPath;
+    scanStringForSanitizationIssues(text, fullPath, errors, nodeId);
+  });
+}
+
+function collectActionStringFields(action: SpecAction): Array<{ path: string; value: string }> {
+  const fields: Array<{ path: string; value: string }> = [];
+  switch (action.kind) {
+    case 'mutate':
+      fields.push({ path: 'source', value: action.source }, { path: 'op', value: action.op });
+      if (typeof action.confirm === 'string') {
+        fields.push({ path: 'confirm', value: action.confirm });
+      }
+      if (Array.isArray(action.targetFields)) {
+        action.targetFields.forEach((field, index) => {
+          fields.push({ path: `targetFields[${index}]`, value: field });
+        });
+      }
+      break;
+    case 'host':
+      fields.push({ path: 'action', value: action.action });
+      break;
+    case 'panel':
+      fields.push({ path: 'panelId', value: action.panelId });
+      if (typeof action.scopeFrom === 'string') {
+        fields.push({ path: 'scopeFrom', value: action.scopeFrom });
+      }
+      break;
+    case 'prompt':
+      fields.push({ path: 'prompt', value: action.prompt });
+      break;
+    default:
+      break;
+  }
+  return fields;
 }
 
 interface TreeAnalysis {
@@ -649,6 +754,17 @@ export function validateSpec(
 
   if (workingSpec.actions !== undefined) {
     for (const [actionId, action] of Object.entries(workingSpec.actions)) {
+      if (isSmuggledActionRef(actionId)) {
+        errors.push(
+          issue(
+            'SPEC_ACTION_REF_SMUGGLED',
+            `Action id "${actionId}" uses forbidden smuggled syntax`,
+            'error',
+            { path: `actions.${actionId}`, hint: 'Use plain action ids without URL-like syntax' },
+          ),
+        );
+      }
+
       const serialized = JSON.stringify(action);
       if (JAVASCRIPT_SCHEME.test(serialized) || /https?:\/\//i.test(serialized)) {
         errors.push(
@@ -723,40 +839,41 @@ export function validateSpec(
     }
   }
 
-  // --- Step 6: sanitization ---
+  // --- Step 6: sanitization (full envelope per D9.6) ---
+  if (workingSpec.state !== undefined) {
+    walkJsonStringsForSanitization(workingSpec.state, 'state', errors);
+  }
+
+  if (workingSpec.sources !== undefined) {
+    for (const [sourceName, binding] of Object.entries(workingSpec.sources)) {
+      if (binding.params !== undefined) {
+        walkJsonStringsForSanitization(
+          binding.params,
+          `sources.${sourceName}.params`,
+          errors,
+        );
+      }
+    }
+  }
+
+  if (workingSpec.actions !== undefined) {
+    for (const [actionId, action] of Object.entries(workingSpec.actions)) {
+      for (const field of collectActionStringFields(action)) {
+        scanStringForSanitizationIssues(
+          field.value,
+          `actions.${actionId}.${field.path}`,
+          errors,
+        );
+      }
+    }
+  }
+
   for (const [nodeId, node] of Object.entries(normalizedNodes)) {
+    if (node.showIf !== undefined) {
+      walkJsonStringsForSanitization(node.showIf.$eq, `${nodeId}.showIf.$eq`, errors, nodeId);
+    }
     if (node.props === undefined) continue;
-    walkJsonStrings(node.props, (text, path) => {
-      if (JAVASCRIPT_SCHEME.test(text.trim())) {
-        errors.push(
-          issue(
-            'SPEC_SANITIZE_JAVASCRIPT_URL',
-            `Forbidden javascript: URL at ${path}`,
-            'error',
-            { nodeId, path },
-          ),
-        );
-      } else if (looksLikeUrl(text) && !isAllowedHttpUrl(text)) {
-        errors.push(
-          issue(
-            'SPEC_SANITIZE_URL_SCHEME',
-            `Disallowed URL scheme at ${path}`,
-            'error',
-            { nodeId, path, hint: 'Use http or https URLs only' },
-          ),
-        );
-      }
-      if (containsControlChar(text)) {
-        errors.push(
-          issue(
-            'SPEC_SANITIZE_CONTROL_CHAR',
-            `Control characters are not allowed at ${path}`,
-            'error',
-            { nodeId, path },
-          ),
-        );
-      }
-    });
+    walkJsonStringsForSanitization(node.props, `${nodeId}.props`, errors, nodeId);
   }
 
   if (errors.length > 0) {
@@ -764,12 +881,55 @@ export function validateSpec(
   }
 
   // Sanitize control chars in the success path (strip per D9.6).
+  let sanitizedState: JsonObject | undefined;
+  if (workingSpec.state !== undefined) {
+    const sanitized = sanitizeJsonValue(workingSpec.state);
+    if (sanitized.changed) {
+      sanitizedState = sanitized.value as JsonObject;
+    }
+  }
+
+  let sanitizedSources: Record<string, SpecSourceBinding> | undefined;
+  if (workingSpec.sources !== undefined) {
+    let sourcesChanged = false;
+    const nextSources: Record<string, SpecSourceBinding> = {};
+    for (const [sourceName, binding] of Object.entries(workingSpec.sources)) {
+      if (binding.params === undefined) {
+        nextSources[sourceName] = binding;
+        continue;
+      }
+      const sanitized = sanitizeJsonValue(binding.params);
+      sourcesChanged = sourcesChanged || sanitized.changed;
+      nextSources[sourceName] = sanitized.changed
+        ? { ...binding, params: sanitized.value as JsonObject }
+        : binding;
+    }
+    if (sourcesChanged) {
+      sanitizedSources = nextSources;
+    }
+  }
+
   for (const nodeId of Object.keys(normalizedNodes)) {
     const node = normalizedNodes[nodeId];
-    if (node?.props === undefined) continue;
-    const sanitized = sanitizeJsonValue(node.props);
-    if (sanitized.changed) {
-      normalizedNodes[nodeId] = { ...node, props: sanitized.value as JsonObject };
+    if (node === undefined) continue;
+    let nextNode = node;
+    if (node.showIf !== undefined) {
+      const sanitizedShowIf = sanitizeJsonValue(node.showIf.$eq);
+      if (sanitizedShowIf.changed) {
+        nextNode = {
+          ...nextNode,
+          showIf: { $eq: sanitizedShowIf.value as [JsonValue, JsonValue] },
+        };
+      }
+    }
+    if (node.props !== undefined) {
+      const sanitized = sanitizeJsonValue(node.props);
+      if (sanitized.changed) {
+        nextNode = { ...nextNode, props: sanitized.value as JsonObject };
+      }
+    }
+    if (nextNode !== node) {
+      normalizedNodes[nodeId] = nextNode;
     }
   }
 
@@ -777,6 +937,8 @@ export function validateSpec(
     ...workingSpec,
     v: CURRENT_SPEC_VERSION,
     nodes: normalizedNodes,
+    ...(sanitizedState !== undefined ? { state: sanitizedState } : {}),
+    ...(sanitizedSources !== undefined ? { sources: sanitizedSources } : {}),
   };
 
   // --- Step 7: agent repair eligibility flag ---

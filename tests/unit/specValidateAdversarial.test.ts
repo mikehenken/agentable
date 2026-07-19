@@ -52,6 +52,13 @@ function buildCatalog(): Map<string, SpecCatalogEntry> {
         website: z.string().optional(),
       }),
     },
+    {
+      name: 'typed-counter',
+      props: z.object({
+        count: z.number(),
+        label: z.string(),
+      }),
+    },
   ];
   return new Map(entries.map((entry) => [entry.name, entry]));
 }
@@ -318,6 +325,157 @@ describe('validateSpec adversarial suite', () => {
     if (!result.ok) {
       expect(result.agentRepairEligible).toBe(true);
       expect(result.errors[0]?.hint).toBeTruthy();
+    }
+  });
+
+  it('rejects javascript: URLs in spec.state', () => {
+    const result = validateSpec(
+      validSpec({
+        state: { redirect: 'javascript:alert(1)' },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_SANITIZE_JAVASCRIPT_URL')).toBe(true);
+      expect(result.errors.some((e) => e.path?.startsWith('state'))).toBe(true);
+    }
+  });
+
+  it('rejects javascript: URLs in showIf.$eq literals', () => {
+    const result = validateSpec(
+      validSpec({
+        nodes: {
+          body: { type: 'panel-body', children: ['conditional'] },
+          conditional: {
+            type: 'empty-state',
+            props: { message: 'Hidden' },
+            showIf: { $eq: ['javascript:alert(1)', true] },
+          },
+        },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_SANITIZE_JAVASCRIPT_URL')).toBe(true);
+      expect(result.errors.some((e) => e.path?.includes('showIf.$eq'))).toBe(true);
+    }
+  });
+
+  it('rejects javascript: URLs in sources params', () => {
+    const result = validateSpec(
+      validSpec({
+        sources: {
+          seo: {
+            source: 'site.seo',
+            params: { callback: 'javascript:alert(1)' },
+          },
+        },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_SANITIZE_JAVASCRIPT_URL')).toBe(true);
+      expect(result.errors.some((e) => e.path?.startsWith('sources.'))).toBe(true);
+    }
+  });
+
+  it('rejects javascript: in action string fields', () => {
+    const result = validateSpec(
+      validSpec({
+        actions: {
+          save: {
+            kind: 'mutate',
+            source: 'site.seo',
+            op: 'update',
+            confirm: 'javascript:alert(1)',
+          },
+        },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_SANITIZE_JAVASCRIPT_URL')).toBe(true);
+      expect(result.errors.some((e) => e.path?.includes('actions.save.confirm'))).toBe(true);
+    }
+  });
+
+  it('rejects fullwidth-colon action ref smuggling after NFKC normalization', () => {
+    const smuggledRef = `host${'\uFF1a'}__proto__`;
+    const result = validateSpec(
+      validSpec({
+        nodes: {
+          body: { type: 'panel-body', children: ['actions'] },
+          actions: {
+            type: 'action-row',
+            props: { actions: [smuggledRef] },
+          },
+        },
+        actions: {
+          save: { kind: 'mutate', source: 'site.seo', op: 'update' },
+        },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_ACTION_REF_SMUGGLED')).toBe(true);
+    }
+  });
+
+  it('rejects smuggled action ids declared with fullwidth colon', () => {
+    const smuggledId = `host${'\uFF1a'}__proto__`;
+    const result = validateSpec(
+      validSpec({
+        nodes: {
+          body: { type: 'panel-body', children: ['actions'] },
+          actions: {
+            type: 'action-row',
+            props: { actions: [smuggledId] },
+          },
+        },
+        actions: {
+          [smuggledId]: { kind: 'mutate', source: 'site.seo', op: 'update' },
+        },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_ACTION_REF_SMUGGLED')).toBe(true);
+    }
+  });
+
+  it('rejects dangerous __proto__ keys merged into node props during parse', () => {
+    const payload = JSON.parse(
+      '{"v":1,"origin":"host","root":"body","nodes":{"body":{"type":"panel-body","__proto__":{"polluted":true}}}}',
+    );
+    const result = validateSpec(payload, baseContext());
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_NODES_INVALID')).toBe(true);
+    }
+  });
+
+  it('rejects prop type confusion against strict catalog schemas', () => {
+    const result = validateSpec(
+      validSpec({
+        nodes: {
+          body: { type: 'panel-body', children: ['counter'] },
+          counter: {
+            type: 'typed-counter',
+            props: { count: 'not-a-number', label: 'Items' },
+          },
+        },
+      }),
+      baseContext(),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.code === 'SPEC_NODE_PROPS_INVALID')).toBe(true);
     }
   });
 });
