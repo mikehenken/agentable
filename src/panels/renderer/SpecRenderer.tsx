@@ -17,7 +17,12 @@ import React, {
   useState,
   useSyncExternalStore,
 } from 'react';
-import { defaultCatalog, UNKNOWN_NODE_PLACEHOLDER_TYPE, type NormalizedPanelSpec } from '../spec';
+import {
+  defaultCatalog,
+  STREAMING_SKELETON_TYPE,
+  UNKNOWN_NODE_PLACEHOLDER_TYPE,
+  type NormalizedPanelSpec,
+} from '../spec';
 import type { CatalogEntry, PanelScope, SpecNodeContextValue } from '../types';
 import { evaluateShowIf, resolveSourceParams, showIfDataSources } from './bindings';
 import type {
@@ -276,6 +281,20 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
     sourceData: (sourceName) => snapshotFor(sourceName)?.data,
   });
   if (!visible) return null;
+
+  if (node.type === STREAMING_SKELETON_TYPE) {
+    // D40 streaming hydration: this node was referenced by an arrived
+    // parent but has not streamed in yet. Paint a skeleton in its slot;
+    // the real node replaces it in place when its chunk lands.
+    return (
+      <div
+        data-testid="streaming-skeleton"
+        data-renderer-node={nodeId}
+        role="status"
+        aria-busy="true"
+      />
+    );
+  }
 
   if (node.type === UNKNOWN_NODE_PLACEHOLDER_TYPE) {
     const originalType =

@@ -18,3 +18,10 @@ export const UNKNOWN_NODE_RAW_KEY = '__raw';
 
 /** Node type rendered for unknown catalog entries (D11). */
 export const UNKNOWN_NODE_PLACEHOLDER_TYPE = 'unknown-node';
+
+/**
+ * Synthetic node type for spec nodes that have been referenced by an
+ * arrived parent but have not streamed in yet (D40 streaming hydration).
+ * The renderer paints these as skeletons; they never persist.
+ */
+export const STREAMING_SKELETON_TYPE = 'streaming-skeleton';
