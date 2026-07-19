@@ -30,6 +30,7 @@ function typesPath(): string {
 }
 
 const EXPECTED_EXPORTS = [
+  'CatalogEntry',
   'JsonObject',
   'JsonPrimitive',
   'JsonValue',
@@ -45,6 +46,7 @@ const EXPECTED_EXPORTS = [
   'SpecCondition',
   'SpecMigration',
   'SpecNode',
+  'SpecNodeContextValue',
   'SpecOrigin',
   'SpecSourceBinding',
 ];

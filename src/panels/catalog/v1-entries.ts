@@ -1,12 +1,15 @@
 import { z } from 'zod';
-import type { SpecCatalogEntry } from '../spec/types';
+import type { CatalogEntry } from '../types';
+import * as Components from './components';
 
-export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
+export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
   [
     'panel-body',
     {
       name: 'panel-body',
-      props: z.object({}).catchall(z.any()), // children are handled structurally, props can be anything or empty
+      props: z.object({}), // children are handled structurally in SpecNode
+      component: Components.PanelBody,
+      agentHint: 'Vertical layout root, padding, scroll region',
     },
   ],
   [
@@ -18,6 +21,8 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
         icon: z.string().optional(),
         subtitle: z.string().optional(),
       }),
+      component: Components.Header,
+      agentHint: 'Icon + title + subtitle row',
     },
   ],
   [
@@ -26,8 +31,15 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
       name: 'field-form',
       props: z.object({
         bind: z.string(),
-        fields: z.array(z.any()), // The actual field definition is validated loosely here; renderer enforces
+        fields: z.array(z.object({
+          bind: z.string().optional(),
+          type: z.string().optional(),
+          label: z.string().optional(),
+          placeholder: z.string().optional(),
+        }).catchall(z.unknown())), // tightened from z.any()
       }),
+      component: Components.FieldForm,
+      agentHint: 'Typed fields bound to a source',
     },
   ],
   [
@@ -37,6 +49,8 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
       props: z.object({
         actions: z.array(z.string()),
       }),
+      component: Components.ActionRow,
+      agentHint: 'Buttons for declared actions',
     },
   ],
   [
@@ -45,10 +59,18 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
       name: 'list',
       props: z.object({
         bind: z.string(),
-        row: z.any(), // The compact row schema
+        row: z.object({
+          title: z.string().optional(),
+          subtitle: z.string().optional(),
+          badges: z.array(z.unknown()).optional(),
+          meta: z.array(z.unknown()).optional(),
+          rowActions: z.array(z.string()).optional(),
+        }).catchall(z.unknown()), // tighter than z.any()
         search: z.boolean().optional(),
-        filters: z.any().optional(),
+        filters: z.unknown().optional(),
       }),
+      component: Components.List,
+      agentHint: 'Searchable list with row template',
     },
   ],
   [
@@ -57,9 +79,11 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
       name: 'table',
       props: z.object({
         bind: z.string(),
-        columns: z.array(z.any()),
+        columns: z.array(z.record(z.string(), z.unknown())), // tightened from z.any()
         rowActions: z.array(z.string()).optional(),
       }),
+      component: Components.Table,
+      agentHint: 'Columns + rows with pagination',
     },
   ],
   [
@@ -71,6 +95,8 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
         bind: z.string().optional(),
         tone: z.string().optional(),
       }),
+      component: Components.Badge,
+      agentHint: 'Status chip',
     },
   ],
   [
@@ -86,13 +112,16 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
           })
         ),
       }),
+      component: Components.Tabs,
+      agentHint: 'Tabbed regions of child nodes',
     },
   ],
   [
     'confirm',
     {
       name: 'confirm',
-      props: z.object({}).catchall(z.any()),
+      props: z.object({}), // no props needed
+      component: Components.Confirm,
       internal: true,
     },
   ],
@@ -100,7 +129,8 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
     'stale-banner',
     {
       name: 'stale-banner',
-      props: z.object({}).catchall(z.any()),
+      props: z.object({}), // no props needed
+      component: Components.StaleBanner,
       internal: true,
     },
   ],
@@ -112,6 +142,8 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
         message: z.string(),
         action: z.string().optional(),
       }),
+      component: Components.EmptyState,
+      agentHint: 'Icon + message + optional action',
     },
   ],
   [
@@ -121,6 +153,8 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
       props: z.object({
         bind: z.string(),
       }),
+      component: Components.FilterChips,
+      agentHint: 'Active filter chips with remove + clear-all',
     },
   ],
   [
@@ -129,11 +163,14 @@ export const v1CatalogEntries: ReadonlyMap<string, SpecCatalogEntry> = new Map([
       name: 'custom-slot',
       props: z.object({
         name: z.string(),
-        props: z.record(z.string(), z.any()).optional(),
+        props: z.record(z.string(), z.unknown()).optional(),
       }),
+      component: Components.CustomSlot,
+      agentHint: 'Mounts a host-registered catalog component by name',
     },
   ],
 ]);
 
-// Helper array for export if needed
-export const entries: SpecCatalogEntry[] = Array.from(v1CatalogEntries.values());
+// Default catalog export usable by hosts / validateSpec (Gap 7)
+export const catalog: ReadonlyMap<string, CatalogEntry> = v1CatalogEntries;
+export const entries: CatalogEntry[] = Array.from(v1CatalogEntries.values());

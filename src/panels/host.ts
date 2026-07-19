@@ -9,11 +9,13 @@ import type { EngineLifecycleHandle } from '../engine/types';
 import { createPanelRegistry, type PanelRegistry } from './registry';
 import { registerHostActions, type ToolDefinition } from './tools';
 import type {
+  CatalogEntry,
   JsonObject,
   PanelChromeOptions,
   PanelDefinition,
   PanelScope,
 } from './types';
+import { defaultCatalog } from './spec';
 
 /**
  * The engine contract now lives in src/engine (panel system spec section
@@ -90,10 +92,18 @@ export interface CreateCanvasHostOptions {
    * for the full collision policy).
    */
   hostActions?: readonly ToolDefinition[];
+  /**
+   * Host-supplied catalog overrides or additions. If not provided,
+   * the host will use the default v1 catalog under the hood.
+   */
+  catalog?: ReadonlyMap<string, CatalogEntry>;
 }
 
 export interface CanvasHost {
-  /** Registered panels: lookup plus the open entry point. */
+  /**
+   * The resolved catalog instance in use.
+   */
+  catalog: ReadonlyMap<string, CatalogEntry>;
   panels: CanvasHostPanels;
   /** Resolves once the engine reports readiness, then stays resolved. */
   whenReady(): Promise<void>;
@@ -125,6 +135,7 @@ function scopeKey(scope: PanelScope): string {
 
 export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const { engine, persistence } = options;
+  const catalog = options.catalog ?? defaultCatalog;
   const registry = createPanelRegistry(options.panels ?? []);
   const unregisterHostActions = options.hostActions?.length
     ? registerHostActions(options.hostActions)
@@ -237,6 +248,7 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   };
 
   return {
+    catalog,
     panels: {
       open: openPanel,
       has: registry.has,

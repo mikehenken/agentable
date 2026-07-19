@@ -21,3 +21,4 @@ export type {
   ValidateSpecSuccess,
 } from './types';
 export { validateSpec } from './validate';
+export { catalog as defaultCatalog } from '../catalog';

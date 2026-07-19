@@ -115,6 +115,23 @@ export interface PanelFillResult {
   skipped: string[];
 }
 
+export interface SpecNodeContextValue {
+  scope: PanelScope;
+  data: Record<string, unknown>;
+  dispatch: (actionRef: string, payload?: Record<string, unknown>) => void;
+  isDirty: boolean;
+  setDirty: (dirty: boolean) => void;
+  state: 'loading' | 'empty' | 'populated' | 'error' | 'dirty' | 'saving' | 'stale';
+}
+
+export interface CatalogEntry<TProps = any> {
+  name: string;
+  props: import('zod').ZodType<TProps>;
+  component: ComponentType<TProps & { context: SpecNodeContextValue }>;
+  agentHint?: string;
+  internal?: boolean;
+}
+
 /** Typed facade over a mounted panel instance. */
 export interface PanelHandle {
   /** The panel definition id; `shapeId` identifies this mounted instance. */
