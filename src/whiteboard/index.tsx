@@ -91,6 +91,15 @@ export function prefetchWhiteboardShell(): Promise<unknown> {
   });
 }
 
+// Engine SPI implementation (src/engine/types, D37). The one engine
+// handle factory this package ships; hosts pass the handle to
+// `createCanvasHost` and attach the editor on shell mount.
+export {
+  createWhiteboardEngine,
+  WHITEBOARD_ENGINE_CAPABILITIES,
+  type WhiteboardEngineHandle,
+} from './engine';
+
 // Imperative driver — re-exported so canvasTools and tests don't need to
 // reach into the `shapes/` subdirectory.
 export {

@@ -5,6 +5,7 @@
  * handle, so nothing in this module knows which engine implementation is
  * mounted.
  */
+import type { EngineLifecycleHandle } from '../engine/types';
 import { createPanelRegistry, type PanelRegistry } from './registry';
 import { registerHostActions, type ToolDefinition } from './tools';
 import type {
@@ -15,38 +16,14 @@ import type {
 } from './types';
 
 /**
- * Lifecycle signals the host consumes from the engine. `ready` fires once
- * per handle when the underlying editor is bound and can accept commands.
- * `change` reports user-driven content or layout mutations and never fires
- * before `ready`; programmatic writes such as a snapshot import must not
- * emit it, otherwise every restore would immediately persist itself back.
+ * The engine contract now lives in src/engine (panel system spec section
+ * 14, D37). The host consumes the lifecycle slice; these re-exports keep
+ * the established public names for existing consumers, `EngineHandle`
+ * here being the slice `createCanvasHost` requires rather than the full
+ * SPI handle of the same name in src/engine.
  */
-export type EngineLifecycleEvent = 'ready' | 'change';
-
-/**
- * The slice of the engine contract the host needs today: a readiness
- * signal plus native snapshot transport. The full CanvasEngine SPI (panel
- * containers, camera, capabilities) is specified in the panel system spec
- * section 14 and lands in src/engine with the SPI task; this type migrates
- * there and existing consumers keep the same shape.
- */
-export interface EngineHandle {
-  /** True once the underlying editor is bound. */
-  isReady(): boolean;
-  /** Subscribe to a lifecycle event. Returns an unsubscribe function. */
-  on(event: EngineLifecycleEvent, listener: () => void): () => void;
-  /** Serialize the engine's native workspace snapshot for persistence. */
-  exportSnapshot(): JsonObject;
-  /** Load a previously persisted native snapshot onto the bound editor. */
-  importSnapshot(snapshot: JsonObject): void;
-  /**
-   * Place a registered panel on the canvas, creating its container or
-   * refocusing an existing one. Optional because not every engine hosts
-   * panel containers; `host.panels.open` rejects on engines without it
-   * rather than dropping the request silently.
-   */
-  openPanel?(request: PanelOpenRequest): void;
-}
+export type { EngineLifecycleEvent } from '../engine/types';
+export type { EngineLifecycleHandle as EngineHandle } from '../engine/types';
 
 /** Caller-facing options for `host.panels.open`. */
 export interface PanelOpenOptions {
@@ -94,7 +71,11 @@ export interface WorkspacePersistenceAdapter {
 }
 
 export interface CreateCanvasHostOptions {
-  engine: EngineHandle;
+  /**
+   * Any engine exposing the lifecycle slice. Full SPI engines (the
+   * `EngineHandle` from src/engine) satisfy this structurally.
+   */
+  engine: EngineLifecycleHandle;
   persistence?: WorkspacePersistenceAdapter;
   /**
    * Panels available on this host. `kind: 'react'` definitions wrap the

@@ -35,4 +35,19 @@ describe('loadWhiteboardSnapshot', () => {
     expect(loadWhiteboardSnapshot(snapshot)).toBe(true);
     expect(loadSnapshot).toHaveBeenCalledWith(snapshot);
   });
+
+  it('runs the deferred repair pass against the editor it loaded into', async () => {
+    // Regression: the animation-frame repair used to dereference the live
+    // module binding, crashing when an unbind or reset landed between the
+    // load and the frame. It must use the editor captured at load time.
+    const loadSnapshot = vi.fn();
+    const getCurrentPageShapes = vi.fn(() => []);
+    bindEditor({ loadSnapshot, getCurrentPageShapes, getSelectedShapeIds: () => [] } as never);
+
+    expect(loadWhiteboardSnapshot({ document: { store: {} }, session: {} })).toBe(true);
+    __resetPanelShapeApiForTests__();
+
+    await new Promise((resolve) => window.requestAnimationFrame(resolve));
+    expect(getCurrentPageShapes).toHaveBeenCalled();
+  });
 });

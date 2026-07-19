@@ -139,10 +139,13 @@ export function loadWhiteboardSnapshot(snapshot: unknown): boolean {
   if (!snapshot || typeof snapshot !== 'object') return false;
 
   if (editorRef) {
+    // Capture the binding: the frame callback can outlive editorRef (an
+    // unbind or test reset lands between load and the animation frame).
+    const editor = editorRef;
     try {
-      editorRef.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
+      editor.loadSnapshot(snapshot as Parameters<Editor['loadSnapshot']>[0]);
       window.requestAnimationFrame(() => {
-        repairAllInvalidSiteContextLayouts(editorRef!);
+        repairAllInvalidSiteContextLayouts(editor);
       });
       return true;
     } catch (err) {
