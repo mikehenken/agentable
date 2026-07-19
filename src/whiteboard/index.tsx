@@ -276,11 +276,6 @@ export {
   type AgUiStatePatchEventDetail,
 } from '../canvas/protocol/ag-ui';
 export {
-  CANVAS_ACTION_EVENT,
-  CANVAS_ACTION_RESPONSE_EVENT,
-  CANVAS_OPEN_FILE_MANAGER_EVENT,
-} from '../canvas/tools/landiCanvasTools';
-export {
   CANVAS_RESTORE_SNAPSHOT_EVENT,
   type CanvasRestoreSnapshotEventDetail,
 } from './snapshot/canvasSnapshotEvents';

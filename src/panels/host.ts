@@ -6,6 +6,7 @@
  * mounted.
  */
 import { createPanelRegistry, type PanelRegistry } from './registry';
+import { registerHostActions, type ToolDefinition } from './tools';
 import type {
   JsonObject,
   PanelChromeOptions,
@@ -101,6 +102,13 @@ export interface CreateCanvasHostOptions {
    * an existing loader map). On id collision the later definition wins.
    */
   panels?: readonly PanelDefinition[];
+  /**
+   * Host-supplied agent tools, merged into the shared tool registry for
+   * this host's lifetime and removed again on `dispose`. A host action
+   * sharing a built-in tool's name replaces that tool (see panels/tools
+   * for the full collision policy).
+   */
+  hostActions?: readonly ToolDefinition[];
 }
 
 export interface CanvasHost {
@@ -119,9 +127,10 @@ export interface CanvasHost {
    */
   whenRestoreSettled(scope: PanelScope): Promise<void>;
   /**
-   * Stops observing engine changes and flushes any scheduled save.
-   * Lifecycle promises already handed out settle on their own terms;
-   * restores that have not reached the engine yet are abandoned.
+   * Removes this host's actions from the tool registry, stops observing
+   * engine changes, and flushes any scheduled save. Lifecycle promises
+   * already handed out settle on their own terms; restores that have not
+   * reached the engine yet are abandoned.
    */
   dispose(): void;
 }
@@ -136,6 +145,9 @@ function scopeKey(scope: PanelScope): string {
 export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const { engine, persistence } = options;
   const registry = createPanelRegistry(options.panels ?? []);
+  const unregisterHostActions = options.hostActions?.length
+    ? registerHostActions(options.hostActions)
+    : null;
 
   const ready = new Promise<void>((resolve) => {
     if (engine.isReady()) {
@@ -218,6 +230,7 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
+    unregisterHostActions?.();
     offChange?.();
     if (saveTimer !== null) {
       clearTimeout(saveTimer);

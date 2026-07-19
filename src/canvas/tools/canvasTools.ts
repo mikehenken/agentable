@@ -33,21 +33,11 @@ import {
   openPanelInCanvas,
 } from '../../whiteboard/shapes/panelShapeApi';
 
-/**
- * JSON-schema-style declaration. Matches the shape Gemini Live expects in
- * `config.tools[].functionDeclarations[]` (a subset of OpenAPI 3.0).
- *
- * Keep `parameters.type` as `'object'` — Gemini Live rejects top-level
- * schemas of any other type.
- */
 import { emitAgUiStatePatch } from '../protocol/ag-ui';
-import {
-  LANDI_CANVAS_TOOL_ALLOWLIST,
-  LANDI_CANVAS_TOOLS,
-} from './landiCanvasTools';
-import type { ToolDeclaration, ToolDefinition, ToolHandler, ToolResult } from './canvasToolTypes';
+import { getHostActions } from '../../panels/tools';
+import type { ToolDeclaration, ToolDefinition, ToolResult } from '../../panels/tools';
 
-export type { ToolDeclaration, ToolDefinition, ToolHandler, ToolParameterSchema, ToolResult } from './canvasToolTypes';
+export type { ToolDeclaration, ToolDefinition, ToolHandler, ToolParameterSchema, ToolResult } from '../../panels/tools';
 
 const KNOWN_PANELS: readonly PanelId[] = [
   'nav', 'chat', 'artifacts',
@@ -401,20 +391,22 @@ export const CANVAS_TOOLS: readonly ToolDefinition[] = [
   },
 ] as const;
 
-let activeTenantId: string | null = null;
-
-/** Host apps call once when mounting CanvasProvider (e.g. landi-canvas-studio). */
-export function setCanvasToolsTenant(tenantId: string | null): void {
-  activeTenantId = tenantId;
-}
-
+/**
+ * Built-in tools merged with the live host actions registered through
+ * `createCanvasHost({ hostActions })`. Keyed by declaration name: a host
+ * action sharing a built-in's name replaces it (keeping the built-in's
+ * position, so declaration order stays stable for the voice session), and
+ * across host registrations the most recent wins.
+ */
 function resolveActiveTools(): readonly ToolDefinition[] {
-  const merged: ToolDefinition[] = [...CANVAS_TOOLS, ...LANDI_CANVAS_TOOLS];
-  if (activeTenantId === 'landi-canvas-studio') {
-    const allow = new Set<string>(LANDI_CANVAS_TOOL_ALLOWLIST);
-    return merged.filter((tool) => allow.has(tool.declaration.name));
+  const byName = new Map<string, ToolDefinition>();
+  for (const tool of CANVAS_TOOLS) {
+    byName.set(tool.declaration.name, tool);
   }
-  return merged;
+  for (const tool of getHostActions()) {
+    byName.set(tool.declaration.name, tool);
+  }
+  return [...byName.values()];
 }
 
 /**
