@@ -17,6 +17,7 @@ import React, {
   useState,
   useSyncExternalStore,
 } from 'react';
+import { getI18n, t } from '../../i18n';
 import {
   defaultCatalog,
   STREAMING_SKELETON_TYPE,
@@ -141,7 +142,7 @@ function deriveNodeState(
 function UnsupportedBlock({ nodeId, type }: { nodeId: string; type: string }): React.ReactElement {
   return (
     <div data-testid="unsupported-block" data-renderer-node={nodeId} role="note">
-      Unsupported block ({type})
+      {t('renderer.unsupportedBlock', { type })}
     </div>
   );
 }
@@ -322,9 +323,9 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
     <div data-renderer-node={nodeId} data-renderer-type={node.type}>
       {snapshot?.stale === true && (
         <div data-testid="renderer-stale-banner" role="status">
-          <span>This data changed remotely while you were editing.</span>
+          <span>{t('renderer.stale.message')}</span>
           <button type="button" data-testid="renderer-stale-refresh" onClick={refetch}>
-            Refresh
+            {t('renderer.stale.refresh')}
           </button>
         </div>
       )}
@@ -334,10 +335,10 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
       {snapshot?.status === 'error' && (
         <div data-testid="renderer-error-card" role="alert">
           <span data-testid="renderer-error-message">
-            {snapshot.error?.message ?? 'Failed to load data'}
+            {snapshot.error?.message ?? t('renderer.error.fallback')}
           </span>
           <button type="button" data-testid="renderer-retry" onClick={refetch}>
-            Retry
+            {t('renderer.error.retry')}
           </button>
         </div>
       )}
@@ -367,9 +368,14 @@ export function SpecRenderer(props: SpecRendererProps): React.ReactElement {
     [spec, scope, catalog, lifecycle, onHostAction, onOpenPanel, onPrompt],
   );
 
+  // D42 layout contract: the renderer root carries the resolved locale's
+  // text direction, so the CSS logical properties used by chrome and
+  // catalog styles flow RTL/LTR without per-component fixes.
   return (
     <RendererContext.Provider value={value}>
-      <SpecNodeView nodeId={spec.root} />
+      <div data-testid="spec-renderer-root" dir={getI18n().direction}>
+        <SpecNodeView nodeId={spec.root} />
+      </div>
     </RendererContext.Provider>
   );
 }

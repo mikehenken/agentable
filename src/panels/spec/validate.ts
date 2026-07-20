@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { t } from '../../i18n';
 import type { JsonObject, JsonValue, PanelSpec, SpecAction, SpecNode, SpecSourceBinding } from '../types';
 import {
   CURRENT_SPEC_VERSION,
@@ -227,7 +228,7 @@ function scanStringForSanitizationIssues(
     errors.push(
       issue(
         'SPEC_SANITIZE_JAVASCRIPT_URL',
-        `Forbidden javascript: URL at ${path}`,
+        t('validation.sanitize.javascriptUrl', { path }),
         'error',
         { nodeId, path },
       ),
@@ -236,9 +237,9 @@ function scanStringForSanitizationIssues(
     errors.push(
       issue(
         'SPEC_SANITIZE_URL_SCHEME',
-        `Disallowed URL scheme at ${path}`,
+        t('validation.sanitize.urlScheme', { path }),
         'error',
-        { nodeId, path, hint: 'Use http or https URLs only' },
+        { nodeId, path, hint: t('validation.sanitize.urlScheme.hint') },
       ),
     );
   }
@@ -246,7 +247,7 @@ function scanStringForSanitizationIssues(
     errors.push(
       issue(
         'SPEC_SANITIZE_CONTROL_CHAR',
-        `Control characters are not allowed at ${path}`,
+        t('validation.sanitize.controlChar', { path }),
         'error',
         { nodeId, path },
       ),
@@ -480,9 +481,9 @@ export function validateSpec(
     errors.push(
       issue(
         'SPEC_BUDGET_SIZE',
-        `Spec exceeds maximum size of ${SPEC_MAX_TOTAL_BYTES} bytes`,
+        t('validation.budget.size', { max: SPEC_MAX_TOTAL_BYTES }),
         'error',
-        { hint: 'Reduce node count or shorten string props' },
+        { hint: t('validation.budget.size.hint') },
       ),
     );
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
@@ -491,8 +492,8 @@ export function validateSpec(
   const envelopeResult = envelopeSchema.safeParse(input);
   if (!envelopeResult.success) {
     errors.push(
-      issue('SPEC_ENVELOPE_INVALID', 'Spec envelope failed structural parse', 'error', {
-        hint: 'Ensure v, origin, root, and nodes are present with valid types',
+      issue('SPEC_ENVELOPE_INVALID', t('validation.envelope.invalid'), 'error', {
+        hint: t('validation.envelope.invalid.hint'),
       }),
     );
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
@@ -504,7 +505,7 @@ export function validateSpec(
     errors.push(
       issue(
         'SPEC_VERSION_UNKNOWN',
-        `Spec version ${envelope.v} is newer than supported version ${CURRENT_SPEC_VERSION}`,
+        t('validation.version.newer', { version: envelope.v, supported: CURRENT_SPEC_VERSION }),
         'error',
       ),
     );
@@ -516,9 +517,9 @@ export function validateSpec(
     const parsed = parseNode(raw);
     if (parsed === null) {
       errors.push(
-        issue('SPEC_NODES_INVALID', `Node "${nodeId}" is not a valid spec node`, 'error', {
+        issue('SPEC_NODES_INVALID', t('validation.node.invalid', { nodeId }), 'error', {
           nodeId,
-          hint: 'Each node requires a non-empty type string',
+          hint: t('validation.node.invalid.hint'),
         }),
       );
       continue;
@@ -531,13 +532,13 @@ export function validateSpec(
   }
 
   if (!envelope.root.trim()) {
-    errors.push(issue('SPEC_ROOT_MISSING', 'Spec root id is missing or empty', 'error'));
+    errors.push(issue('SPEC_ROOT_MISSING', t('validation.root.missing'), 'error'));
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
   }
 
   if (parsedNodes[envelope.root] === undefined) {
     errors.push(
-      issue('SPEC_ROOT_UNKNOWN', `Root node "${envelope.root}" does not exist in nodes`, 'error', {
+      issue('SPEC_ROOT_UNKNOWN', t('validation.root.unknown', { root: envelope.root }), 'error', {
         nodeId: envelope.root,
       }),
     );
@@ -554,7 +555,7 @@ export function validateSpec(
     const sources = parseSources(envelope.sources);
     if (sources === null) {
       errors.push(
-        issue('SPEC_ENVELOPE_INVALID', 'Spec sources map contains invalid entries', 'error', {
+        issue('SPEC_ENVELOPE_INVALID', t('validation.envelope.sourcesInvalid'), 'error', {
           path: 'sources',
         }),
       );
@@ -570,7 +571,7 @@ export function validateSpec(
     const actions = parseActions(envelope.actions);
     if (actions === null) {
       errors.push(
-        issue('SPEC_ENVELOPE_INVALID', 'Spec actions map contains invalid entries', 'error', {
+        issue('SPEC_ENVELOPE_INVALID', t('validation.envelope.actionsInvalid'), 'error', {
           path: 'actions',
         }),
       );
@@ -585,9 +586,12 @@ export function validateSpec(
       errors.push(
         issue(
           'SPEC_VERSION_UNKNOWN',
-          `Spec version ${workingSpec.v} requires migrations to reach ${CURRENT_SPEC_VERSION}`,
+          t('validation.version.needsMigrations', {
+            version: workingSpec.v,
+            supported: CURRENT_SPEC_VERSION,
+          }),
           'error',
-          { hint: 'Register PanelMeta.migrations for this panel definition' },
+          { hint: t('validation.version.needsMigrations.hint') },
         ),
       );
       return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
@@ -596,10 +600,11 @@ export function validateSpec(
       const migrated = migrateSpec(workingSpec, migrations, CURRENT_SPEC_VERSION);
       workingSpec = migrated.spec;
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Migration failed';
+      const message =
+        error instanceof Error ? error.message : t('validation.version.migrationFailed');
       errors.push(
         issue('SPEC_VERSION_UNKNOWN', message, 'error', {
-          hint: 'Provide contiguous migrations from the persisted version',
+          hint: t('validation.version.migrationFailed.hint'),
         }),
       );
       return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
@@ -612,9 +617,9 @@ export function validateSpec(
     errors.push(
       issue(
         'SPEC_BUDGET_NODES',
-        `Spec has ${nodeCount} nodes; maximum is ${SPEC_MAX_NODES}`,
+        t('validation.budget.nodes', { count: nodeCount, max: SPEC_MAX_NODES }),
         'error',
-        { hint: `Reduce nodes to ${SPEC_MAX_NODES} or fewer` },
+        { hint: t('validation.budget.nodes.hint', { max: SPEC_MAX_NODES }) },
       ),
     );
   }
@@ -624,9 +629,9 @@ export function validateSpec(
     errors.push(
       issue(
         'SPEC_BUDGET_DEPTH',
-        `Spec tree depth ${tree.depth} exceeds maximum ${SPEC_MAX_DEPTH}`,
+        t('validation.budget.depth', { depth: tree.depth, max: SPEC_MAX_DEPTH }),
         'error',
-        { nodeId: workingSpec.root, hint: 'Flatten nested children' },
+        { nodeId: workingSpec.root, hint: t('validation.budget.depth.hint') },
       ),
     );
   }
@@ -635,9 +640,9 @@ export function validateSpec(
     errors.push(
       issue(
         'SPEC_CYCLE',
-        `Cycle detected: ${cycle.join(' -> ')}`,
+        t('validation.tree.cycle', { cycle: cycle.join(' -> ') }),
         'error',
-        { nodeId: cycle[0], hint: 'Ensure children form a tree reachable from root' },
+        { nodeId: cycle[0], hint: t('validation.tree.cycle.hint') },
       ),
     );
   }
@@ -646,16 +651,16 @@ export function validateSpec(
     errors.push(
       issue(
         'SPEC_DUPLICATE_CHILD',
-        `Node "${dup.nodeId}" lists child "${dup.childId}" more than once`,
+        t('validation.tree.duplicateChild', { nodeId: dup.nodeId, childId: dup.childId }),
         'error',
-        { nodeId: dup.nodeId, hint: 'Remove duplicate child ids' },
+        { nodeId: dup.nodeId, hint: t('validation.tree.duplicateChild.hint') },
       ),
     );
   }
 
   for (const orphanId of tree.orphans) {
     warnings.push(
-      issue('SPEC_ORPHAN_NODE', `Node "${orphanId}" is not reachable from root`, 'warning', {
+      issue('SPEC_ORPHAN_NODE', t('validation.tree.orphan', { nodeId: orphanId }), 'warning', {
         nodeId: orphanId,
       }),
     );
@@ -671,9 +676,9 @@ export function validateSpec(
       warnings.push(
         issue(
           'SPEC_NODE_UNKNOWN',
-          `Unknown node type "${node.type}"; preserving raw JSON as placeholder`,
+          t('validation.node.unknownType', { type: node.type }),
           'warning',
-          { nodeId, hint: 'Use a catalog node type or register a custom catalog entry' },
+          { nodeId, hint: t('validation.node.unknownType.hint') },
         ),
       );
       normalizedNodes[nodeId] = normalizeUnknownNode(nodeId, raw, node);
@@ -695,12 +700,12 @@ export function validateSpec(
       errors.push(
         issue(
           'SPEC_NODE_PROPS_INVALID',
-          `Node "${nodeId}" props failed validation for type "${catalogEntry.name}"`,
+          t('validation.node.propsInvalid', { nodeId, type: catalogEntry.name }),
           'error',
           {
             nodeId,
             path: 'props',
-            hint: result.error.issues[0]?.message ?? 'Fix props to match catalog schema',
+            hint: result.error.issues[0]?.message ?? t('validation.node.propsInvalid.hint'),
           },
         ),
       );
@@ -721,9 +726,9 @@ export function validateSpec(
         errors.push(
           issue(
             'SPEC_ACTION_REF_SMUGGLED',
-            `Action ref "${ref}" uses forbidden smuggled syntax`,
+            t('validation.action.refSmuggled', { ref }),
             'error',
-            { nodeId, path, hint: 'Declare the action in spec.actions and reference its id only' },
+            { nodeId, path, hint: t('validation.action.refSmuggled.hint') },
           ),
         );
         continue;
@@ -732,7 +737,7 @@ export function validateSpec(
         errors.push(
           issue(
             'SPEC_ACTION_URL_FORBIDDEN',
-            `Action ref "${ref}" must not be a URL`,
+            t('validation.action.refUrl', { ref }),
             'error',
             { nodeId, path },
           ),
@@ -743,9 +748,9 @@ export function validateSpec(
         errors.push(
           issue(
             'SPEC_ACTION_REF_MISSING',
-            `Action ref "${ref}" is not declared in spec.actions`,
+            t('validation.action.refMissing', { ref }),
             'error',
-            { nodeId, path, hint: 'Add an entry to spec.actions or fix the ref' },
+            { nodeId, path, hint: t('validation.action.refMissing.hint') },
           ),
         );
       }
@@ -758,9 +763,9 @@ export function validateSpec(
         errors.push(
           issue(
             'SPEC_ACTION_REF_SMUGGLED',
-            `Action id "${actionId}" uses forbidden smuggled syntax`,
+            t('validation.action.idSmuggled', { actionId }),
             'error',
-            { path: `actions.${actionId}`, hint: 'Use plain action ids without URL-like syntax' },
+            { path: `actions.${actionId}`, hint: t('validation.action.idSmuggled.hint') },
           ),
         );
       }
@@ -770,7 +775,7 @@ export function validateSpec(
         errors.push(
           issue(
             'SPEC_ACTION_URL_FORBIDDEN',
-            `Action "${actionId}" must not contain URL payloads`,
+            t('validation.action.urlPayload', { actionId }),
             'error',
             { path: `actions.${actionId}` },
           ),
@@ -783,9 +788,9 @@ export function validateSpec(
             errors.push(
               issue(
                 'SPEC_ACTION_SOURCE_UNKNOWN',
-                `Mutate action "${actionId}" references unknown source "${action.source}"`,
+                t('validation.action.sourceUnknown', { actionId, source: action.source }),
                 'error',
-                { path: `actions.${actionId}.source`, hint: 'Register the source on the DataAdapter' },
+                { path: `actions.${actionId}.source`, hint: t('validation.action.sourceUnknown.hint') },
               ),
             );
           }
@@ -795,7 +800,7 @@ export function validateSpec(
             errors.push(
               issue(
                 'SPEC_HOST_ACTION_UNKNOWN',
-                `Host action "${action.action}" is not registered`,
+                t('validation.action.hostUnknown', { action: action.action }),
                 'error',
                 { path: `actions.${actionId}.action` },
               ),
@@ -807,7 +812,7 @@ export function validateSpec(
             errors.push(
               issue(
                 'SPEC_PANEL_UNKNOWN',
-                `Panel action "${actionId}" references unknown panel "${action.panelId}"`,
+                t('validation.action.panelUnknown', { actionId, panelId: action.panelId }),
                 'error',
                 { path: `actions.${actionId}.panelId` },
               ),
@@ -830,7 +835,11 @@ export function validateSpec(
         errors.push(
           issue(
             'SPEC_BUDGET_STRING',
-            `String at ${entry.path} length ${entry.length} exceeds ${SPEC_MAX_STRING_PROP}`,
+            t('validation.budget.string', {
+              path: entry.path,
+              length: entry.length,
+              max: SPEC_MAX_STRING_PROP,
+            }),
             'error',
             { nodeId, path: entry.path },
           ),

@@ -53,6 +53,7 @@
     "./react-canvas": "./src/react-canvas/index.tsx",
     "./whiteboard": "./src/whiteboard/index.tsx",
     "./copilotkit-bridge": "./src/canvas/protocol/copilotkit-bridge.tsx",
+    "./i18n": "./src/i18n/index.ts",
     "./general": "./src/components/general/index.ts",
     "./ui-ai": "./src/components/ui-ai/index.ts",
     "./orchestration": "./src/components/orchestration/index.ts",
