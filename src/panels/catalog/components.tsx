@@ -5,9 +5,12 @@
  * these components grow them, render via the `Intl` helpers bound to the
  * same resolved locale.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { t } from '../../i18n';
 import type { SpecNodeContextValue } from '../types';
+import { extractListRows } from './virtualization';
+import type { AgentableVirtualListElement } from './virtual-list';
+import './virtual-list';
 
 interface CatalogComponentProps {
   context?: SpecNodeContextValue;
@@ -67,11 +70,46 @@ export const ActionRow = (props: ActionRowProps): React.ReactElement => (
 
 export interface ListProps extends CatalogComponentProps {
   bind?: string;
+  row?: Record<string, unknown>;
+  rowKey?: string;
+  /** Per-instance override of the declared D56 windowing threshold. */
+  virtualizeThreshold?: number;
 }
 
-export const List = (props: ListProps): React.ReactElement => (
-  <ul data-testid="list">{renderState(props.context?.state, props.bind)}</ul>
-);
+/**
+ * When the bound source resolves to an array of records, rows render
+ * through `<agentable-virtual-list>`, which windows above the declared
+ * threshold (D56) using Lit `repeat` with stable keys. Non-array data
+ * keeps the legacy presentational output so existing specs and the
+ * builder/raw-IR byte-parity contract are untouched.
+ */
+export const List = (props: ListProps): React.ReactElement => {
+  const bound = props.bind !== undefined ? props.context?.data[props.bind] : undefined;
+  const rows = useMemo(
+    () => extractListRows(bound, props.row, props.rowKey),
+    [bound, props.row, props.rowKey],
+  );
+
+  if (props.context?.state === 'populated' && rows !== null) {
+    const threshold = props.virtualizeThreshold;
+    const applyProperties = (element: AgentableVirtualListElement | null): void => {
+      if (element === null) return;
+      element.items = rows;
+      if (threshold !== undefined) {
+        element.threshold = threshold;
+      }
+    };
+    return (
+      <ul data-testid="list">
+        <span data-testid="populated-content">
+          <agentable-virtual-list ref={applyProperties} data-testid="virtual-list" />
+        </span>
+      </ul>
+    );
+  }
+
+  return <ul data-testid="list">{renderState(props.context?.state, props.bind)}</ul>;
+};
 
 export interface TableProps extends CatalogComponentProps {
   bind?: string;

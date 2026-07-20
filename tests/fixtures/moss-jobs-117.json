@@ -1,0 +1,945 @@
+{
+  "source": "moss/data/moss-panel-data.json",
+  "generatedFrom": "jobs-index.json (live moss.com scrape)",
+  "scrapedAt": "2026-07-01T23:10:50Z",
+  "note": "Field projection of the real 117-job moss dataset (D56 reference load); values verbatim from source.",
+  "jobCount": 117,
+  "jobs": [
+    {
+      "id": 1,
+      "title": "Safety Manager - Bess",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 2,
+      "title": "Business Innovation Analyst",
+      "department": "Digital & Information Technology",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 3,
+      "title": "Bilingual Human Resources Field Coordinator - Wheatley, AR",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "Wheatley, AR",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 4,
+      "title": "Assistant Project Manager, Solar Preconstruction",
+      "department": "Early Stage Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 5,
+      "title": "Executive Assistant Energy EH & S",
+      "department": "Corporate Administration",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 6,
+      "title": "Vice President, Talent Acquisition",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 7,
+      "title": "Construction Technologies Intern",
+      "department": "Corporate Administration",
+      "track": "Professionals (Salaried)",
+      "location": "Fort Lauderdale, FL | Tampa, FL | McKinney, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 8,
+      "title": "Senior Manager, Estimating",
+      "department": "Estimating",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 9,
+      "title": "Business Strategy Specialist",
+      "department": "Marketing & Business Development",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 10,
+      "title": "Equipment & Logistics Support Associate",
+      "department": "Asset Management",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 11,
+      "title": "Bess Senior Electrical Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 12,
+      "title": "Solar Electrical Field Project Engineer",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 13,
+      "title": "Solar Safety Manager",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "NEW MEXICO, COLORADO, FLORIDA, ETC. - MULTI-STATE REQUIRES UP TO 100% TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 14,
+      "title": "Commissioning Technician",
+      "department": "Commissioning",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 15,
+      "title": "Assistant Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "DALLAS / FORT WORTH",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 16,
+      "title": "Assistant Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 17,
+      "title": "Assistant Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "TAMPA, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 18,
+      "title": "Executive Assistant",
+      "department": "Corporate Administration",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 19,
+      "title": "Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "DALLAS / FORT WORTH, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 20,
+      "title": "Oracle Functional Architect Location: Fort Lauderdale, Fl",
+      "department": "Digital & Information Technology",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 21,
+      "title": "Regional Safety Manager",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "FORT PIERCE, FL (MUST LIVE OR RELOCATE TO FORT PIERCE, FL)",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 22,
+      "title": "Manager, Engineering",
+      "department": "Engineering",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 23,
+      "title": "Solar Assistant Project Manager",
+      "department": "Solar Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "FLORIDA, ARIZONA, COLORADO, ARKANSAS, GEORGIA, NORTH CAROLINA- MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 24,
+      "title": "Vice President of Environmental Health and Safety",
+      "department": "Executive",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 25,
+      "title": "Pwa Compliance Liaison",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "REMOTE + 60% TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 26,
+      "title": "Solar Safety Coordinator",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "NEW MEXICO, KENTUCKY, TEXAS, COLORADO, FLORIDA - MULTI-STATE REQUIRES UP TO 100% TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 27,
+      "title": "Project Engineer/Senior Project Engineer, Engineering Services",
+      "department": "Engineering",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL, OR TAMPA, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 28,
+      "title": "Bilingual Human Resources Field Coordinator - Coolidge, AZ",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "Coolidge, AZ",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 29,
+      "title": "Tax Accountant",
+      "department": "Finance & Accounting",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL (HYBRID OR REMOTE AVAILABLE)",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 30,
+      "title": "Project Adminstrator",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "ALLEN, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 31,
+      "title": "Crane Safety Specialist",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "Safety Specialist, CM",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 32,
+      "title": "Senior Director Of Risk Management",
+      "department": "Risk Management",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 33,
+      "title": "Financial Planning And Analysis (Fp&A) Analyst",
+      "department": "Finance & Accounting",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 34,
+      "title": "Talent Development Program Manager",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 35,
+      "title": "Saefty Technician Ii",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "FLORIDA, TEXAS, COLORADO – MULTI-STATE REQUIRES 100% TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 36,
+      "title": "Apprenticeship Coordinator",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "ARKANSAS– 60% TRAVEL REQUIRED",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 37,
+      "title": "Solar Electrical Field Engineer",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 38,
+      "title": "Engineering Lead",
+      "department": "Engineering",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 39,
+      "title": "Solar Electrical Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 40,
+      "title": "Accounts Payable Coordinator I",
+      "department": "Finance & Accounting",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 41,
+      "title": "Data Analyst - Safety",
+      "department": "Risk Management",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL, OPEN TO REMOTE",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 42,
+      "title": "Oracle Technology Architect Location: Fort Lauderdale, Fl",
+      "department": "Digital & Information Technology",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 43,
+      "title": "Superintendent (Wood)",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "NEW MEXICO",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 44,
+      "title": "Superintendent (Wood)",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "DALLAS / FORT WORTH, TEXAS",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 45,
+      "title": "Superintendent (Wood)",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "OKLAHOMA",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 46,
+      "title": "Superintendent",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 47,
+      "title": "Assistant Superintendent",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "SARASOTA, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 48,
+      "title": "Construction Technologies Integrations Engineer",
+      "department": "Digital & Information Technology",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 49,
+      "title": "Senior Data Analyst, Energy Preconstruction",
+      "department": "Digital & Information Technology",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 50,
+      "title": "Dot Safety Specialist",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 51,
+      "title": "Change Management Manager",
+      "department": "Digital & Information Technology",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 52,
+      "title": "Finance Transformation Manager",
+      "department": "Finance & Accounting",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 53,
+      "title": "Director, Civil Field Operations",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE – REQUIRES NATIONAL TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 54,
+      "title": "Sr. Preconstruction Manager",
+      "department": "CM Preconstruction",
+      "track": "Professionals (Salaried)",
+      "location": "MCKINNEY, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 55,
+      "title": "Senior Training Specialist, Training & Development",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "Fort Lauderdale, FL (hybrid work model, some travel as needed) FORT LAUDERDALE, FL (HYBRID WORK MODEL, SOME TRAVEL AS NEEDED)",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 56,
+      "title": "Project Executive",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 57,
+      "title": "Senior Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "DALLAS / FORT WORTH, TEXAS",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 58,
+      "title": "Senior Superintendent",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "ST. PETERSBURG, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 59,
+      "title": "Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 60,
+      "title": "Energy Electrical Project Engineer",
+      "department": "Procurement & Logistics",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 61,
+      "title": "Solar Project Engineer/Senior Project Engineer",
+      "department": "Engineering",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 62,
+      "title": "Hris Specialist – Advanced Compensation",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 63,
+      "title": "Travel Superintendent (Wood)",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MCKINNEY, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 64,
+      "title": "Senior Project Manager",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 65,
+      "title": "Project Executive",
+      "department": "CMH Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "HAWAII",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 66,
+      "title": "Commissioning Technician",
+      "department": "Commissioning",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 67,
+      "title": "Solar Electrical Field Engineer",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 68,
+      "title": "Bess Electrical Assistant Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 69,
+      "title": "Bess Electrical Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 70,
+      "title": "Hris Patt Specialist (Workday Payroll, Absence & Time Tracking)",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 71,
+      "title": "Solar Senior Electrical Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 72,
+      "title": "Solar Electrical Assistant Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 73,
+      "title": "Apprenticeship Administrator",
+      "department": "Corporate Administration",
+      "track": "Professionals (Salaried)",
+      "location": "WILSON, AR",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 74,
+      "title": "Fleet Equipment Mechanic",
+      "department": "Asset Management",
+      "track": "Professionals (Salaried)",
+      "location": "WEST MEMPHIS, AR – MULTI-STATE REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 75,
+      "title": "Apprenticeship Program Manager",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL – 40% TRAVEL REQUIRED",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 76,
+      "title": "Solar Mechanical Estimator",
+      "department": "Estimating",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 77,
+      "title": "Assistant Preconstruction Manager, Bess Preconstruction",
+      "department": "Early Stage Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 78,
+      "title": "Solar Civil Assistant Superintendent",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "FLORIDA, GEORGIA, NORTH CAROLINA - MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 79,
+      "title": "Solar Project Engineer",
+      "department": "Solar Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "FLORIDA, ARIZONA, COLORADO, ARKANSAS, GEORGIA, NORTH CAROLINA - MULTI-STATE, REQUIRES HIGH TRAVEL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 80,
+      "title": "Bilingual Human Resources Field Coordinator - Florida",
+      "department": "Human Resources",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 81,
+      "title": "Assoc Iate , Sme, Engineering Services (P Reliminary Design)",
+      "department": "Engineering",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL , HYBRID, OR REMOTE",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 82,
+      "title": "Project Manager, Solar Preconstruction",
+      "department": "Solar Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 83,
+      "title": "Superintendent",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 84,
+      "title": "Project Engineer",
+      "department": "CM Project Management",
+      "track": "Professionals (Salaried)",
+      "location": "SARASOTA, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 85,
+      "title": "Solar Estimator-Project Engineer",
+      "department": "Estimating",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL-Solar Division",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 86,
+      "title": "Vp Ehs",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 87,
+      "title": "Engineering Lead",
+      "department": "Engineering",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 88,
+      "title": "Solar Laborer - Arcadia, FL",
+      "department": "Solar Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "Arcadia, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 89,
+      "title": "Solar Internship: Fall 2026",
+      "department": "Corporate Administration",
+      "track": "Professionals (Salaried)",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 90,
+      "title": "Laborer",
+      "department": "CM Field Operations",
+      "track": "Professionals (Salaried)",
+      "location": "Laborer, CM",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 91,
+      "title": "Solar Laborer / Operator - Robards, KY",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Robards, KY",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 92,
+      "title": "Solar General Laborer - Guthrie TX",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 93,
+      "title": "Solar Laborer - Anson/Avoca TX",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 94,
+      "title": "Solar Laborer - Kaufman, TX",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Kaufman, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 95,
+      "title": "Solar Laborer - Rosebud, TX",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Rosebud, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 96,
+      "title": "Solar Hourly laborer/operator - Providence, KY",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Providence, KY",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 97,
+      "title": "Quality Control Technician - Robards and Providence KY",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "KY",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 98,
+      "title": "Solar Laborer / Operator - Fort Pierce, FL",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Fort Pierce, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 99,
+      "title": "Solar Excavator Operator - Anson, TX",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Anson, TX",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 100,
+      "title": "Solar Laborer / Operator, Pueblo, CO",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Pueblo, CO",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 101,
+      "title": "Quality Control Technician FL",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 102,
+      "title": "Water Truck Operator (CDL Required) - House, NM",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "House, NM",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 103,
+      "title": "Quality Control Technician - Mississippi",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 104,
+      "title": "Quality Control Technician- Florida",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 105,
+      "title": "Quality Control Technician",
+      "department": "Solar Quality Control/ Warranty",
+      "track": "Solar Hourly",
+      "location": "Multiple locations",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 106,
+      "title": "Solar Laborer / Operator - Deer Trail, CO",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Deer Trail, CO",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 107,
+      "title": "CDL Truck Driver – Wilson, AR",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Wilson, AR",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 108,
+      "title": "Solar laborer / Operator - Wilson, AR",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Wilson, AR",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 109,
+      "title": "Solar Laborer / Operator - Jacksonville, FL",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Jacksonville, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 110,
+      "title": "Solar Laborer - Kenansville, FL",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Kenansville, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 111,
+      "title": "Solar Laborer / Operator - Clewiston, FL",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Clewiston, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 112,
+      "title": "Solar Laborer / Operator - Okeechobee, FL",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Okeechobee, FL",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 113,
+      "title": "Solar Laborer / Operator, Fort Morgan, CO",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Fort Morgan, CO",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 114,
+      "title": "Solar Laborer / Operator - Belen, NM",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Belen, NM",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 115,
+      "title": "Solar Laborer / Operator - House, NM",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "House, NM",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 116,
+      "title": "Solar Laborer / Operator - Hollandale, MS",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "Hollandale, MS",
+      "property": "Moss & Associates"
+    },
+    {
+      "id": 117,
+      "title": "Solar Laborer / Operator- DeRidder, LA",
+      "department": "Solar Field Operations",
+      "track": "Solar Hourly",
+      "location": "DeRidder, LA",
+      "property": "Moss & Associates"
+    }
+  ]
+}

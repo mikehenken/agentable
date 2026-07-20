@@ -74,6 +74,8 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
           label: z.string().optional(),
           placeholder: z.string().optional(),
         }).catchall(z.unknown())).optional(),
+        rowKey: z.string().optional(),
+        virtualizeThreshold: z.number().int().positive().optional(),
       }),
       component: Components.List,
       agentHint: 'Searchable list with row template',
