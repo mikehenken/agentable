@@ -5,14 +5,14 @@
  * Two pure passes over draw_shapes inputs before anything is created:
  *
  * 1. Batch relocation: a new multi-shape composition whose bounding box
- * lands on existing canvas content (a previous drawing, an open panel)
- * is translated as one unit to the nearest clear side. Models redraw a
- * dashboard straight over the old one; the canvas is infinite, so the
- * right fix is "beside", never "on top".
+ *    lands on existing canvas content (a previous drawing, an open panel)
+ *    is translated as one unit to the nearest clear side. Models redraw a
+ *    dashboard straight over the old one; the canvas is infinite, so the
+ *    right fix is "beside", never "on top".
  * 2. Text de-collision: standalone text shapes whose estimated extents
- * overlap another text shape in the same batch get nudged apart by the
- * minimal separation vector. Models place section headers by guessing
- * rendered widths and routinely guess short.
+ *    overlap another text shape in the same batch get nudged apart by the
+ *    minimal separation vector. Models place section headers by guessing
+ *    rendered widths and routinely guess short.
  *
  * Pure functions over inputs plus obstacle rects: no editor access, fully
  * unit-testable.
@@ -85,7 +85,7 @@ export function estimateInputRect(input: AgentDrawShapeInput): PlacementRect | n
     const charWidth = TEXT_EST_CHAR_WIDTH[size];
     const lineHeight = TEXT_EST_LINE_HEIGHT[size];
     const fullWidth = Math.max(1, text.length) * charWidth + 16;
-    const w = geometry.maxWidth !== undefined ? Math.min(geometry.maxWidth, fullWidth): fullWidth;
+    const w = geometry.maxWidth !== undefined ? Math.min(geometry.maxWidth, fullWidth) : fullWidth;
     const lines = Math.max(1, Math.ceil(fullWidth / Math.max(1, w)));
     return { x: geometry.x, y: geometry.y, w, h: lines * lineHeight };
   }
@@ -112,7 +112,7 @@ export function batchBounds(inputs: readonly AgentDrawShapeInput[]): PlacementRe
 function overlapArea(a: PlacementRect, b: PlacementRect): number {
   const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
   const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
-  return w > 0 && h > 0 ? w * h: 0;
+  return w > 0 && h > 0 ? w * h : 0;
 }
 
 /**
@@ -124,7 +124,8 @@ function overlapArea(a: PlacementRect, b: PlacementRect): number {
 export function relocationOffset(
   batch: PlacementRect,
   obstacles: readonly PlacementRect[],
-  gap: number = RELOCATION_GAP): { dx: number; dy: number } | null {
+  gap: number = RELOCATION_GAP,
+): { dx: number; dy: number } | null {
   const hits = obstacles.filter((rect) => overlapArea(batch, rect) > 0);
   if (hits.length === 0) return null;
   const minX = Math.min(...hits.map((rect) => rect.x));
@@ -157,28 +158,33 @@ export function relocationOffset(
 export function translateInput(
   input: AgentDrawShapeInput,
   dx: number,
-  dy: number): AgentDrawShapeInput {
+  dy: number,
+): AgentDrawShapeInput {
   const geometry = input.geometry;
   if (geometry.kind === 'rect') {
-    return {...input, geometry: {...geometry, x: geometry.x + dx, y: geometry.y + dy } };
+    return { ...input, geometry: { ...geometry, x: geometry.x + dx, y: geometry.y + dy } };
   }
   if (geometry.kind === 'segment') {
-    return {...input,
-      geometry: {...geometry,
+    return {
+      ...input,
+      geometry: {
+        ...geometry,
         from: { x: geometry.from.x + dx, y: geometry.from.y + dy },
         to: { x: geometry.to.x + dx, y: geometry.to.y + dy },
       },
     };
   }
   if (geometry.kind === 'points') {
-    return {...input,
-      geometry: {...geometry,
+    return {
+      ...input,
+      geometry: {
+        ...geometry,
         points: geometry.points.map((point) => ({ x: point.x + dx, y: point.y + dy })),
       },
     };
   }
   if (geometry.kind === 'text') {
-    return {...input, geometry: {...geometry, x: geometry.x + dx, y: geometry.y + dy } };
+    return { ...input, geometry: { ...geometry, x: geometry.x + dx, y: geometry.y + dy } };
   }
   return input;
 }
@@ -190,7 +196,8 @@ export function translateInput(
  * the model's call, but text over text is always a defect.
  */
 export function resolveTextCollisions(
-  inputs: readonly AgentDrawShapeInput[]): AgentDrawShapeInput[] {
+  inputs: readonly AgentDrawShapeInput[],
+): AgentDrawShapeInput[] {
   const out: AgentDrawShapeInput[] = [];
   const placedTextRects: PlacementRect[] = [];
   for (const input of inputs) {
@@ -206,8 +213,8 @@ export function resolveTextCollisions(
     }
     for (const placed of placedTextRects) {
       if (overlapArea(rect!, placed) === 0) continue;
-       // Minimal separation vector: push along whichever axis clears the
-       // collision with the smaller move, away from the placed text.
+      // Minimal separation vector: push along whichever axis clears the
+      // collision with the smaller move, away from the placed text.
       const pushRight = placed.x + placed.w + TEXT_NUDGE_GAP - rect!.x;
       const pushLeft = rect!.x + rect!.w + TEXT_NUDGE_GAP - placed.x;
       const pushDown = placed.y + placed.h + TEXT_NUDGE_GAP - rect!.y;
@@ -244,7 +251,8 @@ const UNDERLINE_GAP = 6;
  * overlap content deliberately and stay put.
  */
 export function resolveUnderlineAccents(
-  inputs: readonly AgentDrawShapeInput[]): AgentDrawShapeInput[] {
+  inputs: readonly AgentDrawShapeInput[],
+): AgentDrawShapeInput[] {
   const textRects: PlacementRect[] = [];
   for (const input of inputs) {
     if (input.kind !== 'text' || input.geometry.kind !== 'text') continue;
@@ -258,10 +266,10 @@ export function resolveUnderlineAccents(
     if (rect === null || rect.h > UNDERLINE_MAX_HEIGHT) return input;
     let dy = 0;
     for (const text of textRects) {
-      const shifted = {...rect, y: rect.y + dy };
+      const shifted = { ...rect, y: rect.y + dy };
       if (overlapArea(shifted, text) === 0) continue;
       dy += text.y + text.h + UNDERLINE_GAP - shifted.y;
     }
-    return dy > 0 ? translateInput(input, 0, dy): input;
+    return dy > 0 ? translateInput(input, 0, dy) : input;
   });
 }

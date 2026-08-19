@@ -12,7 +12,8 @@ export interface ConfigureWhiteboardSnapOptions {
 /** Configure grid overlay, snap mode, and document grid size on editor mount. */
 export function configureWhiteboardSnap(
   editor: Editor,
-  options: ConfigureWhiteboardSnapOptions = {}): void {
+  options: ConfigureWhiteboardSnapOptions = {},
+): void {
   const enabled = options.enabled ?? true;
   editor.updateDocumentSettings({ gridSize: GRID_SIZE });
   editor.updateInstanceState({ isGridMode: enabled });

@@ -14,7 +14,7 @@ import {
 } from '../careerChatBundle';
 import { applyCareerEmbedDefaults } from '../whiteboard/careerCanvasDefaults';
 
-/** Moss Career Blueprint starter chips ( persona fix). */
+/** Moss Career Blueprint starter chips (P4-T3 / P5-T2 persona fix). */
 export const MOSS_STARTER_PROMPTS: CareerPersonaScaffold['starterPrompts'] = [
   {
     emoji: '🏗️',
@@ -34,7 +34,7 @@ export const MOSS_STARTER_PROMPTS: CareerPersonaScaffold['starterPrompts'] = [
   {
     emoji: '📍',
     text: 'Which roles are hiring in Texas or DFW?',
-    label: 'Texas DFW',
+    label: 'Texas / DFW',
   },
 ];
 
@@ -57,7 +57,7 @@ export const MOSS_STARTER_PROMPTS_ES: CareerPersonaScaffold['starterPrompts'] = 
   {
     emoji: '📍',
     text: '¿Qué vacantes hay en Texas o DFW?',
-    label: 'Texas DFW',
+    label: 'Texas / DFW',
   },
 ];
 
@@ -79,7 +79,7 @@ export const MOSS_PERSONA_EN: MossPersonaLocale = {
   starterPrompts: MOSS_STARTER_PROMPTS,
 };
 
-/** — Spanish persona variant for moss local integration. */
+/** D59 — Spanish persona variant for moss local integration. */
 export const MOSS_PERSONA_ES: MossPersonaLocale = {
   assistantName: 'Mason',
   tenantTitle: 'Plan de Carrera Moss',
@@ -93,7 +93,7 @@ export const MOSS_PERSONA_ES: MossPersonaLocale = {
 export type MossLocaleTag = 'en' | 'es';
 
 export function resolveMossPersona(locale: MossLocaleTag = 'en'): MossPersonaLocale {
-  return locale === 'es' ? MOSS_PERSONA_ES: MOSS_PERSONA_EN;
+  return locale === 'es' ? MOSS_PERSONA_ES : MOSS_PERSONA_EN;
 }
 
 export interface CreateMossEmbedConfigInput {
@@ -132,7 +132,8 @@ export function createMossEmbedConfig(input: CreateMossEmbedConfigInput): EmbedC
     },
   });
   const doc = toEmbedConfigDocument(hostConfig);
-  return applyCareerEmbedDefaults({...doc,
+  return applyCareerEmbedDefaults({
+    ...doc,
     locale,
     primaryColor: input.primaryColor ?? CAREER_TENANT_PRIMARY_COLORS.moss,
     welcomeMessage: personaLocale.welcomeMessage,
@@ -143,7 +144,8 @@ export function createMossEmbedConfig(input: CreateMossEmbedConfigInput): EmbedC
     canvasZoom: 'locked',
     greetingMode: 'agent-first',
     toolbar: chatBundle.toolbarConfig,
-    persona: {...doc.persona,
+    persona: {
+      ...doc.persona,
       assistantName: personaLocale.assistantName,
       tenantTitle: personaLocale.tenantTitle,
       voiceGreeting: personaLocale.voiceGreeting,

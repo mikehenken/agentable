@@ -28,7 +28,8 @@ export interface WhiteboardTldrawUiOptions {
 }
 
 function isResolvedToolbar(
-  value: WhiteboardToolbarConfig | ResolvedWhiteboardToolbarConfig | undefined): value is ResolvedWhiteboardToolbarConfig {
+  value: WhiteboardToolbarConfig | ResolvedWhiteboardToolbarConfig | undefined,
+): value is ResolvedWhiteboardToolbarConfig {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -38,7 +39,8 @@ function isResolvedToolbar(
 
 /** Build tldraw UI component overrides for WhiteboardShell. */
 export function createWhiteboardTldrawUiComponents(
-  options: WhiteboardTldrawUiOptions = {}): TLUiComponents {
+  options: WhiteboardTldrawUiOptions = {},
+): TLUiComponents {
   const {
     enableContextActionsTool = false,
     enableLayersPanel = false,
@@ -50,16 +52,20 @@ export function createWhiteboardTldrawUiComponents(
   const resolved: ResolvedWhiteboardToolbarConfig =
     options.resolvedToolbar ??
     (isResolvedToolbar(options.toolbarConfig)
-      ? options.toolbarConfig: resolveWhiteboardToolbarConfig({
+      ? options.toolbarConfig
+      : resolveWhiteboardToolbarConfig({
           toolbarConfig: options.toolbarConfig,
           enableContextActionsTool,
           enableLayersPanel,
           enableVoiceTool,
         }));
 
-  return {...minimalTldrawUiComponents,...(enableTextSearch ? { HelperButtons: TextSearchPanel }: {}),
+  return {
+    ...minimalTldrawUiComponents,
+    ...(enableTextSearch ? { HelperButtons: TextSearchPanel } : {}),
     Toolbar: (props) =>
-      createElement(WhiteboardToolbar, {...props,
+      createElement(WhiteboardToolbar, {
+        ...props,
         toolbarConfig: resolved,
       }),
     InFrontOfTheCanvas: () =>

@@ -1,5 +1,5 @@
 /**
- * Single config-merge module.
+ * Single config-merge module (D54).
  * Precedence: platform → tenant → agent → embed → runtime (later wins).
  */
 import {
@@ -32,13 +32,15 @@ type LayerKey = (typeof LAYER_ORDER)[number];
 
 function layerCanvasPolicy(
   layers: CanvasConfigLayers,
-  key: LayerKey): CanvasPolicyInput | undefined {
+  key: LayerKey,
+): CanvasPolicyInput | undefined {
   return layers[key]?.canvasPolicy;
 }
 
 function applyGateOverrides(
   resolved: ResolvedCanvasPolicy,
-  partial: CanvasPolicyInput): ResolvedCanvasPolicy {
+  partial: CanvasPolicyInput,
+): ResolvedCanvasPolicy {
   return {
     preset: resolved.preset,
     hitlOnCompose: partial.hitlOnCompose ?? resolved.hitlOnCompose,
@@ -55,7 +57,7 @@ function applyGateOverrides(
  * Preset changes re-base gate defaults; explicit gates override the active preset.
  */
 export function mergeCanvasPolicy(layers: CanvasConfigLayers): ResolvedCanvasPolicy {
-  let resolved: ResolvedCanvasPolicy = {...FRAMEWORK_DEFAULT_CANVAS_POLICY };
+  let resolved: ResolvedCanvasPolicy = { ...FRAMEWORK_DEFAULT_CANVAS_POLICY };
 
   for (const layerKey of LAYER_ORDER) {
     const partial = layerCanvasPolicy(layers, layerKey);
@@ -67,7 +69,8 @@ export function mergeCanvasPolicy(layers: CanvasConfigLayers): ResolvedCanvasPol
     if (partial.preset !== undefined) {
       const presetDefaults = CANVAS_POLICY_PRESET_DEFAULTS[partial.preset];
       resolved = {
-        preset: partial.preset,...presetDefaults,
+        preset: partial.preset,
+        ...presetDefaults,
       };
     }
 
@@ -77,14 +80,14 @@ export function mergeCanvasPolicy(layers: CanvasConfigLayers): ResolvedCanvasPol
   return resolved;
 }
 
-/** Merge all supported canvas config slices. Extend here as new keys land. */
+/** Merge all supported canvas config slices. Extend here as new D54 keys land. */
 export function mergeCanvasConfig(layers: CanvasConfigLayers): MergedCanvasConfig {
   return {
     canvasPolicy: mergeCanvasPolicy(layers),
   };
 }
 
-/** Platform layer — framework default stays guarded. */
+/** Platform layer — framework default stays guarded (D50, D61). */
 export const PLATFORM_CANVAS_CONFIG_LAYER: CanvasConfigLayerInput = {
   canvasPolicy: { preset: 'guarded' },
 };

@@ -1,5 +1,5 @@
 /**
- * Agent session factory. Sessions bind to opaque model aliases and
+ * Agent session factory (D49). Sessions bind to opaque model aliases and
  * resolve provider metadata through the host resolver at the runtime boundary.
  */
 import { transportNotesForBinding } from './capabilities';
@@ -33,7 +33,8 @@ class AgentSessionImpl implements AgentSession {
 
   constructor(
     options: CreateAgentSessionOptions,
-    resolved: ResolvedModelBinding) {
+    resolved: ResolvedModelBinding,
+  ) {
     this.agentId = options.agentId;
     this.kind = options.kind ?? 'chat';
     this.label = options.label ?? defaultLabel(options.agentId, this.kind);
@@ -54,7 +55,8 @@ class AgentSessionImpl implements AgentSession {
         tenantId: this.tenantId,
         agentId: this.agentId,
       },
-      { requiredCaps: this.requiredCaps });
+      { requiredCaps: this.requiredCaps },
+    );
     this.requestedAlias = resolved.requestedAlias;
     this.resolvedAlias = resolved.resolvedAlias;
     this.binding = resolved.binding;
@@ -65,12 +67,14 @@ class AgentSessionImpl implements AgentSession {
 
 function mergeSessionNotes(
   resolveNotes: readonly CapabilityNote[],
-  binding: ResolvedModelBinding['binding']): CapabilityNote[] {
-  return [...resolveNotes,...transportNotesForBinding(binding)];
+  binding: ResolvedModelBinding['binding'],
+): CapabilityNote[] {
+  return [...resolveNotes, ...transportNotesForBinding(binding)];
 }
 
 export async function createAgentSession(
-  options: CreateAgentSessionOptions): Promise<AgentSession> {
+  options: CreateAgentSessionOptions,
+): Promise<AgentSession> {
   const resolved = await resolveModelBinding(options.modelAlias, {
     tenantId: options.tenantId,
     agentId: options.agentId,

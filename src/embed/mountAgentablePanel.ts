@@ -50,7 +50,7 @@ function readBooleanAttribute(source: Element, name: string): boolean | undefine
 
 function readStringAttribute(source: Element, name: string): string | undefined {
   const raw = source.getAttribute(name)?.trim();
-  return raw && raw.length > 0 ? raw: undefined;
+  return raw && raw.length > 0 ? raw : undefined;
 }
 
 /**
@@ -188,7 +188,8 @@ export function createAgentablePanelElement(config: AgentablePanelMountConfig): 
  */
 export function mountAgentablePanelIn(
   container: HTMLElement,
-  config: AgentablePanelMountConfig): AgentablePanelElement {
+  config: AgentablePanelMountConfig,
+): AgentablePanelElement {
   const existing = container.querySelector<AgentablePanelElement>('agentable-panel');
   if (existing) {
     applyMountConfig(existing, config);

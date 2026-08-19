@@ -9,7 +9,7 @@
  * (or a descendant) is scrollable, including at scroll boundaries.
  *
  * Policy:
- * - Empty canvas panel chrome: pass through → canvas pan/zoom
+ * - Empty canvas / panel chrome: pass through → canvas pan/zoom
  * - Vertically scrollable region + vertical wheel: block canvas (always)
  * - Horizontally scrollable region + horizontal wheel: block canvas (always)
  * - Axis-specific: vertical-only panels do not block horizontal canvas pan
@@ -57,10 +57,11 @@ export function resolvePanelWheelBlock(
   panelRoot: HTMLElement,
   target: EventTarget | null,
   deltaX: number,
-  deltaY: number): PanelWheelBlockResult {
+  deltaY: number,
+): PanelWheelBlockResult {
   let blockVertical = false;
   let blockHorizontal = false;
-  let node = target instanceof HTMLElement ? target: null;
+  let node = target instanceof HTMLElement ? target : null;
 
   while (node && panelRoot.contains(node)) {
     if (deltaY !== 0 && isElementVerticallyScrollable(node)) {
@@ -88,15 +89,17 @@ export function findScrollableWheelTarget(
   panelRoot: HTMLElement,
   target: EventTarget | null,
   deltaX: number,
-  deltaY: number): HTMLElement | null {
+  deltaY: number,
+): HTMLElement | null {
   const { block, blockVertical, blockHorizontal } = resolvePanelWheelBlock(
     panelRoot,
     target,
     deltaX,
-    deltaY);
+    deltaY,
+  );
   if (!block) return null;
 
-  let node = target instanceof HTMLElement ? target: null;
+  let node = target instanceof HTMLElement ? target : null;
   while (node && panelRoot.contains(node)) {
     const scrollY = blockVertical && isElementVerticallyScrollable(node);
     const scrollX = blockHorizontal && isElementHorizontallyScrollable(node);
@@ -110,14 +113,16 @@ export function findScrollableWheelTarget(
 /** Bubble-phase wheel handler for panel body roots. */
 export function handlePanelWheelCapture(
   panelRoot: HTMLElement,
-  event: WheelEvent): void {
+  event: WheelEvent,
+): void {
   if (!panelRoot.contains(event.target as Node)) return;
 
   const { block } = resolvePanelWheelBlock(
     panelRoot,
     event.target,
     event.deltaX,
-    event.deltaY);
+    event.deltaY,
+  );
 
   if (block) {
     event.stopPropagation();
@@ -129,7 +134,8 @@ export function handlePanelWheelCapture(
  * Safe to call from React useEffect.
  */
 export function attachPanelScrollWheelIsolation(
-  panelRoot: HTMLElement): () => void {
+  panelRoot: HTMLElement,
+): () => void {
   const onWheel = (event: WheelEvent): void => {
     handlePanelWheelCapture(panelRoot, event);
   };
@@ -159,7 +165,7 @@ export function attachIframeWheelGuards(panelRoot: HTMLElement): () => void {
   };
 
   const syncIframes = (): void => {
-    iframeCleanups.splice(0).forEach((cleanup) => cleanup);
+    iframeCleanups.splice(0).forEach((cleanup) => cleanup());
     panelRoot.querySelectorAll('iframe').forEach((node) => {
       if (node instanceof HTMLIFrameElement) {
         bindIframe(node);
@@ -183,6 +189,7 @@ export function attachIframeWheelGuards(panelRoot: HTMLElement): () => void {
   };
 
   syncIframes();
+
   const observer = new MutationObserver(syncIframes);
   observer.observe(panelRoot, { childList: true, subtree: true });
 
@@ -195,7 +202,7 @@ export function attachIframeWheelGuards(panelRoot: HTMLElement): () => void {
     panelRoot.removeEventListener('pointermove', onPointerMove);
     panelRoot.removeEventListener('pointerleave', onPointerLeave);
     window.removeEventListener('wheel', onWindowWheelCapture, { capture: true });
-    iframeCleanups.splice(0).forEach((cleanup) => cleanup);
+    iframeCleanups.splice(0).forEach((cleanup) => cleanup());
   };
 }
 
@@ -213,7 +220,8 @@ export function panelScrollWheelCaptureProps(): {
 /** Hook — attach wheel isolation to a panel root ref. */
 export function usePanelScrollWheelIsolation(
   ref: RefObject<HTMLElement | null>,
-  enabled = true): void {
+  enabled = true,
+): void {
   useEffect(() => {
     if (!enabled) return undefined;
     const el = ref.current;

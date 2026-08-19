@@ -66,8 +66,10 @@ export const Attachments: React.FC<AttachmentsProps> = ({ items, onRemove, compa
       {items.map((a) => {
         const dot =
           a.status === "uploading"
-            ? "var(--accent)": a.status === "failed"
-              ? "var(--negative)": "var(--positive)";
+            ? "var(--accent)"
+            : a.status === "failed"
+              ? "var(--negative)"
+              : "var(--positive)";
         return (
           <div
             key={a.id}

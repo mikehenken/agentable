@@ -13,7 +13,8 @@ function nextRequestId(): string {
 }
 
 export function createApprovalController(
-  options: PanelToolApprovalOptions = {}): ApprovalController {
+  options: PanelToolApprovalOptions = {},
+): ApprovalController {
   const autoApprove = new Set(options.autoApprove ?? []);
   const pending = new Map<string, PendingApprovalRequest>();
   const resolvers = new Map<
@@ -42,12 +43,17 @@ export function createApprovalController(
     },
 
     getPendingForPanel(panelId: string): readonly PendingApprovalRequest[] {
-      return [...pending.values()].filter(
-          (entry) => entry.panelId === panelId || entry.definitionId === panelId).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      return [...pending.values()]
+        .filter(
+          (entry) => entry.panelId === panelId || entry.definitionId === panelId,
+        )
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
 
     getPendingForAgent(agentId: string): readonly PendingApprovalRequest[] {
-      return [...pending.values()].filter((entry) => entry.agentId === agentId).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      return [...pending.values()]
+        .filter((entry) => entry.agentId === agentId)
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
 
     resolve(requestId: string, status: ApprovalResolutionStatus): boolean {
@@ -63,7 +69,7 @@ export function createApprovalController(
     advancePhase(requestId: string): boolean {
       const entry = pending.get(requestId);
       if (entry === undefined || entry.phase !== 'review') return false;
-      pending.set(requestId, {...entry, phase: 'destructive_confirm' });
+      pending.set(requestId, { ...entry, phase: 'destructive_confirm' });
       notify();
       return true;
     },
@@ -73,10 +79,12 @@ export function createApprovalController(
     },
 
     queue(
-      request: Omit<PendingApprovalRequest, 'id' | 'createdAt'>): Promise<ApprovalResolutionStatus> {
+      request: Omit<PendingApprovalRequest, 'id' | 'createdAt'>,
+    ): Promise<ApprovalResolutionStatus> {
       return new Promise<ApprovalResolutionStatus>((resolve) => {
         const id = nextRequestId();
-        pending.set(id, {...request,
+        pending.set(id, {
+          ...request,
           id,
           createdAt: new Date().toISOString(),
         });

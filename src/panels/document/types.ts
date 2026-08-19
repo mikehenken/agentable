@@ -1,7 +1,9 @@
 /**
- * Portable document block model. Rendered and exported by the
+ * Portable document block model (D50, P12-T2). Rendered and exported by the
  * framework; never HTML round-tripped (03 section 12).
- *** Inline text run — rendered as React elements, never raw HTML (G4). */
+ */
+
+/** Inline text run — rendered as React elements, never raw HTML (G4). */
 export interface TextRun {
   text: string;
   bold?: boolean;
@@ -39,5 +41,5 @@ export const WORKSPACE_DOCUMENTS_SOURCE = 'workspace.documents';
 
 export const DOCUMENT_PANEL_ID = 'document';
 
-/** Fixed row height for document block virtualization. */
+/** Fixed row height for document block virtualization (D56). */
 export const DOCUMENT_BLOCK_ROW_HEIGHT_PX = 48;

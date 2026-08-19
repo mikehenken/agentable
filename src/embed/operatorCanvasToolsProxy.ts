@@ -1,6 +1,6 @@
 /**
  * Operator embed proxy — forwards tool execution to the whiteboard host bundle
- * so the operator surface does not ship a second tldraw copy ( iter-9).
+ * so the operator surface does not ship a second tldraw copy (P13-T7 iter-9).
  */
 import type { ToolResult } from '../panels/tools';
 import {
@@ -16,16 +16,19 @@ type GalleryScriptedToolName = 'draw_shapes' | 'read_canvas' | 'clear_agent_draw
 interface WhiteboardToolHost extends HTMLElement {
   whenReady?: (timeoutMs?: number) => Promise<boolean>;
   runMeridianDemo?: (
-    step: 'document' | 'wireframe' | 'full') => Promise<{
+    step: 'document' | 'wireframe' | 'full',
+  ) => Promise<{
     ok: boolean;
     document?: { ok: boolean; panelId: string; blockCount: number; title: string };
   }>;
   runOperatorScriptedTool?: (
     toolName: GalleryScriptedToolName,
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
   runScriptedTool?: (
     toolName: GalleryScriptedToolName,
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
 }
 
 const WHITEBOARD_HOST_TOOLS = new Set<string>([
@@ -54,13 +57,13 @@ async function resolveWhiteboardHost(): Promise<WhiteboardToolHost | null> {
 }
 
 export async function executeTool(name: string, args: Record<string, unknown> = {}): Promise<ToolResult> {
-  const host = await resolveWhiteboardHost;
+  const host = await resolveWhiteboardHost();
   if (host === null) {
     return { ok: false, error: 'whiteboard host unavailable for operator tool execution' };
   }
 
-  if (name === 'open_panel' && typeof host().runMeridianDemo === 'function') {
-    const demo = await host().runMeridianDemo('document');
+  if (name === 'open_panel' && typeof host.runMeridianDemo === 'function') {
+    const demo = await host.runMeridianDemo('document');
     if (demo.document?.ok === true) {
       return {
         ok: true,
@@ -73,9 +76,11 @@ export async function executeTool(name: string, args: Record<string, unknown> = 
   }
 
   const runner =
-    typeof host().runOperatorScriptedTool === 'function'
-      ? host().runOperatorScriptedTool.bind(host): typeof host().runScriptedTool === 'function'
-        ? host().runScriptedTool.bind(host): null;
+    typeof host.runOperatorScriptedTool === 'function'
+      ? host.runOperatorScriptedTool.bind(host)
+      : typeof host.runScriptedTool === 'function'
+        ? host.runScriptedTool.bind(host)
+        : null;
 
   if (runner === null || !WHITEBOARD_HOST_TOOLS.has(name)) {
     return {
@@ -88,7 +93,7 @@ export async function executeTool(name: string, args: Record<string, unknown> = 
   if (!result.ok) {
     return {
       ok: false,
-      error: typeof result.error === 'string' ? result.error: `${name} failed on whiteboard host`,
+      error: typeof result.error === 'string' ? result.error : `${name} failed on whiteboard host`,
     };
   }
   return { ok: true, result: result.result };

@@ -1,5 +1,5 @@
 /**
- * Post-draw visibility verification for operator draw_shapes ( iter-11).
+ * Post-draw visibility verification for operator draw_shapes (P13-T7 iter-11).
  * Strict verification aligned with galleryScriptedDemo — no store-only or DOM fallbacks.
  */
 import type { AgentDrawShapesResult } from '../../engine/agentDrawingTypes';
@@ -41,10 +41,12 @@ export interface OperatorDrawVisibilityVerdict {
 interface WhiteboardScriptedHost extends HTMLElement {
   runScriptedTool?: (
     toolName: 'draw_shapes' | 'read_canvas' | 'clear_agent_drawings',
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
   runOperatorScriptedTool?: (
     toolName: 'draw_shapes' | 'read_canvas' | 'clear_agent_drawings',
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
   whenReady?: (timeoutMs?: number) => Promise<boolean>;
 }
 
@@ -57,30 +59,30 @@ export interface OperatorViewportRegion {
 
 /** Read live viewport bounds from the bound tldraw editor (no read_canvas round-trip). */
 export function readOperatorViewportRegionFromEditor(): OperatorViewportRegion | null {
-  const editor = getEditor;
+  const editor = getEditor();
   if (editor === null) {
     return null;
   }
-  const viewport = editor().getViewportPageBounds;
+  const viewport = editor.getViewportPageBounds();
   if (
-    !Number.isFinite(viewport().x) ||
-    !Number.isFinite(viewport().y) ||
-    !Number.isFinite(viewport().w) ||
-    !Number.isFinite(viewport().h) ||
-    viewport().w <= 0 ||
-    viewport().h <= 0
+    !Number.isFinite(viewport.x) ||
+    !Number.isFinite(viewport.y) ||
+    !Number.isFinite(viewport.w) ||
+    !Number.isFinite(viewport.h) ||
+    viewport.w <= 0 ||
+    viewport.h <= 0
   ) {
     return null;
   }
-  return { x: viewport().x, y: viewport().y, w: viewport().w, h: viewport().h };
+  return { x: viewport.x, y: viewport.y, w: viewport.w, h: viewport.h };
 }
 
 export function syncOperatorDrawViewport(): void {
-  const editor = getEditor;
+  const editor = getEditor();
   if (editor === null) {
     return;
   }
-  syncWhiteboardViewportScreenBounds(editor());
+  syncWhiteboardViewportScreenBounds(editor);
 }
 
 function countBlueOperatorGeo(graph: CanvasShapeGraph): number {
@@ -88,7 +90,8 @@ function countBlueOperatorGeo(graph: CanvasShapeGraph): number {
     (shape) =>
       shape.nativeType === 'geo' &&
       shape.kind === 'box' &&
-      (shape.agentId === OPERATOR_AGENT_ID || shape.agentId === undefined)).length;
+      (shape.agentId === OPERATOR_AGENT_ID || shape.agentId === undefined),
+  ).length;
 }
 
 export function readDrawShapesCreatedIds(result: ToolResult): string[] {
@@ -97,7 +100,8 @@ export function readDrawShapesCreatedIds(result: ToolResult): string[] {
   }
   const payload = result.result as AgentDrawShapesResult & { _store?: OperatorDrawStoreEvidence };
   return Array.isArray(payload.createdShapeIds)
-    ? payload.createdShapeIds.filter((id): id is string => typeof id === 'string'): [];
+    ? payload.createdShapeIds.filter((id): id is string => typeof id === 'string')
+    : [];
 }
 
 export function readDrawStoreEvidence(result: ToolResult): OperatorDrawStoreEvidence | null {
@@ -118,10 +122,11 @@ export function readDrawStoreEvidence(result: ToolResult): OperatorDrawStoreEvid
 }
 
 export async function readOperatorViewportRegion(
-  host: WhiteboardScriptedHost | null): Promise<OperatorViewportRegion | null> {
-  const fromEditor = readOperatorViewportRegionFromEditor;
+  host: WhiteboardScriptedHost | null,
+): Promise<OperatorViewportRegion | null> {
+  const fromEditor = readOperatorViewportRegionFromEditor();
   if (fromEditor !== null) {
-    return fromEditor();
+    return fromEditor;
   }
   const runner = resolveWhiteboardScriptedRunner(host);
   if (runner === null) {
@@ -139,7 +144,8 @@ export async function readOperatorViewportRegion(
 }
 
 function resolveWhiteboardScriptedRunner(
-  host: WhiteboardScriptedHost | null): WhiteboardScriptedHost['runOperatorScriptedTool'] | null {
+  host: WhiteboardScriptedHost | null,
+): WhiteboardScriptedHost['runOperatorScriptedTool'] | null {
   if (host === null) {
     return null;
   }
@@ -155,7 +161,8 @@ function resolveWhiteboardScriptedRunner(
 /** Expand a viewport region so read_canvas still sees marks near the edges. */
 export function expandOperatorProbeReadRegion(
   region: OperatorViewportRegion,
-  margin = 64): OperatorViewportRegion {
+  margin = 64,
+): OperatorViewportRegion {
   return {
     x: region.x - margin,
     y: region.y - margin,
@@ -165,8 +172,9 @@ export function expandOperatorProbeReadRegion(
 }
 
 export async function readOperatorPageShapeCountFromHost(
-  host: WhiteboardScriptedHost | null): Promise<number | null> {
-  if (getEditor !== null) {
+  host: WhiteboardScriptedHost | null,
+): Promise<number | null> {
+  if (getEditor() !== null) {
     return countOperatorPageShapes();
   }
   const evidence = await readOperatorDrawShapeEvidence(host, null);
@@ -175,7 +183,8 @@ export async function readOperatorPageShapeCountFromHost(
 
 /** Resolve expanded viewport read region for before/after read_canvas probes. */
 export async function resolveOperatorProbeReadRegion(
-  host: WhiteboardScriptedHost | null): Promise<OperatorViewportRegion | null> {
+  host: WhiteboardScriptedHost | null,
+): Promise<OperatorViewportRegion | null> {
   const viewportRegion = await readOperatorViewportRegion(host);
   if (viewportRegion === null) {
     return null;
@@ -185,13 +194,15 @@ export async function resolveOperatorProbeReadRegion(
 
 /** Direct editor check — created ids exist on the current page. */
 export function operatorCreatedShapeIdsExistOnPage(
-  createdShapeIds: readonly string[]): { bound: boolean; createdFound: number } {
+  createdShapeIds: readonly string[],
+): { bound: boolean; createdFound: number } {
   const store = inspectBoundEditorStore(createdShapeIds);
   return { bound: store.bound, createdFound: store.createdFound };
 }
 
 export function resolvePageShapeCountAfterDraw(
-  drawResult: ToolResult): number | undefined {
+  drawResult: ToolResult,
+): number | undefined {
   if (drawResult.result !== undefined && typeof drawResult.result === 'object') {
     const payload = drawResult.result as {
       _verifyPageCount?: unknown;
@@ -204,7 +215,7 @@ export function resolvePageShapeCountAfterDraw(
       return payload._shapesAfterDraw;
     }
   }
-  if (getEditor !== null) {
+  if (getEditor() !== null) {
     return countOperatorPageShapes();
   }
   return undefined;
@@ -212,14 +223,16 @@ export function resolvePageShapeCountAfterDraw(
 
 export async function readOperatorDrawShapeEvidence(
   host: WhiteboardScriptedHost | null,
-  readRegion?: OperatorViewportRegion | null): Promise<OperatorDrawShapeEvidence | null> {
+  readRegion?: OperatorViewportRegion | null,
+): Promise<OperatorDrawShapeEvidence | null> {
   const runner = resolveWhiteboardScriptedRunner(host);
   if (runner === null) {
     return null;
   }
   const readArgs =
     readRegion !== undefined && readRegion !== null
-      ? { region: { kind: 'rect' as const, rect: readRegion } }: {};
+      ? { region: { kind: 'rect' as const, rect: readRegion } }
+      : {};
   const read = await runner('read_canvas', readArgs);
   if (!read.ok) {
     return null;
@@ -235,7 +248,8 @@ export async function readOperatorDrawShapeEvidence(
 }
 
 export async function runOperatorClearDrawingsOnHost(
-  host: WhiteboardScriptedHost): Promise<void> {
+  host: WhiteboardScriptedHost,
+): Promise<void> {
   const runner = resolveWhiteboardScriptedRunner(host);
   if (runner === null) {
     return;
@@ -257,7 +271,8 @@ export function dispatchFitOperatorDrawing(): void {
   window.dispatchEvent(
     new CustomEvent(FIT_AGENT_DRAWING_EVENT, {
       detail: { agentId: OPERATOR_AGENT_ID },
-    }));
+    }),
+  );
 }
 
 /**
@@ -282,25 +297,33 @@ export function verifyOperatorDrawVisibility(input: {
           _shapesBeforeDraw?: unknown;
           _shapesAfterDraw?: unknown;
           _verifyPageCount?: unknown;
-        }): null;
+        })
+      : null;
 
   const pageShapeCountBefore =
     typeof input.pageShapeCountBefore === 'number'
-      ? input.pageShapeCountBefore: typeof resultPayload?._shapesBeforeDraw === 'number'
-        ? resultPayload._shapesBeforeDraw: undefined;
+      ? input.pageShapeCountBefore
+      : typeof resultPayload?._shapesBeforeDraw === 'number'
+        ? resultPayload._shapesBeforeDraw
+        : undefined;
   const pageShapeCountAfter =
     typeof input.pageShapeCountAfter === 'number'
-      ? input.pageShapeCountAfter: typeof resultPayload?._shapesAfterDraw === 'number'
-        ? resultPayload._shapesAfterDraw: typeof resultPayload?._verifyPageCount === 'number'
-          ? resultPayload._verifyPageCount: getEditor !== null
-            ? countOperatorPageShapes: undefined;
+      ? input.pageShapeCountAfter
+      : typeof resultPayload?._shapesAfterDraw === 'number'
+        ? resultPayload._shapesAfterDraw
+        : typeof resultPayload?._verifyPageCount === 'number'
+          ? resultPayload._verifyPageCount
+          : getEditor() !== null
+            ? countOperatorPageShapes()
+            : undefined;
 
-  const editorBound = getEditor !== null;
+  const editorBound = getEditor() !== null;
   const galleryVerify =
     editorBound &&
     createdShapeIds.length > 0 &&
     typeof pageShapeCountBefore === 'number'
-      ? verifyOperatorDrawShapesPersisted(createdShapeIds, pageShapeCountBefore): null;
+      ? verifyOperatorDrawShapesPersisted(createdShapeIds, pageShapeCountBefore)
+      : null;
 
   const storeEvidence: OperatorDrawStoreEvidence | null =
     storeFromResult ??
@@ -309,16 +332,18 @@ export function verifyOperatorDrawVisibility(input: {
           bound: galleryVerify.store.bound,
           pageShapeCount: galleryVerify.store.pageShapeCount,
           createdFound: galleryVerify.store.createdFound,
-        }: null);
+        }
+      : null);
 
   const readCountIncreased =
-    before !== null && after !== null ? after.count > before.count: false;
+    before !== null && after !== null ? after.count > before.count : false;
   const pageCountIncreased =
     typeof pageShapeCountBefore === 'number' && typeof pageShapeCountAfter === 'number'
-      ? pageShapeCountAfter > pageShapeCountBefore: false;
+      ? pageShapeCountAfter > pageShapeCountBefore
+      : false;
   const countIncreased = readCountIncreased || pageCountIncreased;
   const blueGeoIncreased =
-    before !== null && after !== null ? after.blueGeo > before.blueGeo: false;
+    before !== null && after !== null ? after.blueGeo > before.blueGeo : false;
 
   const readCountStale =
     before !== null && after !== null && after.count <= before.count;
@@ -339,8 +364,10 @@ export function verifyOperatorDrawVisibility(input: {
     storePersistedViaEditor ||
     storePersistedViaResult ||
     (galleryVerify !== null
-      ? galleryVerify.ok: storeFromResult !== null
-        ? storeFromResult.bound && storeFromResult.createdFound > 0: createdShapeIds.length > 0 && input.drawResult.ok);
+      ? galleryVerify.ok
+      : storeFromResult !== null
+        ? storeFromResult.bound && storeFromResult.createdFound > 0
+        : createdShapeIds.length > 0 && input.drawResult.ok);
 
   const perceptualPass =
     after !== null &&
@@ -374,10 +401,11 @@ export function verifyOperatorDrawVisibility(input: {
 
 export function buildDrawFailureMessage(
   drawResult: ToolResult,
-  verdict: OperatorDrawVisibilityVerdict): string {
+  verdict: OperatorDrawVisibilityVerdict,
+): string {
   if (!drawResult.ok) {
     return `Draw failed: ${
-      typeof drawResult.error === 'string' ? drawResult.error: 'no shapes were created'
+      typeof drawResult.error === 'string' ? drawResult.error : 'no shapes were created'
     }`;
   }
   if (verdict.createdShapeIds.length === 0) {
@@ -410,16 +438,19 @@ export function buildDrawFailureMessage(
 
 export async function runOperatorDrawOnWhiteboardHost(
   host: WhiteboardScriptedHost,
-  drawArgs: Record<string, unknown>): Promise<ToolResult> {
+  drawArgs: Record<string, unknown>,
+): Promise<ToolResult> {
   if (typeof host.runOperatorScriptedTool === 'function') {
     const result = await host.runOperatorScriptedTool('draw_shapes', drawArgs);
     return result.ok
-      ? { ok: true, result: result.result }: { ok: false, error: typeof result.error === 'string' ? result.error: 'draw_shapes failed' };
+      ? { ok: true, result: result.result }
+      : { ok: false, error: typeof result.error === 'string' ? result.error : 'draw_shapes failed' };
   }
   if (typeof host.runScriptedTool === 'function') {
     const result = await host.runScriptedTool('draw_shapes', drawArgs);
     return result.ok
-      ? { ok: true, result: result.result }: { ok: false, error: typeof result.error === 'string' ? result.error: 'draw_shapes failed' };
+      ? { ok: true, result: result.result }
+      : { ok: false, error: typeof result.error === 'string' ? result.error : 'draw_shapes failed' };
   }
   return { ok: false, error: 'whiteboard draw host unavailable' };
 }

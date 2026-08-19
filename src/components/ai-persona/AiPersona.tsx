@@ -41,7 +41,9 @@ export function AiPersona({
     `agentable-persona--${size}`,
     `agentable-persona--type-${resolvedType}`,
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <span
@@ -59,7 +61,7 @@ export function AiPersona({
         <span className="agentable-persona__initial" aria-hidden="true">
           {initial}
         </span>
-      ): null}
+      ) : null}
     </span>
   );
 }

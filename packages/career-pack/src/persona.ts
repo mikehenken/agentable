@@ -10,11 +10,12 @@ const DEFAULT_STARTER_PROMPTS: CareerPersonaScaffold['starterPrompts'] = [
 ];
 
 /**
- * Persona scaffold for career tenants ( tenant config).
- * Clients override fields via `createCareerPack({ persona: {... } })`.
+ * Persona scaffold for career tenants (D58 tenant config).
+ * Clients override fields via `createCareerPack({ persona: { ... } })`.
  */
 export function createCareerPersonaScaffold(
-  overrides: Partial<CareerPersonaScaffold> = {}): CareerPersonaScaffold {
+  overrides: Partial<CareerPersonaScaffold> = {},
+): CareerPersonaScaffold {
   return {
     assistantName: overrides.assistantName ?? 'Assistant',
     tenantTitle: overrides.tenantTitle ?? 'Career Concierge',

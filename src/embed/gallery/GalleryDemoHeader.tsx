@@ -1,5 +1,5 @@
 /**
- * Professional dark gallery header for example 13.
+ * Professional dark gallery header for example 13 (P13-T7 iter-7).
  */
 import { useCallback, useEffect, useState, type ReactElement } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -37,15 +37,20 @@ export function GalleryDemoHeader({
   initialFloatingVisible,
   initialFloatingPreset,
 }: GalleryDemoHeaderProps): ReactElement {
-  const [floatingVisible, setFloatingVisible] = useState<boolean>(() => initialFloatingVisible ?? readStoredFloatingVisible());
-  const [floatingPreset, setFloatingPreset] = useState<FloatingPreset>(() => initialFloatingPreset ?? readStoredFloatingPreset());
+  const [floatingVisible, setFloatingVisible] = useState<boolean>(
+    () => initialFloatingVisible ?? readStoredFloatingVisible(),
+  );
+  const [floatingPreset, setFloatingPreset] = useState<FloatingPreset>(
+    () => initialFloatingPreset ?? readStoredFloatingPreset(),
+  );
   const [demoMenuOpen, setDemoMenuOpen] = useState(false);
 
   useEffect(() => {
     window.dispatchEvent(
       new CustomEvent('gallery:floating-state', {
         detail: { visible: floatingVisible, preset: floatingPreset },
-      }));
+      }),
+    );
   }, [floatingVisible, floatingPreset]);
 
   const handleNavigate = useCallback((path: string) => {
@@ -57,14 +62,16 @@ export function GalleryDemoHeader({
   const handlePreset = useCallback((preset: FloatingPreset) => {
     setFloatingPreset(preset);
     window.dispatchEvent(
-      new CustomEvent('gallery:floating-preset', { detail: { preset } }));
+      new CustomEvent('gallery:floating-preset', { detail: { preset } }),
+    );
   }, []);
 
   const handleFloatingToggle = useCallback(() => {
     setFloatingVisible((current) => {
       const next = !current;
       window.dispatchEvent(
-        new CustomEvent('gallery:floating-toggle', { detail: { visible: next } }));
+        new CustomEvent('gallery:floating-toggle', { detail: { visible: next } }),
+      );
       return next;
     });
   }, []);
@@ -78,7 +85,8 @@ export function GalleryDemoHeader({
       data-testid="gallery-demo-header"
       className={cn(
         'flex shrink-0 items-center justify-between gap-4 border-b px-6 py-3',
-        'border-[rgb(255_255_255/0.09)] bg-[#0b1220] text-[#ececec]')}
+        'border-[rgb(255_255_255/0.09)] bg-[#0b1220] text-[#ececec]',
+      )}
     >
       <div className="flex min-w-0 items-center gap-3">
         <div
@@ -99,7 +107,8 @@ export function GalleryDemoHeader({
             className={cn(
               'inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs',
               'border-[rgb(255_255_255/0.09)] bg-[#121212] text-[#9a9a9a]',
-              'hover:text-[#ececec]')}
+              'hover:text-[#ececec]',
+            )}
             onClick={() => setDemoMenuOpen((open) => !open)}
           >
             {currentExample.label}
@@ -110,7 +119,8 @@ export function GalleryDemoHeader({
               role="listbox"
               className={cn(
                 'absolute left-0 top-[calc(100%+4px)] z-50 max-h-64 min-w-[220px] overflow-auto rounded-md border py-1 shadow-lg',
-                'border-[rgb(255_255_255/0.09)] bg-[#121212]')}
+                'border-[rgb(255_255_255/0.09)] bg-[#121212]',
+              )}
             >
               {GALLERY_EXAMPLES.map((entry) => (
                 <li key={entry.id}>
@@ -121,7 +131,9 @@ export function GalleryDemoHeader({
                     className={cn(
                       'block w-full px-3 py-1.5 text-left text-xs',
                       entry.id === CURRENT_GALLERY_EXAMPLE_ID
-                        ? 'bg-[#1a2438] text-[#ececec]': 'text-[#9a9a9a] hover:bg-[#1a1a1a] hover:text-[#ececec]')}
+                        ? 'bg-[#1a2438] text-[#ececec]'
+                        : 'text-[#9a9a9a] hover:bg-[#1a1a1a] hover:text-[#ececec]',
+                    )}
                     onClick={() => {
                       setDemoMenuOpen(false);
                       if (entry.id !== CURRENT_GALLERY_EXAMPLE_ID) {
@@ -134,7 +146,7 @@ export function GalleryDemoHeader({
                 </li>
               ))}
             </ul>
-          ): null}
+          ) : null}
         </div>
       </div>
 
@@ -147,10 +159,11 @@ export function GalleryDemoHeader({
           aria-label="Floating operator anchor"
           className={cn(
             'inline-flex overflow-hidden rounded-full border p-0.5',
-            'border-[rgb(255_255_255/0.09)] bg-[#121212]')}
+            'border-[rgb(255_255_255/0.09)] bg-[#121212]',
+          )}
         >
           {(['bottom-left', 'bottom-right', 'top-right'] as const).map((preset) => {
-            const label = preset === 'bottom-left' ? 'BL': preset === 'bottom-right' ? 'BR': 'TR';
+            const label = preset === 'bottom-left' ? 'BL' : preset === 'bottom-right' ? 'BR' : 'TR';
             const selected = floatingPreset === preset;
             return (
               <button
@@ -162,7 +175,9 @@ export function GalleryDemoHeader({
                 className={cn(
                   'rounded-full px-2.5 py-1 text-[0.72rem] font-medium transition-colors',
                   selected
-                    ? 'bg-[#1a2438] text-[#ececec]': 'text-[#9a9a9a] hover:text-[#ececec]')}
+                    ? 'bg-[#1a2438] text-[#ececec]'
+                    : 'text-[#9a9a9a] hover:text-[#ececec]',
+                )}
                 onClick={() => handlePreset(preset)}
               >
                 {label}
@@ -178,7 +193,9 @@ export function GalleryDemoHeader({
             'rounded-full border px-3 py-1 text-[0.72rem] font-medium transition-colors',
             'border-[rgb(255_255_255/0.09)] bg-[#121212]',
             floatingVisible
-              ? 'border-[rgb(255_107_87/0.45)] text-[#ffb199]': 'text-[#9a9a9a] hover:text-[#ececec]')}
+              ? 'border-[rgb(255_107_87/0.45)] text-[#ffb199]'
+              : 'text-[#9a9a9a] hover:text-[#ececec]',
+          )}
           onClick={handleFloatingToggle}
         >
           Floating operator

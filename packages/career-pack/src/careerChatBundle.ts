@@ -38,7 +38,7 @@ export type CareerSuppressedCoreTool = (typeof CAREER_SUPPRESSED_CORE_TOOLS)[num
 
 export interface CareerChatBundle {
   tenant: string;
-  /** Canonical tenant system prompt (Moss Mason Sandy full voice). */
+  /** Canonical tenant system prompt (Moss Mason / Sandy full voice). */
   systemPrompt: string;
   /** Append fixture agentJobsGuide + default routing appendix. */
   enrichSystemPrompt: (base: string, agentJobsGuide?: string) => string;
@@ -52,32 +52,40 @@ const MOSS_AGENT_JOBS_GUIDE_SOURCE =
 
 /** Moss starter chips with deterministic tool prefetch (parity with Mason playbook). */
 export const MOSS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
-  {...MOSS_STARTER_PROMPTS[0],
+  {
+    ...MOSS_STARTER_PROMPTS[0],
     prefetchTool: { name: 'open_positions', args: { location: 'South Florida' } },
   },
-  {...MOSS_STARTER_PROMPTS[1],
+  {
+    ...MOSS_STARTER_PROMPTS[1],
     prefetchTool: { name: 'open_positions', args: { track: 'Solar Hourly' } },
   },
-  {...MOSS_STARTER_PROMPTS[2],
+  {
+    ...MOSS_STARTER_PROMPTS[2],
     prefetchTool: { name: 'open_resources', args: { search: 'internship' } },
   },
-  {...MOSS_STARTER_PROMPTS[3],
+  {
+    ...MOSS_STARTER_PROMPTS[3],
     prefetchTool: { name: 'open_positions', args: { location: 'Texas' } },
   },
 ];
 
 /** Sandals starter chips with deterministic tool prefetch. */
 export const SANDALS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
-  {...SANDALS_STARTER_PROMPTS[0],
+  {
+    ...SANDALS_STARTER_PROMPTS[0],
     prefetchTool: { name: 'open_positions' },
   },
-  {...SANDALS_STARTER_PROMPTS[1],
+  {
+    ...SANDALS_STARTER_PROMPTS[1],
     prefetchTool: { name: 'open_positions', args: { location: 'Jamaica' } },
   },
-  {...SANDALS_STARTER_PROMPTS[2],
+  {
+    ...SANDALS_STARTER_PROMPTS[2],
     prefetchTool: { name: 'open_growth_paths' },
   },
-  {...SANDALS_STARTER_PROMPTS[3],
+  {
+    ...SANDALS_STARTER_PROMPTS[3],
     prefetchTool: { name: 'open_resources', args: { search: 'SCU' } },
   },
 ];
@@ -121,7 +129,7 @@ export function resolveCareerChatBundle(tenant: string): CareerChatBundle {
   const normalized = tenant.trim().toLowerCase();
   if (normalized === 'moss') return MOSS_BUNDLE;
   if (normalized === 'sandals') return SANDALS_BUNDLE;
-  return {...GENERIC_BUNDLE, tenant: normalized || 'career-default' };
+  return { ...GENERIC_BUNDLE, tenant: normalized || 'career-default' };
 }
 
 /**
@@ -129,7 +137,8 @@ export function resolveCareerChatBundle(tenant: string): CareerChatBundle {
  */
 export function resolveCareerSystemPrompt(
   tenant: string,
-  hostPrompt: string | undefined): string {
+  hostPrompt: string | undefined,
+): string {
   const bundle = resolveCareerChatBundle(tenant);
   const trimmed = hostPrompt?.trim() ?? '';
   if (trimmed.length >= CAREER_PROMPT_OVERRIDE_MIN_CHARS) {

@@ -13,11 +13,11 @@ export interface WhiteboardToolbarProps extends DefaultToolbarProps {
    * boolean shims below) are used.
    */
   toolbarConfig?: ResolvedWhiteboardToolbarConfig;
-  /** @deprecated Prefer `toolbarConfig` host `WhiteboardToolbarConfig`. */
+  /** @deprecated Prefer `toolbarConfig` / host `WhiteboardToolbarConfig`. */
   enableContextActionsTool?: boolean;
-  /** @deprecated Prefer `toolbarConfig` host `WhiteboardToolbarConfig`. */
+  /** @deprecated Prefer `toolbarConfig` / host `WhiteboardToolbarConfig`. */
   enableLayersPanel?: boolean;
-  /** @deprecated Prefer `toolbarConfig` host `WhiteboardToolbarConfig`. */
+  /** @deprecated Prefer `toolbarConfig` / host `WhiteboardToolbarConfig`. */
   enableVoiceTool?: boolean;
 }
 
@@ -29,7 +29,8 @@ export function WhiteboardToolbar({
   toolbarConfig,
   enableContextActionsTool = false,
   enableLayersPanel = false,
-  enableVoiceTool = true,...props
+  enableVoiceTool = true,
+  ...props
 }: WhiteboardToolbarProps): ReactElement {
   const resolved =
     toolbarConfig ??

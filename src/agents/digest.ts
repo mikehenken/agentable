@@ -1,5 +1,5 @@
 /**
- * Workspace world-model digest: attention-tiered, token-budgeted
+ * Workspace world-model digest (D22, D43): attention-tiered, token-budgeted
  * context compiled from canvas/session truth. Agents receive deltas by default
  * and a full digest on demand.
  */
@@ -63,7 +63,7 @@ export interface DigestActivitySummary {
   target: string;
 }
 
-/** Compact canvas mark summary for agent/user drawings. */
+/** Compact canvas mark summary for agent/user drawings (D41, P8-T4). */
 export interface DigestShapeSummary {
   id: string;
   nativeType: string;
@@ -87,7 +87,7 @@ export interface WorkspaceDigest {
   shapes: DigestShapeSummary[];
 }
 
-/** Viewport/selection inputs used to derive attention tiers. */
+/** Viewport/selection inputs used to derive attention tiers (D22). */
 export interface AttentionInput {
   contextId: string;
   selected?: boolean;
@@ -132,7 +132,7 @@ export interface DigestDelta {
   newShapes: string[];
   changedShapes: string[];
   removedShapes: string[];
-  /** Compact digest containing only changed slices (default delivery). */
+  /** Compact digest containing only changed slices (D43 default delivery). */
   patch: Partial<WorkspaceDigest>;
 }
 
@@ -145,7 +145,7 @@ export interface DigestCompilerInput {
   recentActivity?: DigestActivitySummary[] | readonly ActivityEntry[];
   /** Change-batch id; cache hits when unchanged. */
   changeBatchId?: string;
-  /** Canvas drawing summaries from the host shape collector. */
+  /** Canvas drawing summaries from the host shape collector (P8-T4). */
   shapes?: DigestShapeSummary[];
 }
 
@@ -153,7 +153,7 @@ export interface DigestCompiler {
   compile(input: DigestCompilerInput, options?: DigestBudgetOptions): DigestCompileResult;
   /** Full digest (bypasses last-turn delta path). */
   full(input: DigestCompilerInput, options?: DigestBudgetOptions): DigestCompileResult;
-  /** Delta vs the last compiled digest for `agentId`. */
+  /** Delta vs the last compiled digest for `agentId` (D43). */
   deltaFor(agentId: string, input: DigestCompilerInput, options?: DigestBudgetOptions): {
     result: DigestCompileResult;
     delta: DigestDelta;
@@ -184,7 +184,8 @@ export function deriveAttention(input: AttentionInput): AttentionTier {
 }
 
 function toActivitySummary(
-  entry: DigestActivitySummary | ActivityEntry): DigestActivitySummary {
+  entry: DigestActivitySummary | ActivityEntry,
+): DigestActivitySummary {
   return {
     ts: entry.ts,
     actor: String(entry.actor),
@@ -194,16 +195,19 @@ function toActivitySummary(
 }
 
 function normalizeInput(input: DigestCompilerInput): WorkspaceDigest {
-  const recent = (input.recentActivity ?? []).map(toActivitySummary).slice(-DIGEST_RECENT_ACTIVITY_LIMIT);
+  const recent = (input.recentActivity ?? [])
+    .map(toActivitySummary)
+    .slice(-DIGEST_RECENT_ACTIVITY_LIMIT);
 
   return {
-    user: {...input.user },
-    contexts: input.contexts.map((context) => ({...context,
-      panels: context.panels.map((panel) => ({...panel })),
+    user: { ...input.user },
+    contexts: input.contexts.map((context) => ({
+      ...context,
+      panels: context.panels.map((panel) => ({ ...panel })),
     })),
-    agents: input.agents.map((agent) => ({...agent })),
-    jobs: (input.jobs ?? []).map((job) => ({...job })),
-    pendingApprovals: (input.pendingApprovals ?? []).map((approval) => ({...approval })),
+    agents: input.agents.map((agent) => ({ ...agent })),
+    jobs: (input.jobs ?? []).map((job) => ({ ...job })),
+    pendingApprovals: (input.pendingApprovals ?? []).map((approval) => ({ ...approval })),
     recentActivity: recent,
     shapes: cloneDigestShapeSummaries(input.shapes ?? []),
   };
@@ -222,7 +226,8 @@ function cloneDigest(digest: WorkspaceDigest): WorkspaceDigest {
  */
 export function applyDigestBudget(
   digest: WorkspaceDigest,
-  options: DigestBudgetOptions = {}): DigestCompileResult {
+  options: DigestBudgetOptions = {},
+): DigestCompileResult {
   const targetTokens = options.targetTokens ?? DIGEST_TARGET_TOKENS;
   const hardCapTokens = options.hardCapTokens ?? DIGEST_HARD_CAP_TOKENS;
   const working = cloneDigest(digest);
@@ -250,7 +255,7 @@ export function applyDigestBudget(
       if (context.attention !== 'background') return context;
       if (context.panels.length === 0) return context;
       trimmedPanels = true;
-      return {...context, panels: [] };
+      return { ...context, panels: [] };
     });
     if (trimmedPanels) {
       dropped.push('backgroundPanels');
@@ -299,7 +304,8 @@ export function applyDigestBudget(
 
 export function computeDigestDelta(
   previous: WorkspaceDigest | undefined,
-  current: WorkspaceDigest): DigestDelta {
+  current: WorkspaceDigest,
+): DigestDelta {
   if (previous === undefined) {
     return {
       changed: true,
@@ -319,8 +325,12 @@ export function computeDigestDelta(
 
   const prevContexts = new Map(previous.contexts.map((context) => [context.id, context]));
   const currContexts = new Map(current.contexts.map((context) => [context.id, context]));
-  const addedContexts = current.contexts.filter((context) => !prevContexts.has(context.id)).map((context) => context.id);
-  const removedContexts = previous.contexts.filter((context) => !currContexts.has(context.id)).map((context) => context.id);
+  const addedContexts = current.contexts
+    .filter((context) => !prevContexts.has(context.id))
+    .map((context) => context.id);
+  const removedContexts = previous.contexts
+    .filter((context) => !currContexts.has(context.id))
+    .map((context) => context.id);
 
   const attentionChanges: DigestDelta['attentionChanges'] = [];
   for (const context of current.contexts) {
@@ -348,24 +358,34 @@ export function computeDigestDelta(
   }
 
   const prevActivityKeys = new Set(
-    previous.recentActivity.map((entry) => `${entry.ts}|${entry.actor}|${entry.verb}|${entry.target}`));
+    previous.recentActivity.map((entry) => `${entry.ts}|${entry.actor}|${entry.verb}|${entry.target}`),
+  );
   const newActivity = current.recentActivity.filter(
-    (entry) => !prevActivityKeys.has(`${entry.ts}|${entry.actor}|${entry.verb}|${entry.target}`));
+    (entry) => !prevActivityKeys.has(`${entry.ts}|${entry.actor}|${entry.verb}|${entry.target}`),
+  );
 
   const prevJobs = new Set(previous.jobs.map((job) => job.id));
   const newJobs = current.jobs.filter((job) => !prevJobs.has(job.id)).map((job) => job.id);
 
   const prevApprovals = new Set(previous.pendingApprovals.map((approval) => approval.id));
-  const newApprovals = current.pendingApprovals.filter((approval) => !prevApprovals.has(approval.id)).map((approval) => approval.id);
+  const newApprovals = current.pendingApprovals
+    .filter((approval) => !prevApprovals.has(approval.id))
+    .map((approval) => approval.id);
 
   const prevShapes = new Map(previous.shapes.map((shape) => [shape.id, shape]));
   const currShapes = new Map(current.shapes.map((shape) => [shape.id, shape]));
-  const newShapes = current.shapes.filter((shape) => !prevShapes.has(shape.id)).map((shape) => shape.id);
-  const removedShapes = previous.shapes.filter((shape) => !currShapes.has(shape.id)).map((shape) => shape.id);
-  const changedShapes = current.shapes.filter((shape) => {
+  const newShapes = current.shapes
+    .filter((shape) => !prevShapes.has(shape.id))
+    .map((shape) => shape.id);
+  const removedShapes = previous.shapes
+    .filter((shape) => !currShapes.has(shape.id))
+    .map((shape) => shape.id);
+  const changedShapes = current.shapes
+    .filter((shape) => {
       const prior = prevShapes.get(shape.id);
       return prior !== undefined && prior.revision !== shape.revision;
-    }).map((shape) => shape.id);
+    })
+    .map((shape) => shape.id);
 
   const changed =
     addedContexts.length > 0 ||
@@ -385,11 +405,13 @@ export function computeDigestDelta(
     patch.contexts = current.contexts.filter(
       (context) =>
         addedContexts.includes(context.id) ||
-        attentionChanges.some((change) => change.id === context.id));
+        attentionChanges.some((change) => change.id === context.id),
+    );
   }
   if (agentStatusChanges.length > 0) {
     patch.agents = current.agents.filter((agent) =>
-      agentStatusChanges.some((change) => change.id === agent.id));
+      agentStatusChanges.some((change) => change.id === agent.id),
+    );
   }
   if (newActivity.length > 0) patch.recentActivity = newActivity;
   if (newJobs.length > 0) {
@@ -397,11 +419,13 @@ export function computeDigestDelta(
   }
   if (newApprovals.length > 0) {
     patch.pendingApprovals = current.pendingApprovals.filter((approval) =>
-      newApprovals.includes(approval.id));
+      newApprovals.includes(approval.id),
+    );
   }
   if (newShapes.length > 0 || changedShapes.length > 0) {
     patch.shapes = current.shapes.filter(
-      (shape) => newShapes.includes(shape.id) || changedShapes.includes(shape.id));
+      (shape) => newShapes.includes(shape.id) || changedShapes.includes(shape.id),
+    );
   }
 
   return {
@@ -422,7 +446,8 @@ export function computeDigestDelta(
 
 export function compileWorkspaceDigest(
   input: DigestCompilerInput,
-  options?: DigestBudgetOptions): DigestCompileResult {
+  options?: DigestBudgetOptions,
+): DigestCompileResult {
   return applyDigestBudget(normalizeInput(input), options);
 }
 
@@ -433,7 +458,8 @@ export function createDigestCompiler(): DigestCompiler {
 
   const compileFresh = (
     input: DigestCompilerInput,
-    options?: DigestBudgetOptions): DigestCompileResult => {
+    options?: DigestBudgetOptions,
+  ): DigestCompileResult => {
     if (
       input.changeBatchId !== undefined &&
       input.changeBatchId === lastBatchId &&
@@ -470,9 +496,9 @@ export function createDigestCompiler(): DigestCompiler {
     getLastDigest(agentId) {
       if (agentId !== undefined) {
         const digest = perAgent.get(agentId);
-        return digest !== undefined ? cloneDigest(digest): undefined;
+        return digest !== undefined ? cloneDigest(digest) : undefined;
       }
-      return lastCompiled !== undefined ? cloneDigest(lastCompiled.digest): undefined;
+      return lastCompiled !== undefined ? cloneDigest(lastCompiled.digest) : undefined;
     },
   };
 }

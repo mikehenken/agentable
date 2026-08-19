@@ -15,7 +15,8 @@ function readArray<T>(value: unknown): readonly T[] {
 }
 
 function isPanelRow<T extends { id: string | number }>(
-  value: unknown): value is T {
+  value: unknown,
+): value is T {
   if (typeof value !== 'object' || value === null) {
     return false;
   }
@@ -26,7 +27,8 @@ function isPanelRow<T extends { id: string | number }>(
 /** Coalesce tenant/shape panel-data for a career react panel bind key. */
 export function useCareerPanelPayload<K extends keyof CareerPanelDataPayload>(
   data: ReactPanelLoaderProps['data'],
-  key: K): CareerPanelDataPayload[K] {
+  key: K,
+): CareerPanelDataPayload[K] {
   return useMemo(() => {
     const raw = data?.[key as string];
     const rows = readArray(raw);
@@ -41,22 +43,26 @@ export function useCareerPanelPayload<K extends keyof CareerPanelDataPayload>(
 }
 
 export function useApplicationsRows(
-  data: ReactPanelLoaderProps['data']): readonly PanelApplicationRow[] {
+  data: ReactPanelLoaderProps['data'],
+): readonly PanelApplicationRow[] {
   return useCareerPanelPayload(data, 'applications') ?? [];
 }
 
 export function useResourcesRows(
-  data: ReactPanelLoaderProps['data']): readonly PanelResourceRow[] {
+  data: ReactPanelLoaderProps['data'],
+): readonly PanelResourceRow[] {
   return useCareerPanelPayload(data, 'resources') ?? [];
 }
 
 export function useGrowthPathRows(
-  data: ReactPanelLoaderProps['data']): readonly PanelGrowthPathRow[] {
+  data: ReactPanelLoaderProps['data'],
+): readonly PanelGrowthPathRow[] {
   return useCareerPanelPayload(data, 'growthPaths') ?? [];
 }
 
 export function useFeaturedResource(
-  data: ReactPanelLoaderProps['data']): PanelResourceRow | undefined {
+  data: ReactPanelLoaderProps['data'],
+): PanelResourceRow | undefined {
   const resources = useResourcesRows(data);
   return useMemo(() => {
     const featured = data?.featuredResource;

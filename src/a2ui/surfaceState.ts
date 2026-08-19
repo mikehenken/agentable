@@ -7,14 +7,15 @@ export function createA2UISurfaceState(surfaceId: string): A2UISurfaceState {
     surfaceId,
     catalogId: null,
     deleted: false,
-    components: new Map<string, A2UIComponent>,
+    components: new Map<string, A2UIComponent>(),
     dataModel: {},
   };
 }
 
 function mergeComponents(
   target: Map<string, A2UIComponent>,
-  components: readonly A2UIComponent[]): void {
+  components: readonly A2UIComponent[],
+): void {
   for (const component of components) {
     target.set(component.id, component);
   }
@@ -23,7 +24,8 @@ function mergeComponents(
 /** Apply one validated A2UI envelope to a surface accumulator. */
 export function applyA2UIEnvelope(
   state: A2UISurfaceState,
-  envelope: ParsedA2UIEnvelope): A2UISurfaceState {
+  envelope: ParsedA2UIEnvelope,
+): A2UISurfaceState {
   if (envelope.createSurface !== undefined) {
     const message = envelope.createSurface;
     if (message.surfaceId !== state.surfaceId) {
@@ -35,7 +37,7 @@ export function applyA2UIEnvelope(
       mergeComponents(state.components, message.components);
     }
     if (message.dataModel !== undefined) {
-      state.dataModel = {...message.dataModel };
+      state.dataModel = { ...message.dataModel };
     }
     return state;
   }
@@ -72,7 +74,8 @@ export function applyA2UIEnvelope(
 /** Apply a stream of envelopes in order (JSONL ingestion). */
 export function applyA2UIStream(
   initialSurfaceId: string,
-  envelopes: readonly ParsedA2UIEnvelope[]): A2UISurfaceState {
+  envelopes: readonly ParsedA2UIEnvelope[],
+): A2UISurfaceState {
   const state = createA2UISurfaceState(initialSurfaceId);
   for (const envelope of envelopes) {
     applyA2UIEnvelope(state, envelope);

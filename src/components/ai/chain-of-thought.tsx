@@ -42,7 +42,7 @@ export function ChainOfThought({
   className,
 }: ChainOfThoughtProps): ReactElement {
   const complete = steps.length > 0 && steps.every((step) => isTerminal(step.status));
-  const [open, setOpen] = useState(() => (defaultOpen !== undefined ? defaultOpen: !complete));
+  const [open, setOpen] = useState(() => (defaultOpen !== undefined ? defaultOpen : !complete));
   const [expandedStepId, setExpandedStepId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -63,11 +63,12 @@ export function ChainOfThought({
       data-testid="operator-chain-of-thought"
       className={cn(
         'rounded-md border border-[var(--vibe-border,rgb(255_255_255/0.09))] bg-[var(--vibe-composer-bg,#141414)]',
-        className)}
+        className,
+      )}
     >
       <button
         type="button"
-        aria-expanded={open ? 'true': 'false'}
+        aria-expanded={open ? 'true' : 'false'}
         className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-[var(--vibe-text-muted,#9a9a9a)]"
         onClick={() => setOpen((value) => !value)}
       >
@@ -75,7 +76,7 @@ export function ChainOfThought({
         <span className="flex-1 font-medium text-[var(--vibe-text,#ececec)]">{title}</span>
         <ChevronDown
           size={14}
-          className={cn('transition-transform', open ? 'rotate-180': 'rotate-0')}
+          className={cn('transition-transform', open ? 'rotate-180' : 'rotate-0')}
         />
       </button>
       {open ? (
@@ -91,7 +92,7 @@ export function ChainOfThought({
                   type="button"
                   className="flex w-full items-center gap-2 text-left text-[11px] text-[var(--vibe-text-muted,#9a9a9a)]"
                   onClick={() =>
-                    setExpandedStepId((current) => (current === step.id ? null: step.id))
+                    setExpandedStepId((current) => (current === step.id ? null : step.id))
                   }
                 >
                   <StepStatusIcon status={step.status} />
@@ -104,12 +105,12 @@ export function ChainOfThought({
                   <pre className="mt-1 overflow-x-auto rounded bg-black/20 p-2 text-[10px] text-[var(--vibe-text-faint,#6f6f6f)]">
                     {step.inputSummary}
                   </pre>
-                ): null}
+                ) : null}
               </div>
             );
           })}
         </div>
-      ): null}
+      ) : null}
     </div>
   );
 }
@@ -130,8 +131,8 @@ export function ToolCallCard({ toolName, ok, args = {} }: ToolCallCardProps): Re
       <div className="flex items-center gap-2 text-[var(--vibe-text,#ececec)]">
         <Wrench size={13} className="text-[var(--vibe-text-muted,#9a9a9a)]" />
         <span className="font-medium">{toolName}</span>
-        <span className={ok ? 'text-emerald-400': 'text-red-400'}>
-          {ok ? 'succeeded': 'failed'}
+        <span className={ok ? 'text-emerald-400' : 'text-red-400'}>
+          {ok ? 'succeeded' : 'failed'}
         </span>
       </div>
       <p className="mt-1 text-[var(--vibe-text-muted,#9a9a9a)]">

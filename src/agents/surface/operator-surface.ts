@@ -1,9 +1,9 @@
 /**
- * `<agentable-operator-surface>` — canvas-wide operator agent UI.
+ * `<agentable-operator-surface>` — canvas-wide operator agent UI (D51, P13-T1).
  *
- * Lit host shell mounting the React OperatorSurfaceShell.
- * Ask/Build/Draw mode selector with enforced tool-scope presets,
- * model switcher shell, and A2UI-rich transcript blocks via the adapter.
+ * Lit host shell mounting the React OperatorSurfaceShell (P13-T7 iteration-2).
+ * Ask/Build/Draw mode selector with enforced tool-scope presets (P13-T2),
+ * model switcher shell, and A2UI-rich transcript blocks via the D40 adapter.
  */
 import { LitElement, css, html, unsafeCSS, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -91,7 +91,7 @@ function parseModelOptions(raw: string): readonly OperatorModelOption[] {
         });
       }
     }
-    return options.length > 0 ? options: DEFAULT_OPERATOR_MODEL_OPTIONS;
+    return options.length > 0 ? options : DEFAULT_OPERATOR_MODEL_OPTIONS;
   } catch {
     return DEFAULT_OPERATOR_MODEL_OPTIONS;
   }
@@ -119,8 +119,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
   @property({ attribute: false })
   declare threads: readonly OperatorThread[];
 
-  @state private declare _parsedModelOptions: readonly OperatorModelOption[];
-  @state private declare _modelBridgeActive: boolean;
+  @state() private declare _parsedModelOptions: readonly OperatorModelOption[];
+  @state() private declare _modelBridgeActive: boolean;
 
   private _pageSessionParticipantId = `${OPERATOR_PAGE_SESSION_ID}-${Math.random().toString(36).slice(2, 8)}`;
   private _chatSurfaceUnregister: (() => void) | null = null;
@@ -144,11 +144,14 @@ export class AgentableOperatorSurfaceElement extends LitElement {
     operatorSurfaceBaseStyles,
     unsafeCSS(canvasStyles),
     operatorSurfaceDarkTheme,
-    css`:host {
+    css`
+      :host {
         border: 0;
         background: transparent;
         min-height: 0;
-      }.operator-react-mount {
+      }
+
+      .operator-react-mount {
         flex: 1;
         min-height: 0;
         display: flex;
@@ -265,7 +268,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
         bubbles: true,
         composed: true,
         detail: { threadId, previousThreadId },
-      }));
+      }),
+    );
     this.requestUpdate();
   }
 
@@ -291,7 +295,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
         bubbles: true,
         composed: true,
         detail: { threadId: id, previousThreadId },
-      }));
+      }),
+    );
     this.requestUpdate();
     return id;
   }
@@ -321,7 +326,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
             bubbles: true,
             composed: true,
             detail: { threadId: nextActive.id, previousThreadId },
-          }));
+          }),
+        );
       }
     }
 
@@ -344,7 +350,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
         bubbles: true,
         composed: true,
         detail: { mode: nextMode, previousMode },
-      }));
+      }),
+    );
     this.requestUpdate();
   }
 
@@ -361,7 +368,7 @@ export class AgentableOperatorSurfaceElement extends LitElement {
     return evaluateOperatorModeToolDenial(toolName);
   }
 
-  /** Test/diagnostic helper: whether model rebind is active for this surface. */
+  /** Test/diagnostic helper: whether D49 model rebind is active for this surface. */
   isOperatorModelBridgeActive(): boolean {
     return this._modelBridgeActive && isOperatorModelBridgeActive();
   }
@@ -408,7 +415,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
         threads: this.threads,
         modelOptions: this._parsedModelOptions,
         modelBridgeActive: this._modelBridgeActive,
-      }));
+      }),
+    );
   }
 
   private async _bindModelBridge(): Promise<void> {
@@ -475,7 +483,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
               resolvedAlias: result.resolvedAlias,
               fallbackUsed: result.fallbackUsed,
             },
-          }));
+          }),
+        );
         this.requestUpdate();
         return;
       } catch {
@@ -490,7 +499,8 @@ export class AgentableOperatorSurfaceElement extends LitElement {
         bubbles: true,
         composed: true,
         detail: { modelAlias: trimmed, previousModelAlias },
-      }));
+      }),
+    );
     this.requestUpdate();
   }
 }

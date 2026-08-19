@@ -1,5 +1,5 @@
 /**
- * Document export types. Block model → PDF/DOCX; no HTML round-trip.
+ * Document export types (P12-T4, D50). Block model → PDF/DOCX; no HTML round-trip.
  */
 import type { DocumentPayload } from './types';
 
@@ -22,11 +22,12 @@ export interface DocumentExportResult {
 
 export interface DocumentExportHostContext {
   resolveDocument: (
-    panelId: string) => DocumentPayload | null | Promise<DocumentPayload | null>;
+    panelId: string,
+  ) => DocumentPayload | null | Promise<DocumentPayload | null>;
   resolveAsset?: DocumentExportOptions['resolveAsset'];
 }
 
-/** Frozen epoch for byte-stable golden exports ( AC). */
+/** Frozen epoch for byte-stable golden exports (P12-T4 AC). */
 export const DOCUMENT_EXPORT_EPOCH_ISO = '2020-01-01T00:00:00.000Z';
 
 export const DOCUMENT_EXPORT_EPOCH = new Date(DOCUMENT_EXPORT_EPOCH_ISO);

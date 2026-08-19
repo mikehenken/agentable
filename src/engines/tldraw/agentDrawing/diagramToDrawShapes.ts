@@ -1,5 +1,5 @@
 /**
- * Compile logical diagram structure into draw_shapes inputs.
+ * Compile logical diagram structure into draw_shapes inputs (P8-T5).
  */
 import type { Editor } from 'tldraw';
 import { createShapeId } from 'tldraw';
@@ -52,7 +52,8 @@ function panelShapeId(panelId: string): string {
 function resolveNearPanelBounds(
   editor: Editor,
   panelId: string,
-  side: 'right' | 'left' | 'bottom' | 'top' = 'right'): LayoutBounds {
+  side: 'right' | 'left' | 'bottom' | 'top' = 'right',
+): LayoutBounds {
   const shapeId = panelShapeId(panelId);
   const bounds = editor.getShapePageBounds(shapeId as never);
   if (!bounds) {
@@ -154,7 +155,8 @@ function chatAwareViewportBounds(editor: Editor, viewport: LayoutBounds): Layout
 
 export function resolveDiagramPlacementBounds(
   editor: Editor,
-  placement: AgentDiagramPlacement | undefined): LayoutBounds {
+  placement: AgentDiagramPlacement | undefined,
+): LayoutBounds {
   if (placement === undefined || placement.kind === 'viewport') {
     const viewport = editor.getViewportPageBounds?.();
     if (viewport) {
@@ -183,7 +185,8 @@ export function resolveDiagramPlacementBounds(
 
 function filterProgressiveNodes(
   nodes: readonly PositionedDiagramNode[],
-  progressive: AgentDiagramProgressive | undefined): readonly PositionedDiagramNode[] {
+  progressive: AgentDiagramProgressive | undefined,
+): readonly PositionedDiagramNode[] {
   if (progressive === undefined) {
     return nodes;
   }
@@ -211,18 +214,19 @@ function resolveEdges(diagram: AgentDiagramStructure): readonly AgentDiagramEdge
 
 function nodeShapeInputs(
   entry: PositionedDiagramNode,
-  style: AgentDrawShapeStyle | undefined): AgentDrawShapeInput[] {
+  style: AgentDrawShapeStyle | undefined,
+): AgentDrawShapeInput[] {
   const kind = entry.node.kind ?? 'box';
   const nodeStyle: AgentDrawShapeStyle = {
-    color: style?.color ?? NODE_ROLE_COLOR[kind === 'container' ? 'container': kind],
-    fill: style?.fill ?? (kind === 'container' ? 'semi': 'semi'),
-    dash: style?.dash ?? (kind === 'container' ? 'dashed': 'draw'),
-    size: style?.size ?? (kind === 'container' ? 'l': 'm'),
+    color: style?.color ?? NODE_ROLE_COLOR[kind === 'container' ? 'container' : kind],
+    fill: style?.fill ?? (kind === 'container' ? 'semi' : 'semi'),
+    dash: style?.dash ?? (kind === 'container' ? 'dashed' : 'draw'),
+    size: style?.size ?? (kind === 'container' ? 'l' : 'm'),
   };
   // The label rides inside the geo shape (tldraw centers and wraps it), so
   // diagram text can never overlap or overflow its node.
   const shape: AgentDrawShapeInput = {
-    kind: kind === 'container' ? 'box': kind,
+    kind: kind === 'container' ? 'box' : kind,
     // Stamp the logical node id so follow-up tools (connect_shapes,
     // group_shapes) can reference diagram nodes by their diagram id.
     id: entry.node.id,
@@ -247,10 +251,11 @@ function edgeShapeInputs(
   visibleIds: Set<string>,
   style: AgentDrawShapeStyle | undefined,
   order: readonly string[],
-  layout: AgentDrawDiagramRequest['layout']): AgentDrawShapeInput[] {
+  layout: AgentDrawDiagramRequest['layout'],
+): AgentDrawShapeInput[] {
   const shapes: AgentDrawShapeInput[] = [];
   const indexById = new Map(order.map((id, index) => [id, index]));
-  const axis = layout === 'flow' ? 'x': layout === 'timeline' ? 'y': null;
+  const axis = layout === 'flow' ? 'x' : layout === 'timeline' ? 'y' : null;
   for (const edge of edges) {
     if (!visibleIds.has(edge.from) || !visibleIds.has(edge.to)) {
       continue;
@@ -296,8 +301,10 @@ function edgeShapeInputs(
       // it moves the nodes, instead of stranding it where it was drawn.
       meta: {
         [AGENT_EDGE_FROM_META_KEY]: edge.from,
-        [AGENT_EDGE_TO_META_KEY]: edge.to,...(edge.label !== undefined && edge.label.length > 0
-          ? { [AGENT_EDGE_LABEL_META_KEY]: edge.label }: {}),
+        [AGENT_EDGE_TO_META_KEY]: edge.to,
+        ...(edge.label !== undefined && edge.label.length > 0
+          ? { [AGENT_EDGE_LABEL_META_KEY]: edge.label }
+          : {}),
       },
     };
     if (routed.bend !== 0) {
@@ -336,7 +343,8 @@ function edgeShapeInputs(
 
 export function compileDiagramToDrawShapes(
   editor: Editor,
-  request: AgentDrawDiagramRequest): AgentDrawShapeInput[] {
+  request: AgentDrawDiagramRequest,
+): AgentDrawShapeInput[] {
   if (request.diagram.nodes.length === 0) {
     return [];
   }
@@ -357,13 +365,17 @@ export function compileDiagramToDrawShapes(
   const positionedById = new Map(fitted.nodes.map((entry) => [entry.node.id, entry]));
 
   const shapes: AgentDrawShapeInput[] = visibleNodes.flatMap((entry) =>
-    nodeShapeInputs(entry, request.style));
-  shapes.push(...edgeShapeInputs(
+    nodeShapeInputs(entry, request.style),
+  );
+  shapes.push(
+    ...edgeShapeInputs(
       resolveEdges(request.diagram),
       positionedById,
       visibleIds,
       request.style,
       fitted.nodes.map((entry) => entry.node.id),
-      request.layout));
+      request.layout,
+    ),
+  );
   return shapes;
 }

@@ -72,7 +72,11 @@ const VALID_SIZES = new Set(['s', 'm', 'l', 'xl']);
  */
 export function normalizeStyleColor(raw: unknown): string | undefined {
   if (typeof raw !== 'string') return undefined;
-  const kebab = raw.trim().replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/[\s_]+/g, '-').toLowerCase();
+  const kebab = raw
+    .trim()
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/[\s_]+/g, '-')
+    .toLowerCase();
   if (VALID_COLORS.has(kebab)) return kebab;
   return COLOR_ALIASES[kebab.replace(/-/g, '')];
 }
@@ -83,15 +87,20 @@ export function normalizeStyleColor(raw: unknown): string | undefined {
  * input object unchanged when nothing needed fixing.
  */
 export function sanitizeDrawStyle(
-  style: AgentDrawShapeStyle | undefined): AgentDrawShapeStyle | undefined {
+  style: AgentDrawShapeStyle | undefined,
+): AgentDrawShapeStyle | undefined {
   if (style === undefined) return undefined;
   const color = normalizeStyleColor(style.color);
-  const fill = typeof style.fill === 'string' && VALID_FILLS.has(style.fill) ? style.fill: undefined;
-  const dash = typeof style.dash === 'string' && VALID_DASHES.has(style.dash) ? style.dash: undefined;
-  const size = typeof style.size === 'string' && VALID_SIZES.has(style.size) ? style.size: undefined;
+  const fill = typeof style.fill === 'string' && VALID_FILLS.has(style.fill) ? style.fill : undefined;
+  const dash = typeof style.dash === 'string' && VALID_DASHES.has(style.dash) ? style.dash : undefined;
+  const size = typeof style.size === 'string' && VALID_SIZES.has(style.size) ? style.size : undefined;
   if (color === style.color && fill === style.fill && dash === style.dash && size === style.size) {
     return style;
   }
-  return {...(color !== undefined ? { color }: {}),...(fill !== undefined ? { fill }: {}),...(dash !== undefined ? { dash }: {}),...(size !== undefined ? { size }: {}),
+  return {
+    ...(color !== undefined ? { color } : {}),
+    ...(fill !== undefined ? { fill } : {}),
+    ...(dash !== undefined ? { dash } : {}),
+    ...(size !== undefined ? { size } : {}),
   };
 }

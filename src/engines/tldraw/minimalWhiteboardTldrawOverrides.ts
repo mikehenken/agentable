@@ -19,7 +19,8 @@ import { resolveWhiteboardToolbarIconId } from './voice/whiteboardToolbarIcons';
  * prune disallowed tools, register layout action tools + labels.
  */
 export function createMinimalWhiteboardTldrawOverrides(
-  resolved: ResolvedWhiteboardToolbarConfig): TLUiOverrides {
+  resolved: ResolvedWhiteboardToolbarConfig,
+): TLUiOverrides {
   const allowed = allowedTldrawToolIds(resolved);
 
   return {
@@ -86,7 +87,8 @@ export function createMinimalWhiteboardTldrawOverrides(
                   detail: { id: action.id },
                   bubbles: true,
                   composed: true,
-                }));
+                }),
+              );
             }
             editor.setCurrentTool('select');
           },
@@ -98,24 +100,26 @@ export function createMinimalWhiteboardTldrawOverrides(
     translations: {
       en: {
         'tools.auto-arrange': 'Auto-arrange',
-        'tools.reset': 'Reset',...Object.fromEntries(
+        'tools.reset': 'Reset',
+        ...Object.fromEntries(
           resolved.customActions.map((action) => [
             `tools.${action.id}`,
             action.label ?? action.id,
-          ])),
+          ]),
+        ),
       },
     },
   };
 }
 
 /**
- * @deprecated Prefer `createMinimalWhiteboardTldrawOverrides(resolveWhiteboardToolbarConfig)`.
- * Static career default tool ids kept for backward-compat imports tests.
+ * @deprecated Prefer `createMinimalWhiteboardTldrawOverrides(resolveWhiteboardToolbarConfig())`.
+ * Static career default tool ids kept for backward-compat imports / tests.
  */
 export const WHITEBOARD_TOOLBAR_TOOL_IDS = resolveWhiteboardToolbarConfig().toolbarTools;
 
 /**
- * @deprecated Prefer `createMinimalWhiteboardTldrawOverrides(resolveWhiteboardToolbarConfig)`.
+ * @deprecated Prefer `createMinimalWhiteboardTldrawOverrides(resolveWhiteboardToolbarConfig())`.
  */
 export const minimalWhiteboardTldrawOverrides: TLUiOverrides =
   createMinimalWhiteboardTldrawOverrides(resolveWhiteboardToolbarConfig());

@@ -2,24 +2,24 @@
  * Gemini Live client for the Career Concierge voice widget.
  *
  * Responsibilities:
- * - Open a Live API WebSocket session to `gemini-3.1-flash-live-preview`.
- * - Capture microphone audio, downsample to 16 kHz mono Int16 PCM via an
- * AudioWorklet, and stream it to the model in real time.
- * - Decode 24 kHz Int16 PCM audio returned by the model and play it back
- * through a WebAudio source queue.
- * - Expose input/output RMS levels for visualisation.
+ *  - Open a Live API WebSocket session to `gemini-3.1-flash-live-preview`.
+ *  - Capture microphone audio, downsample to 16 kHz mono Int16 PCM via an
+ *    AudioWorklet, and stream it to the model in real time.
+ *  - Decode 24 kHz Int16 PCM audio returned by the model and play it back
+ *    through a WebAudio source queue.
+ *  - Expose input/output RMS levels for visualisation.
  *
  * The client is transport-only - it doesn't know about React. A hook wraps
  * it for UI integration.
  *
  * The credential can be supplied two ways:
- * - **Static key (dev):** pass `apiKey: "AIza..."` from `VITE_GEMINI_API_KEY`.
- * Bakes the long-lived key into the client bundle. Acceptable for local dev.
- * - **Ephemeral token resolver (prod):** pass a function `() => Promise<string>`
- * that fetches a fresh token from your worker's `POST /v1/voice/token` mint
- * endpoint (Phase A backplane). The function is invoked once per `start()`
- * so the WebSocket opens with a minted, short-lived credential. The
- * long-lived API key never leaves the worker.
+ *  - **Static key (dev):** pass `apiKey: "AIza..."` from `VITE_GEMINI_API_KEY`.
+ *    Bakes the long-lived key into the client bundle. Acceptable for local dev.
+ *  - **Ephemeral token resolver (prod):** pass a function `() => Promise<string>`
+ *    that fetches a fresh token from your worker's `POST /v1/voice/token` mint
+ *    endpoint (Phase A backplane). The function is invoked once per `start()`
+ *    so the WebSocket opens with a minted, short-lived credential. The
+ *    long-lived API key never leaves the worker.
  */
 
 import { GoogleGenAI, Modality, type LiveServerMessage, type Session } from '@google/genai';
@@ -77,7 +77,7 @@ export interface VoicePersonaConfig {
    */
   voiceGreeting?: string;
   /**
-   * - who speaks first on connect. Default `agent-first`.
+   * D46 - who speaks first on connect. Default `agent-first`.
    */
   greetingMode?: VoiceGreetingMode;
   /**
@@ -103,19 +103,19 @@ const OUTPUT_SAMPLE_RATE = 24000;
 /**
  * Barge-in tuning constants.
  *
- * - `BARGE_IN_LEVEL_THRESHOLD`: normalised input RMS above which a frame
- * counts toward the barge-in window. 0.18 ≈ "louder than ambient breath
- * but quieter than an inside-voice question" - empirically tuned to fire
- * on assertive interruptions ("wait - hold on a sec") without firing on
- * background noise.
- * - `BARGE_IN_FRAMES_REQUIRED`: how many consecutive (or near-consecutive
- * within the recent window) loud frames trigger interrupt. The mic
- * publishes at ~50Hz from the worklet, so 6 frames ≈ 120ms - short
- * enough that the assistant stops mid-sentence; long enough to ignore
- * a single cough or door slam.
- * - `BARGE_IN_WINDOW_FRAMES`: rolling window for counting. 30 frames ≈
- * 600ms; if 6+ of the last 30 are above threshold, treat it as user
- * intent to interrupt.
+ *  - `BARGE_IN_LEVEL_THRESHOLD`: normalised input RMS above which a frame
+ *    counts toward the barge-in window. 0.18 ≈ "louder than ambient breath
+ *    but quieter than an inside-voice question" - empirically tuned to fire
+ *    on assertive interruptions ("wait - hold on a sec") without firing on
+ *    background noise.
+ *  - `BARGE_IN_FRAMES_REQUIRED`: how many consecutive (or near-consecutive
+ *    within the recent window) loud frames trigger interrupt. The mic
+ *    publishes at ~50Hz from the worklet, so 6 frames ≈ 120ms - short
+ *    enough that the assistant stops mid-sentence; long enough to ignore
+ *    a single cough or door slam.
+ *  - `BARGE_IN_WINDOW_FRAMES`: rolling window for counting. 30 frames ≈
+ *    600ms; if 6+ of the last 30 are above threshold, treat it as user
+ *    intent to interrupt.
  *
  * Why client-side detection on top of Gemini's server-side VAD: the model's
  * built-in VAD is generous (it favours letting the assistant finish its
@@ -178,7 +178,7 @@ export function createVoiceClient(
   let lastBargeInAt = 0;
   /**
    * Active playback source nodes. Tracking them lets us proactively call
-   * `.stop` on barge-in so queued audio buffers cancel immediately
+   * `.stop()` on barge-in so queued audio buffers cancel immediately
    * instead of just being dequeued (the assistant would finish its current
    * word even after `serverContent.interrupted` because the
    * AudioBufferSourceNode keeps playing once started).
@@ -213,7 +213,7 @@ export function createVoiceClient(
 
   function maybeFireBargeIn(level: number): void {
     if (currentVoiceState !== 'speaking') return;
-    bargeInFrames.push(level >= BARGE_IN_LEVEL_THRESHOLD ? 1: 0);
+    bargeInFrames.push(level >= BARGE_IN_LEVEL_THRESHOLD ? 1 : 0);
     if (bargeInFrames.length > BARGE_IN_WINDOW_FRAMES) {
       bargeInFrames.shift();
     }
@@ -246,7 +246,7 @@ export function createVoiceClient(
   }
 
   const fail = (err: unknown) => {
-    const e = err instanceof Error ? err: new Error(String(err));
+    const e = err instanceof Error ? err : new Error(String(err));
     console.error('[voice] error:', e);
     callbacks.onError?.(e);
     setState('error');
@@ -263,7 +263,7 @@ export function createVoiceClient(
     // truncated here, the assistant will respond in generic Gemini
     // default voice - the user-visible symptom is "the assistant lost
     // its brand knowledge." No PII; safe to log.
-
+     
     const prebuiltVoiceName =
       persona.geminiVoiceName?.trim() || DEFAULT_GEMINI_VOICE_NAME;
     console.info(
@@ -289,7 +289,7 @@ export function createVoiceClient(
       const ai = new GoogleGenAI({ apiKey, apiVersion: 'v1alpha' });
 
       // Map our flat ToolDeclaration shape to the Gemini Live function-
-      // declaration shape. `parametersJsonSchema` accepts an `unknown` - skipping the strict `Schema` type means we don't have to mirror
+      // declaration shape. `parametersJsonSchema` accepts an `unknown` - // skipping the strict `Schema` type means we don't have to mirror
       // the SDK's OpenAPI variants and we can keep the canvas tool
       // registry framework-agnostic.
       const functionDeclarations = getFunctionDeclarations().map((d) => ({
@@ -318,7 +318,8 @@ export function createVoiceClient(
             setState('listening');
             const connectGreeting = resolveConnectGreeting(
               persona.greetingMode,
-              persona.voiceGreeting);
+              persona.voiceGreeting,
+            );
             if (connectGreeting) {
               session?.sendClientContent({
                 turns: [{ role: 'user', parts: [{ text: `Start the call with this exact greeting spoken aloud: "${connectGreeting}"` }] }],
@@ -352,6 +353,7 @@ export function createVoiceClient(
       const workletUrl = URL.createObjectURL(workletBlob);
       await audioCtx.audioWorklet.addModule(workletUrl);
       URL.revokeObjectURL(workletUrl);
+
       micSource = audioCtx.createMediaStreamSource(micStream);
       workletNode = new AudioWorkletNode(audioCtx, 'pcm-downsampler');
       workletNode.port.onmessage = (e: MessageEvent<{ pcm: ArrayBuffer; level: number }>) => {
@@ -372,6 +374,7 @@ export function createVoiceClient(
       };
       micSource.connect(workletNode);
       // Do NOT connect worklet to destination - we don't want mic echo.
+
       playbackCtx = new AudioContext({ sampleRate: OUTPUT_SAMPLE_RATE });
       playbackQueueTime = playbackCtx.currentTime;
     } catch (err) {
@@ -399,7 +402,7 @@ export function createVoiceClient(
 
       if (msg.serverContent?.interrupted) {
         // Model was interrupted - drop queued playback AND hard-stop any
-        // in-flight buffer so we don't talk over the user. flushPlayback
+        // in-flight buffer so we don't talk over the user. flushPlayback()
         // does both. Without the hard-stop, the AudioBufferSourceNode
         // already started keeps playing through the rest of its buffer
         // (a half-second of "and we have eight islands across-") which
@@ -436,7 +439,8 @@ export function createVoiceClient(
         // draw/authoring tool handlers throw "agent tool context is
         // required for this operation" on every call.
         const result = await withAgentToolContextAsync(VOICE_AGENT_TOOL_CONTEXT, () =>
-          executeTool(name, args));
+          executeTool(name, args),
+        );
         callbacks.onToolCall?.({
           name,
           args,
@@ -449,7 +453,8 @@ export function createVoiceClient(
             detail: { name, args, ok: result.ok, source: 'voice' },
             bubbles: true,
             composed: true,
-          }));
+          }),
+        );
         try {
           session?.sendToolResponse({
             functionResponses: [
@@ -457,7 +462,8 @@ export function createVoiceClient(
                 id,
                 name,
                 response: result.ok
-                  ? { output: result.result }: { error: result.error },
+                  ? { output: result.result }
+                  : { error: result.error },
               },
             ],
           });

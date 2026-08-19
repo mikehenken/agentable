@@ -1,6 +1,6 @@
 /**
  * Operator composer — appends user messages and resolves assistant replies via
- * live chat bridge or deterministic offline fallback.
+ * live chat bridge or deterministic offline fallback (P13-T7 iteration-7).
  */
 import type { OperatorOutboundAttachment } from './operatorAttachments';
 import { sendOperatorMessage } from './operatorChatBridge';
@@ -25,6 +25,7 @@ export interface SubmitOperatorComposerResult {
  * Always routes through sendOperatorMessage for unified offline/live handling.
  */
 export async function submitOperatorComposerMessage(
-  input: SubmitOperatorComposerInput): Promise<SubmitOperatorComposerResult> {
+  input: SubmitOperatorComposerInput,
+): Promise<SubmitOperatorComposerResult> {
   return sendOperatorMessage(input);
 }

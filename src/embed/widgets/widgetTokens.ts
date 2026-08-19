@@ -1,7 +1,8 @@
 import { css } from 'lit';
 
-/** Shared brand tokens for Lit widget embeds. */
-export const widgetHostTokens = css`:host {
+/** Shared brand tokens for Lit widget embeds (P9-T3). */
+export const widgetHostTokens = css`
+  :host {
     --landi-widget-color-primary: var(--landi-color-primary, #0d7377);
     --landi-widget-color-accent: var(--landi-color-accent, #c9a227);
     --landi-widget-color-error: var(--landi-color-error, #b04545);
@@ -16,7 +17,8 @@ export const widgetHostTokens = css`:host {
   }
 `;
 
-export const widgetVisuallyHidden = css`.visually-hidden {
+export const widgetVisuallyHidden = css`
+  .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;

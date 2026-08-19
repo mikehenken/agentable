@@ -1,5 +1,5 @@
 /**
- * Host-supplied model resolver registry and fallback resolution.
+ * Host-supplied model resolver registry and fallback resolution (D49).
  */
 import type {
   CapabilityNote,
@@ -36,7 +36,8 @@ function bindingAvailable(binding: ProviderBinding): boolean {
 
 function meetsRequiredCaps(
   caps: ModelCapabilities,
-  required?: Partial<ModelCapabilities>): boolean {
+  required?: Partial<ModelCapabilities>,
+): boolean {
   if (!required) return true;
   if (required.vision === true && !caps.vision) return false;
   if (required.tools === true && !caps.tools) return false;
@@ -53,7 +54,8 @@ function meetsRequiredCaps(
 function enqueueFallbacks(
   queue: string[],
   visited: Set<string>,
-  binding: ProviderBinding): void {
+  binding: ProviderBinding,
+): void {
   for (const alias of binding.fallback ?? []) {
     if (!visited.has(alias)) {
       visited.add(alias);
@@ -69,12 +71,14 @@ function enqueueFallbacks(
 export async function resolveModelBinding(
   alias: string,
   ctx: ModelResolveContext,
-  options?: { requiredCaps?: Partial<ModelCapabilities> }): Promise<ResolvedModelBinding> {
+  options?: { requiredCaps?: Partial<ModelCapabilities> },
+): Promise<ResolvedModelBinding> {
   const resolver = activeResolver;
   if (!resolver) {
     throw new ModelResolveError(
       'NO_RESOLVER',
-      'No model resolver registered; host must call registerModelResolver before creating sessions.');
+      'No model resolver registered; host must call registerModelResolver before creating sessions.',
+    );
   }
 
   const notes: CapabilityNote[] = [];
@@ -90,19 +94,20 @@ export async function resolveModelBinding(
   queue.push(seed);
 
   while (queue.length > 0) {
-    const current = queue.shift;
+    const current = queue.shift();
     if (current === undefined) break;
 
     let binding: ProviderBinding;
     try {
-      binding = await resolver(current(), ctx);
+      binding = await resolver(current, ctx);
     } catch (err: unknown) {
       notes.push({
         code: 'MODEL_UNAVAILABLE',
-        alias: current(),
+        alias: current,
         message:
           err instanceof Error
-            ? err.message: `Resolver failed for alias "${current}".`,
+            ? err.message
+            : `Resolver failed for alias "${current}".`,
       });
       continue;
     }
@@ -110,7 +115,7 @@ export async function resolveModelBinding(
     if (!bindingAvailable(binding)) {
       notes.push({
         code: 'MODEL_UNAVAILABLE',
-        alias: current(),
+        alias: current,
         message: `Binding for alias "${current}" is marked unavailable.`,
       });
       enqueueFallbacks(queue, visited, binding);
@@ -120,7 +125,7 @@ export async function resolveModelBinding(
     if (!meetsRequiredCaps(binding.caps, options?.requiredCaps)) {
       notes.push({
         code: 'CAPABILITY_MISMATCH',
-        alias: current(),
+        alias: current,
         message: `Binding for alias "${current}" does not satisfy required capabilities.`,
       });
       enqueueFallbacks(queue, visited, binding);
@@ -128,15 +133,16 @@ export async function resolveModelBinding(
     }
 
     return {
-      resolvedAlias: current(),
+      resolvedAlias: current,
       requestedAlias: seed,
       binding,
-      fallbackUsed: current() !== seed,
+      fallbackUsed: current !== seed,
       notes,
     };
   }
 
   throw new ModelResolveError(
     'RESOLVE_EXHAUSTED',
-    `Could not resolve model alias "${seed}"; all fallbacks exhausted.`);
+    `Could not resolve model alias "${seed}"; all fallbacks exhausted.`,
+  );
 }

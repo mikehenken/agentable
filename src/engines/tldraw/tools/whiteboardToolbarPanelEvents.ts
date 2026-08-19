@@ -13,7 +13,8 @@ export interface WhiteboardOpenPanelEventDetail {
 
 export function emitWhiteboardOpenPanel(
   panelId: string,
-  options: Omit<WhiteboardOpenPanelEventDetail, 'panelId'> = {}): void {
+  options: Omit<WhiteboardOpenPanelEventDetail, 'panelId'> = {},
+): void {
   if (typeof window === 'undefined') return;
   window.dispatchEvent(
     new CustomEvent<WhiteboardOpenPanelEventDetail>(WHITEBOARD_OPEN_PANEL_EVENT, {
@@ -25,7 +26,8 @@ export function emitWhiteboardOpenPanel(
       },
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
 }
 
 export function emitWhiteboardScreenshotCanvas(): void {
@@ -34,5 +36,6 @@ export function emitWhiteboardScreenshotCanvas(): void {
     new CustomEvent(WHITEBOARD_SCREENSHOT_CANVAS_EVENT, {
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
 }

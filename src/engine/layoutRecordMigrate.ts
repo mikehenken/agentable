@@ -1,5 +1,5 @@
 /**
- * WorkspaceLayoutRecord migrations.
+ * WorkspaceLayoutRecord migrations (D48, P11-T2).
  *
  * v1 (legacy DOM): region encoded in `position.x` (0 main, 1 sidebar),
  * tab index in `position.y`.
@@ -20,7 +20,7 @@ export function isLegacyDomLayoutRecord(record: WorkspaceLayoutRecord): boolean 
 }
 
 function regionFromLegacyPositionX(x: number): AppShellRegionId {
-  return x >= 1 ? 'sidebar': 'main';
+  return x >= 1 ? 'sidebar' : 'main';
 }
 
 /** Maps app-shell region to the legacy SPI `position.x` rail encoding. */
@@ -57,9 +57,11 @@ export function normalizeLayoutRecord(record: WorkspaceLayoutRecord): WorkspaceL
   const tabGroup = record.tabGroup ?? 0;
   const order =
     record.order !== undefined
-      ? clampNonNegativeInt(record.order): clampNonNegativeInt(record.position.y);
+      ? clampNonNegativeInt(record.order)
+      : clampNonNegativeInt(record.position.y);
 
-  return {...record,
+  return {
+    ...record,
     region,
     tabGroup,
     order,
@@ -83,14 +85,15 @@ export function migrateLayoutRecord(record: WorkspaceLayoutRecord): WorkspaceLay
   const order = clampNonNegativeInt(record.position.y);
   const tabGroup = record.tabGroup ?? 0;
 
-  return normalizeLayoutRecord({...record,
+  return normalizeLayoutRecord({
+    ...record,
     region,
     tabGroup,
     order,
   });
 }
 
-/** Batch migration for persisted layout arrays (reload host restore). */
+/** Batch migration for persisted layout arrays (reload / host restore). */
 export function migrateLayoutRecords(records: WorkspaceLayoutRecord[]): WorkspaceLayoutRecord[] {
   return records.map(migrateLayoutRecord);
 }

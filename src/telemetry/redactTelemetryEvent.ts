@@ -1,5 +1,5 @@
 /**
- * redaction guarantee: strip PII and credential-shaped values
+ * P15-T4 redaction guarantee (D55): strip PII and credential-shaped values
  * from telemetry payloads before host sink dispatch.
  */
 import type { TelemetryEvent } from './types';
@@ -43,7 +43,8 @@ function truncateAnonKeyHint(value: string): string {
     return trimmed;
   }
   return trimmed.length <= ANON_KEY_HINT_MAX_PREFIX
-    ? `${trimmed}…`: `${trimmed.slice(0, ANON_KEY_HINT_MAX_PREFIX)}…`;
+    ? `${trimmed}…`
+    : `${trimmed.slice(0, ANON_KEY_HINT_MAX_PREFIX)}…`;
 }
 
 export function isForbiddenTelemetryKey(key: string): boolean {
@@ -103,7 +104,7 @@ function redactJsonLike(value: JsonLike, fieldKey?: string): JsonLike {
 
 /**
  * Deep-redact a telemetry event before sink dispatch. Drops forbidden keys,
- * truncates `anonKeyHint`, and replaces PII credential-shaped strings.
+ * truncates `anonKeyHint`, and replaces PII / credential-shaped strings.
  */
 export function redactTelemetryEvent(event: TelemetryEvent): TelemetryEvent {
   return redactJsonLike(event as JsonLike) as TelemetryEvent;

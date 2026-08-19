@@ -1,5 +1,5 @@
 /**
- * Bridge panel tool runtime events into the spec devtools session.
+ * Bridge panel tool runtime events into the spec devtools session (P10-T2).
  */
 import type { PanelSpec } from '../panels/types';
 import type { SpecIssue } from '../panels/spec/types';
@@ -12,7 +12,8 @@ export function recordSpecInspection(
   targetLabel: string,
   spec: PanelSpec | null,
   errors: readonly SpecIssue[] = [],
-  warnings: readonly SpecIssue[] = []): void {
+  warnings: readonly SpecIssue[] = [],
+): void {
   session.inspectSpec({ targetLabel, spec, errors, warnings });
 }
 
@@ -22,7 +23,8 @@ export function recordSpecRepairFailure(
   spec: PanelSpec | null,
   errors: readonly SpecIssue[],
   repairEligible: boolean,
-  operation: 'compose' | 'patch'): void {
+  operation: 'compose' | 'patch',
+): void {
   session.recordRepairAttempt({
     targetLabel,
     spec,
@@ -34,14 +36,16 @@ export function recordSpecRepairFailure(
 
 export function recordSpecHitlQueued(
   session: SpecDevtoolsSession,
-  request: PendingApprovalRequest): void {
+  request: PendingApprovalRequest,
+): void {
   session.recordHitlQueued({ request });
 }
 
 export function recordSpecHitlResolved(
   session: SpecDevtoolsSession,
   request: PendingApprovalRequest,
-  status: ApprovalResolutionStatus): void {
+  status: ApprovalResolutionStatus,
+): void {
   session.recordHitlResolved({ request, status });
 }
 
@@ -49,6 +53,7 @@ export function recordSpecActionRun(
   session: SpecDevtoolsSession,
   panelId: string,
   actionId: string,
-  status: string): void {
+  status: string,
+): void {
   session.recordActionRun(panelId, actionId, status);
 }

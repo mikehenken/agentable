@@ -1,5 +1,5 @@
 /**
- * Host-facing agent runtime facade (`host.agents`, –).
+ * Host-facing agent runtime facade (`host.agents`, D22–D24, D43, D45, D49).
  *
  * Composes model sessions with the workspace world model: registry, activity,
  * leases, camera politeness, budget signal, digest compiler, and drill-downs.
@@ -42,14 +42,14 @@ export interface AgentRuntimeOptions {
   camera?: CameraQueue;
   budget?: AgentBudgetSignal;
   digest?: DigestCompiler;
-  /** Optional live digest input resolver for drill-downs compile helpers. */
+  /** Optional live digest input resolver for drill-downs / compile helpers. */
   resolveDigestInput?: () => DigestCompilerInput;
   getPanelState?: (panelId: string) => Record<string, unknown> | null;
-  /** Scoped panel/host tools for enforcement. When omitted, uses live host actions. */
+  /** Scoped panel/host tools for D45 enforcement. When omitted, uses live host actions. */
   tools?: readonly ToolDefinition[];
-  /** Resolve open instance ids to definition ids for panel scope enforcement. */
+  /** Resolve open instance ids to definition ids for panel scope enforcement (D45). */
   resolvePanelDefinitionId?: (panelId: string) => string | undefined;
-  /** Host telemetry sink for tool latency/error and cost events. */
+  /** Host telemetry sink for tool latency/error and cost events (D55). */
   telemetryEmit?: TelemetryEmit;
 }
 
@@ -60,13 +60,14 @@ export interface AgentRuntime {
   register(input: AgentRegistryRegisterInput): AgentRegistryEntry;
   claim(input: LeaseClaimInput): LeaseClaimResult;
   handoff(input: HandoffInput): HandoffResult;
-  /** Bound drill-down ToolDefinitions (read free-fire). */
-  createDrillDownTools: ToolDefinition[];
-  /** Execute a registered tool with role-scope enforcement and attribution. */
+  /** Bound drill-down ToolDefinitions (read / free-fire). */
+  createDrillDownTools(): ToolDefinition[];
+  /** Execute a registered tool with role-scope enforcement and attribution (D45). */
   executeTool(
     toolName: string,
     args: Record<string, unknown>,
-    context: AgentToolExecutionContext): Promise<ToolResult>;
+    context: AgentToolExecutionContext,
+  ): Promise<ToolResult>;
   readonly registry: AgentRegistry;
   readonly activity: ActivityLog;
   readonly leases: LeaseManager;
@@ -76,27 +77,30 @@ export interface AgentRuntime {
 }
 
 export function createAgentRuntime(options: AgentRuntimeOptions = {}): AgentRuntime {
-  const activity = options.activity ?? createActivityLog;
-  const registry = options.registry ?? createAgentRegistry;
-  const leases = options.leases ?? createLeaseManager;
-  const camera = options.camera ?? createCameraQueue;
-  const baseBudget = options.budget ?? createAgentBudget;
+  const activity = options.activity ?? createActivityLog();
+  const registry = options.registry ?? createAgentRegistry();
+  const leases = options.leases ?? createLeaseManager();
+  const camera = options.camera ?? createCameraQueue();
+  const baseBudget = options.budget ?? createAgentBudget();
   const budget =
     options.telemetryEmit !== undefined
-      ? wrapBudgetWithTelemetry(baseBudget, options.telemetryEmit): baseBudget;
-  const digest = options.digest ?? createDigestCompiler;
+      ? wrapBudgetWithTelemetry(baseBudget, options.telemetryEmit)
+      : baseBudget;
+  const digest = options.digest ?? createDigestCompiler();
   bindDrawingActivityLog(activity);
 
   const mergeDigestInput = (base: DigestCompilerInput): DigestCompilerInput => {
-    const shapeSlice = getEngineDigestShapeSlice;
+    const shapeSlice = getEngineDigestShapeSlice();
     if (shapeSlice === null) {
       return base;
     }
-    return {...base,
-      shapes: shapeSlice().shapes,
+    return {
+      ...base,
+      shapes: shapeSlice.shapes,
       changeBatchId:
         base.changeBatchId !== undefined
-          ? `${base.changeBatchId}|${shapeSlice().changeBatchId}`: shapeSlice().changeBatchId,
+          ? `${base.changeBatchId}|${shapeSlice.changeBatchId}`
+          : shapeSlice.changeBatchId,
     };
   };
 
@@ -104,7 +108,7 @@ export function createAgentRuntime(options: AgentRuntimeOptions = {}): AgentRunt
     if (options.resolveDigestInput !== undefined) {
       return mergeDigestInput(options.resolveDigestInput());
     }
-    const agents = registry.list.map((entry) => ({
+    const agents = registry.list().map((entry) => ({
       id: entry.id,
       kind: entry.kind,
       label: entry.label,
@@ -121,7 +125,7 @@ export function createAgentRuntime(options: AgentRuntimeOptions = {}): AgentRunt
   };
 
   const getDigest = (): ReturnType<DigestCompiler['compile']>['digest'] => {
-    return digest.compile(resolveLiveDigestInput).digest;
+    return digest.compile(resolveLiveDigestInput()).digest;
   };
 
   const drillDownHost: DrillDownHost = {
@@ -165,7 +169,7 @@ export function createAgentRuntime(options: AgentRuntimeOptions = {}): AgentRunt
     claim(input: LeaseClaimInput): LeaseClaimResult {
       const result = leases.claim(input);
       if (!result.ok && result.reason === 'conflict') {
-         // Advisory soft lease: warn in activity, do not block callers.
+        // Advisory soft lease: warn in activity, do not block callers (D23).
         activity.append({
           actor: input.source,
           verb: 'lease_conflict',
@@ -188,7 +192,8 @@ export function createAgentRuntime(options: AgentRuntimeOptions = {}): AgentRunt
     executeTool(
       toolName: string,
       args: Record<string, unknown>,
-      context: AgentToolExecutionContext): Promise<ToolResult> {
+      context: AgentToolExecutionContext,
+    ): Promise<ToolResult> {
       return toolExecutor.execute(toolName, args, context);
     },
 

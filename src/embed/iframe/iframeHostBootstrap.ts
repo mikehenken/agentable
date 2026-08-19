@@ -1,6 +1,6 @@
 /**
  * Sandboxed iframe host bootstrap — mounts `<agentable-panel>` and wires the
- * postMessage bridge for script-stripping CMS hosts.
+ * postMessage bridge for script-stripping CMS hosts (P9-T4).
  */
 import '../agentable-panel';
 import { ensurePageSession } from '../../session/pageSession';
@@ -35,7 +35,8 @@ function detailToRecord(detail: unknown): Record<string, unknown> {
 
 function applyPanelAttributes(
   panel: AgentablePanelElement,
-  params: NonNullable<ReturnType<typeof readIframeHostParamsFromSearchParams>>): void {
+  params: NonNullable<ReturnType<typeof readIframeHostParamsFromSearchParams>>,
+): void {
   if (params.panel) {
     panel.setAttribute('panel', params.panel);
     panel.panel = params.panel;
@@ -69,15 +70,15 @@ export function bootstrapIframeHostPage(doc: Document = document): () => void {
     alert.setAttribute('role', 'alert');
     alert.textContent = 'Missing or invalid iframe host surface parameter.';
     doc.body.appendChild(alert);
-    return ()=> undefined;
+    return () => undefined;
   }
 
   if (params.surface !== 'panel') {
     const alert = doc.createElement('div');
     alert.setAttribute('role', 'alert');
-    alert.textContent = `Iframe host surface "${params.surface}" is not supported in.`;
+    alert.textContent = `Iframe host surface "${params.surface}" is not supported in P9-T4.`;
     doc.body.appendChild(alert);
-    return ()=> undefined;
+    return () => undefined;
   }
 
   if (!params.panel?.trim()) {
@@ -85,14 +86,15 @@ export function bootstrapIframeHostPage(doc: Document = document): () => void {
     alert.setAttribute('role', 'alert');
     alert.textContent = 'Panel id is required for panel iframe host.';
     doc.body.appendChild(alert);
-    return ()=> undefined;
+    return () => undefined;
   }
 
   const searchParams = new URLSearchParams(doc.defaultView?.location.search ?? '');
   const bridgeId = createBridgeIdFromParams(searchParams);
   const allowedParentOrigins = readParentOriginAllowlistFromSearchParams(
     searchParams,
-    doc.defaultView?.document.referrer ?? null);
+    doc.defaultView?.document.referrer ?? null,
+  );
 
   doc.documentElement.style.height = '100%';
   doc.body.style.margin = '0';
@@ -125,11 +127,11 @@ export function bootstrapIframeHostPage(doc: Document = document): () => void {
     },
   });
 
-  const cleanups: Array<() => void> = [bridge.start];
+  const cleanups: Array<() => void> = [bridge.start()];
 
-  const session = ensurePageSession;
+  const session = ensurePageSession();
   const publishSession = (): void => {
-    bridge.publishSessionSnapshot(session().getSnapshot);
+    bridge.publishSessionSnapshot(session.getSnapshot());
   };
 
   const sessionInterval = doc.defaultView?.setInterval(publishSession, 5000);
@@ -147,8 +149,9 @@ export function bootstrapIframeHostPage(doc: Document = document): () => void {
   }
 
   publishSession();
+
   return () => {
-    for (const cleanup of cleanups.reverse) {
+    for (const cleanup of cleanups.reverse()) {
       cleanup();
     }
     panel.remove();

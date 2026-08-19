@@ -1,5 +1,5 @@
 /**
- * Structured `rate_limited` refusal shape ( web-components rule 5.3).
+ * Structured `rate_limited` refusal shape (D55 / web-components rule 5.3).
  */
 import type { AnonKeyRateLimitDenied } from './types';
 
@@ -45,7 +45,7 @@ export function isAnonKeyRateLimitedError(error: unknown): error is AnonKeyRateL
 export function anonKeyHint(anonKey: string): string | undefined {
   const trimmed = anonKey.trim();
   if (!trimmed) return undefined;
-  return trimmed.length <= 8 ? `${trimmed}…`: `${trimmed.slice(0, 8)}…`;
+  return trimmed.length <= 8 ? `${trimmed}…` : `${trimmed.slice(0, 8)}…`;
 }
 
 export function buildRateLimitedRefusal(input: {
@@ -58,8 +58,11 @@ export function buildRateLimitedRefusal(input: {
     code: RATE_LIMITED_CODE,
     message:
       input.message ??
-      `Anon-key rate limit exceeded${hint ? ` for ${hint}`: ''}; retry after ${input.denied.retryAfterMs}ms.`,
-    retryAfterMs: input.denied.retryAfterMs,...(hint ? { anonKeyHint: hint }: {}),...(input.denied.limit !== undefined ? { limit: input.denied.limit }: {}),...(input.denied.windowMs !== undefined ? { windowMs: input.denied.windowMs }: {}),
+      `Anon-key rate limit exceeded${hint ? ` for ${hint}` : ''}; retry after ${input.denied.retryAfterMs}ms.`,
+    retryAfterMs: input.denied.retryAfterMs,
+    ...(hint ? { anonKeyHint: hint } : {}),
+    ...(input.denied.limit !== undefined ? { limit: input.denied.limit } : {}),
+    ...(input.denied.windowMs !== undefined ? { windowMs: input.denied.windowMs } : {}),
   };
 }
 
@@ -72,7 +75,10 @@ export function buildRateLimitedRefusalFromHttp429(input: {
   const hint = anonKeyHint(input.anonKey);
   return {
     code: RATE_LIMITED_CODE,
-    message: `Anon-key tenant lookup rate limited${hint ? ` for ${hint}`: ''}.`,
-    retryAfterMs: input.retryAfterMs,...(hint ? { anonKeyHint: hint }: {}),...(input.limit !== undefined ? { limit: input.limit }: {}),...(input.windowMs !== undefined ? { windowMs: input.windowMs }: {}),
+    message: `Anon-key tenant lookup rate limited${hint ? ` for ${hint}` : ''}.`,
+    retryAfterMs: input.retryAfterMs,
+    ...(hint ? { anonKeyHint: hint } : {}),
+    ...(input.limit !== undefined ? { limit: input.limit } : {}),
+    ...(input.windowMs !== undefined ? { windowMs: input.windowMs } : {}),
   };
 }

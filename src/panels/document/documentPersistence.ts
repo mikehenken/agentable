@@ -1,5 +1,5 @@
 /**
- * localStorage-backed `workspace.documents` store.
+ * localStorage-backed `workspace.documents` store (P12-T3, D54).
  * Survives reload when hosts use `createPersistedDocumentStore`.
  */
 import type { DocumentPayload } from './types';
@@ -20,7 +20,8 @@ function storageKey(persistenceKey: string): string {
 }
 
 function loadPersistedDocuments(
-  persistenceKey: string): Record<string, DocumentPayload> {
+  persistenceKey: string,
+): Record<string, DocumentPayload> {
   if (typeof globalThis.localStorage === 'undefined') {
     return {};
   }
@@ -37,7 +38,7 @@ function loadPersistedDocuments(
     for (const [documentId, value] of Object.entries(parsed)) {
       const payload = parseDocumentPayload(value);
       if (payload !== null) {
-        out[documentId] = {...payload, documentId };
+        out[documentId] = { ...payload, documentId };
       }
     }
     return out;
@@ -48,14 +49,15 @@ function loadPersistedDocuments(
 
 function savePersistedDocuments(
   persistenceKey: string,
-  documents: Readonly<Record<string, DocumentPayload>>): void {
+  documents: Readonly<Record<string, DocumentPayload>>,
+): void {
   if (typeof globalThis.localStorage === 'undefined') {
     return;
   }
   try {
     globalThis.localStorage.setItem(storageKey(persistenceKey), JSON.stringify(documents));
   } catch {
-     // Quota or privacy mode — in-memory layer still holds mutations for the session.
+    // Quota or privacy mode — in-memory layer still holds mutations for the session.
   }
 }
 
@@ -69,10 +71,11 @@ export function clearPersistedDocumentsForTests(persistenceKey = 'default'): voi
 
 /**
  * Document store with localStorage round-trip. Mutations through
- * `createDocumentDataAdapter` `withDocumentSource` persist on every `set`.
+ * `createDocumentDataAdapter` / `withDocumentSource` persist on every `set`.
  */
 export function createPersistedDocumentStore(
-  options: PersistedDocumentStoreOptions = {}): DocumentStore {
+  options: PersistedDocumentStoreOptions = {},
+): DocumentStore {
   const persistenceKey = options.persistenceKey ?? 'default';
   const seed = options.seed ?? {};
   const persisted = loadPersistedDocuments(persistenceKey);

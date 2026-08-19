@@ -1,6 +1,6 @@
 /**
- * DocumentView catalog composite: block model renderer with
- * pre-save undo stack and block-list virtualization.
+ * DocumentView catalog composite (D50, P12-T2): block model renderer with
+ * pre-save undo stack (D53) and block-list virtualization (D56).
  */
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { SpecNodeContextValue } from '../types';
@@ -27,22 +27,23 @@ export interface DocumentEditorApi {
   apply(op: BlockOp): void;
   undo(): void;
   redo(): void;
-  canUndo: boolean;
-  canRedo: boolean;
+  canUndo(): boolean;
+  canRedo(): boolean;
   readonly blocks: readonly DocBlock[];
 }
 
 export interface DocumentViewProps extends CatalogComponentProps {
   bind?: string;
-  /** Per-instance threshold override. */
+  /** Per-instance D56 threshold override. */
   virtualizeThreshold?: number;
-  /** Optional hook for patch_panel tests to drive the pre-save stack. */
+  /** Optional hook for patch_panel / tests to drive the pre-save stack (D53). */
   onEditorReady?: (api: DocumentEditorApi) => void;
 }
 
 function renderState(
   state: SpecNodeContextValue['state'] | undefined,
-  children: React.ReactNode): React.ReactNode {
+  children: React.ReactNode,
+): React.ReactNode {
   if (state === 'loading') {
     return <div data-testid="loading-skeleton">Loading...</div>;
   }
@@ -56,9 +57,9 @@ function renderState(
   return (
     <>
       <span data-testid="populated-content">{children}</span>
-      {state === 'dirty' ? <span data-testid="dirty-indicator">Unsaved changes</span>: null}
-      {state === 'saving' ? <span data-testid="saving-spinner">Saving...</span>: null}
-      {state === 'stale' ? <span data-testid="stale-banner-inline">Data is stale</span>: null}
+      {state === 'dirty' ? <span data-testid="dirty-indicator">Unsaved changes</span> : null}
+      {state === 'saving' ? <span data-testid="saving-spinner">Saving...</span> : null}
+      {state === 'stale' ? <span data-testid="stale-banner-inline">Data is stale</span> : null}
     </>
   );
 }
@@ -147,12 +148,14 @@ function VirtualBlockViewport(props: VirtualBlockViewportProps): React.ReactElem
 
 export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
   const { bind, context, virtualizeThreshold, onEditorReady } = props;
-  const formRuntime = useOptionalFormRuntime;
-  const ownerId = useId;
-  const bound = bind !== undefined ? context?.data[bind]: undefined;
-  const payload = isDocumentPayload(bound) ? bound: null;
-  const serverBlocks = useMemo(() => payload?.blocks ?? [],
-    [payload?.blocks]);
+  const formRuntime = useOptionalFormRuntime();
+  const ownerId = useId();
+  const bound = bind !== undefined ? context?.data[bind] : undefined;
+  const payload = isDocumentPayload(bound) ? bound : null;
+  const serverBlocks = useMemo(
+    () => payload?.blocks ?? [],
+    [payload?.blocks],
+  );
 
   const stackRef = useRef<DocumentUndoStack | null>(null);
   if (stackRef.current === null) {
@@ -160,8 +163,10 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
   }
 
   const stack = stackRef.current;
-  const serverKey = useMemo(() => JSON.stringify(serverBlocks.map((block) => block.id)),
-    [serverBlocks]);
+  const serverKey = useMemo(
+    () => JSON.stringify(serverBlocks.map((block) => block.id)),
+    [serverBlocks],
+  );
 
   const latestRef = useRef({ context, payload, stack });
   latestRef.current = { context, payload, stack };
@@ -194,11 +199,11 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
     ) {
       return undefined;
     }
-    const source = formRuntime().sources?.[bind]?.source;
+    const source = formRuntime.sources?.[bind]?.source;
     if (source === undefined) {
       return undefined;
     }
-    return formRuntime().formBus.register(ownerId(), {
+    return formRuntime.formBus.register(ownerId, {
       source,
       submit: submitDocument,
       fill: fillDocument,
@@ -224,7 +229,8 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
       setDraftRevision((value) => value + 1);
       void next;
     },
-    [context]);
+    [context],
+  );
 
   const editorApi = useMemo((): DocumentEditorApi => {
     return {
@@ -236,12 +242,12 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
         applyLocalBlocks(next);
       },
       undo(): void {
-        const next = stack.undo;
-        if (next !== null) applyLocalBlocks(next());
+        const next = stack.undo();
+        if (next !== null) applyLocalBlocks(next);
       },
       redo(): void {
-        const next = stack.redo;
-        if (next !== null) applyLocalBlocks(next());
+        const next = stack.redo();
+        if (next !== null) applyLocalBlocks(next);
       },
       canUndo(): boolean {
         return stack.canUndo();
@@ -272,7 +278,7 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
   const documentBody =
     blocks.length === 0 ? (
       <div data-testid="document-empty-blocks">Empty document</div>
-    ): (
+    ) : (
       <VirtualBlockViewport blocks={blocks} threshold={threshold} />
     );
 
@@ -281,8 +287,8 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
       data-testid="document-view"
       data-document-editor-host
       data-document-id={payload.documentId}
-      data-can-undo={stack.canUndo}
-      data-can-redo={stack.canRedo}
+      data-can-undo={stack.canUndo()}
+      data-can-redo={stack.canRedo()}
     >
       <header data-testid="document-title">{payload.title}</header>
       {renderState(context?.state ?? 'populated', documentBody)}
@@ -290,7 +296,7 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
         <button
           type="button"
           data-testid="document-undo"
-          disabled={!stack.canUndo}
+          disabled={!stack.canUndo()}
           onClick={() => {
             editorApi.undo();
           }}
@@ -300,7 +306,7 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
         <button
           type="button"
           data-testid="document-redo"
-          disabled={!stack.canRedo}
+          disabled={!stack.canRedo()}
           onClick={() => {
             editorApi.redo();
           }}

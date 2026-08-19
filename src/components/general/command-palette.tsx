@@ -89,7 +89,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   }, [open]);
 
   const ranked = React.useMemo(() => {
-    return commands.filter((c) => (c.available ? c.available() : true)).map((c) => ({ c, s: score(c, query) })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s).map((x) => x.c);
+    return commands
+      .filter((c) => (c.available ? c.available() : true))
+      .map((c) => ({ c, s: score(c, query) }))
+      .filter((x) => x.s > 0)
+      .sort((a, b) => b.s - a.s)
+      .map((x) => x.c);
   }, [commands, query]);
 
   // Keep `active` index in bounds as the result list shrinks.

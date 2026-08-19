@@ -1,5 +1,5 @@
 /**
- * Agent registry (03 section 3.2): session presence, heartbeats, and
+ * Agent registry (03 section 3.2, D45): session presence, heartbeats, and
  * status transitions that feed the workspace digest.
  */
 import type { CapabilityDescriptor } from './capabilities';
@@ -13,11 +13,11 @@ export interface AgentRegistryRegisterInput {
   transport: string;
   capabilities?: readonly CapabilityDescriptor[];
   task?: string;
-  /** Allowed tool names for role-scope enforcement. */
+  /** Allowed tool names for role-scope enforcement (D45). */
   allowedTools?: readonly string[];
-  /** Allowed panel definition ids. */
+  /** Allowed panel definition ids (D45). */
   allowedPanels?: readonly string[];
-  /** Allowed page slots. */
+  /** Allowed page slots (D45). */
   allowedSlots?: readonly string[];
 }
 
@@ -45,7 +45,7 @@ export interface AgentRegistry {
   setStatus(agentId: string, status: AgentSessionStatus, task?: string): AgentRegistryEntry | undefined;
   heartbeat(agentId: string, nowMs?: number): AgentRegistryEntry | undefined;
   /**
-   * Role-scope check. Empty allow-lists mean unrestricted for that axis.
+   * Role-scope check (D45). Empty allow-lists mean unrestricted for that axis.
    */
   isToolAllowed(agentId: string, toolName: string): boolean;
   isPanelAllowed(agentId: string, panelId: string): boolean;
@@ -58,14 +58,15 @@ export function createAgentRegistry(options?: {
 }): AgentRegistry {
   const now = options?.now ?? (() => Date.now());
   const entries = new Map<string, AgentRegistryEntry>();
-  const listeners = new Set<() => void>;
+  const listeners = new Set<() => void>();
 
   const notify = (): void => {
-    for (const listener of listeners) listener;
+    for (const listener of listeners) listener();
   };
 
-  const cloneEntry = (entry: AgentRegistryEntry): AgentRegistryEntry => ({...entry,
-    capabilities: entry.capabilities.map((capability) => ({...capability })),
+  const cloneEntry = (entry: AgentRegistryEntry): AgentRegistryEntry => ({
+    ...entry,
+    capabilities: entry.capabilities.map((capability) => ({ ...capability })),
     allowedTools: [...entry.allowedTools],
     allowedPanels: [...entry.allowedPanels],
     allowedSlots: [...entry.allowedSlots],
@@ -74,20 +75,20 @@ export function createAgentRegistry(options?: {
   return {
     register(input: AgentRegistryRegisterInput): AgentRegistryEntry {
       const existing = entries.get(input.id);
-      const timestamp = now;
+      const timestamp = now();
       const entry: AgentRegistryEntry = {
         id: input.id,
         kind: input.kind,
         label: input.label,
         scope: input.scope,
         transport: input.transport,
-        capabilities: (input.capabilities ?? []).map((capability) => ({...capability })),
+        capabilities: (input.capabilities ?? []).map((capability) => ({ ...capability })),
         status: existing?.status ?? 'idle',
         task: input.task ?? existing?.task,
         allowedTools: [...(input.allowedTools ?? existing?.allowedTools ?? [])],
         allowedPanels: [...(input.allowedPanels ?? existing?.allowedPanels ?? [])],
         allowedSlots: [...(input.allowedSlots ?? existing?.allowedSlots ?? [])],
-        lastHeartbeatAt: timestamp(),
+        lastHeartbeatAt: timestamp,
         registeredAt: existing?.registeredAt ?? timestamp,
       };
       entries.set(input.id, entry);
@@ -97,19 +98,19 @@ export function createAgentRegistry(options?: {
 
     unregister(agentId: string): boolean {
       const removed = entries.delete(agentId);
-      if (removed) notify;
+      if (removed) notify();
       return removed;
     },
 
     get(agentId: string): AgentRegistryEntry | undefined {
       const entry = entries.get(agentId);
-      return entry !== undefined ? cloneEntry(entry): undefined;
+      return entry !== undefined ? cloneEntry(entry) : undefined;
     },
 
     list(agentId?: string): readonly AgentRegistryEntry[] {
       if (agentId !== undefined) {
         const entry = entries.get(agentId);
-        return entry !== undefined ? [cloneEntry(entry)]: [];
+        return entry !== undefined ? [cloneEntry(entry)] : [];
       }
       return [...entries.values()].map(cloneEntry);
     },
@@ -117,12 +118,14 @@ export function createAgentRegistry(options?: {
     setStatus(
       agentId: string,
       status: AgentSessionStatus,
-      task?: string): AgentRegistryEntry | undefined {
+      task?: string,
+    ): AgentRegistryEntry | undefined {
       const entry = entries.get(agentId);
       if (entry === undefined) return undefined;
-      const updated: AgentRegistryEntry = {...entry,
+      const updated: AgentRegistryEntry = {
+        ...entry,
         status,
-        task: task !== undefined ? task: entry.task,
+        task: task !== undefined ? task : entry.task,
         lastHeartbeatAt: now(),
       };
       entries.set(agentId, updated);
@@ -133,8 +136,9 @@ export function createAgentRegistry(options?: {
     heartbeat(agentId: string, nowMs?: number): AgentRegistryEntry | undefined {
       const entry = entries.get(agentId);
       if (entry === undefined) return undefined;
-      const updated: AgentRegistryEntry = {...entry,
-        lastHeartbeatAt: nowMs ?? now,
+      const updated: AgentRegistryEntry = {
+        ...entry,
+        lastHeartbeatAt: nowMs ?? now(),
       };
       entries.set(agentId, updated);
       notify();

@@ -110,9 +110,11 @@ function rawNodeChildIds(raw: JsonValue): string[] {
 }
 
 export function createStreamingSpecSession(
-  options: CreateStreamingSpecSessionOptions): StreamingSpecSession {
+  options: CreateStreamingSpecSessionOptions,
+): StreamingSpecSession {
   const { validation } = options;
-  const partialCatalog = new Map<string, SpecCatalogEntry>([...validation.catalog,
+  const partialCatalog = new Map<string, SpecCatalogEntry>([
+    ...validation.catalog,
     [STREAMING_SKELETON_TYPE, skeletonValidationEntry],
   ]);
   const partialValidation: SpecValidationContext = { ...validation, catalog: partialCatalog };
@@ -164,7 +166,10 @@ export function createStreamingSpecSession(
       v: envelope.v,
       origin: envelope.origin,
       root: envelope.root,
-      nodes: rawNodes,...(envelope.sources !== undefined ? { sources: envelope.sources }: {}),...(envelope.state !== undefined ? { state: envelope.state }: {}),...(envelope.actions !== undefined ? { actions: envelope.actions }: {}),
+      nodes: rawNodes,
+      ...(envelope.sources !== undefined ? { sources: envelope.sources } : {}),
+      ...(envelope.state !== undefined ? { state: envelope.state } : {}),
+      ...(envelope.actions !== undefined ? { actions: envelope.actions } : {}),
     };
   };
 
@@ -199,7 +204,8 @@ export function createStreamingSpecSession(
 
   const rejected = (
     reason: 'duplicate' | 'gap' | 'protocol' | 'closed',
-    message: string): ApplyChunkResult => ({ applied: false, reason, nextSeq, message });
+    message: string,
+  ): ApplyChunkResult => ({ applied: false, reason, nextSeq, message });
 
   return {
     applyChunk(chunk: SpecStreamChunk): ApplyChunkResult {
@@ -281,7 +287,8 @@ export interface SpecToStreamChunksOptions {
  */
 export function specToStreamChunks(
   spec: PanelSpec,
-  options: SpecToStreamChunksOptions = {}): SpecStreamChunk[] {
+  options: SpecToStreamChunksOptions = {},
+): SpecStreamChunk[] {
   const nodeIds = options.nodeOrder ?? Object.keys(spec.nodes);
   const chunks: SpecStreamChunk[] = [
     {
@@ -290,9 +297,14 @@ export function specToStreamChunks(
       envelope: {
         v: spec.v,
         origin: spec.origin,
-        root: spec.root,...(spec.sources !== undefined
-          ? { sources: spec.sources as unknown as JsonObject }: {}),...(spec.state !== undefined ? { state: spec.state }: {}),...(spec.actions !== undefined
-          ? { actions: spec.actions as unknown as JsonObject }: {}),
+        root: spec.root,
+        ...(spec.sources !== undefined
+          ? { sources: spec.sources as unknown as JsonObject }
+          : {}),
+        ...(spec.state !== undefined ? { state: spec.state } : {}),
+        ...(spec.actions !== undefined
+          ? { actions: spec.actions as unknown as JsonObject }
+          : {}),
       },
     },
   ];

@@ -1,5 +1,5 @@
 /**
- * Operator registration bridge: registers the canvas-wide operator
+ * Operator registration bridge (P13-T5): registers the canvas-wide operator
  * agent alongside scoped page agents without clobbering their identity, leases,
  * or HITL queues.
  *
@@ -26,7 +26,7 @@ export type OperatorRegistrationRuntime = Pick<
   'register' | 'claim' | 'registry' | 'leases' | 'activity'
 >;
 
-/** Stable acting-agent context for operator tool execution. */
+/** Stable acting-agent context for operator tool execution (D45). */
 export const OPERATOR_TOOL_CONTEXT: AgentToolExecutionContext = {
   agentId: OPERATOR_AGENT_ID,
   agentLabel: OPERATOR_LABEL,
@@ -39,7 +39,8 @@ let activeMode: OperatorMode = 'auto';
 
 /** Host/runtime hook — called from `createCanvasHost` so the Lit surface can register. */
 export function setOperatorRegistrationRuntime(
-  runtime: OperatorRegistrationRuntime | null): void {
+  runtime: OperatorRegistrationRuntime | null,
+): void {
   activeRuntime = runtime;
 }
 
@@ -66,7 +67,8 @@ export function buildOperatorRegistrationInput(mode: OperatorMode): AgentRegistr
 function appendRegistrationActivity(
   runtime: OperatorRegistrationRuntime,
   verb: 'operator_registered' | 'operator_unregistered' | 'operator_mode_synced',
-  target: string): void {
+  target: string,
+): void {
   runtime.activity.append({
     actor: `agent:${OPERATOR_AGENT_ID}`,
     verb,

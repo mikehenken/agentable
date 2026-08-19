@@ -67,13 +67,13 @@ function isPanelDock(value: unknown): value is PanelDock {
 export function getPanelDock(shape: TLShape | null | undefined): PanelDock | null {
   if (!shape?.meta) return null;
   const raw = shape.meta[PANEL_DOCK_META_KEY];
-  return isPanelDock(raw) ? raw: null;
+  return isPanelDock(raw) ? raw : null;
 }
 
 export function setPanelDock(editor: Editor, shapeId: TLShapeId, dock: PanelDock | null): void {
   const shape = editor.getShape(shapeId);
   if (!shape || shape.type !== 'panel') return;
-  const nextMeta = {...(shape.meta ?? {}) };
+  const nextMeta = { ...(shape.meta ?? {}) };
   if (dock) {
     nextMeta[PANEL_DOCK_META_KEY] = dock;
   } else {
@@ -143,7 +143,8 @@ function dockEdgeSegment(rect: LayoutRect, edge: PanelDockEdge): DockZoneHighlig
 function distanceToRectEdge(
   point: { x: number; y: number },
   rect: LayoutRect,
-  edge: PanelDockEdge): number {
+  edge: PanelDockEdge,
+): number {
   switch (edge) {
     case 'left':
       return Math.abs(point.x - rect.x);
@@ -164,7 +165,8 @@ function isPointNearRectEdge(
   point: { x: number; y: number },
   rect: LayoutRect,
   edge: PanelDockEdge,
-  threshold: number): boolean {
+  threshold: number,
+): boolean {
   const dist = distanceToRectEdge(point, rect, edge);
   if (dist > threshold) return false;
   if (edge === 'left' || edge === 'right') {
@@ -193,7 +195,8 @@ function buildDockZonesForFrame(editor: Editor, frameId: TLShapeId): DockZone[] 
 
 function buildDockZonesForSibling(
   editor: Editor,
-  siblingId: TLShapeId): DockZone[] {
+  siblingId: TLShapeId,
+): DockZone[] {
   const rect = getShapePageRect(editor, siblingId);
   if (!rect) return [];
   return [
@@ -213,7 +216,8 @@ export function hitTestPanelDock(
   editor: Editor,
   draggedShapeId: TLShapeId,
   pagePoint: { x: number; y: number },
-  threshold: number = DOCK_HIT_THRESHOLD): PanelDock | null {
+  threshold: number = DOCK_HIT_THRESHOLD,
+): PanelDock | null {
   const highlight = previewPanelDockHighlight(editor, draggedShapeId, pagePoint, threshold);
   return highlight?.dock ?? null;
 }
@@ -226,7 +230,8 @@ export function previewPanelDockHighlight(
   editor: Editor,
   draggedShapeId: TLShapeId,
   pagePoint: { x: number; y: number },
-  threshold: number = DOCK_HIT_THRESHOLD): { dock: PanelDock; highlight: DockZoneHighlight } | null {
+  threshold: number = DOCK_HIT_THRESHOLD,
+): { dock: PanelDock; highlight: DockZoneHighlight } | null {
   const ctx = findContextFrameGroupForShape(editor, draggedShapeId);
   if (!ctx) return null;
 
@@ -252,7 +257,8 @@ export function previewPanelDockHighlight(
         panelRect,
         zone.rect,
         zone.dock.edge,
-        threshold);
+        threshold,
+      );
       if (!nearCursor && !nearPanelEdge) continue;
       const dist = distanceToRectEdge(pagePoint, zone.rect, zone.dock.edge);
       if (!best || dist < best.dist) {
@@ -277,7 +283,8 @@ function isPanelEdgeNearDockTarget(
   panelRect: LayoutRect,
   targetRect: LayoutRect,
   edge: PanelDockEdge,
-  threshold: number): boolean {
+  threshold: number,
+): boolean {
   switch (edge) {
     case 'left': {
       const panelLeft = panelRect.x;
@@ -336,7 +343,8 @@ export function resolveDock(
   editor: Editor,
   dock: PanelDock,
   size: { w: number; h: number },
-  resolvedTargets: Map<TLShapeId, LayoutRect> = new Map()): ResolvedDockPlacement | null {
+  resolvedTargets: Map<TLShapeId, LayoutRect> = new Map(),
+): ResolvedDockPlacement | null {
   if (dock.target === 'canvas') {
     const viewport = editor.getViewportPageBounds();
     const inset = 24;
@@ -370,14 +378,14 @@ export function resolveDock(
     const innerBottom = inner.y + inner.h;
     const fillHeight = dock.fillHeight === true;
     const verticalGap = dock.gap;
-    const resolvedH = fillHeight ? Math.max(0, inner.h - verticalGap * 2): size.h;
+    const resolvedH = fillHeight ? Math.max(0, inner.h - verticalGap * 2) : size.h;
 
     switch (dock.edge) {
       case 'left':
         return {
           x: inner.x + dock.gap,
           y: inner.y + verticalGap,
-          h: fillHeight ? resolvedH: undefined,
+          h: fillHeight ? resolvedH : undefined,
         };
       case 'top':
         return { x: inner.x + dock.gap, y: inner.y + dock.gap };
@@ -385,7 +393,7 @@ export function resolveDock(
         return {
           x: innerRight - size.w - dock.gap,
           y: inner.y + verticalGap,
-          h: fillHeight ? resolvedH: undefined,
+          h: fillHeight ? resolvedH : undefined,
         };
       case 'bottom':
         return {
@@ -461,7 +469,8 @@ export function applyPanelDock(editor: Editor, shapeId: TLShapeId, dock: PanelDo
     type: 'panel',
     x: resolved.x,
     y: resolved.y,
-    props: {...props,
+    props: {
+      ...props,
       w: resolved.w ?? props.w,
       h: resolved.h ?? props.h,
     },
@@ -475,7 +484,8 @@ export function applyPanelDock(editor: Editor, shapeId: TLShapeId, dock: PanelDo
 export function resolveDockTree(
   editor: Editor,
   frameId: TLShapeId,
-  nodes: DockTreeNode[]): DockTreePlacement[] {
+  nodes: DockTreeNode[],
+): DockTreePlacement[] {
   const resolvedRects = new Map<TLShapeId, LayoutRect>();
   const placements: DockTreePlacement[] = [];
 
@@ -510,7 +520,8 @@ export function resolveDockTree(
 /** Collect panels in a site frame that have dock metadata. */
 export function collectDockedPanelsInFrame(
   editor: Editor,
-  frameId: TLShapeId): Array<{ shapeId: TLShapeId; panelId: string; dock: PanelDock }> {
+  frameId: TLShapeId,
+): Array<{ shapeId: TLShapeId; panelId: string; dock: PanelDock }> {
   const result: Array<{ shapeId: TLShapeId; panelId: string; dock: PanelDock }> = [];
   for (const childId of editor.getSortedChildIdsForParent(frameId)) {
     const shape = editor.getShape(childId);
@@ -560,13 +571,15 @@ export function cascadeDockedPanelsInFrame(editor: Editor, frameId: TLShapeId): 
     // would offset the panel by the frame's page position (chat flying off).
     const local =
       frame && shape.parentId === frameId
-        ? editor.getPointInShapeSpace(frame, { x: placement.x, y: placement.y }): { x: placement.x, y: placement.y };
+        ? editor.getPointInShapeSpace(frame, { x: placement.x, y: placement.y })
+        : { x: placement.x, y: placement.y };
     editor.updateShape({
       id: placement.shapeId,
       type: 'panel',
       x: local.x,
       y: local.y,
-      props: {...props,
+      props: {
+        ...props,
         w: placement.w ?? props.w,
         h: placement.h ?? props.h,
       },
@@ -592,11 +605,11 @@ export function isReflowInProgress(): boolean {
  * web-preview keeps SYMMETRIC gutters on both inner sides.
  *
  * 1. Edge-docked panels (chat → left, files → right) snap flush to the frame
- * inner edges at full inner height (via `cascadeDockedPanelsInFrame`) — so
- * they follow both horizontal and vertical GROUP resizes.
+ *    inner edges at full inner height (via `cascadeDockedPanelsInFrame`) — so
+ *    they follow both horizontal and vertical GROUP resizes.
  * 2. The non-docked web-preview fills the space between the docked neighbours,
- * inset by one `GRID_GUTTER` on each side, at full inner height. Spacing is
- * then chat | gutter | preview | gutter | files (equal inner gutters).
+ *    inset by one `GRID_GUTTER` on each side, at full inner height. Spacing is
+ *    then chat | gutter | preview | gutter | files (equal inner gutters).
  *
  * Safe to run on GROUP/frame resize: it only moves/sizes CHILD panels to match
  * the frame's current inner bounds and never resizes the frame itself, so the
@@ -661,21 +674,22 @@ export function reflowContextFrameRow(editor: Editor, frameId: TLShapeId): void 
         }
       }
 
-      const previewX = hasLeftNeighbour ? leftBound + GRID_GUTTER: inner.x;
-      const previewRight = hasRightNeighbour ? rightBound - GRID_GUTTER: inner.x + inner.w;
+      const previewX = hasLeftNeighbour ? leftBound + GRID_GUTTER : inner.x;
+      const previewRight = hasRightNeighbour ? rightBound - GRID_GUTTER : inner.x + inner.w;
       const previewW = Math.max(GRID_SIZE, previewRight - previewX);
 
       const previewShape = editor.getShape(previewId);
       const local =
         previewShape && previewShape.parentId === frameId
-          ? editor.getPointInShapeSpace(frameShape, { x: previewX, y: inner.y }): { x: previewX, y: inner.y };
+          ? editor.getPointInShapeSpace(frameShape, { x: previewX, y: inner.y })
+          : { x: previewX, y: inner.y };
 
       editor.updateShape({
         id: previewId,
         type: 'panel',
         x: local.x,
         y: local.y,
-        props: {...previewProps, w: previewW, h: inner.h },
+        props: { ...previewProps, w: previewW, h: inner.h },
       });
     });
   } finally {
@@ -710,14 +724,14 @@ function sortDockNodesByDependency(nodes: DockTreeNode[]): DockTreeNode[] {
     }
   }
 
-  return sorted.length === nodes.length ? sorted: nodes;
+  return sorted.length === nodes.length ? sorted : nodes;
 }
 
 function editorShapeIdToPanelId(shapeId: TLShapeId): ContextFramePanelKind | null {
   const prefix = 'shape:panel:';
   if (!String(shapeId).startsWith(prefix)) return null;
   const panelId = String(shapeId).slice(prefix.length);
-  return isSitePanelKind(panelId) ? panelId: null;
+  return isSitePanelKind(panelId) ? panelId : null;
 }
 
 function isSitePanelKind(value: string): value is ContextFramePanelKind {

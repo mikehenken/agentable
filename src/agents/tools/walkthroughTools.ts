@@ -1,5 +1,5 @@
 /**
- * Story-mode walkthrough tool: present_walkthrough queues camera
+ * Story-mode walkthrough tool (P8-T6): present_walkthrough queues camera
  * moves through the P6 politeness queue and emits per-step narration.
  */
 import { emitAgUiStatePatch } from '../../protocol/ag-ui';
@@ -26,11 +26,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readTarget(value: unknown): WalkthroughTarget | undefined {
@@ -38,7 +38,9 @@ function readTarget(value: unknown): WalkthroughTarget | undefined {
     return { kind: 'panel', panelId: value };
   }
   if (Array.isArray(value) && value.length > 0) {
-    const shapeIds = value.map((entry) => readString(entry)).filter((entry): entry is string => entry !== undefined);
+    const shapeIds = value
+      .map((entry) => readString(entry))
+      .filter((entry): entry is string => entry !== undefined);
     if (shapeIds.length !== value.length) return undefined;
     return { kind: 'shapes', shapeIds };
   }
@@ -59,23 +61,26 @@ function readWalkthroughStep(value: unknown): WalkthroughStepInput | undefined {
 
 function readWalkthroughSteps(value: unknown): WalkthroughStepInput[] | undefined {
   if (!Array.isArray(value) || value.length === 0) return undefined;
-  const steps = value.map((entry) => readWalkthroughStep(entry)).filter((entry): entry is WalkthroughStepInput => entry !== undefined);
+  const steps = value
+    .map((entry) => readWalkthroughStep(entry))
+    .filter((entry): entry is WalkthroughStepInput => entry !== undefined);
   if (steps.length !== value.length) return undefined;
   return steps;
 }
 
 function resolveActingAgentId(args: Record<string, unknown>): string {
-  const ctx = getAgentToolContext;
+  const ctx = getAgentToolContext();
   if (ctx === null) {
     throw new Error('agent tool context is required for this operation');
   }
   const override = readString(args.agentId);
-  return override ?? ctx().agentId;
+  return override ?? ctx.agentId;
 }
 
 function emitWalkthroughNarration(
   agentId: string,
-  narration: { stepIndex: number; say: string }): void {
+  narration: { stepIndex: number; say: string },
+): void {
   emitAgUiStatePatch(
     [
       {
@@ -89,7 +94,8 @@ function emitWalkthroughNarration(
         },
       },
     ],
-    { source: 'tool', toolName: 'present_walkthrough' });
+    { source: 'tool', toolName: 'present_walkthrough' },
+  );
 }
 
 function walkthroughRuntimeRefusal(): { ok: false; error: string } {
@@ -122,12 +128,12 @@ export const WALKTHROUGH_TOOLS: readonly ToolDefinition[] = [
   {
     declaration: declarationPresentWalkthrough,
     handler: async (args) => {
-      if (!isDrawCapabilityAvailable) {
-        return drawCapabilityRefusal;
+      if (!isDrawCapabilityAvailable()) {
+        return drawCapabilityRefusal();
       }
-      const runtime = getWalkthroughRuntime;
+      const runtime = getWalkthroughRuntime();
       if (runtime === null) {
-        return walkthroughRuntimeRefusal;
+        return walkthroughRuntimeRefusal();
       }
       const steps = readWalkthroughSteps(args.steps);
       if (steps === undefined) {
@@ -141,11 +147,11 @@ export const WALKTHROUGH_TOOLS: readonly ToolDefinition[] = [
         const result = await runWalkthrough({
           agentId,
           steps,
-          camera: runtime().camera,
-          resolveTarget: runtime().resolveTarget,
-          applyIntent: runtime().applyIntent,
+          camera: runtime.camera,
+          resolveTarget: runtime.resolveTarget,
+          applyIntent: runtime.applyIntent,
           emitNarration: (narration) => emitWalkthroughNarration(agentId, narration),
-          registerCancelListener: runtime().registerCancelListener,
+          registerCancelListener: runtime.registerCancelListener,
         });
         return {
           ok: result.ok,
@@ -155,14 +161,17 @@ export const WALKTHROUGH_TOOLS: readonly ToolDefinition[] = [
             cancelled: result.cancelled,
             cancelReason: result.cancelReason,
             narrations: result.narrations,
-          },...(result.ok
-            ? {}: {
+          },
+          ...(result.ok
+            ? {}
+            : {
                 error: result.cancelled
-                  ? `walkthrough cancelled (${result.cancelReason ?? 'unknown'})`: 'walkthrough did not complete all steps',
+                  ? `walkthrough cancelled (${result.cancelReason ?? 'unknown'})`
+                  : 'walkthrough did not complete all steps',
               }),
         };
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     },

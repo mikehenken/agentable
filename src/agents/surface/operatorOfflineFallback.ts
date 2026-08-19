@@ -1,6 +1,6 @@
 /**
 
- * Deterministic offline operator chat fallback.
+ * Deterministic offline operator chat fallback (P13-T7 iteration-7).
 
  *
 
@@ -50,11 +50,13 @@ export interface OperatorOfflineFallbackInput {
 
 export async function runOperatorOfflineFallback(
 
-  input: OperatorOfflineFallbackInput | string): Promise<OperatorOfflineFallbackResult> {
+  input: OperatorOfflineFallbackInput | string,
 
-  const userText = typeof input === 'string' ? input: input.userText;
+): Promise<OperatorOfflineFallbackResult> {
 
-  const mode = typeof input === 'string' ? getOperatorMode: (input.mode ?? getOperatorMode);
+  const userText = typeof input === 'string' ? input : input.userText;
+
+  const mode = typeof input === 'string' ? getOperatorMode() : (input.mode ?? getOperatorMode());
 
 
 
@@ -82,7 +84,7 @@ export async function runOperatorOfflineFallback(
 
   const preview =
 
-    trimmed.length > 96 ? `${trimmed.slice(0, 96).trimEnd()}…`: trimmed;
+    trimmed.length > 96 ? `${trimmed.slice(0, 96).trimEnd()}…` : trimmed;
 
 
 
@@ -90,7 +92,9 @@ export async function runOperatorOfflineFallback(
 
     text: preview
 
-      ? `Got it — "${preview}". Live chat is unavailable offline; connect a chat proxy or API credentials on the host whiteboard for model replies.`: 'Operator is ready. Connect a chat proxy or API credentials on the host whiteboard for live model replies.',
+      ? `Got it — "${preview}". Live chat is unavailable offline; connect a chat proxy or API credentials on the host whiteboard for model replies.`
+
+      : 'Operator is ready. Connect a chat proxy or API credentials on the host whiteboard for live model replies.',
 
   };
 

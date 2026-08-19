@@ -3,7 +3,7 @@
  *
  * Hosts pass a partial `WhiteboardToolbarConfig` via `WhiteboardShell` props,
  * `<agentable-whiteboard toolbar-config='…'>`, or career config JSON
- * (`toolbar` `toolbarConfig`). Legacy booleans (`enableVoiceTool`,
+ * (`toolbar` / `toolbarConfig`). Legacy booleans (`enableVoiceTool`,
  * `enableLayersPanel`, `enableContextActionsTool`) map into the resolved shape.
  */
 import { CONTEXT_ACTIONS_TOOL_ID } from '../tools/contextActionsEvents';
@@ -14,7 +14,7 @@ import {
   RESET_CANVAS_TOOL_ID,
 } from '../tools/layoutActionEvents';
 
-/** Built-in tool chrome action ids recognized by the whiteboard toolbar. */
+/** Built-in tool / chrome action ids recognized by the whiteboard toolbar. */
 export const BUILTIN_WHITEBOARD_TOOLBAR_TOOL_IDS = [
   'select',
   'draw',
@@ -32,7 +32,7 @@ export type BuiltinWhiteboardToolbarToolId =
 /** Tool id whitelist — builtins plus host-defined custom action ids. */
 export type WhiteboardToolbarToolId = BuiltinWhiteboardToolbarToolId | (string & {});
 
-/** Where layout chrome actions (auto-arrange reset) appear. */
+/** Where layout chrome actions (auto-arrange / reset) appear. */
 export type WhiteboardLayoutActionPlacement =
   | 'toolbar'
   | 'topbar'
@@ -55,7 +55,7 @@ export interface WhiteboardToolbarCustomAction {
  * the whitelist is applied.
  */
 export interface WhiteboardToolbarConfig {
-  /** Ordered whitelist of tools layout actions. */
+  /** Ordered whitelist of tools / layout actions. */
   tools?: WhiteboardToolbarToolId[];
   /**
    * When false, removes `draw` from the toolbar and disables agent canvas drawing
@@ -65,15 +65,15 @@ export interface WhiteboardToolbarConfig {
   /** Ids to strip after whitelist resolution. */
   exclude?: WhiteboardToolbarToolId[];
   /**
-   * Where auto-arrange reset appear when included in `tools`.
+   * Where auto-arrange / reset appear when included in `tools`.
    * Default: `both` (bottom toolbar + TopBar chrome).
    */
   layoutActionPlacement?: WhiteboardLayoutActionPlacement;
-  /** Additional host-defined toolbar chrome actions. */
+  /** Additional host-defined toolbar / chrome actions. */
   customActions?: WhiteboardToolbarCustomAction[];
 }
 
-/** Legacy boolean flags still accepted by WhiteboardShell UI factories. */
+/** Legacy boolean flags still accepted by WhiteboardShell / UI factories. */
 export interface WhiteboardToolbarLegacyFlags {
   enableVoiceTool?: boolean;
   enableLayersPanel?: boolean;
@@ -85,7 +85,7 @@ export interface ResolveWhiteboardToolbarConfigInput extends WhiteboardToolbarLe
 }
 
 /**
- * Fully resolved toolbar chrome visibility used by Shell, Toolbar, TopBar,
+ * Fully resolved toolbar / chrome visibility used by Shell, Toolbar, TopBar,
  * and tldraw overrides.
  */
 export interface ResolvedWhiteboardToolbarConfig {
@@ -93,7 +93,7 @@ export interface ResolvedWhiteboardToolbarConfig {
   drawingEnabled: boolean;
   /** Ordered bottom-toolbar tool ids (tldraw ToolbarItem tools). */
   toolbarTools: string[];
-  /** Ordered drawing panel tools that need StateNode registration. */
+  /** Ordered drawing / panel tools that need StateNode registration. */
   registeredToolIds: string[];
   enableLayersPanel: boolean;
   enableVoiceTool: boolean;
@@ -121,7 +121,7 @@ export const DEFAULT_WHITEBOARD_TOOLBAR_TOOLS: readonly WhiteboardToolbarToolId[
 
 /**
  * @deprecated Use {@link DEFAULT_WHITEBOARD_TOOLBAR_TOOLS}. Career hosts supply
- * tool order through the `toolbar` `toolbarConfig` embed config key.
+ * tool order through the `toolbar` / `toolbarConfig` embed config key.
  */
 export const CAREER_WHITEBOARD_TOOLBAR_DEFAULTS = DEFAULT_WHITEBOARD_TOOLBAR_TOOLS;
 
@@ -186,7 +186,7 @@ function parseCustomActions(value: unknown): WhiteboardToolbarCustomAction[] | u
 }
 
 /**
- * Parse a JSON object attribute string into `WhiteboardToolbarConfig`.
+ * Parse a JSON object / attribute string into `WhiteboardToolbarConfig`.
  * Invalid payloads return `null` (caller falls back to defaults).
  */
 export function parseWhiteboardToolbarConfig(raw: unknown): WhiteboardToolbarConfig | null {
@@ -223,7 +223,8 @@ function applyExclude(ids: string[], exclude: readonly string[] | undefined): st
 
 function applyLegacyGates(
   ids: string[],
-  flags: WhiteboardToolbarLegacyFlags): string[] {
+  flags: WhiteboardToolbarLegacyFlags,
+): string[] {
   return ids.filter((id) => {
     if (id === LAYERS_TOOL_ID && flags.enableLayersPanel === false) return false;
     if (id === VOICE_TOOL_ID && flags.enableVoiceTool === false) return false;
@@ -236,7 +237,8 @@ function applyLegacyGates(
 
 function ensureSiteActionsWhenEnabled(
   ids: string[],
-  enableContextActionsTool: boolean | undefined): string[] {
+  enableContextActionsTool: boolean | undefined,
+): string[] {
   if (enableContextActionsTool !== true) return ids;
   if (ids.includes(CONTEXT_ACTIONS_TOOL_ID)) return ids;
   return [...ids, CONTEXT_ACTIONS_TOOL_ID];
@@ -251,10 +253,11 @@ function placementIncludesTopBar(placement: WhiteboardLayoutActionPlacement): bo
 }
 
 /**
- * Resolve host config + legacy flags into a concrete toolbar chrome plan.
+ * Resolve host config + legacy flags into a concrete toolbar / chrome plan.
  */
 export function resolveWhiteboardToolbarConfig(
-  input: ResolveWhiteboardToolbarConfigInput = {}): ResolvedWhiteboardToolbarConfig {
+  input: ResolveWhiteboardToolbarConfigInput = {},
+): ResolvedWhiteboardToolbarConfig {
   const config = input.toolbarConfig ?? {};
   const layoutActionPlacement = config.layoutActionPlacement ?? 'both';
   const drawingEnabled = config.drawingEnabled !== false;
@@ -271,7 +274,7 @@ export function resolveWhiteboardToolbarConfig(
   }
   ordered = applyExclude(ordered, exclude);
 
-   // Deduplicate while preserving first-seen order.
+  // Deduplicate while preserving first-seen order.
   const seen = new Set<string>();
   ordered = ordered.filter((id) => {
     if (seen.has(id)) return false;
@@ -289,7 +292,7 @@ export function resolveWhiteboardToolbarConfig(
     hasAutoArrange && placementIncludesTopBar(layoutActionPlacement);
   const showResetTopBar = hasReset && placementIncludesTopBar(layoutActionPlacement);
 
-   // Bottom toolbar: drawing tools + layout actions only when placement includes toolbar.
+  // Bottom toolbar: drawing tools + layout actions only when placement includes toolbar.
   const toolbarTools = ordered.filter((id) => {
     if (LAYOUT_ACTION_IDS.has(id)) {
       if (id === AUTO_ARRANGE_TOOL_ID) return showAutoArrangeToolbar;
@@ -308,8 +311,8 @@ export function resolveWhiteboardToolbarConfig(
   }
 
   const registeredToolIds = toolbarTools.filter((id) => STATE_NODE_TOOL_IDS.has(id));
-   // Custom toolbar actions also need registration when we add generic handlers later;
-   // for now only builtins use StateNodes — custom ids are override-only.
+  // Custom toolbar actions also need registration when we add generic handlers later;
+  // for now only builtins use StateNodes — custom ids are override-only.
 
   const topBarCustomActions = customActions.filter((action) => {
     const placement = action.placement ?? 'toolbar';
@@ -335,6 +338,7 @@ export function resolveWhiteboardToolbarConfig(
 
 /** Ids that minimal overrides should keep in the tldraw tools map. */
 export function allowedTldrawToolIds(
-  resolved: ResolvedWhiteboardToolbarConfig): ReadonlySet<string> {
+  resolved: ResolvedWhiteboardToolbarConfig,
+): ReadonlySet<string> {
   return new Set(resolved.toolbarTools);
 }

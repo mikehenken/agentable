@@ -16,10 +16,11 @@ export function withDrawUserMessage<T>(userText: string | undefined, fn: () => T
 
 export async function withDrawUserMessageAsync<T>(
   userText: string | undefined,
-  fn: () => Promise<T>): Promise<T> {
+  fn: () => Promise<T>,
+): Promise<T> {
   drawUserMessageStack.push(userText ?? '');
   try {
-    return await fn;
+    return await fn();
   } finally {
     drawUserMessageStack.pop();
   }

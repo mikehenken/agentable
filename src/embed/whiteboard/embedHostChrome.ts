@@ -25,7 +25,7 @@ export function resolveEmbedHostElement(node: Node | null): HTMLElement | null {
   if (node === null) {
     return null;
   }
-  const root = node.getRootNode;
+  const root = node.getRootNode();
   if (root instanceof ShadowRoot && root.host instanceof HTMLElement) {
     return root.host;
   }
@@ -34,7 +34,8 @@ export function resolveEmbedHostElement(node: Node | null): HTMLElement | null {
 
 export function applyHostHeaderHeight(
   host: HTMLElement | null,
-  rawHeight: string | null | undefined): void {
+  rawHeight: string | null | undefined,
+): void {
   if (host === null) {
     return;
   }
@@ -52,7 +53,8 @@ export function clearHostHeaderHeight(host: HTMLElement | null): void {
 
 export function dispatchCanvasFullpageEvent(
   host: HTMLElement | null,
-  active: boolean): void {
+  active: boolean,
+): void {
   if (host === null) {
     return;
   }
@@ -63,13 +65,15 @@ export function dispatchCanvasFullpageEvent(
         bubbles: true,
         composed: true,
         detail,
-      }));
+      }),
+    );
   }
 }
 
 export function enterEmbedHostFullpage(
   host: HTMLElement | null,
-  hostHeaderHeight: string | null | undefined): void {
+  hostHeaderHeight: string | null | undefined,
+): void {
   if (host === null) {
     return;
   }

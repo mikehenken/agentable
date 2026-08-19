@@ -1,5 +1,5 @@
 /**
- * Origin allowlist validation for the embed postMessage bridge.
+ * Origin allowlist validation for the embed postMessage bridge (P9-T4).
  */
 
 function normalizeOrigin(origin: string): string | null {
@@ -9,7 +9,7 @@ function normalizeOrigin(origin: string): string | null {
   }
   try {
     const url = new URL(trimmed);
-    if (url.protocol !== 'http://' && url.protocol !== 'https://') {
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
       return null;
     }
     return url.origin;
@@ -23,8 +23,11 @@ export function parseAllowedOrigins(raw: string | readonly string[] | undefined)
     return [];
   }
   const parts = Array.isArray(raw)
-    ? raw: raw.split(',').map((entry) => entry.trim());
-  const normalized = parts.map((entry) => normalizeOrigin(entry)).filter((entry): entry is string => entry !== null);
+    ? raw
+    : raw.split(',').map((entry) => entry.trim());
+  const normalized = parts
+    .map((entry) => normalizeOrigin(entry))
+    .filter((entry): entry is string => entry !== null);
   return [...new Set(normalized)];
 }
 

@@ -1,5 +1,5 @@
 /**
- * Collect compact canvas drawing summaries for the workspace digest.
+ * Collect compact canvas drawing summaries for the workspace digest (P8-T4).
  */
 import type { Editor } from 'tldraw';
 import {
@@ -32,13 +32,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readAgentId(meta: unknown): string | undefined {
   if (!isRecord(meta)) return undefined;
   const value = meta[AGENT_SHAPE_PROVENANCE_META_KEY];
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readAnnotationKind(meta: unknown): boolean {
@@ -91,7 +91,8 @@ function defaultLabel(nativeType: string, kind?: AgentDrawShapeKind | 'annotatio
 function summarizeDrawingShape(
   shape: ShapeLike,
   editor: Editor,
-  viewport: Rect | null): DigestShapeSummary | null {
+  viewport: Rect | null,
+): DigestShapeSummary | null {
   if (shape.type === 'panel') return null;
   if (!DRAWING_NATIVE_TYPES.has(shape.type) && !readAnnotationKind(shape.meta)) {
     return null;
@@ -115,7 +116,8 @@ function summarizeDrawingShape(
   const bounds = shapeBounds(shape, editor);
   const label =
     shape.type === 'text' || isAnnotation
-      ? readTextLabel(shape.props): defaultLabel(shape.type, kind);
+      ? readTextLabel(shape.props)
+      : defaultLabel(shape.type, kind);
 
   const revisionPayload: Record<string, unknown> = {
     type: shape.type,
@@ -149,10 +151,11 @@ export interface CollectDigestShapesOptions {
 /** Collect agent and user drawing summaries from the bound tldraw editor. */
 export function collectDigestShapeSummaries(
   editor: Editor,
-  options: CollectDigestShapesOptions = {}): DigestShapeSummary[] {
+  options: CollectDigestShapesOptions = {},
+): DigestShapeSummary[] {
   const viewport = options.viewport ?? null;
   const summaries: DigestShapeSummary[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
     const summary = summarizeDrawingShape(shape as unknown as ShapeLike, editor, viewport);
     if (summary !== null) {
       summaries.push(summary);

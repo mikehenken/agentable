@@ -28,7 +28,8 @@ export interface IframeChildBridge {
 function postToParent(
   target: Window,
   origin: string,
-  envelope: EmbedBridgeEnvelope): void {
+  envelope: EmbedBridgeEnvelope,
+): void {
   target.postMessage(envelope, origin);
 }
 
@@ -48,7 +49,8 @@ export function createIframeChildBridge(options: IframeChildBridgeOptions): Ifra
       createBridgeEnvelope('agentable:bridge:session', {
         bridgeId: options.bridgeId,
         snapshot: snapshot ?? session.getSnapshot(),
-      }));
+      }),
+    );
   };
 
   const publishEvent = (eventType: string, detail: Record<string, unknown>): void => {
@@ -62,7 +64,8 @@ export function createIframeChildBridge(options: IframeChildBridgeOptions): Ifra
         bridgeId: options.bridgeId,
         eventType,
         detail,
-      }));
+      }),
+    );
   };
 
   const handleMessage = (event: MessageEvent): void => {
@@ -91,7 +94,8 @@ export function createIframeChildBridge(options: IframeChildBridgeOptions): Ifra
               bridgeId: options.bridgeId,
               code: 'ORIGIN_DENIED',
               message: 'Parent origin is not in the embed allowlist.',
-            }));
+            }),
+          );
           return;
         }
         const session = ensurePageSession();
@@ -102,7 +106,8 @@ export function createIframeChildBridge(options: IframeChildBridgeOptions): Ifra
             bridgeId: options.bridgeId,
             surface: options.surface,
             sessionId: session.sessionId,
-          }));
+          }),
+        );
         publishSessionSnapshot(session.getSnapshot());
         break;
       }
@@ -115,7 +120,8 @@ export function createIframeChildBridge(options: IframeChildBridgeOptions): Ifra
           handshakeOrigin,
           createBridgeEnvelope('agentable:bridge:pong', {
             bridgeId: options.bridgeId,
-          }));
+          }),
+        );
         break;
       }
       case 'agentable:bridge:resize': {
@@ -151,18 +157,21 @@ export function createIframeChildBridge(options: IframeChildBridgeOptions): Ifra
 /** Resolve parent-origin allowlist from iframe host query params. */
 export function readParentOriginAllowlistFromSearchParams(
   params: URLSearchParams,
-  referrer?: string | null): string[] {
+  referrer?: string | null,
+): string[] {
   const explicit = parseAllowedOrigins(params.get('parent-origin') ?? undefined);
   if (explicit.length > 0) {
     return explicit;
   }
   const fromReferrer = parseAllowedOrigins(
-    params.get('referrer-origin') ?? undefined);
+    params.get('referrer-origin') ?? undefined,
+  );
   if (fromReferrer.length > 0) {
     return fromReferrer;
   }
   const derived = parseAllowedOrigins(
-    referrer !== undefined ? [referrer]: []);
+    referrer !== undefined ? [referrer] : [],
+  );
   return derived;
 }
 

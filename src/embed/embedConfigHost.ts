@@ -13,11 +13,13 @@ export function hasEmbedConfigSource(host: EmbedConfigHostFields): boolean {
   return Boolean(
     host.configUrl.trim() ||
       host.panelDataUrl.trim() ||
-      (host.anonKey.trim() && host.apiEndpoint.trim()));
+      (host.anonKey.trim() && host.apiEndpoint.trim()),
+  );
 }
 
 export function embedConfigSourceChanged(
-  changed: Map<string, unknown>): boolean {
+  changed: Map<string, unknown>,
+): boolean {
   return (
     changed.has('configUrl') ||
     changed.has('panelDataUrl') ||
@@ -29,7 +31,8 @@ export function embedConfigSourceChanged(
 
 export function buildEmbedConfigSourceInput(
   host: EmbedConfigHostFields,
-  fetchFn: typeof fetch): {
+  fetchFn: typeof fetch,
+): {
   configUrl: string;
   panelDataUrl: string;
   fetchFn: typeof fetch;
@@ -40,6 +43,9 @@ export function buildEmbedConfigSourceInput(
   return {
     configUrl: host.configUrl,
     panelDataUrl: host.panelDataUrl,
-    fetchFn,...(host.anonKey.trim() ? { anonKey: host.anonKey.trim() }: {}),...(host.apiEndpoint.trim() ? { apiBaseUrl: host.apiEndpoint.trim() }: {}),...(host.configPath.trim() ? { configPath: host.configPath.trim() }: {}),
+    fetchFn,
+    ...(host.anonKey.trim() ? { anonKey: host.anonKey.trim() } : {}),
+    ...(host.apiEndpoint.trim() ? { apiBaseUrl: host.apiEndpoint.trim() } : {}),
+    ...(host.configPath.trim() ? { configPath: host.configPath.trim() } : {}),
   };
 }

@@ -1,5 +1,5 @@
 /**
- * Imperative authoring toolkit driver for the tldraw whiteboard.
+ * Imperative authoring toolkit driver for the tldraw whiteboard (D50, P12-T1).
  */
 import type { Editor, TLAssetId, TLShapeId, TLShapePartial } from 'tldraw';
 import { AssetRecordType, createShapeId, toRichText } from 'tldraw';
@@ -41,8 +41,9 @@ const FRAME_PADDING = 24;
 
 function provenanceMeta(
   agentId: string,
-  extra?: Readonly<Record<string, string>>): Record<string, string> {
-  return {...extra, [AGENT_SHAPE_PROVENANCE_META_KEY]: agentId };
+  extra?: Readonly<Record<string, string>>,
+): Record<string, string> {
+  return { ...extra, [AGENT_SHAPE_PROVENANCE_META_KEY]: agentId };
 }
 
 function requireEditor(): Editor {
@@ -64,12 +65,13 @@ function asShapeId(id: string): TLShapeId {
 function readAgentId(meta: unknown): string | undefined {
   if (!meta || typeof meta !== 'object') return undefined;
   const value = (meta as Record<string, unknown>)[AGENT_SHAPE_PROVENANCE_META_KEY];
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function shapePageBounds(
   editor: Editor,
-  shapeId: TLShapeId): { x: number; y: number; w: number; h: number } {
+  shapeId: TLShapeId,
+): { x: number; y: number; w: number; h: number } {
   const bounds = editor.getShapePageBounds(shapeId);
   if (!bounds) {
     throw new Error(`shape "${String(shapeId)}" has no page bounds`);
@@ -127,7 +129,8 @@ function registerImageAsset(editor: Editor, asset: AuthoringResolvedImageAsset):
 export function insertAgentImage(
   agentId: string,
   request: AgentInsertImageRequest,
-  resolvedAsset: AuthoringResolvedImageAsset): AgentInsertImageResult {
+  resolvedAsset: AuthoringResolvedImageAsset,
+): AgentInsertImageResult {
   const editor = requireEditor();
   const { geometry } = request;
   if (geometry.w <= 0 || geometry.h <= 0) {
@@ -142,7 +145,8 @@ export function insertAgentImage(
     x: geometry.x,
     y: geometry.y,
     meta: provenanceMeta(agentId, {
-      assetRef: resolvedAsset.assetId,...(request.alt !== undefined && request.alt.length > 0 ? { alt: request.alt }: {}),
+      assetRef: resolvedAsset.assetId,
+      ...(request.alt !== undefined && request.alt.length > 0 ? { alt: request.alt } : {}),
     }),
     props: {
       w: geometry.w,
@@ -161,7 +165,8 @@ export function insertAgentImage(
 
 export function connectAgentShapes(
   agentId: string,
-  request: AgentConnectShapesRequest): AgentConnectShapesResult {
+  request: AgentConnectShapesRequest,
+): AgentConnectShapesResult {
   const editor = requireEditor();
   const fromId = asShapeId(request.from);
   const toId = asShapeId(request.to);
@@ -186,7 +191,7 @@ export function connectAgentShapes(
   const CONNECT_LABEL_CHAR_WIDTH = 14;
   const CONNECT_LABEL_CLEARANCE = 24;
   const label =
-    request.label !== undefined && request.label.length > 0 ? request.label: undefined;
+    request.label !== undefined && request.label.length > 0 ? request.label : undefined;
   const fromBounds = shapePageBounds(editor, fromId);
   const toBounds = shapePageBounds(editor, toId);
   const centerDistance = Math.hypot(toCenter.x - fromCenter.x, toCenter.y - fromCenter.y);
@@ -208,13 +213,13 @@ export function connectAgentShapes(
     props: {
       start: { x: fromCenter.x - minX, y: fromCenter.y - minY },
       end: { x: toCenter.x - minX, y: toCenter.y - minY },
-      color: request.kind === 'dependency' ? 'orange': request.kind === 'flow' ? 'blue': 'grey',
+      color: request.kind === 'dependency' ? 'orange' : request.kind === 'flow' ? 'blue' : 'grey',
       fill: 'none',
-      dash: request.kind === 'annotation' ? 'dotted': 'draw',
+      dash: request.kind === 'annotation' ? 'dotted' : 'draw',
       size: 'm',
       // tldraw's arrow stores its label as richText, not a plain `text`
       // prop (setting `text` throws "Unexpected property" at validation).
-      ...(label !== undefined && labelFits ? { richText: toRichText(label) }: {}),
+      ...(label !== undefined && labelFits ? { richText: toRichText(label) } : {}),
     },
   });
 
@@ -277,13 +282,15 @@ export function connectAgentShapes(
     from: request.from,
     to: request.to,
     kind: request.kind,
-    agentId,...(labelShapeId !== undefined ? { labelShapeId: String(labelShapeId) }: {}),
+    agentId,
+    ...(labelShapeId !== undefined ? { labelShapeId: String(labelShapeId) } : {}),
   };
 }
 
 export function groupAgentShapes(
   agentId: string,
-  request: AgentGroupShapesRequest): AgentGroupShapesResult {
+  request: AgentGroupShapesRequest,
+): AgentGroupShapesResult {
   const editor = requireEditor();
   const shapeIds = ensureShapeIds(editor, request.shapeIds);
   for (const shapeId of shapeIds) {
@@ -320,7 +327,8 @@ export function groupAgentShapes(
 
 export function frameAgentShapes(
   agentId: string,
-  request: AgentFrameShapesRequest): AgentFrameShapesResult {
+  request: AgentFrameShapesRequest,
+): AgentFrameShapesResult {
   const editor = requireEditor();
   const shapeIds = ensureShapeIds(editor, request.shapeIds);
 
@@ -391,7 +399,7 @@ interface ArrangeEdgeArrow {
 function collectEdgeArrows(editor: Editor, nodeIds: ReadonlySet<string>): ArrangeEdgeArrow[] {
   const arrows: ArrangeEdgeArrow[] = [];
   const pageShapes =
-    typeof editor.getCurrentPageShapes === 'function' ? editor.getCurrentPageShapes(): [];
+    typeof editor.getCurrentPageShapes === 'function' ? editor.getCurrentPageShapes() : [];
   for (const shape of pageShapes) {
     if (shape.type !== 'arrow') continue;
     const edge = readEdgeMeta(shape.meta);
@@ -402,7 +410,8 @@ function collectEdgeArrows(editor: Editor, nodeIds: ReadonlySet<string>): Arrang
     arrows.push({
       arrowId: shape.id,
       fromShapeId,
-      toShapeId,...(edge.label !== undefined ? { label: edge.label }: {}),
+      toShapeId,
+      ...(edge.label !== undefined ? { label: edge.label } : {}),
     });
   }
   return arrows;
@@ -410,7 +419,8 @@ function collectEdgeArrows(editor: Editor, nodeIds: ReadonlySet<string>): Arrang
 
 function buildDiagramFromShapes(
   editor: Editor,
-  shapeIds: readonly TLShapeId[]): {
+  shapeIds: readonly TLShapeId[],
+): {
   diagram: AgentDiagramStructure;
   origin: LayoutBounds;
   shapeByNodeId: Map<string, TLShapeId>;
@@ -455,7 +465,7 @@ function buildDiagramFromShapes(
     const from = String(arrow.fromShapeId);
     const to = String(arrow.toShapeId);
     if (nodeIdSet.has(from) && nodeIdSet.has(to)) {
-      edges.push({ from, to,...(arrow.label !== undefined ? { label: arrow.label }: {}) });
+      edges.push({ from, to, ...(arrow.label !== undefined ? { label: arrow.label } : {}) });
     }
   }
 
@@ -468,7 +478,8 @@ function buildDiagramFromShapes(
   return {
     diagram: {
       nodes,
-      order: nodes.map((node) => node.id),...(edges.length > 0 ? { edges }: {}),
+      order: nodes.map((node) => node.id),
+      ...(edges.length > 0 ? { edges } : {}),
     },
     origin: { x: minX, y: minY, w: maxX - minX, h: maxY - minY },
     shapeByNodeId,
@@ -479,7 +490,8 @@ function buildDiagramFromShapes(
 
 export function arrangeAgentShapes(
   agentId: string,
-  request: AgentArrangeRequest): AgentArrangeResult {
+  request: AgentArrangeRequest,
+): AgentArrangeResult {
   const editor = requireEditor();
   const shapeIds = collectArrangeShapeIds(editor, request);
   if (shapeIds.length < 2) {
@@ -520,8 +532,10 @@ export function arrangeAgentShapes(
   const order = fitted.nodes.map((entry) => entry.node.id);
   const axis =
     request.layout === 'flow'
-      ? ('x' as const): request.layout === 'timeline'
-        ? ('y' as const): null;
+      ? ('x' as const)
+      : request.layout === 'timeline'
+        ? ('y' as const)
+        : null;
   rerouteEdgeArrows(editor, rectByNodeId, { order, axis });
 
   return {
@@ -539,5 +553,5 @@ export function arrangeAgentShapes(
 export function readConnectorKind(meta: unknown): string | undefined {
   if (!meta || typeof meta !== 'object') return undefined;
   const value = (meta as Record<string, unknown>)[AGENT_CONNECTOR_KIND_META_KEY];
-  return typeof value === 'string' ? value: undefined;
+  return typeof value === 'string' ? value : undefined;
 }

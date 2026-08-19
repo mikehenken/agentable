@@ -1,5 +1,5 @@
 /**
- * Deterministic shape-graph serialization from tldraw records.
+ * Deterministic shape-graph serialization from tldraw records (P8-T2).
  */
 import {
   AGENT_SHAPE_PROVENANCE_META_KEY,
@@ -31,7 +31,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readPoint(value: unknown): { x: number; y: number } | undefined {
@@ -45,7 +45,7 @@ function readPoint(value: unknown): { x: number; y: number } | undefined {
 function readAgentId(meta: unknown): string | undefined {
   if (!isRecord(meta)) return undefined;
   const value = meta[AGENT_SHAPE_PROVENANCE_META_KEY];
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function rectIntersects(a: Rect, b: Rect): boolean {
@@ -118,15 +118,16 @@ function extractArrowGeometry(shape: ShapeLike): AgentDrawGeometry | undefined {
 
 function extractTextGeometry(
   shape: ShapeLike,
-  measured?: Rect | null): AgentDrawGeometry | undefined {
+  measured?: Rect | null,
+): AgentDrawGeometry | undefined {
   const maxWidth = readFiniteNumber(shape.props.w);
   const geometry: AgentDrawGeometry = { kind: 'text', x: shape.x, y: shape.y };
   if (maxWidth !== undefined && maxWidth > 0) {
     geometry.maxWidth = maxWidth;
   }
-   // Attach real rendered extents when the host measured them, so lints and
-   // the model can reason about where text actually sits. Never invent them:
-   // autoSize text height is unknowable without measurement.
+  // Attach real rendered extents when the host measured them, so lints and
+  // the model can reason about where text actually sits. Never invent them:
+  // autoSize text height is unknowable without measurement.
   if (measured && Number.isFinite(measured.w) && Number.isFinite(measured.h)) {
     geometry.w = measured.w;
     geometry.h = measured.h;
@@ -139,7 +140,10 @@ function extractDrawGeometry(shape: ShapeLike): AgentDrawGeometry | undefined {
   if (!Array.isArray(segments) || segments.length === 0) return undefined;
   const first = segments[0];
   if (!isRecord(first) || !Array.isArray(first.points)) return undefined;
-  const points = first.points.map((entry) => readPoint(entry)).filter((entry): entry is { x: number; y: number } => entry !== undefined).map((point) => ({ x: shape.x + point.x, y: shape.y + point.y }));
+  const points = first.points
+    .map((entry) => readPoint(entry))
+    .filter((entry): entry is { x: number; y: number } => entry !== undefined)
+    .map((point) => ({ x: shape.x + point.x, y: shape.y + point.y }));
   if (points.length < 2) return undefined;
   return { kind: 'points', points };
 }
@@ -155,7 +159,7 @@ function readBindingTarget(props: Record<string, unknown>, key: 'start' | 'end')
   const binding = props[key];
   if (!isRecord(binding)) return undefined;
   const boundShapeId = binding.boundShapeId;
-  return typeof boundShapeId === 'string' && boundShapeId.length > 0 ? boundShapeId: undefined;
+  return typeof boundShapeId === 'string' && boundShapeId.length > 0 ? boundShapeId : undefined;
 }
 
 function indexToZOrder(index: string): number {
@@ -168,7 +172,8 @@ function indexToZOrder(index: string): number {
 
 function serializeShape(
   shape: ShapeLike,
-  measured?: Rect | null): CanvasShapeGraphNode | null {
+  measured?: Rect | null,
+): CanvasShapeGraphNode | null {
   if (shape.type === 'panel') {
     const geometry = extractPanelGeometry(shape);
     if (!geometry) return null;
@@ -182,7 +187,7 @@ function serializeShape(
       zOrder: indexToZOrder(shape.index),
       agentId: readAgentId(shape.meta),
       panel: {
-        panelId: typeof panelId === 'string' ? panelId: '',
+        panelId: typeof panelId === 'string' ? panelId : '',
         minimized: shape.props.minimized === true,
       },
     };
@@ -286,13 +291,15 @@ export function serializeShapeGraph(input: SerializeShapeGraphInput): CanvasShap
 
   return {
     region: input.region,
-    shapes: nodes,...(truncated ? { truncated: true }: {}),
+    shapes: nodes,
+    ...(truncated ? { truncated: true } : {}),
   };
 }
 
 export function resolvePerceptionRegionBounds(
   region: CanvasPerceptionRegion | undefined,
-  viewportBounds: Rect): Rect {
+  viewportBounds: Rect,
+): Rect {
   if (region === undefined || region.kind === 'viewport') {
     return viewportBounds;
   }

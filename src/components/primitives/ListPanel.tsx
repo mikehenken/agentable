@@ -7,24 +7,24 @@
  * (`getId`, `getSearchText`, `filters[].getValue`) expose.
  *
  * Consumers control:
- * - Data (`items`)
- * - Card + detail rendering (`renderCard`, `renderDetail`)
- * - Optional URL-syncing or persistence via the controlled-prop escape
- * hatches (`selectedId/onSelectedIdChange`, `savedIds/onSavedIdsChange`,
- * `query/onQueryChange`, `filterValues/onFilterValuesChange`)
+ *   - Data (`items`)
+ *   - Card + detail rendering (`renderCard`, `renderDetail`)
+ *   - Optional URL-syncing or persistence via the controlled-prop escape
+ *     hatches (`selectedId/onSelectedIdChange`, `savedIds/onSavedIdsChange`,
+ *     `query/onQueryChange`, `filterValues/onFilterValuesChange`)
  *
  * Brand-token discipline:
- * Chrome renders only via `bg-canvas-*` `text-canvas-*` `border-canvas-*`
- * Tailwind classes that resolve to `--landi-color-*` custom properties.
- * Tenant overrides (e.g. `<agentable-canvas primary-color="...">`) flow
- * through automatically. No bare hex in this file.
+ *   Chrome renders only via `bg-canvas-*` / `text-canvas-*` / `border-canvas-*`
+ *   Tailwind classes that resolve to `--landi-color-*` custom properties.
+ *   Tenant overrides (e.g. `<agentable-canvas primary-color="...">`) flow
+ *   through automatically. No bare hex in this file.
  *
  * Perf contract:
- * `getSearchText` and each `filters[].getValue` are called O(items) per
- * keystroke chip change. Stabilize with `useCallback` on the consumer
- * side OR accept the rebuild for small lists (< ~200 items). The
- * primitive memoizes a search-index keyed by `getId` to amortize repeated
- * accessor calls within a single render pass.
+ *   `getSearchText` and each `filters[].getValue` are called O(items) per
+ *   keystroke / chip change. Stabilize with `useCallback` on the consumer
+ *   side OR accept the rebuild for small lists (< ~200 items). The
+ *   primitive memoizes a search-index keyed by `getId` to amortize repeated
+ *   accessor calls within a single render pass.
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Search } from 'lucide-react';
@@ -176,14 +176,19 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
     chromeless: _chromeless = true,
   } = props;
 
-  const merged = useMemo(() => ({...DEFAULT_LABELS,...labels }),
-    [labels]);
+  const merged = useMemo(
+    () => ({ ...DEFAULT_LABELS, ...labels }),
+    [labels],
+  );
   const allLabel = merged.allFilterLabel;
 
   // Uncontrolled state (used when the matching controlled prop is undefined).
   const [uncSelectedId, setUncSelectedId] = useState<ListPanelItemId | null>(
-    null);
-  const [uncSaved, setUncSaved] = useState<Set<ListPanelItemId>>(() => new Set());
+    null,
+  );
+  const [uncSaved, setUncSaved] = useState<Set<ListPanelItemId>>(
+    () => new Set(),
+  );
   const [uncQuery, setUncQuery] = useState('');
   const [uncFilterValues, setUncFilterValues] = useState<
     Record<string, string>
@@ -194,7 +199,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
     return seed;
   });
 
-  const selectedId = ctrlSelectedId !== undefined ? ctrlSelectedId: uncSelectedId;
+  const selectedId = ctrlSelectedId !== undefined ? ctrlSelectedId : uncSelectedId;
   const saved = ctrlSavedIds ?? uncSaved;
   const query = ctrlQuery ?? uncQuery;
   const filterValues = ctrlFilterValues ?? uncFilterValues;
@@ -212,7 +217,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
     if (ctrlQuery === undefined) setUncQuery(q);
   };
   const setFilterValue = (id: string, v: string) => {
-    const next = {...filterValues, [id]: v };
+    const next = { ...filterValues, [id]: v };
     if (onFilterValuesChange) onFilterValuesChange(next);
     if (ctrlFilterValues === undefined) setUncFilterValues(next);
   };
@@ -222,7 +227,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
   const chipsByFilter = useMemo(() => {
     if (!filters) return [] as Array<{ filter: ListPanelFilter<T>; values: string[] }>;
     return filters.map((f) => {
-      if (f.values) return { filter: f, values: [allLabel,...f.values] };
+      if (f.values) return { filter: f, values: [allLabel, ...f.values] };
       const seen = new Set<string>();
       const ordered: string[] = [];
       for (const it of items) {
@@ -232,7 +237,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
           ordered.push(v);
         }
       }
-      return { filter: f, values: [allLabel,...ordered] };
+      return { filter: f, values: [allLabel, ...ordered] };
     });
   }, [filters, items, allLabel]);
 
@@ -243,7 +248,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
   // Bug fix 2026-04-27: previously deps were `[chipsByFilter]` only, so
   // a controlled-prop update setting an unknown value (e.g. an agent tool
   // pushing `department: 'Engineering'` when chips are
-  // [Operations, IT, F&B,...]) didn't trigger heal — the effect had
+  // [Operations, IT, F&B, ...]) didn't trigger heal — the effect had
   // already run on mount with valid values, the chips array hadn't
   // changed, and the bad value sat in state filtering everything to 0.
   // Adding `filterValues` (and `allLabel` for completeness) makes heal
@@ -252,7 +257,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
   useEffect(() => {
     if (!filters) return;
     let dirty = false;
-    const next = {...filterValues };
+    const next = { ...filterValues };
     for (const { filter, values } of chipsByFilter) {
       const current = filterValues[filter.id] ?? allLabel;
       if (current !== allLabel && !values.includes(current)) {
@@ -290,7 +295,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
 
   const selectedItem =
     selectedId !== null
-      ? items.find((it) => getId(it) === selectedId) ?? null: null;
+      ? items.find((it) => getId(it) === selectedId) ?? null
+      : null;
 
   const toggleSaved = (id: ListPanelItemId) => {
     const next = new Set(saved);
@@ -300,7 +306,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
   };
 
   const title = getTitle
-    ? getTitle({ count: filtered.length, selected: selectedItem }): `${merged.titlePrefix} · ${filtered.length}`;
+    ? getTitle({ count: filtered.length, selected: selectedItem })
+    : `${merged.titlePrefix} · ${filtered.length}`;
 
   // Body content — same in both chrome modes. Only the wrapper differs.
   const body = (
@@ -311,7 +318,7 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
             onBack: () => setSelectedId(null),
             onSave: () => toggleSaved(getId(selectedItem)),
           })
-        ): (
+        ) : (
           <>
             {(showSearch || (filters && filters.length > 0)) && (
               <div className="shrink-0 px-4 py-3 bg-canvas-surface border-b border-canvas-border space-y-2.5">
@@ -353,7 +360,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
                             onClick={() => setFilterValue(filter.id, v)}
                             className={`shrink-0 px-3 py-1 rounded-full text-[11px] font-medium transition-colors border ${
                               pressed
-                                ? 'bg-canvas-primary text-white border-canvas-primary': 'bg-canvas-surface text-canvas-muted border-canvas-border hover:border-canvas-primary/40 hover:text-canvas-primary'
+                                ? 'bg-canvas-primary text-white border-canvas-primary'
+                                : 'bg-canvas-surface text-canvas-muted border-canvas-border hover:border-canvas-primary/40 hover:text-canvas-primary'
                             }`}
                           >
                             {v}

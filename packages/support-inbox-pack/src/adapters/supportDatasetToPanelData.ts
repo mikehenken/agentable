@@ -43,6 +43,8 @@ export function coalesceSupportPanelDataPayload(payload: unknown): unknown {
     return payload;
   }
   const dataset = parseSupportDataset(payload);
-  return {...(isRecord(payload) ? payload: {}),...supportDatasetToPanelData(dataset),
+  return {
+    ...(isRecord(payload) ? payload : {}),
+    ...supportDatasetToPanelData(dataset),
   };
 }

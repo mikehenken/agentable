@@ -1,5 +1,5 @@
 /**
- * A2A-shaped handoff records: written to the activity log and surfaced
+ * A2A-shaped handoff records (D23): written to the activity log and surfaced
  * to the target session. Not the full A2A protocol.
  */
 import type { ActivityLog, ActivityProvenance } from './activity';
@@ -45,7 +45,8 @@ export function resetHandoffCounterForTests(): void {
 
 export function createHandoff(
   input: HandoffInput,
-  deps: { registry: AgentRegistry; activity: ActivityLog }): HandoffResult {
+  deps: { registry: AgentRegistry; activity: ActivityLog },
+): HandoffResult {
   const source = deps.registry.get(input.from);
   if (source === undefined) {
     return {
@@ -74,7 +75,7 @@ export function createHandoff(
     reversal: { reversible: false, persisted: false },
   });
 
-   // Nudge target status when idle so digest escalation can surface the task.
+  // Nudge target status when idle so digest escalation can surface the task.
   if (target.status === 'idle' || target.status === 'done') {
     deps.registry.setStatus(input.to, 'running', input.task);
   }

@@ -80,7 +80,8 @@ export type PanelImportKey = DefaultPanelKey;
  */
 export function prefetchPanel(
   key: string,
-  registry: PanelRegistry = DEFAULT_PANEL_REGISTRY): void {
+  registry: PanelRegistry = DEFAULT_PANEL_REGISTRY,
+): void {
   const loader = registry[key];
   if (!loader) return;
   loader().catch((err) => {
@@ -100,7 +101,8 @@ export function prefetchPanel(
  * on browsers without `requestIdleCallback`.
  */
 export function prefetchAllPanelsIdle(
-  registry: PanelRegistry = DEFAULT_PANEL_REGISTRY): () => void {
+  registry: PanelRegistry = DEFAULT_PANEL_REGISTRY,
+): () => void {
   const fire = () => {
     for (const key of Object.keys(registry)) {
       prefetchPanel(key, registry);

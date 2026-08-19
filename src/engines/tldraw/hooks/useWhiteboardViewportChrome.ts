@@ -20,10 +20,11 @@ export interface WhiteboardViewportChromeState {
 }
 
 export function useWhiteboardViewportChrome(
-  rootRef: RefObject<HTMLElement | null>): WhiteboardViewportChromeState {
+  rootRef: RefObject<HTMLElement | null>,
+): WhiteboardViewportChromeState {
   const [state, setState] = useState<WhiteboardViewportChromeState>(() => ({
-    width: typeof window !== 'undefined' ? window.innerWidth: 1280,
-    height: typeof window !== 'undefined' ? window.innerHeight: 800,
+    width: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800,
     compactChrome: false,
     navExpandedPreferred: true,
   }));
@@ -40,9 +41,9 @@ export function useWhiteboardViewportChrome(
       setDimensions(width, height);
       setState({ width, height, compactChrome, navExpandedPreferred });
 
-      const { navSidebarExpanded, setNavSidebarExpanded } = useLayoutStore.getState;
-       // Auto-collapse on narrow (mobile); auto-expand at tablet+ so Menu
-       // starts expanded on whiteboard load (career UX).
+      const { navSidebarExpanded, setNavSidebarExpanded } = useLayoutStore.getState();
+      // Auto-collapse on narrow (mobile); auto-expand at tablet+ so Menu
+      // starts expanded on whiteboard load (career UX).
       if (!navExpandedPreferred && navSidebarExpanded) {
         setNavSidebarExpanded(false);
       } else if (navExpandedPreferred && !navSidebarExpanded) {

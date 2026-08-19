@@ -1,5 +1,5 @@
 /**
- * useLazyPanel — resolves a panelId to a `React.lazy` component using the
+ * useLazyPanel — resolves a panelId to a `React.lazy()` component using the
  * active whiteboard registry.
  *
  * Why a hook (not a plain util): we memoise the lazy wrapping by `(registry,
@@ -18,7 +18,7 @@ import type {
 } from './whiteboardPanelRegistry';
 
 /** Cache shared across hook calls so any two consumers asking for the same
- * `(registry, panelId)` share one lazy wrapper. tldraw can ask for the
+ * `(registry, panelId)` share one lazy() wrapper. tldraw can ask for the
  * same panel multiple times across re-renders — without this, each render
  * resets the lazy component's cache and we'd re-fetch the chunk. */
 const lazyCache = new WeakMap<
@@ -28,7 +28,8 @@ const lazyCache = new WeakMap<
 
 export function useLazyPanel(
   registry: WhiteboardPanelRegistry,
-  panelId: string): LazyExoticComponent<ComponentType<WhiteboardPanelProps>> | null {
+  panelId: string,
+): LazyExoticComponent<ComponentType<WhiteboardPanelProps>> | null {
   return useMemo(() => {
     const loader = registry[panelId];
     if (!loader) return null;

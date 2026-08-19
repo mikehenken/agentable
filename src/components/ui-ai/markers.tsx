@@ -148,13 +148,20 @@ export const TaskMarker: React.FC<{ block: MarkerBlock }> = ({ block }) => {
     items = (block.json as { items: TaskItem[] }).items;
   } else {
     // Fallback: parse plain bullet lines
-    items = block.body.split(/\n+/).map((line) => line.trim()).filter((line) => line.length > 0).map((line) => ({ title: line.replace(/^[-*]\s*/, "") }));
+    items = block.body
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line) => ({ title: line.replace(/^[-*]\s*/, "") }));
   }
   const dot = (status?: string) =>
     status === "complete"
-      ? "var(--positive)": status === "running"
-        ? "var(--accent)": status === "failed"
-          ? "var(--negative)": "var(--border-base)";
+      ? "var(--positive)"
+      : status === "running"
+        ? "var(--accent)"
+        : status === "failed"
+          ? "var(--negative)"
+          : "var(--border-base)";
   return (
     <Card icon="logs" iconColor="var(--accent)" title="Activity" meta={`${items.length} step${items.length === 1 ? "" : "s"}`} accent="var(--accent)">
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -221,7 +228,11 @@ export const PlanMarker: React.FC<{
     steps = block.json as PlanStep[];
   } else {
     // Fallback: each line as a step.
-    steps = block.body.split(/\n+/).map((line) => line.trim()).filter((l) => l).map((line) => {
+    steps = block.body
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter((l) => l)
+      .map((line) => {
         const m = line.match(/^[-*]\s*\[([ x])\]\s*(.*)$/);
         if (m) return { title: m[2], status: m[1] === "x" ? "done" : "pending" };
         return { title: line.replace(/^[-*0-9.]+\s*/, "") };
@@ -229,12 +240,16 @@ export const PlanMarker: React.FC<{
   }
   const glyph = (s?: string) =>
     s === "done"
-      ? "✓": s === "in-progress"
-        ? "•": "·";
+      ? "✓"
+      : s === "in-progress"
+        ? "•"
+        : "·";
   const color = (s?: string) =>
     s === "done"
-      ? "var(--positive-fg)": s === "in-progress"
-        ? "var(--accent-fg)": "var(--fg-faint)";
+      ? "var(--positive-fg)"
+      : s === "in-progress"
+        ? "var(--accent-fg)"
+        : "var(--fg-faint)";
   const planData: PlanData = { title, steps, planId };
   return (
     <Card
@@ -354,7 +369,8 @@ export const ActionsMarker: React.FC<{
             fontSize: 12,
             fontWeight: 500,
             cursor: onAction ? "pointer" : "default",
-            opacity: onAction ? 1: 0.6,...styleFor(a.style),
+            opacity: onAction ? 1 : 0.6,
+            ...styleFor(a.style),
           }}
         >
           {a.label}

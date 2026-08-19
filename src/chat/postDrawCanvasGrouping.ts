@@ -1,6 +1,6 @@
 /**
  * Auto-group shapes created in a single draw_shapes call so each user request
- * produces one movable group ( operator iteration).
+ * produces one movable group (P13-T7 operator iteration).
  */
 import type { TLShapeId } from 'tldraw';
 import { executeTool } from '../agents/tools/canvasTools';
@@ -23,7 +23,8 @@ export type PostDrawRepairLayout = AuthoringArrangeLayout | 'skip';
  */
 export function resolvePostDrawArrangeLayout(
   lastLayout: AgentDiagramLayoutMode | undefined,
-  userText?: string): PostDrawRepairLayout {
+  userText?: string,
+): PostDrawRepairLayout {
   if (lastLayout === 'nested') {
     return 'skip';
   }
@@ -52,7 +53,7 @@ export interface AutoGroupCreatedShapesResult {
  * the same draw batch are excluded so tldraw groupShapes succeeds.
  */
 export function filterGroupableSiblingIds(shapeIds: readonly string[]): string[] {
-  const editor = getEditor;
+  const editor = getEditor();
   if (editor === null || shapeIds.length < 2) {
     return shapeIds.filter((id): id is string => typeof id === 'string' && id.length > 0);
   }
@@ -60,7 +61,7 @@ export function filterGroupableSiblingIds(shapeIds: readonly string[]): string[]
   const byParent = new Map<string, string[]>();
   for (const rawId of shapeIds) {
     if (typeof rawId !== 'string' || rawId.length === 0) continue;
-    const shape = editor().getShape(rawId as TLShapeId);
+    const shape = editor.getShape(rawId as TLShapeId);
     if (shape === undefined) continue;
     const parentKey = String(shape.parentId ?? 'page');
     const bucket = byParent.get(parentKey) ?? [];
@@ -88,7 +89,8 @@ export function filterGroupableSiblingIds(shapeIds: readonly string[]): string[]
 export async function autoGroupCreatedShapes(
   toolContext: AgentToolExecutionContext,
   createdShapeIds: readonly string[],
-  hooks?: PostDrawProgressHooks): Promise<AutoGroupCreatedShapesResult> {
+  hooks?: PostDrawProgressHooks,
+): Promise<AutoGroupCreatedShapesResult> {
   const shapeIds = filterGroupableSiblingIds(createdShapeIds);
   if (shapeIds.length < 2) {
     return { ok: true, shapeIds };
@@ -98,13 +100,14 @@ export async function autoGroupCreatedShapes(
   hooks?.onToolStart?.('group_shapes', args);
   try {
     const result = await withAgentToolContextAsync(toolContext, () =>
-      executeTool('group_shapes', args));
+      executeTool('group_shapes', args),
+    );
     hooks?.onToolComplete?.('group_shapes', args, result.ok);
     if (!result.ok) {
       return {
         ok: false,
         shapeIds,
-        error: typeof result.error === 'string' ? result.error: 'group_shapes failed',
+        error: typeof result.error === 'string' ? result.error : 'group_shapes failed',
       };
     }
     const groupId =
@@ -112,10 +115,11 @@ export async function autoGroupCreatedShapes(
       typeof result.result === 'object' &&
       result.result !== null &&
       typeof (result.result as { groupId?: unknown }).groupId === 'string'
-        ? (result.result as { groupId: string }).groupId: undefined;
+        ? (result.result as { groupId: string }).groupId
+        : undefined;
     return { ok: true, shapeIds, groupId };
   } catch (err) {
-    const message = err instanceof Error ? err.message: String(err);
+    const message = err instanceof Error ? err.message : String(err);
     hooks?.onToolComplete?.('group_shapes', args, false);
     return { ok: false, shapeIds, error: message };
   }
@@ -142,7 +146,8 @@ export async function runSharedPostDrawRepairPipeline(
   toolContext: AgentToolExecutionContext,
   createdShapeIds: readonly string[],
   hooks?: PostDrawProgressHooks,
-  repairLayout?: PostDrawRepairLayout): Promise<SharedPostDrawRepairResult> {
+  repairLayout?: PostDrawRepairLayout,
+): Promise<SharedPostDrawRepairResult> {
   const steps: PostDrawRepairStep[] = [];
 
   if (createdShapeIds.length >= 2) {
@@ -162,7 +167,7 @@ export async function runSharedPostDrawRepairPipeline(
   let probe = await runLayoutProbe(toolContext, hooks);
   steps.push({
     toolName: 'read_canvas',
-    args: probe.lints.length > 0 ? { _layoutLints: [...probe.lints] }: {},
+    args: probe.lints.length > 0 ? { _layoutLints: [...probe.lints] } : {},
     ok: true,
   });
 
@@ -173,7 +178,8 @@ export async function runSharedPostDrawRepairPipeline(
       const arrangeArgs: Record<string, unknown> = { shapeIds: repairIds, layout: resolvedLayout };
       hooks?.onToolStart?.('arrange', arrangeArgs);
       const arrangeResult = await withAgentToolContextAsync(toolContext, () =>
-        executeTool('arrange', arrangeArgs));
+        executeTool('arrange', arrangeArgs),
+      );
       hooks?.onToolComplete?.('arrange', arrangeArgs, arrangeResult.ok);
       steps.push({ toolName: 'arrange', args: arrangeArgs, ok: arrangeResult.ok });
 
@@ -182,7 +188,7 @@ export async function runSharedPostDrawRepairPipeline(
         steps.push({
           toolName: 'read_canvas',
           args:
-            probe.lints.length > 0 ? { _layoutLints: [...probe.lints] }: { _verify: true },
+            probe.lints.length > 0 ? { _layoutLints: [...probe.lints] } : { _verify: true },
           ok: true,
         });
       }

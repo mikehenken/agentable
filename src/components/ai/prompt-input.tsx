@@ -13,7 +13,8 @@ export interface PromptInputProps
 export function PromptInput({
   onSubmit,
   children,
-  className,...props
+  className,
+  ...props
 }: PromptInputProps): React.ReactElement {
   return (
     <form
@@ -23,7 +24,8 @@ export function PromptInput({
       }}
       className={cn(
         'operator-prompt-input rounded-xl border shadow-sm transition-colors',
-        className)}
+        className,
+      )}
       {...props}
     >
       {children}
@@ -39,7 +41,8 @@ export interface PromptInputTextareaProps
 export function PromptInputTextarea({
   className,
   onEnterSubmit,
-  onKeyDown,...props
+  onKeyDown,
+  ...props
 }: PromptInputTextareaProps): React.ReactElement {
   const ref = React.useRef<HTMLTextAreaElement | null>(null);
 
@@ -72,7 +75,8 @@ export function PromptInputTextarea({
         'w-full resize-none bg-transparent px-3 py-2.5 pb-2.5 text-sm outline-none',
         'min-h-[2.75rem] leading-[1.45]',
         'text-[var(--vibe-text,#ececec)] placeholder:text-[var(--vibe-text-muted,#9a9a9a)]',
-        className)}
+        className,
+      )}
       {...props}
     />
   );
@@ -84,13 +88,15 @@ export interface PromptInputToolbarProps extends React.HTMLAttributes<HTMLDivEle
 
 export function PromptInputToolbar({
   children,
-  className,...props
+  className,
+  ...props
 }: PromptInputToolbarProps): React.ReactElement {
   return (
     <div
       className={cn(
         'flex flex-wrap items-center gap-2 border-t border-[var(--vibe-border,rgb(255_255_255/0.09))] px-2 py-1.5',
-        className)}
+        className,
+      )}
       {...props}
     >
       {children}
@@ -128,7 +134,8 @@ export function PromptInputSubmit({
           'ml-auto flex h-9 w-9 items-center justify-center rounded-xl text-white',
           'bg-[linear-gradient(135deg,var(--vibe-accent,#ff6b57)_0%,var(--vibe-accent-2,#ff8f6b)_100%)]',
           'hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
-          className)}
+          className,
+        )}
       >
         <Square className="h-3.5 w-3.5 fill-current" />
       </button>
@@ -145,7 +152,8 @@ export function PromptInputSubmit({
           'ml-auto flex h-9 w-9 items-center justify-center rounded-xl text-white',
           'bg-[linear-gradient(135deg,var(--vibe-accent,#ff6b57)_0%,var(--vibe-accent-2,#ff8f6b)_100%)]',
           'disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
-          className)}
+          className,
+        )}
       >
         <Loader2 className="h-4 w-4 animate-spin" />
       </button>
@@ -162,7 +170,8 @@ export function PromptInputSubmit({
         'ml-auto flex h-9 w-9 items-center justify-center rounded-xl text-white',
         'bg-[linear-gradient(135deg,var(--vibe-accent,#ff6b57)_0%,var(--vibe-accent-2,#ff8f6b)_100%)]',
         'hover:brightness-110 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
-        className)}
+        className,
+      )}
     >
       <ArrowUp className="h-4 w-4" />
     </button>

@@ -59,7 +59,8 @@ const DEFAULT_PANEL_SPAN: GridPanelSpan = { colSpan: 3, rowSpan: 6 };
 export function createGridSpec(
   containerWidth: number,
   gutter: number = GRID_GUTTER,
-  columns: number = GRID_COLUMNS): GridSpec {
+  columns: number = GRID_COLUMNS,
+): GridSpec {
   const safeWidth = Math.max(columns * GRID_SIZE, containerWidth);
   const totalGutter = gutter * (columns - 1);
   const colWidth = (safeWidth - totalGutter) / columns;
@@ -73,7 +74,8 @@ export function createGridSpec(
 
 /** Reference grid used for default panel width/height constants. */
 export function getReferenceGridSpec(
-  gutter: number = GRID_GUTTER): GridSpec {
+  gutter: number = GRID_GUTTER,
+): GridSpec {
   return createGridSpec(GRID_REFERENCE_WIDTH, gutter);
 }
 
@@ -85,7 +87,8 @@ export function getPanelGridSpan(panelId: string): GridPanelSpan {
 export function gridSpanToSize(
   spec: GridSpec,
   span: GridPanelSpan,
-  snapGrid: boolean = true): { w: number; h: number } {
+  snapGrid: boolean = true,
+): { w: number; h: number } {
   const w =
     span.colSpan * spec.colWidth + (span.colSpan - 1) * spec.gutter;
   const h =
@@ -104,7 +107,8 @@ export function gridPlacementToRect(
   spec: GridSpec,
   origin: { x: number; y: number },
   placement: GridCellPlacement,
-  snapGrid: boolean = true): LayoutRect {
+  snapGrid: boolean = true,
+): LayoutRect {
   const w =
     placement.colSpan * spec.colWidth + (placement.colSpan - 1) * spec.gutter;
   const h =
@@ -112,7 +116,7 @@ export function gridPlacementToRect(
   const x = origin.x + placement.col * (spec.colWidth + spec.gutter);
   const y = origin.y + placement.row * (spec.rowHeight + spec.gutter);
   const rect: LayoutRect = { x, y, w, h };
-  return snapGrid ? snapRect(rect): rect;
+  return snapGrid ? snapRect(rect) : rect;
 }
 
 function cellKey(col: number, row: number): string {
@@ -124,7 +128,8 @@ export function markGridOccupancy(
   occupied: Set<string>,
   spec: GridSpec,
   origin: { x: number; y: number },
-  rect: LayoutRect): void {
+  rect: LayoutRect,
+): void {
   const relX = rect.x - origin.x;
   const relY = rect.y - origin.y;
   const cellStrideX = spec.colWidth + spec.gutter;
@@ -132,10 +137,12 @@ export function markGridOccupancy(
 
   const startCol = Math.max(
     0,
-    Math.floor(relX / cellStrideX));
+    Math.floor(relX / cellStrideX),
+  );
   const endCol = Math.min(
     spec.columns - 1,
-    Math.ceil((relX + rect.w) / cellStrideX));
+    Math.ceil((relX + rect.w) / cellStrideX),
+  );
   const startRow = Math.max(0, Math.floor(relY / cellStrideY));
   const endRow = Math.ceil((relY + rect.h) / cellStrideY);
 
@@ -152,7 +159,8 @@ function placementFits(
   row: number,
   colSpan: number,
   rowSpan: number,
-  maxColumns: number): boolean {
+  maxColumns: number,
+): boolean {
   if (col < 0 || col + colSpan > maxColumns) return false;
   for (let r = row; r < row + rowSpan; r += 1) {
     for (let c = col; c < col + colSpan; c += 1) {
@@ -171,7 +179,8 @@ export function findNextGridSlot(
   occupied: Set<string>,
   colSpan: number,
   rowSpan: number,
-  maxRows: number = 48): GridCellPlacement | null {
+  maxRows: number = 48,
+): GridCellPlacement | null {
   const maxCol = spec.columns - colSpan;
   if (maxCol < 0) return null;
 
@@ -188,7 +197,8 @@ export function findNextGridSlot(
 /** Bounding box of all rects plus padding. */
 export function boundingBoxOfRects(
   rects: LayoutRect[],
-  padding: number = 0): LayoutRect | null {
+  padding: number = 0,
+): LayoutRect | null {
   if (rects.length === 0) return null;
   let minX = Infinity;
   let minY = Infinity;
@@ -213,7 +223,8 @@ export function boundingBoxOfRects(
 export function rectsOverlapWithGap(
   a: LayoutRect,
   b: LayoutRect,
-  gap: number = GRID_GUTTER): boolean {
+  gap: number = GRID_GUTTER,
+): boolean {
   return !(
     a.x + a.w + gap <= b.x ||
     b.x + b.w + gap <= a.x ||

@@ -1,6 +1,6 @@
 /**
- * Canvas authoring policy.
- * `guarded` is the framework default; hosts opt into `open` explicitly.
+ * Canvas authoring policy (D50, P12-T5).
+ * `guarded` is the framework default; hosts opt into `open` explicitly (D61).
  */
 
 export type CanvasPolicyPreset = 'guarded' | 'open';
@@ -17,7 +17,7 @@ export interface CanvasPolicyInput {
   region?: CanvasPolicyRegion;
   allowDelete?: boolean;
   toolset?: CanvasPolicyToolset;
-  /** Off by default; P14 code-preview tier. */
+  /** Off by default; P14 code-preview tier (D52). */
   allowCodePreview?: boolean;
 }
 
@@ -55,7 +55,8 @@ export const CANVAS_POLICY_PRESET_DEFAULTS: Record<
 };
 
 export const FRAMEWORK_DEFAULT_CANVAS_POLICY: ResolvedCanvasPolicy = {
-  preset: 'guarded',...CANVAS_POLICY_PRESET_DEFAULTS.guarded,
+  preset: 'guarded',
+  ...CANVAS_POLICY_PRESET_DEFAULTS.guarded,
 };
 
 export function isOpenCanvasPolicy(policy: ResolvedCanvasPolicy): boolean {
@@ -72,10 +73,11 @@ const KNOWN_CANVAS_POLICY_KEYS = new Set<string>([
   'allowCodePreview',
 ]);
 
-/** Warn on unknown canvasPolicy fields (web-components rule). */
+/** Warn on unknown canvasPolicy fields (D54 / web-components rule). */
 export function warnUnknownCanvasPolicyFields(
   input: CanvasPolicyInput | undefined,
-  source: string): void {
+  source: string,
+): void {
   if (!input || typeof input !== 'object') {
     return;
   }
@@ -86,7 +88,8 @@ export function warnUnknownCanvasPolicyFields(
     if (!KNOWN_CANVAS_POLICY_KEYS.has(key)) {
       // eslint-disable-next-line no-console
       console.warn(
-        `[canvasPolicy] Unknown field "${key}" in ${source}; ignored.`);
+        `[canvasPolicy] Unknown field "${key}" in ${source}; ignored.`,
+      );
     }
   }
 }

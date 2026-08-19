@@ -1,5 +1,5 @@
 /**
- * Open agent canvas authoring toolkit tools.
+ * Open agent canvas authoring toolkit tools (D50, P12-T1).
  * Capability-gated on engine.capabilities.draw; every mark is provenance-stamped.
  */
 import type { ToolDeclaration, ToolDefinition, ToolHandler } from '../../panels/tools';
@@ -46,17 +46,19 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readStringArray(value: unknown): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
-  const items = value.map((entry) => (typeof entry === 'string' && entry.length > 0 ? entry: undefined)).filter((entry): entry is string => entry !== undefined);
-  return items.length === value.length ? items: undefined;
+  const items = value
+    .map((entry) => (typeof entry === 'string' && entry.length > 0 ? entry : undefined))
+    .filter((entry): entry is string => entry !== undefined);
+  return items.length === value.length ? items : undefined;
 }
 
 function readConnectorKind(value: unknown): AgentConnectorKind | undefined {
@@ -100,20 +102,20 @@ function readInsertImageRequest(args: Record<string, unknown>): AgentInsertImage
 
 function withDrawGate(handler: ToolHandler): ToolHandler {
   return (args) => {
-    if (!isDrawCapabilityAvailable) {
-      return drawCapabilityRefusal;
+    if (!isDrawCapabilityAvailable()) {
+      return drawCapabilityRefusal();
     }
     return handler(args);
   };
 }
 
 function resolveActingAgentId(args: Record<string, unknown>): string {
-  const ctx = getAgentToolContext;
+  const ctx = getAgentToolContext();
   if (ctx === null) {
     throw new Error('agent tool context is required for this operation');
   }
   const override = readString(args.agentId);
-  return override ?? ctx().agentId;
+  return override ?? ctx.agentId;
 }
 
 const declarationInsertImage: ToolDeclaration = {
@@ -238,7 +240,7 @@ export const AUTHORING_TOOLKIT_TOOLS: readonly ToolDefinition[] = [
         const result = insertAgentImage(agentId, request, resolved);
         return drawToolSuccess({ kind: 'insert_image', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),
@@ -265,7 +267,7 @@ export const AUTHORING_TOOLKIT_TOOLS: readonly ToolDefinition[] = [
         const result = connectAgentShapes(agentId, request);
         return drawToolSuccess({ kind: 'connect_shapes', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),
@@ -283,7 +285,7 @@ export const AUTHORING_TOOLKIT_TOOLS: readonly ToolDefinition[] = [
         const result = groupAgentShapes(agentId, request);
         return drawToolSuccess({ kind: 'group_shapes', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),
@@ -304,7 +306,7 @@ export const AUTHORING_TOOLKIT_TOOLS: readonly ToolDefinition[] = [
         const result = frameAgentShapes(agentId, request);
         return drawToolSuccess({ kind: 'frame_shapes', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),
@@ -316,20 +318,22 @@ export const AUTHORING_TOOLKIT_TOOLS: readonly ToolDefinition[] = [
       if (layout === undefined) {
         return { ok: false, error: 'layout must be flow, timeline, radial, or nested' };
       }
-      const shapeIds = args.shapeIds === undefined ? undefined: readStringArray(args.shapeIds);
+      const shapeIds = args.shapeIds === undefined ? undefined : readStringArray(args.shapeIds);
       const frameId = readString(args.frameId);
       if (shapeIds !== undefined && frameId !== undefined) {
         return { ok: false, error: 'pass either shapeIds or frameId, not both' };
       }
       const request: AgentArrangeRequest = {
-        layout,...(shapeIds !== undefined ? { shapeIds }: {}),...(frameId !== undefined ? { frameId }: {}),
+        layout,
+        ...(shapeIds !== undefined ? { shapeIds } : {}),
+        ...(frameId !== undefined ? { frameId } : {}),
       };
       try {
         const agentId = resolveActingAgentId(args);
         const result = arrangeAgentShapes(agentId, request);
         return drawToolSuccess({ kind: 'arrange', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),

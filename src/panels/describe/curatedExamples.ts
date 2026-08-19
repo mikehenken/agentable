@@ -1,5 +1,5 @@
 /**
- * Curated example specs for describe_panel introspection.
+ * Curated example specs for describe_panel introspection (D43).
  * Every entry is validated in CI via curatedExamplesValidate.test.ts.
  */
 import type { SpecValidationContext } from '../spec/types';
@@ -9,15 +9,18 @@ import type { CuratedExampleEntry, CuratedExampleValidationHints } from './types
 function wrapCatalogNode(
   target: SpecNode,
   extraNodes?: Record<string, SpecNode>,
-  extras?: Partial<PanelSpec>): PanelSpec {
+  extras?: Partial<PanelSpec>,
+): PanelSpec {
   return {
     v: 1,
     origin: 'agent',
     root: 'body',
     nodes: {
       body: { type: 'panel-body', children: ['target'] },
-      target,...extraNodes,
-    },...extras,
+      target,
+      ...extraNodes,
+    },
+    ...extras,
   };
 }
 
@@ -39,7 +42,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Minimal panel body',
     description: 'Empty scroll region root with no children.',
     spec: wrapCatalogNode({ type: 'panel-body' }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-panel-body-with-header',
@@ -49,8 +52,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     description: 'Vertical layout root containing a header row.',
     spec: wrapCatalogNode(
       { type: 'panel-body', children: ['hdr'] },
-      { hdr: { type: 'header', props: { title: 'Overview' } } }),
-    validation: catalogValidation,
+      { hdr: { type: 'header', props: { title: 'Overview' } } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-header-title-only',
@@ -59,7 +63,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Title-only header',
     description: 'Single-line panel chrome header.',
     spec: wrapCatalogNode({ type: 'header', props: { title: 'Site SEO' } }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-header-with-subtitle',
@@ -71,7 +75,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       type: 'header',
       props: { title: 'Analytics', subtitle: 'Last 30 days', icon: 'bar-chart' },
     }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-field-form-single',
@@ -83,7 +87,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       type: 'field-form',
       props: { bind: 'seo', fields: [{ bind: 'title', type: 'text', label: 'Title' }] },
     }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-field-form-multi',
@@ -101,7 +105,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
         ],
       },
     }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-field-form-with-source',
@@ -112,8 +116,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     spec: wrapCatalogNode(
       { type: 'field-form', props: { bind: 'seo', fields: [{ bind: 'keywords', type: 'text' }] } },
       undefined,
-      { sources: { seo: { source: 'site.seo', params: { pageId: '$scope.entityId' } } } }),
-    validation: catalogValidation,
+      { sources: { seo: { source: 'site.seo', params: { pageId: '$scope.entityId' } } } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-action-row-single',
@@ -124,8 +129,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     spec: wrapCatalogNode(
       { type: 'action-row', props: { actions: ['save'] } },
       undefined,
-      { actions: { save: { kind: 'mutate', source: 'site.seo', op: 'update' } } }),
-    validation: catalogValidation,
+      { actions: { save: { kind: 'mutate', source: 'site.seo', op: 'update' } } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-action-row-dual',
@@ -147,7 +153,8 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
             targetFields: ['title'],
           },
         },
-      }),
+      },
+    ),
     validation: catalogValidation(['site.seo', 'seo.generate']),
   },
   {
@@ -160,7 +167,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       type: 'list',
       props: { bind: 'seo', row: { title: 'name' }, search: true },
     }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-list-with-filters',
@@ -176,7 +183,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
         filters: [{ bind: 'status', type: 'select', label: 'Status' }],
       },
     }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-table-columns',
@@ -194,7 +201,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
         ],
       },
     }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-table-row-actions',
@@ -208,8 +215,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
         props: { bind: 'seo', columns: [{ id: 'title', label: 'Title' }], rowActions: ['edit'] },
       },
       undefined,
-      { actions: { edit: { kind: 'host', action: 'switchPage' } } }),
-    validation: catalogValidation,
+      { actions: { edit: { kind: 'host', action: 'switchPage' } } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-badge-static',
@@ -218,7 +226,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Static status badge',
     description: 'Fixed text chip with tone.',
     spec: wrapCatalogNode({ type: 'badge', props: { text: 'Published', tone: 'success' } }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-badge-bound',
@@ -227,7 +235,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Bound badge',
     description: 'Badge text resolved from a source field.',
     spec: wrapCatalogNode({ type: 'badge', props: { bind: 'seo.status', tone: 'neutral' } }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-tabs-single',
@@ -237,8 +245,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     description: 'One tab pointing at a child node.',
     spec: wrapCatalogNode(
       { type: 'tabs', props: { tabs: [{ id: 'main', label: 'Main', child: 'tab-body' }] } },
-      { 'tab-body': { type: 'panel-body' } }),
-    validation: catalogValidation,
+      { 'tab-body': { type: 'panel-body' } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-tabs-dual',
@@ -259,8 +268,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       {
         'settings-body': { type: 'field-form', props: { bind: 'seo', fields: [{ bind: 'title' }] } },
         'preview-body': { type: 'empty-state', props: { message: 'No preview yet' } },
-      }),
-    validation: catalogValidation,
+      },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-confirm-standalone',
@@ -269,7 +279,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Confirm chrome',
     description: 'Internal approval confirm surface.',
     spec: wrapCatalogNode({ type: 'confirm' }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-confirm-in-body',
@@ -279,8 +289,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     description: 'Confirm node nested under panel-body.',
     spec: wrapCatalogNode(
       { type: 'panel-body', children: ['confirm-node'] },
-      { 'confirm-node': { type: 'confirm' } }),
-    validation: catalogValidation,
+      { 'confirm-node': { type: 'confirm' } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-stale-banner-standalone',
@@ -289,7 +300,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Stale data banner',
     description: 'Internal stale-data indicator.',
     spec: wrapCatalogNode({ type: 'stale-banner' }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-stale-banner-with-form',
@@ -302,8 +313,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       {
         stale: { type: 'stale-banner' },
         form: { type: 'field-form', props: { bind: 'seo', fields: [{ bind: 'title' }] } },
-      }),
-    validation: catalogValidation,
+      },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-empty-state-message',
@@ -312,7 +324,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Message-only empty state',
     description: 'Icon and message when no data is available.',
     spec: wrapCatalogNode({ type: 'empty-state', props: { message: 'No items yet' } }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-empty-state-with-action',
@@ -323,8 +335,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     spec: wrapCatalogNode(
       { type: 'empty-state', props: { message: 'Create your first page', action: 'create' } },
       undefined,
-      { actions: { create: { kind: 'host', action: 'switchPage' } } }),
-    validation: catalogValidation,
+      { actions: { create: { kind: 'host', action: 'switchPage' } } },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-filter-chips-basic',
@@ -333,7 +346,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Active filter chips',
     description: 'Chip row bound to a filter source.',
     spec: wrapCatalogNode({ type: 'filter-chips', props: { bind: 'seo.filters' } }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-filter-chips-above-list',
@@ -346,8 +359,9 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       {
         chips: { type: 'filter-chips', props: { bind: 'seo.filters' } },
         items: { type: 'list', props: { bind: 'seo', row: { title: 'name' } } },
-      }),
-    validation: catalogValidation,
+      },
+    ),
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-custom-slot-basic',
@@ -356,7 +370,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     title: 'Host component slot',
     description: 'Mounts a host-registered catalog component by name.',
     spec: wrapCatalogNode({ type: 'custom-slot', props: { name: 'site-seo' } }),
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'catalog-custom-slot-with-props',
@@ -368,7 +382,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
       type: 'custom-slot',
       props: { name: 'job-detail', props: { compact: true } },
     }),
-    validation: {...catalogValidation, panelRegistry: ['job-detail', 'site-seo'] },
+    validation: { ...catalogValidation(), panelRegistry: ['job-detail', 'site-seo'] },
   },
   {
     id: 'panel-site-seo-minimal',
@@ -392,7 +406,7 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
         actions: { type: 'action-row', props: { actions: ['save'] } },
       },
     },
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
   {
     id: 'panel-site-seo-full',
@@ -456,20 +470,23 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
         actions: { type: 'action-row', props: { actions: ['save'] } },
       },
     },
-    validation: catalogValidation,
+    validation: catalogValidation(),
   },
 ];
 
 export function curatedExamplesForTarget(
   targetKind: 'catalog' | 'panel',
-  targetId: string): readonly CuratedExampleEntry[] {
+  targetId: string,
+): readonly CuratedExampleEntry[] {
   return CURATED_EXAMPLE_ENTRIES.filter(
-    (entry) => entry.targetKind === targetKind && entry.targetId === targetId);
+    (entry) => entry.targetKind === targetKind && entry.targetId === targetId,
+  );
 }
 
 export function curatedExampleSummariesForTarget(
   targetKind: 'catalog' | 'panel',
-  targetId: string): Array<{ id: string; title: string; description: string; spec: PanelSpec }> {
+  targetId: string,
+): Array<{ id: string; title: string; description: string; spec: PanelSpec }> {
   return curatedExamplesForTarget(targetKind, targetId).map(({ id, title, description, spec }) => ({
     id,
     title,
@@ -480,7 +497,8 @@ export function curatedExampleSummariesForTarget(
 
 export function buildValidationContextFromHints(
   hints: CuratedExampleValidationHints,
-  catalog: ReadonlyMap<string, import('../spec/types').SpecCatalogEntry>): SpecValidationContext {
+  catalog: ReadonlyMap<string, import('../spec/types').SpecCatalogEntry>,
+): SpecValidationContext {
   return {
     catalog,
     adapterSources: new Set(hints.adapterSources ?? DEFAULT_SOURCES),

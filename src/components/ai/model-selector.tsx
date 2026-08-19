@@ -43,7 +43,8 @@ export function ModelSelector({
         className={cn(
           'model-switcher operator-model-switcher appearance-none rounded-md border py-1 pl-2 pr-7 text-[11px]',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
-          disabled && 'opacity-50')}
+          disabled && 'opacity-50',
+        )}
         title={selected?.description}
       >
         {options.map((opt) => (

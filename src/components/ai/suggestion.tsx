@@ -7,7 +7,8 @@ export interface SuggestionsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Suggestions({
   children,
-  className,...props
+  className,
+  ...props
 }: SuggestionsProps): React.ReactElement {
   return (
     <div className={cn('flex flex-wrap justify-center gap-2', className)} {...props}>
@@ -34,7 +35,8 @@ export function Suggestion({
       className={cn(
         'operator-suggestion-chip rounded-full border px-3 py-1.5 text-xs transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
-        className)}
+        className,
+      )}
     >
       {suggestion}
     </button>

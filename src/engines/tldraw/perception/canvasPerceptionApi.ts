@@ -1,5 +1,5 @@
 /**
- * Imperative canvas perception driver for the tldraw whiteboard.
+ * Imperative canvas perception driver for the tldraw whiteboard (D41, P8-T2).
  *
  * Called from agent tools (non-React). Uses the same editor binding as
  * panelShapeApi and agentDrawingApi.
@@ -33,7 +33,7 @@ export function clampPixelRatio(value: number | undefined): number {
 }
 
 function requireEditor(): Editor {
-  const editor = getEditor;
+  const editor = getEditor();
   if (!editor) {
     throw new Error('canvas editor not bound');
   }
@@ -41,13 +41,13 @@ function requireEditor(): Editor {
 }
 
 function viewportBounds(editor: Editor): Rect {
-  const viewport = editor.getViewportPageBounds;
-  return { x: viewport().x, y: viewport().y, w: viewport().w, h: viewport().h };
+  const viewport = editor.getViewportPageBounds();
+  return { x: viewport.x, y: viewport.y, w: viewport.w, h: viewport.h };
 }
 
 function shapeIdsInRegion(editor: Editor, region: Rect): string[] {
   const ids: string[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
     const bounds = editor.getShapePageBounds(shape.id);
     if (!bounds) continue;
     const shapeRect: Rect = { x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h };
@@ -68,7 +68,7 @@ function unionPageBounds(editor: Editor, shapeIds: readonly string[]): Rect | nu
     if (!bounds) continue;
     const rect: Rect = { x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h };
     if (union === null) {
-      union = {...rect };
+      union = { ...rect };
       continue;
     }
     const x2 = Math.max(union.x + union.w, rect.x + rect.w);
@@ -120,7 +120,8 @@ function padAndMinCaptureRegion(region: Rect): Rect {
 function resolveScreenshotShapeIds(
   editor: Editor,
   region: Rect,
-  fallbackShapeIds: readonly string[] | undefined): { shapeIds: string[]; captureRegion: Rect } {
+  fallbackShapeIds: readonly string[] | undefined,
+): { shapeIds: string[]; captureRegion: Rect } {
   const inRegion = filterValidShapeIds(editor, shapeIdsInRegion(editor, region));
   if (inRegion.length > 0) {
     return { shapeIds: inRegion, captureRegion: padAndMinCaptureRegion(region) };
@@ -129,7 +130,9 @@ function resolveScreenshotShapeIds(
   const fallbackCandidates = filterValidShapeIds(
     editor,
     fallbackShapeIds !== undefined && fallbackShapeIds.length > 0
-      ? [...fallbackShapeIds]: editor.getCurrentPageShapes().map((shape) => String(shape.id)));
+      ? [...fallbackShapeIds]
+      : editor.getCurrentPageShapes().map((shape) => String(shape.id)),
+  );
 
   if (fallbackCandidates.length === 0) {
     throw new Error('no shapes in screenshot region');
@@ -147,17 +150,17 @@ function resolveScreenshotShapeIds(
 }
 
 export function readCanvasShapeGraph(options: CanvasReadOptions = {}): CanvasShapeGraph {
-  const editor = requireEditor;
-  const region = resolvePerceptionRegionBounds(options.region, viewportBounds(editor()));
-  const shapes = editor().getCurrentPageShapes;
+  const editor = requireEditor();
+  const region = resolvePerceptionRegionBounds(options.region, viewportBounds(editor));
+  const shapes = editor.getCurrentPageShapes();
 
   return serializeShapeGraph({
-    shapes: shapes().map((shape) => ({
+    shapes: shapes.map((shape) => ({
       id: String(shape.id),
       type: shape.type,
       x: shape.x,
       y: shape.y,
-      parentId: shape.parentId ? String(shape.parentId): undefined,
+      parentId: shape.parentId ? String(shape.parentId) : undefined,
       index: shape.index,
       meta: shape.meta as Record<string, unknown>,
       props: shape.props as Record<string, unknown>,
@@ -165,7 +168,7 @@ export function readCanvasShapeGraph(options: CanvasReadOptions = {}): CanvasSha
     region,
     budget: options.budget ?? DEFAULT_READ_BUDGET,
     getPageBounds: (shapeId) => {
-      const bounds = editor().getShapePageBounds(shapeId as TLShapeId);
+      const bounds = editor.getShapePageBounds(shapeId as TLShapeId);
       if (!bounds) return null;
       return { x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h };
     },
@@ -173,23 +176,25 @@ export function readCanvasShapeGraph(options: CanvasReadOptions = {}): CanvasSha
 }
 
 export async function screenshotCanvasRegion(
-  options: CanvasScreenshotOptions = {}): Promise<CanvasScreenshotResult> {
-  const editor = requireEditor;
-  const region = resolvePerceptionRegionBounds(options.region, viewportBounds(editor()));
+  options: CanvasScreenshotOptions = {},
+): Promise<CanvasScreenshotResult> {
+  const editor = requireEditor();
+  const region = resolvePerceptionRegionBounds(options.region, viewportBounds(editor));
   const { shapeIds, captureRegion } = resolveScreenshotShapeIds(
-    editor(),
+    editor,
     region,
-    options.fallbackShapeIds);
+    options.fallbackShapeIds,
+  );
 
   const pixelRatio = clampPixelRatio(options.pixelRatio);
   const bounds = new Box(captureRegion.x, captureRegion.y, captureRegion.w, captureRegion.h);
 
   async function renderAtRatio(ratio: number): Promise<CanvasScreenshotResult> {
-    const validShapeIds = filterValidShapeIds(editor(), shapeIds);
+    const validShapeIds = filterValidShapeIds(editor, shapeIds);
     if (validShapeIds.length === 0) {
       throw new Error('no valid shapes to screenshot');
     }
-    const image = await editor().toImageDataUrl(validShapeIds as TLShapeId[], {
+    const image = await editor.toImageDataUrl(validShapeIds as TLShapeId[], {
       format: 'png',
       pixelRatio: ratio,
       bounds,
@@ -197,13 +202,15 @@ export async function screenshotCanvasRegion(
       background: true,
     });
 
-    const dataUrl = typeof image === 'string' ? image: image.url;
+    const dataUrl = typeof image === 'string' ? image : image.url;
     const width =
       typeof image === 'string'
-        ? Math.max(1, Math.round(captureRegion.w * ratio)): Math.max(1, Math.round(image.width));
+        ? Math.max(1, Math.round(captureRegion.w * ratio))
+        : Math.max(1, Math.round(image.width));
     const height =
       typeof image === 'string'
-        ? Math.max(1, Math.round(captureRegion.h * ratio)): Math.max(1, Math.round(image.height));
+        ? Math.max(1, Math.round(captureRegion.h * ratio))
+        : Math.max(1, Math.round(image.height));
 
     return {
       dataUrl,

@@ -28,13 +28,15 @@ function childIds(component: A2UIComponent): readonly string[] {
 function pushError(
   ctx: ComponentMapContext,
   message: string,
-  componentId?: string): void {
+  componentId?: string,
+): void {
   ctx.errors.push({ code: 'A2UI_DYNAMIC_UNRESOLVED', message, componentId });
 }
 
 function resolveText(
   component: A2UIComponent,
-  ctx: ComponentMapContext): string | null {
+  ctx: ComponentMapContext,
+): string | null {
   const raw = component.text;
   if (raw === undefined) {
     return null;
@@ -75,7 +77,8 @@ function textFieldVariantToKind(variant: unknown): string {
 
 function mapButtonAction(
   component: A2UIComponent,
-  ctx: ComponentMapContext): string | null {
+  ctx: ComponentMapContext,
+): string | null {
   const action = component.action;
   if (typeof action !== 'object' || action === null || Array.isArray(action)) {
     return null;
@@ -97,12 +100,12 @@ function mapTextComponent(component: A2UIComponent, ctx: ComponentMapContext): S
   if (text === null) {
     return null;
   }
-  const variant = typeof component.variant === 'string' ? component.variant: 'default';
+  const variant = typeof component.variant === 'string' ? component.variant : 'default';
   if (variant === 'h1' || variant === 'h2' || text.startsWith('#')) {
     const { title, subtitle } = stripMarkdownHeading(text);
     return {
       type: 'header',
-      props: subtitle !== undefined ? { title, subtitle }: { title },
+      props: subtitle !== undefined ? { title, subtitle } : { title },
     };
   }
   if (variant === 'caption') {
@@ -151,18 +154,20 @@ function mapButtonComponent(component: A2UIComponent, ctx: ComponentMapContext):
 function mapLayoutComponent(component: A2UIComponent): SpecNode {
   const children = childIds(component).filter((id) => id.length > 0);
   return children.length > 0
-    ? { type: 'panel-body', children: [...children] }: { type: 'panel-body' };
+    ? { type: 'panel-body', children: [...children] }
+    : { type: 'panel-body' };
 }
 
 function mapIconComponent(component: A2UIComponent): SpecNode {
-  const name = typeof component.name === 'string' ? component.name: 'icon';
+  const name = typeof component.name === 'string' ? component.name : 'icon';
   return { type: 'badge', props: { text: name, tone: 'neutral' } };
 }
 
 /** Map one A2UI basic-catalog component to a platform IR node (or null to skip). */
 export function mapA2UIComponentToIrNode(
   component: A2UIComponent,
-  ctx: ComponentMapContext): SpecNode | null {
+  ctx: ComponentMapContext,
+): SpecNode | null {
   if (A2UI_SKIPPED_COMPONENTS.has(component.component)) {
     return null;
   }
@@ -190,7 +195,8 @@ export function mapA2UIComponentToIrNode(
 
 export function buildPanelSpecFromComponents(
   components: Map<string, A2UIComponent>,
-  dataModel: JsonObject): {
+  dataModel: JsonObject,
+): {
   specNodes: Record<string, SpecNode>;
   actions: Record<string, SpecAction>;
   state: JsonObject | undefined;
@@ -221,13 +227,14 @@ export function buildPanelSpecFromComponents(
     }
     const filtered = node.children.filter((childId) => specNodes[childId] !== undefined);
     if (filtered.length !== node.children.length) {
-      specNodes[component.id] = {...node, children: filtered };
+      specNodes[component.id] = { ...node, children: filtered };
     }
   }
 
-  const state = Object.keys(dataModel).length > 0 ? dataModelToPanelState(dataModel): undefined;
+  const state = Object.keys(dataModel).length > 0 ? dataModelToPanelState(dataModel) : undefined;
   const sources = ctx.usesFieldForm
-    ? { [A2UI_DATA_SOURCE_KEY]: { source: A2UI_DATA_ADAPTER_SOURCE } }: undefined;
+    ? { [A2UI_DATA_SOURCE_KEY]: { source: A2UI_DATA_ADAPTER_SOURCE } }
+    : undefined;
 
   return {
     specNodes,

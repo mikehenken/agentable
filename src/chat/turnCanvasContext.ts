@@ -16,10 +16,11 @@ export function withTurnCanvasShapeIds<T>(shapeIds: readonly string[], fn: () =>
 
 export async function withTurnCanvasShapeIdsAsync<T>(
   shapeIds: readonly string[],
-  fn: () => Promise<T>): Promise<T> {
+  fn: () => Promise<T>,
+): Promise<T> {
   turnShapeIdsStack.push([...shapeIds]);
   try {
-    return await fn;
+    return await fn();
   } finally {
     turnShapeIdsStack.pop();
   }

@@ -54,7 +54,9 @@ export interface WhiteboardWiringProviderResult {
 
 export type WhiteboardWiringProvider = (
 
-  input: WhiteboardWiringProviderInput) => WhiteboardWiringProviderResult | null;
+  input: WhiteboardWiringProviderInput,
+
+) => WhiteboardWiringProviderResult | null;
 
 
 
@@ -62,7 +64,7 @@ const providers: WhiteboardWiringProvider[] = [];
 
 
 
-type WhiteboardWiringProviderChangeListener = ()=> void;
+type WhiteboardWiringProviderChangeListener = () => void;
 
 
 
@@ -75,6 +77,7 @@ function notifyWhiteboardWiringProvidersChanged(): void {
   for (const listener of providerChangeListeners) {
 
     listener();
+
   }
 
 }
@@ -91,7 +94,9 @@ function notifyWhiteboardWiringProvidersChanged(): void {
 
 export function onWhiteboardWiringProvidersChanged(
 
-  listener: WhiteboardWiringProviderChangeListener): () => void {
+  listener: WhiteboardWiringProviderChangeListener,
+
+): () => void {
 
   providerChangeListeners.add(listener);
 
@@ -107,11 +112,14 @@ export function onWhiteboardWiringProvidersChanged(
 
 export function registerWhiteboardWiringProvider(
 
-  provider: WhiteboardWiringProvider): () => void {
+  provider: WhiteboardWiringProvider,
+
+): () => void {
 
   providers.push(provider);
 
   notifyWhiteboardWiringProvidersChanged();
+
   return () => {
 
     const index = providers.indexOf(provider);
@@ -121,6 +129,7 @@ export function registerWhiteboardWiringProvider(
       providers.splice(index, 1);
 
       notifyWhiteboardWiringProvidersChanged();
+
     }
 
   };
@@ -136,6 +145,7 @@ export function resetWhiteboardWiringProviders(): void {
     providers.length = 0;
 
     notifyWhiteboardWiringProvidersChanged();
+
   } else {
 
     providers.length = 0;
@@ -148,7 +158,9 @@ export function resetWhiteboardWiringProviders(): void {
 
 export function resolveWhiteboardWiringFromProviders(
 
-  input: WhiteboardWiringProviderInput): WhiteboardWiringProviderResult | null {
+  input: WhiteboardWiringProviderInput,
+
+): WhiteboardWiringProviderResult | null {
 
   for (const provider of providers) {
 

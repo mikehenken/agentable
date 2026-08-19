@@ -14,7 +14,8 @@ export interface EmbedConfigReloadDetail {
 
 export function buildEmbedConfigReloadDetail(
   ok: boolean,
-  error?: unknown): EmbedConfigReloadDetail {
+  error?: unknown,
+): EmbedConfigReloadDetail {
   if (ok) {
     return { ok: true };
   }
@@ -25,10 +26,12 @@ export function buildEmbedConfigReloadDetail(
       ok: false,
       error: refusal.message,
       code: refusal.code,
-      retryAfterMs: refusal.retryAfterMs,...(refusal.limit !== undefined ? { limit: refusal.limit }: {}),...(refusal.windowMs !== undefined ? { windowMs: refusal.windowMs }: {}),
+      retryAfterMs: refusal.retryAfterMs,
+      ...(refusal.limit !== undefined ? { limit: refusal.limit } : {}),
+      ...(refusal.windowMs !== undefined ? { windowMs: refusal.windowMs } : {}),
     };
   }
 
-  const message = error instanceof Error ? error.message: String(error ?? 'unknown error');
+  const message = error instanceof Error ? error.message : String(error ?? 'unknown error');
   return { ok: false, error: message };
 }

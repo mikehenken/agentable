@@ -1,11 +1,11 @@
 /**
- * Operator model bridge: syncs `<agentable-operator-surface>` model
- * selection to the runtime layer via host `registerModelResolver`.
+ * Operator model bridge (P13-T3): syncs `<agentable-operator-surface>` model
+ * selection to the D49 runtime layer via host `registerModelResolver`.
  *
  * Aliases stay opaque on the client; provider ids and model names resolve only
  * through the registered resolver at rebind time — never via client API keys.
  *
- * Intentionally avoids importing `session.ts` `capabilities.ts` so Lit
+ * Intentionally avoids importing `session.ts` / `capabilities.ts` so Lit
  * component tests do not pull the canvas tool graph into the browser bundle.
  */
 import {
@@ -31,7 +31,7 @@ export const OPERATOR_AUTO_MODEL_ALIAS = 'auto';
 export const OPERATOR_AUTO_RESOLVED_ALIAS = 'default';
 
 /**
- * Resolve UI model aliases for rebind. When `model === 'auto'`, route to
+ * Resolve UI model aliases for D49 rebind. When `model === 'auto'`, route to
  * the default/fast alias — same NAS agent-panel behavior.
  */
 export function resolveOperatorModelAlias(alias: string): string {
@@ -85,7 +85,8 @@ let bridgeLabel = 'Operator';
 
 async function resolveOperatorSession(
   alias: string,
-  requiredCaps?: Partial<ModelCapabilities>): Promise<{
+  requiredCaps?: Partial<ModelCapabilities>,
+): Promise<{
   requestedAlias: string;
   resolvedAlias: string;
   binding: ProviderBinding;
@@ -95,7 +96,8 @@ async function resolveOperatorSession(
   const resolved = await resolveModelBinding(
     resolveOperatorModelAlias(alias),
     { agentId: OPERATOR_AGENT_ID, tenantId: bridgeTenantId },
-    { requiredCaps: requiredCaps ?? bridgeRequiredCaps ?? DEFAULT_OPERATOR_REQUIRED_CAPS });
+    { requiredCaps: requiredCaps ?? bridgeRequiredCaps ?? DEFAULT_OPERATOR_REQUIRED_CAPS },
+  );
   return {
     requestedAlias: resolved.requestedAlias,
     resolvedAlias: resolved.resolvedAlias,
@@ -106,7 +108,8 @@ async function resolveOperatorSession(
 }
 
 function buildSessionSnapshot(
-  initial: Awaited<ReturnType<typeof resolveOperatorSession>>): OperatorSessionSnapshot {
+  initial: Awaited<ReturnType<typeof resolveOperatorSession>>,
+): OperatorSessionSnapshot {
   const snapshot: OperatorSessionSnapshot = {
     agentId: OPERATOR_AGENT_ID,
     kind: 'chat',
@@ -129,14 +132,14 @@ function buildSessionSnapshot(
   return snapshot;
 }
 
-/** Whether the operator model bridge holds an active session. */
+/** Whether the operator model bridge holds an active D49 session. */
 export function isOperatorModelBridgeActive(): boolean {
   return bridgeBound && activeSession !== null;
 }
 
 /** Active operator agent session after bind; null when bridge is inactive. */
 export function getOperatorAgentSession(): AgentSession | null {
-  return bridgeBound ? activeSession: null;
+  return bridgeBound ? activeSession : null;
 }
 
 /** Requested alias on the active operator session, if bound. */
@@ -150,12 +153,13 @@ export function getOperatorModelBinding(): ProviderBinding | null {
 }
 
 /**
- * Create (or replace) the operator session when a host resolver is registered.
+ * Create (or replace) the operator D49 session when a host resolver is registered.
  * No-ops when no resolver is present so the Lit shell can still mount offline.
  */
 export async function bindOperatorModelBridge(
-  options: BindOperatorModelBridgeOptions): Promise<boolean> {
-  if (getRegisteredModelResolver === null) {
+  options: BindOperatorModelBridgeOptions,
+): Promise<boolean> {
+  if (getRegisteredModelResolver() === null) {
     bridgeBound = false;
     activeSession = null;
     return false;
@@ -176,7 +180,8 @@ export async function rebindOperatorModel(alias: string): Promise<OperatorModelR
   if (!bridgeBound || activeSession === null) {
     throw new ModelResolveError(
       'NO_RESOLVER',
-      `${OPERATOR_MODEL_BRIDGE_NOT_BOUND_CODE}: operator model bridge is not bound`);
+      `${OPERATOR_MODEL_BRIDGE_NOT_BOUND_CODE}: operator model bridge is not bound`,
+    );
   }
 
   const trimmed = alias.trim();
@@ -196,15 +201,16 @@ export async function rebindOperatorModel(alias: string): Promise<OperatorModelR
   };
 }
 
-/** Evaluate which switcher options satisfy session capability requirements. */
+/** Evaluate which switcher options satisfy session capability requirements (D49). */
 export async function evaluateOperatorModelOptions(
   options: readonly OperatorModelOption[],
   ctx?: {
     tenantId?: string;
     requiredCaps?: Partial<ModelCapabilities>;
-  }): Promise<OperatorModelOptionAvailability[]> {
-  if (getRegisteredModelResolver === null) {
-    return options.map((option) => ({...option, available: true }));
+  },
+): Promise<OperatorModelOptionAvailability[]> {
+  if (getRegisteredModelResolver() === null) {
+    return options.map((option) => ({ ...option, available: true }));
   }
 
   const requiredCaps = ctx?.requiredCaps ?? bridgeRequiredCaps ?? DEFAULT_OPERATOR_REQUIRED_CAPS;
@@ -215,15 +221,17 @@ export async function evaluateOperatorModelOptions(
   const results: OperatorModelOptionAvailability[] = [];
   for (const option of options) {
     if (option.alias === OPERATOR_AUTO_MODEL_ALIAS) {
-      results.push({...option, available: true, resolvedAlias: OPERATOR_AUTO_RESOLVED_ALIAS });
+      results.push({ ...option, available: true, resolvedAlias: OPERATOR_AUTO_RESOLVED_ALIAS });
       continue;
     }
     try {
       const resolved = await resolveModelBinding(
         resolveOperatorModelAlias(option.alias),
         { agentId: OPERATOR_AGENT_ID, tenantId },
-        { requiredCaps });
-      results.push({...option,
+        { requiredCaps },
+      );
+      results.push({
+        ...option,
         available: true,
         resolvedAlias: resolved.resolvedAlias,
         fallbackUsed: resolved.fallbackUsed,
@@ -231,8 +239,10 @@ export async function evaluateOperatorModelOptions(
     } catch (err: unknown) {
       const message =
         err instanceof Error
-          ? err.message: `Could not resolve alias "${option.alias}" for operator session.`;
-      results.push({...option,
+          ? err.message
+          : `Could not resolve alias "${option.alias}" for operator session.`;
+      results.push({
+        ...option,
         available: false,
         unavailableReason: message,
       });
@@ -259,7 +269,8 @@ export function resetOperatorModelBridgeForTests(): void {
 
 /** Component-test helper — registers a minimal resolver map without pulling chat SDKs. */
 export function registerOperatorSurfaceTestModelResolver(
-  map: Record<string, ProviderBinding>): void {
+  map: Record<string, ProviderBinding>,
+): void {
   registerModelResolver(async (alias) => {
     const resolved = map[alias];
     if (!resolved) {

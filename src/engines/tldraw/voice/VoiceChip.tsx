@@ -2,20 +2,20 @@
  * VoiceChip — always-visible voice CTA pinned in the WhiteboardShell
  * top bar.
  *
- * Subscribes to `useVoiceCall` (which subscribes to the global voice
+ * Subscribes to `useVoiceCall()` (which subscribes to the global voice
  * kernel) so it reflects state across:
- * - Calls started via this chip
- * - Calls started by agent tools (e.g. open_chat → focus chat input,
- * or any future tool that triggers a call)
- * - Voice activity from a parallel `<voice-call-button>` web component
- * elsewhere on the page (kernel is the single source of truth)
+ *   - Calls started via this chip
+ *   - Calls started by agent tools (e.g. open_chat → focus chat input,
+ *     or any future tool that triggers a call)
+ *   - Voice activity from a parallel `<voice-call-button>` web component
+ *     elsewhere on the page (kernel is the single source of truth)
  *
  * Visual states:
- * - idle: muted mic icon + "Talk to {assistantName}" label
- * - connecting: spinner-ish dot + "Connecting…"
- * - listening: pulsing primary dot + "Listening" + level meter
- * - speaking: accent dot + "{name} is speaking" + level meter
- * - error: AlertCircle + "Try again"
+ *   - idle:        muted mic icon + "Talk to {assistantName}" label
+ *   - connecting:  spinner-ish dot + "Connecting…"
+ *   - listening:   pulsing primary dot + "Listening" + level meter
+ *   - speaking:    accent dot + "{name} is speaking" + level meter
+ *   - error:       AlertCircle + "Try again"
  *
  * Click toggles the call. Disabled when `available: false` (no
  * transport / no API key).
@@ -37,26 +37,33 @@ export function VoiceChip(): ReactElement {
   const isError = voice.state === 'error';
 
   const label = isError
-    ? 'Try again': isSpeaking
-    ? `${assistantName} is speaking`: isListening
-    ? 'Listening · End call': isConnecting
-    ? 'Connecting…': idleLabel;
+    ? 'Try again'
+    : isSpeaking
+    ? `${assistantName} is speaking`
+    : isListening
+    ? 'Listening · End call'
+    : isConnecting
+    ? 'Connecting…'
+    : idleLabel;
 
   // Level meter — gentle gamma curve so quiet speech still pulses but
   // loud speech doesn't clip the dot.
   const level = Math.min(1, Math.pow(voice.level, 0.6) * 3);
 
   // Color tokens:
-  // - error: red
-  // - speaking: accent (default gold)
-  // - listening: primary (default teal)
-  // - idle/connecting: muted
+  //   - error: red
+  //   - speaking: accent (default gold)
+  //   - listening: primary (default teal)
+  //   - idle/connecting: muted
   const dotColor = isError
-    ? 'var(--landi-color-error, #EF4444)': isSpeaking
-    ? 'var(--landi-color-accent, #C9A227)': voice.isActive
-    ? 'var(--landi-color-primary, #0D7377)': 'var(--landi-color-text-muted, #6B6B66)';
+    ? 'var(--landi-color-error, #EF4444)'
+    : isSpeaking
+    ? 'var(--landi-color-accent, #C9A227)'
+    : voice.isActive
+    ? 'var(--landi-color-primary, #0D7377)'
+    : 'var(--landi-color-text-muted, #6B6B66)';
 
-  const Icon = isError ? AlertCircle: voice.isActive ? Mic: MicOff;
+  const Icon = isError ? AlertCircle : voice.isActive ? Mic : MicOff;
   const disabled = !voice.available && !isError;
 
   return (
@@ -74,15 +81,17 @@ export function VoiceChip(): ReactElement {
         borderRadius: 999,
         border: `1px solid ${
           voice.isActive
-            ? 'var(--landi-color-primary, #0D7377)': 'var(--landi-color-border, #E5E5E0)'
+            ? 'var(--landi-color-primary, #0D7377)'
+            : 'var(--landi-color-border, #E5E5E0)'
         }`,
         background: voice.isActive
-          ? 'var(--landi-color-primary-tint, rgba(13, 115, 119, 0.08))': 'var(--landi-color-surface, #FFFFFF)',
+          ? 'var(--landi-color-primary-tint, rgba(13, 115, 119, 0.08))'
+          : 'var(--landi-color-surface, #FFFFFF)',
         color: 'var(--landi-color-text, #1A1A1A)',
         fontSize: 13,
         fontWeight: 500,
-        cursor: disabled ? 'not-allowed': 'pointer',
-        opacity: disabled ? 0.45: 1,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.45 : 1,
         transition: 'background 0.12s, border-color 0.12s',
       }}
     >

@@ -15,22 +15,27 @@ export function isSummarizeCanvasIntent(text: string): boolean {
 function formatGraphSummary(graph: CanvasShapeGraph): string {
   const typeCounts = new Map<string, number>();
   for (const node of graph.shapes) {
-    const type = node.nativeType.length > 0 ? node.nativeType: 'unknown';
+    const type = node.nativeType.length > 0 ? node.nativeType : 'unknown';
     typeCounts.set(type, (typeCounts.get(type) ?? 0) + 1);
   }
-  const breakdown = [...typeCounts.entries()].sort((left, right) => right[1] - left[1]).slice(0, 6).map(([type, count]) => `${type}×${count}`).join(', ');
-  const truncated = graph.truncated === true ? ' (truncated)': '';
+  const breakdown = [...typeCounts.entries()]
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 6)
+    .map(([type, count]) => `${type}×${count}`)
+    .join(', ');
+  const truncated = graph.truncated === true ? ' (truncated)' : '';
   return (
     `Canvas viewport ${Math.round(graph.region.w)}×${Math.round(graph.region.h)} px — ` +
-    `${graph.shapes.length} shape${graph.shapes.length === 1 ? '': 's'}${truncated}` +
-    (breakdown.length > 0 ? `: ${breakdown}.`: '.')
+    `${graph.shapes.length} shape${graph.shapes.length === 1 ? '' : 's'}${truncated}` +
+    (breakdown.length > 0 ? `: ${breakdown}.` : '.')
   );
 }
 
 interface WhiteboardScriptedHost extends HTMLElement {
   runScriptedTool?: (
     toolName: 'read_canvas',
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
   whenReady?: (timeoutMs?: number) => Promise<boolean>;
 }
 
@@ -39,7 +44,8 @@ interface WhiteboardScriptedHost extends HTMLElement {
  * Returns null when the host is unavailable or read fails.
  */
 export async function summarizeCanvasViaWhiteboardHost(
-  userText: string): Promise<string | null> {
+  userText: string,
+): Promise<string | null> {
   if (!isSummarizeCanvasIntent(userText)) {
     return null;
   }

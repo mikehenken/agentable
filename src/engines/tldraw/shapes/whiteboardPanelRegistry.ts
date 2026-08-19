@@ -17,7 +17,7 @@ export type WhiteboardPanelRegistry = Record<string, WhiteboardPanelLoader>;
 
 /**
  * Default registry (B2): chat-only example. Domain packs register additional
- * panels via createCanvasHost whiteboard wiring providers.
+ * panels via createCanvasHost / whiteboard wiring providers.
  */
 export const DEFAULT_WHITEBOARD_PANEL_REGISTRY = {
   chat: () =>
@@ -32,7 +32,8 @@ const loaderMapByDefinitions = new WeakMap<
 >();
 
 export function whiteboardLoadersForDefinitions(
-  definitions: readonly PanelDefinition[]): WhiteboardPanelRegistry {
+  definitions: readonly PanelDefinition[],
+): WhiteboardPanelRegistry {
   const cached = loaderMapByDefinitions.get(definitions);
   if (cached) return cached;
   const map: WhiteboardPanelRegistry = {};
@@ -46,11 +47,12 @@ export function whiteboardLoadersForDefinitions(
 
 export function resolveWhiteboardPanelLoaders(
   host: CanvasHost | undefined,
-  loaders: WhiteboardPanelRegistry): WhiteboardPanelRegistry {
+  loaders: WhiteboardPanelRegistry,
+): WhiteboardPanelRegistry {
   const fromLoaderMap = whiteboardLoadersForDefinitions(reactPanelDefinitions(loaders));
   if (!host) {
     return fromLoaderMap;
   }
   const fromHost = whiteboardLoadersForDefinitions(host.panels.definitions());
-  return {...fromLoaderMap,...fromHost };
+  return { ...fromLoaderMap, ...fromHost };
 }

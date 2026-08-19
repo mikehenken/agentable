@@ -1,6 +1,6 @@
 /**
  * Canvas mode parsing (embed attributes + config) and camera clamping for
- * bounded/fixed modes (panel system spec section 9, /).
+ * bounded/fixed modes (panel system spec section 9, D27/D44).
  */
 import type { CameraState, CanvasMode } from '../../engine/types';
 
@@ -38,8 +38,8 @@ function parsePositiveNumber(raw: string): number | null {
 
 /**
  * Parses `canvas-bounds` embed/config values:
- * - `1200x800` or `1200,800`
- * - JSON `{"w":1200,"h":800}`
+ *   - `1200x800` or `1200,800`
+ *   - JSON `{"w":1200,"h":800}`
  */
 export function parseCanvasBounds(raw: string | null | undefined): ParsedCanvasBounds | null {
   if (raw == null) return null;
@@ -49,8 +49,8 @@ export function parseCanvasBounds(raw: string | null | undefined): ParsedCanvasB
   if (trimmed.startsWith('{')) {
     try {
       const parsed = JSON.parse(trimmed) as { w?: unknown; h?: unknown };
-      const w = typeof parsed.w === 'number' ? parsed.w: Number(parsed.w);
-      const h = typeof parsed.h === 'number' ? parsed.h: Number(parsed.h);
+      const w = typeof parsed.w === 'number' ? parsed.w : Number(parsed.w);
+      const h = typeof parsed.h === 'number' ? parsed.h : Number(parsed.h);
       if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
       return { w, h };
     } catch {
@@ -70,7 +70,8 @@ export function parseCanvasBounds(raw: string | null | undefined): ParsedCanvasB
 }
 
 function parseZoomSpec(
-  raw: string | null | undefined): { min: number; max: number } | 'locked' | undefined {
+  raw: string | null | undefined,
+): { min: number; max: number } | 'locked' | undefined {
   if (raw == null) return undefined;
   const trimmed = raw.trim().toLowerCase();
   if (!trimmed) return undefined;
@@ -88,7 +89,8 @@ function parseZoomSpec(
 }
 
 function parseBehavior(
-  raw: string | null | undefined): 'contain' | 'inside' | undefined {
+  raw: string | null | undefined,
+): 'contain' | 'inside' | undefined {
   if (raw == null) return undefined;
   const trimmed = raw.trim().toLowerCase();
   if (trimmed === 'contain' || trimmed === 'inside') return trimmed;
@@ -96,13 +98,13 @@ function parseBehavior(
 }
 
 /**
- * Resolves a `CanvasMode` from embed attributes tenant config fields.
+ * Resolves a `CanvasMode` from embed attributes / tenant config fields.
  * Unknown mode strings fall back to `infinite`. `bounded` without parseable
  * bounds falls back to `infinite` and logs a warning in dev.
  */
 export function parseCanvasModeFromEmbed(input: ParseCanvasModeInput): CanvasMode {
   const kindRaw = input.mode?.trim().toLowerCase() ?? 'infinite';
-  const kind = isCanvasModeKind(kindRaw) ? kindRaw: 'infinite';
+  const kind = isCanvasModeKind(kindRaw) ? kindRaw : 'infinite';
 
   if (kind === 'infinite' || kind === 'fixed') {
     return { kind };
@@ -113,7 +115,8 @@ export function parseCanvasModeFromEmbed(input: ParseCanvasModeInput): CanvasMod
     if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
       // eslint-disable-next-line no-console
       console.warn(
-        '[agentable-canvas] canvas-mode="bounded" requires canvas-bounds (e.g. 1200x800); falling back to infinite.');
+        '[agentable-canvas] canvas-mode="bounded" requires canvas-bounds (e.g. 1200x800); falling back to infinite.',
+      );
     }
     return DEFAULT_CANVAS_MODE;
   }
@@ -123,19 +126,22 @@ export function parseCanvasModeFromEmbed(input: ParseCanvasModeInput): CanvasMod
 
   return {
     kind: 'bounded',
-    bounds,...(behavior !== undefined ? { behavior }: {}),...(zoom !== undefined ? { zoom }: {}),
+    bounds,
+    ...(behavior !== undefined ? { behavior } : {}),
+    ...(zoom !== undefined ? { zoom } : {}),
   };
 }
 
 /**
  * Clamps a programmatic camera update for bounded mode. Uses the same
  * page-space approximation tldraw applies when constraints are active:
- * visible page width ≈ viewportScreen.w zoom.
+ * visible page width ≈ viewportScreen.w / zoom.
  */
 export function clampCameraForMode(
   mode: CanvasMode,
   camera: CameraState,
-  viewportScreen: { w: number; h: number }): CameraState {
+  viewportScreen: { w: number; h: number },
+): CameraState {
   if (mode.kind === 'infinite') return camera;
   if (mode.kind === 'fixed') return camera;
 
@@ -164,7 +170,8 @@ export function clampCameraForMode(
 }
 
 export function parseHostHeaderHeight(
-  raw: string | null | undefined): string | null {
+  raw: string | null | undefined,
+): string | null {
   if (raw == null) return null;
   const trimmed = raw.trim();
   if (!trimmed) return null;

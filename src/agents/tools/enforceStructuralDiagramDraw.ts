@@ -1,6 +1,6 @@
 /**
  * Server-side enforcement: structural diagram intents must use diagram+layout,
- * not hand-placed shapes arrays.
+ * not hand-placed shapes arrays (P13-T7).
  */
 import { isStructuralDiagramIntent } from '../../chat/canvasDrawQualityInstructions';
 import { getDrawUserMessage } from '../../chat/drawIntentContext';
@@ -32,7 +32,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function readString(value: unknown): string | undefined {
   if (typeof value !== 'string') return undefined;
   const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed: undefined;
+  return trimmed.length > 0 ? trimmed : undefined;
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
@@ -74,7 +74,7 @@ function normalizeShapeKind(value: unknown): 'box' | 'ellipse' | 'arrow' | 'text
 }
 
 function readRectCenter(entry: Record<string, unknown>): { x: number; y: number } | undefined {
-  const geometry = isRecord(entry.geometry) ? entry.geometry: entry;
+  const geometry = isRecord(entry.geometry) ? entry.geometry : entry;
   const x = readFiniteNumber(geometry.x);
   const y = readFiniteNumber(geometry.y);
   const w =
@@ -90,7 +90,7 @@ function readRectCenter(entry: Record<string, unknown>): { x: number; y: number 
 }
 
 function readTextAnchor(entry: Record<string, unknown>): { x: number; y: number } | undefined {
-  const geometry = isRecord(entry.geometry) ? entry.geometry: entry;
+  const geometry = isRecord(entry.geometry) ? entry.geometry : entry;
   const x = readFiniteNumber(geometry.x);
   const y = readFiniteNumber(geometry.y);
   if (x === undefined || y === undefined) return undefined;
@@ -150,7 +150,8 @@ export function inferLayoutMode(userText: string): LayoutMode {
   const lower = userText.toLowerCase();
   if (
     /\b(hub[- ]?and[- ]?spoke|hub\/spoke|spoke|dependency|dependencies|dependency map|radial)\b/.test(
-      lower)
+      lower,
+    )
   ) {
     return 'radial';
   }
@@ -159,7 +160,8 @@ export function inferLayoutMode(userText: string): LayoutMode {
   }
   if (
     /\b(vpc|peering|network|architecture|architectural|topology|aws|gcp|azure|subnet|cloud|infrastructure|infra|system diagram|component diagram)\b/.test(
-      lower)
+      lower,
+    )
   ) {
     return 'nested';
   }
@@ -172,7 +174,7 @@ function readArrowEndpointIds(entry: Record<string, unknown>): { from: string; t
   if (topFrom !== undefined && topTo !== undefined) {
     return { from: topFrom, to: topTo };
   }
-  const geometry = isRecord(entry.geometry) ? entry.geometry: entry;
+  const geometry = isRecord(entry.geometry) ? entry.geometry : entry;
   const geomFrom = geometry.from;
   const geomTo = geometry.to;
   if (typeof geomFrom === 'string' && typeof geomTo === 'string') {
@@ -187,7 +189,8 @@ function readArrowEndpointIds(entry: Record<string, unknown>): { from: string; t
 
 export function convertHandPlacedShapesToDiagram(
   args: Record<string, unknown>,
-  userText: string): Record<string, unknown> | undefined {
+  userText: string,
+): Record<string, unknown> | undefined {
   if (!Array.isArray(args.shapes)) {
     return undefined;
   }
@@ -217,7 +220,7 @@ export function convertHandPlacedShapesToDiagram(
       const endpoints = readArrowEndpointIds(rawEntry);
       if (endpoints !== undefined) {
         const label = readString(rawEntry.text);
-        edges.push(label !== undefined ? {...endpoints, label }: endpoints);
+        edges.push(label !== undefined ? { ...endpoints, label } : endpoints);
       }
       continue;
     }
@@ -253,12 +256,14 @@ export function convertHandPlacedShapesToDiagram(
   }
 
   const layout = inferLayoutMode(userText);
-  const next: Record<string, unknown> = {...args };
+  const next: Record<string, unknown> = { ...args };
   delete next.shapes;
   next.layout = layout;
   next.diagram = {
     nodes: nodeDrafts.map((node) =>
-      node.kind === 'ellipse' ? { id: node.id, label: node.label, kind: 'ellipse' }: { id: node.id, label: node.label }),...(edges.length > 0 ? { edges }: {}),
+      node.kind === 'ellipse' ? { id: node.id, label: node.label, kind: 'ellipse' } : { id: node.id, label: node.label },
+    ),
+    ...(edges.length > 0 ? { edges } : {}),
   };
   return next;
 }
@@ -270,17 +275,18 @@ export interface EnforceStructuralDiagramDrawResult {
 }
 
 export function enforceStructuralDiagramDraw(
-  args: Record<string, unknown>): EnforceStructuralDiagramDrawResult {
-  const userText = getDrawUserMessage;
+  args: Record<string, unknown>,
+): EnforceStructuralDiagramDrawResult {
+  const userText = getDrawUserMessage();
   let workingArgs = normalizeDiagramPayload(args);
 
-  if (userText !== undefined && isStructuralDiagramIntent(userText())) {
+  if (userText !== undefined && isStructuralDiagramIntent(userText)) {
     if (isRecord(workingArgs.diagram) && !hasValidDiagramLayout(workingArgs)) {
       workingArgs = normalizeDiagramPayload(workingArgs);
     }
   }
 
-  if (userText === undefined || !isStructuralDiagramIntent(userText())) {
+  if (userText === undefined || !isStructuralDiagramIntent(userText)) {
     return { args: workingArgs };
   }
 
@@ -297,7 +303,7 @@ export function enforceStructuralDiagramDraw(
     return { args: workingArgs };
   }
 
-  const converted = convertHandPlacedShapesToDiagram(workingArgs, userText());
+  const converted = convertHandPlacedShapesToDiagram(workingArgs, userText);
   if (converted !== undefined) {
     return { args: converted, rewritten: true };
   }

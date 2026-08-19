@@ -177,14 +177,16 @@ function formatPostedDate(iso: string): string {
   const days = Math.max(1, Math.round((Date.now() - parsed) / 86_400_000));
   if (days <= 7) return `${days}d ago`;
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(
-    new Date(parsed));
+    new Date(parsed),
+  );
 }
 
 function formatSubmittedDate(iso: string): string {
   const parsed = Date.parse(iso);
   if (Number.isNaN(parsed)) return iso;
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(
-    new Date(parsed));
+    new Date(parsed),
+  );
 }
 
 function milestoneLevel(index: number, total: number): { level: LevelKey; levelLabel: string } {
@@ -206,7 +208,7 @@ function inferProperty(location: string): string {
 
 function parseNumericJobId(id: string, fallbackIndex: number): number {
   const parsed = Number.parseInt(id, 10);
-  return Number.isFinite(parsed) ? parsed: fallbackIndex + 1;
+  return Number.isFinite(parsed) ? parsed : fallbackIndex + 1;
 }
 
 function careerJobToPanelJob(job: CareerJob, index: number): PanelJobRow {
@@ -219,7 +221,7 @@ function careerJobToPanelJob(job: CareerJob, index: number): PanelJobRow {
     location: job.location,
     property: inferProperty(job.location),
     type: job.track ?? 'Full-time',
-    track: job.track ? inferJobTrack(job.track, job.department): inferJobTrack('Full-time', job.department),
+    track: job.track ? inferJobTrack(job.track, job.department) : inferJobTrack('Full-time', job.department),
     payRange: job.compensation ?? 'Competitive',
     description: job.description,
     longDescription: job.description,
@@ -250,7 +252,7 @@ function careerGrowthPathToPanelPath(path: CareerGrowthPath): PanelGrowthPathRow
     title: `${path.fromRole} → ${path.toRole}`,
     tagline: path.summary,
     match: path.fitScore ?? 85,
-    totalTime: steps.length > 0 ? `${Math.max(6, steps.length * 4)}–${steps.length * 12} mo`: '12–24 mo',
+    totalTime: steps.length > 0 ? `${Math.max(6, steps.length * 4)}–${steps.length * 12} mo` : '12–24 mo',
     iconKey: 'Briefcase',
     milestones,
   };
@@ -267,7 +269,7 @@ function careerResourceToPanelResource(resource: CareerResource): PanelResourceR
     tone: resourceTone(resource.category),
     iconKey: resourceIconKey(resource.category),
     url: resource.url,
-    tag: resource.featured ? 'Featured': undefined,
+    tag: resource.featured ? 'Featured' : undefined,
   };
 }
 
@@ -281,12 +283,13 @@ function applicationStatusTone(status: string): PanelApplicationRow['statusTone'
 
 function careerApplicationToPanelApplication(
   application: CareerApplication,
-  jobsById: ReadonlyMap<string, CareerJob>): PanelApplicationRow {
+  jobsById: ReadonlyMap<string, CareerJob>,
+): PanelApplicationRow {
   const job = jobsById.get(application.jobId);
   return {
     id: application.id,
     role: job?.title ?? 'Open role',
-    property: job ? inferProperty(job.location): 'Sandals Resort',
+    property: job ? inferProperty(job.location) : 'Sandals Resort',
     location: job?.location ?? 'Caribbean',
     status: application.status,
     statusTone: applicationStatusTone(application.status),
@@ -300,7 +303,7 @@ function careerApplicationToPanelApplication(
         done: !/draft/i.test(application.status),
       },
     ],
-    nextStep: /draft/i.test(application.status) ? 'Complete your application': undefined,
+    nextStep: /draft/i.test(application.status) ? 'Complete your application' : undefined,
   };
 }
 
@@ -318,9 +321,11 @@ export function careerDatasetToPanelData(dataset: CareerDataset): CareerPanelDat
   return {
     jobs: careerJobsToPanelRows(dataset.jobs),
     applications: (dataset.applications ?? []).map((application) =>
-      careerApplicationToPanelApplication(application, jobsById)),
+      careerApplicationToPanelApplication(application, jobsById),
+    ),
     growthPaths: dataset.growthPaths.map(careerGrowthPathToPanelPath),
-    resources,...(featured ? { featuredResource: featured }: {}),
+    resources,
+    ...(featured ? { featuredResource: featured } : {}),
   };
 }
 
@@ -334,7 +339,11 @@ export function coalesceCareerPanelDataPayload(payload: unknown): unknown {
   }
   const dataset = parseCareerDataset(payload);
   const converted = careerDatasetToPanelData(dataset);
-  const source = isRecord(payload) ? payload: {};
-  return {...source,...converted,...(typeof source.agentJobsGuide === 'string' ? { agentJobsGuide: source.agentJobsGuide }: {}),...(Array.isArray(source.roleTaxonomy) ? { roleTaxonomy: source.roleTaxonomy }: {}),
+  const source = isRecord(payload) ? payload : {};
+  return {
+    ...source,
+    ...converted,
+    ...(typeof source.agentJobsGuide === 'string' ? { agentJobsGuide: source.agentJobsGuide } : {}),
+    ...(Array.isArray(source.roleTaxonomy) ? { roleTaxonomy: source.roleTaxonomy } : {}),
   };
 }

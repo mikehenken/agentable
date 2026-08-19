@@ -18,7 +18,7 @@ export interface VoiceGreetingValidationIssue {
 
 function tenantLabel(tenant: string | undefined): string {
   const trimmed = tenant?.trim();
-  return trimmed ? ` (tenant "${trimmed}")`: '';
+  return trimmed ? ` (tenant "${trimmed}")` : '';
 }
 
 /**
@@ -27,18 +27,20 @@ function tenantLabel(tenant: string | undefined): string {
  */
 export function resolveVoiceGreetingMode(
   persona: Partial<CanvasPersona>,
-  context: VoiceGreetingValidationContext = {}): VoiceGreetingMode {
+  context: VoiceGreetingValidationContext = {},
+): VoiceGreetingMode {
   const raw = persona.greetingMode ?? context.rawGreetingMode;
   const parsed = parseVoiceGreetingMode(raw);
-  return parsed.ok ? parsed.value: DEFAULT_VOICE_GREETING_MODE;
+  return parsed.ok ? parsed.value : DEFAULT_VOICE_GREETING_MODE;
 }
 
 /**
- * config validation — greetingMode enum + agent-first empty greeting warn.
+ * D46 config validation — greetingMode enum + agent-first empty greeting warn.
  */
 export function validateVoiceGreetingConfig(
   persona: Partial<CanvasPersona>,
-  context: VoiceGreetingValidationContext = {}): VoiceGreetingValidationIssue[] {
+  context: VoiceGreetingValidationContext = {},
+): VoiceGreetingValidationIssue[] {
   const issues: VoiceGreetingValidationIssue[] = [];
   const label = tenantLabel(context.tenant);
 
@@ -77,19 +79,22 @@ export function validateVoiceGreetingConfig(
   return issues;
 }
 
-/** Signatures already warned — dedupe across _recomputeResolved calls ( iter-12). */
+/** Signatures already warned — dedupe across _recomputeResolved calls (P13-T7 iter-12). */
 const warnedVoiceGreetingSignatures = new Set<string>();
 
 function voiceGreetingWarnSignature(
   persona: Partial<CanvasPersona>,
-  context: VoiceGreetingValidationContext): string {
+  context: VoiceGreetingValidationContext,
+): string {
   const tenant = context.tenant?.trim() ?? '';
   const rawMode =
     context.rawGreetingMode === undefined || context.rawGreetingMode === null
-      ? '': String(context.rawGreetingMode);
+      ? ''
+      : String(context.rawGreetingMode);
   const personaMode =
     persona.greetingMode === undefined || persona.greetingMode === null
-      ? '': String(persona.greetingMode);
+      ? ''
+      : String(persona.greetingMode);
   const greeting = persona.voiceGreeting?.trim() ?? '';
   return `${tenant}|${rawMode}|${personaMode}|${greeting}`;
 }
@@ -97,7 +102,8 @@ function voiceGreetingWarnSignature(
 /** Log voice greeting validation warnings once per merged config signature. */
 export function warnVoiceGreetingConfig(
   persona: Partial<CanvasPersona>,
-  context: VoiceGreetingValidationContext = {}): void {
+  context: VoiceGreetingValidationContext = {},
+): void {
   if (typeof console === 'undefined' || typeof console.warn !== 'function') {
     return;
   }

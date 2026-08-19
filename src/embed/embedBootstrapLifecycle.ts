@@ -1,7 +1,7 @@
 /**
  * Shared embed bootstrap lifecycle — split ensureReady (one-time config load)
- * from explicit reload (refetch). Prevents flicker when whenReady
- * runScriptedTool fire during operator chat ( iter-12).
+ * from explicit reload() (refetch). Prevents flicker when whenReady /
+ * runScriptedTool fire during operator chat (P13-T7 iter-12).
  */
 
 export interface EmbedBootstrapState {
@@ -9,7 +9,7 @@ export interface EmbedBootstrapState {
   bootstrapped: boolean;
   /** In-flight initial bootstrap only — not cleared on completion. */
   ensureReadyPromise: Promise<void> | null;
-  /** Last WhiteboardShell CanvasShell props signature passed to React render. */
+  /** Last WhiteboardShell / CanvasShell props signature passed to React render. */
   lastRenderSignature: string | null;
 }
 
@@ -24,7 +24,8 @@ export function createEmbedBootstrapState(): EmbedBootstrapState {
 /** Wait for initial config load once; subsequent calls are no-ops. */
 export async function runEmbedEnsureReady(
   state: EmbedBootstrapState,
-  reloadConfig: () => Promise<void>): Promise<void> {
+  reloadConfig: () => Promise<void>,
+): Promise<void> {
   if (state.bootstrapped) {
     return;
   }
@@ -41,7 +42,8 @@ export async function runEmbedEnsureReady(
 /** Explicit config refetch (agentable:config-reloaded); keeps bootstrapped flag. */
 export async function runEmbedExplicitReload(
   state: EmbedBootstrapState,
-  reloadConfig: () => Promise<void>): Promise<void> {
+  reloadConfig: () => Promise<void>,
+): Promise<void> {
   await reloadConfig();
   state.bootstrapped = true;
 }
@@ -49,7 +51,8 @@ export async function runEmbedExplicitReload(
 /** Skip React re-render when resolved embed props are unchanged. */
 export function embedRenderSignatureChanged(
   state: EmbedBootstrapState,
-  signature: string): boolean {
+  signature: string,
+): boolean {
   if (state.lastRenderSignature === signature) {
     return false;
   }

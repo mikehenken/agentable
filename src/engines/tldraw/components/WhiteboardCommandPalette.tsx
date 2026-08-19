@@ -27,7 +27,8 @@ export function WhiteboardCommandPalette({
   const setActiveContextRef = useFrameContextStore((s) => s.setActiveContextRef);
   const activeContextRef = useFrameContextStore((s) => s.activeContextRef);
 
-  const entityCommands = useMemo<CommandItem[]>(() =>
+  const entityCommands = useMemo<CommandItem[]>(
+    () =>
       getWhiteboardPaletteEntities().map((entity) => ({
         id: `insert-${entity.panelId}`,
         label: `Insert ${entity.label}`,
@@ -44,9 +45,11 @@ export function WhiteboardCommandPalette({
           close();
         },
       })),
-    [setActiveContextRef, close]);
+    [setActiveContextRef, close],
+  );
 
-  const commands: CommandItem[] = [...entityCommands,
+  const commands: CommandItem[] = [
+    ...entityCommands,
     {
       id: 'focus-chat',
       label: 'Focus chat panel',

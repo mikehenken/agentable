@@ -28,7 +28,7 @@ export const CANVAS_DRAW_TOOLS: ReadonlySet<string> = new Set([
 
 export const CANVAS_CHECK_MARKER = '[Canvas check]';
 
-/** Refusal when overlap-fix phase blocks canvas clear. */
+/** Refusal when overlap-fix phase blocks canvas clear (P13-T7). */
 export const CLEAR_FORBIDDEN_LAYOUT_FIX_ERROR =
   'Do not clear to fix overlaps. Update shapes in place using draw_shapes with existing ids, or arrange.';
 
@@ -47,7 +47,7 @@ function extractBase64Png(dataUrl: unknown): string | null {
     return null;
   }
   const data = dataUrl.slice(PNG_DATA_URL_PREFIX.length);
-  return data.length > 0 ? data: null;
+  return data.length > 0 ? data : null;
 }
 
 export function isCanvasCheckContent(content: Content): boolean {
@@ -70,15 +70,21 @@ export function dropStaleCanvasChecks(contents: Content[]): void {
 export function buildCanvasCheckText(
   lints: readonly string[],
   hasImage: boolean,
-  options?: { nestedStructural?: boolean }): string {
+  options?: { nestedStructural?: boolean },
+): string {
   const findings =
     lints.length > 0
-      ? `Layout checks flagged: ${lints.map((lint, index) => `${index + 1}) ${lint}`).join(' ')} Fix what is genuinely wrong; a deliberate container, tab, or grouping pattern is fine to keep.`: 'Automated layout checks found no overlaps or cut-off shapes.';
+      ? `Layout checks flagged: ${lints
+          .map((lint, index) => `${index + 1}) ${lint}`)
+          .join(' ')} Fix what is genuinely wrong; a deliberate container, tab, or grouping pattern is fine to keep.`
+      : 'Automated layout checks found no overlaps or cut-off shapes.';
   const imageLine = hasImage
-    ? 'Attached is what the canvas looks like to the user right now. Judge it like a design reviewer: labels must sit inside their shapes, nothing should overlap or crowd, and the layout should read at a glance. ': '';
+    ? 'Attached is what the canvas looks like to the user right now. Judge it like a design reviewer: labels must sit inside their shapes, nothing should overlap or crowd, and the layout should read at a glance. '
+    : '';
   const nestedGuidance =
     options?.nestedStructural === true
-      ? 'This nested column diagram is already placed. Do NOT redraw the whole diagram with draw_shapes or call clear_agent_drawings. Patch only with draw_shapes using existing shape ids, or reply if the layout reads correctly. ': '';
+      ? 'This nested column diagram is already placed. Do NOT redraw the whole diagram with draw_shapes or call clear_agent_drawings. Patch only with draw_shapes using existing shape ids, or reply if the layout reads correctly. '
+      : '';
   return (
     `${CANVAS_CHECK_MARKER} ${imageLine}${findings} ${nestedGuidance}` +
     'If there is a problem, patch it in place: move or resize shapes with draw_shapes using their existing ids, or run arrange. Do not call clear_agent_drawings to fix overlaps — clearing is forbidden during layout repair. A single clear is allowed only before you draw, to start over. After several failed patch attempts you may clear once and rebuild from scratch. ' +
@@ -95,16 +101,21 @@ export function stripFalseLayoutClaims(text: string, reviewComplete: boolean): s
   if (!FALSE_LAYOUT_CLEAN_CLAIM.test(trimmed)) {
     return trimmed;
   }
-  // FALSE_LAYOUT_CLEAN_CLAIM.lastIndex = 0;
-  const stripped = trimmed.replace(FALSE_LAYOUT_CLEAN_CLAIM, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.!?])/g, '$1').trim();
-  return stripped.length > 0 ? stripped: 'The sketch is on the whiteboard.';
+  FALSE_LAYOUT_CLEAN_CLAIM.lastIndex = 0;
+  const stripped = trimmed
+    .replace(FALSE_LAYOUT_CLEAN_CLAIM, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([,.!?])/g, '$1')
+    .trim();
+  return stripped.length > 0 ? stripped : 'The sketch is on the whiteboard.';
 }
 
 async function recordProgrammaticTool(
   toolContext: AgentToolExecutionContext,
   name: string,
   args: Record<string, unknown>,
-  hooks: PostDrawProgressHooks | undefined): Promise<{ ok: boolean; result?: unknown; error?: string }> {
+  hooks: PostDrawProgressHooks | undefined,
+): Promise<{ ok: boolean; result?: unknown; error?: string }> {
   hooks?.onToolStart?.(name, args);
   const result = await withAgentToolContextAsync(toolContext, () => executeTool(name, args));
   hooks?.onToolComplete?.(name, args, result.ok);
@@ -116,13 +127,15 @@ async function recordProgrammaticTool(
  */
 export async function runLayoutProbe(
   toolContext: AgentToolExecutionContext,
-  hooks?: PostDrawProgressHooks): Promise<{ lints: string[]; graph: CanvasShapeGraph | null }> {
+  hooks?: PostDrawProgressHooks,
+): Promise<{ lints: string[]; graph: CanvasShapeGraph | null }> {
   try {
     const graphResult = await recordProgrammaticTool(toolContext, 'read_canvas', {}, hooks);
-    const graph = graphResult.ok ? readShapeGraph(graphResult.result): null;
+    const graph = graphResult.ok ? readShapeGraph(graphResult.result) : null;
     const lints =
       graph !== null
-        ? computeCanvasLints(graph, { agentId: toolContext.agentId }): [];
+        ? computeCanvasLints(graph, { agentId: toolContext.agentId })
+        : [];
     return { lints, graph };
   } catch {
     return { lints: [], graph: null };
@@ -137,22 +150,30 @@ export async function captureCanvasCheck(
   toolContext: AgentToolExecutionContext,
   hooks?: PostDrawProgressHooks,
   existingProbe?: { lints: string[]; graph: CanvasShapeGraph | null },
-  options?: { nestedStructural?: boolean }): Promise<Content | null> {
+  options?: { nestedStructural?: boolean },
+): Promise<Content | null> {
   try {
     const probe =
-      existingProbe ?? (await runLayoutProbe(toolContext, existingProbe === undefined ? hooks: undefined));
+      existingProbe ?? (await runLayoutProbe(toolContext, existingProbe === undefined ? hooks : undefined));
     const { lints, graph } = probe;
 
     const agentShapeIds =
       graph !== null
-        ? graph.shapes.filter((node) => node.agentId === toolContext.agentId).map((node) => node.id).filter((id): id is string => typeof id === 'string' && id.length > 0): [];
+        ? graph.shapes
+            .filter((node) => node.agentId === toolContext.agentId)
+            .map((node) => node.id)
+            .filter((id): id is string => typeof id === 'string' && id.length > 0)
+        : [];
 
     const pixelRatio = clampPixelRatio(
       graph !== null
         ? Math.min(
             1,
             1280 / Math.max(1, graph.region.w),
-            800 / Math.max(1, graph.region.h)): 1);
+            800 / Math.max(1, graph.region.h),
+          )
+        : 1,
+    );
 
     const screenshotArgs: Record<string, unknown> = { pixelRatio };
     if (agentShapeIds.length > 0) {
@@ -163,9 +184,11 @@ export async function captureCanvasCheck(
       toolContext,
       'screenshot_canvas',
       screenshotArgs,
-      hooks);
+      hooks,
+    );
     const base64 = shotResult.ok
-      ? extractBase64Png((shotResult.result as { dataUrl?: unknown } | undefined)?.dataUrl): null;
+      ? extractBase64Png((shotResult.result as { dataUrl?: unknown } | undefined)?.dataUrl)
+      : null;
 
     if (base64 === null && lints.length === 0) {
       return null;
@@ -205,7 +228,8 @@ export interface PostDrawExitGateResult {
  * turn drew on canvas but review is not complete.
  */
 export async function runPostDrawExitGate(
-  input: PostDrawExitGateInput): Promise<PostDrawExitGateResult> {
+  input: PostDrawExitGateInput,
+): Promise<PostDrawExitGateResult> {
   const {
     contents,
     toolContext,

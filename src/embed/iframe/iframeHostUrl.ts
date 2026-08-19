@@ -1,5 +1,5 @@
 /**
- * Build and parse canonical agentable iframe host URLs ( oEmbed + iframe).
+ * Build and parse canonical agentable iframe host URLs (P9-T4 oEmbed + iframe).
  */
 import {
   IFRAME_EMBED_DEFAULT_HEIGHT,
@@ -34,12 +34,13 @@ const HOST_PATH = '/embed/iframe-host.html';
 function appendOptionalParam(
   search: URLSearchParams,
   key: string,
-  value: string | number | boolean | undefined): void {
+  value: string | number | boolean | undefined,
+): void {
   if (value === undefined) {
     return;
   }
   if (typeof value === 'boolean') {
-    search.set(key, value ? '1': '0');
+    search.set(key, value ? '1' : '0');
     return;
   }
   const trimmed = String(value).trim();
@@ -50,7 +51,8 @@ function appendOptionalParam(
 
 export function buildIframeHostUrl(
   embedBaseUrl: string,
-  params: IframeHostEmbedParams): string {
+  params: IframeHostEmbedParams,
+): string {
   const base = new URL(embedBaseUrl);
   base.pathname = HOST_PATH;
   base.search = '';
@@ -90,7 +92,8 @@ export function parseIframeHostUrl(urlString: string): ParsedIframeHostUrl | nul
   const surfaceRaw = search.get('surface')?.trim();
   const surface =
     surfaceRaw === 'panel' || surfaceRaw === 'canvas' || surfaceRaw === 'widget'
-      ? surfaceRaw: null;
+      ? surfaceRaw
+      : null;
   if (surface === null) {
     return null;
   }
@@ -113,8 +116,8 @@ export function parseIframeHostUrl(urlString: string): ParsedIframeHostUrl | nul
       hideChrome: hideChromeRaw === '1' || hideChromeRaw === 'true',
       parentOrigin: search.get('parent-origin')?.trim() || undefined,
       bridgeId: search.get('bridge-id')?.trim() || undefined,
-      width: widthRaw ? Number(widthRaw): undefined,
-      height: heightRaw ? Number(heightRaw): undefined,
+      width: widthRaw ? Number(widthRaw) : undefined,
+      height: heightRaw ? Number(heightRaw) : undefined,
     },
   };
 }
@@ -123,18 +126,27 @@ export function buildSandboxedIframeHtml(
   iframeSrc: string,
   width: number = IFRAME_EMBED_DEFAULT_WIDTH,
   height: number = IFRAME_EMBED_DEFAULT_HEIGHT,
-  title = 'Agentable embed'): string {
-  const escapedSrc = iframeSrc.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-  const escapedTitle = title.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  title = 'Agentable embed',
+): string {
+  const escapedSrc = iframeSrc
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;');
+  const escapedTitle = title
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;');
   return `<iframe src="${escapedSrc}" width="${width}" height="${height}" frameborder="0" sandbox="${IFRAME_EMBED_SANDBOX}" referrerpolicy="strict-origin-when-cross-origin" loading="lazy" title="${escapedTitle}"></iframe>`;
 }
 
 export function readIframeHostParamsFromSearchParams(
-  params: URLSearchParams): IframeHostEmbedParams | null {
+  params: URLSearchParams,
+): IframeHostEmbedParams | null {
   const surfaceRaw = params.get('surface')?.trim();
   const surface =
     surfaceRaw === 'panel' || surfaceRaw === 'canvas' || surfaceRaw === 'widget'
-      ? surfaceRaw: null;
+      ? surfaceRaw
+      : null;
   if (surface === null) {
     return null;
   }

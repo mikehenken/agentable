@@ -43,7 +43,7 @@ const panelCardStyle: React.CSSProperties = {
 };
 
 /**
- * Fixed gallery overlays for /4/5 screenshot capture ( iter-4).
+ * Fixed gallery overlays for US-3/4/5 screenshot capture (STUDY-018 iter-4).
  * Complements canvas PanelShape rendering when tldraw HTML layers are off-screen.
  */
 export function MeridianGalleryDemoVisuals(): ReactElement | null {
@@ -60,7 +60,7 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
       }
       setExportConfirmation({
         filename: detail.filename,
-        sha256: typeof detail.sha256 === 'string' ? detail.sha256: undefined,
+        sha256: typeof detail.sha256 === 'string' ? detail.sha256 : undefined,
       });
     };
 
@@ -82,7 +82,7 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
       }
       setHitlPreview({
         actionLabel: detail.actionLabel,
-        agentLabel: typeof detail.agentLabel === 'string' ? detail.agentLabel: 'Meridian Designer',
+        agentLabel: typeof detail.agentLabel === 'string' ? detail.agentLabel : 'Meridian Designer',
       });
     };
 
@@ -112,7 +112,8 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
         <aside
           data-testid="meridian-document-panel"
           aria-label={documentPreview.title}
-          style={{...overlayShellStyle,
+          style={{
+            ...overlayShellStyle,
             top: 88,
             right: 20,
           }}
@@ -141,7 +142,8 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
                     paddingBottom: 12,
                     borderBottom:
                       index < documentPreview.blocks.length - 1
-                        ? '1px solid rgba(148, 163, 184, 0.12)': undefined,
+                        ? '1px solid rgba(148, 163, 184, 0.12)'
+                        : undefined,
                   }}
                 >
                   <div
@@ -163,13 +165,14 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
             </div>
           </div>
         </aside>
-      ): null}
+      ) : null}
 
       {hitlPreview !== null ? (
         <section
           data-testid="meridian-hitl-card"
           aria-live="polite"
-          style={{...overlayShellStyle,
+          style={{
+            ...overlayShellStyle,
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
@@ -204,14 +207,15 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
             HITL even when canvasPolicy is open.
           </p>
         </section>
-      ): null}
+      ) : null}
 
       {exportConfirmation !== null ? (
         <div
           data-testid="meridian-export-confirmation"
           role="status"
           aria-live="polite"
-          style={{...overlayShellStyle,
+          style={{
+            ...overlayShellStyle,
             bottom: 28,
             left: '50%',
             transform: 'translateX(-50%)',
@@ -229,7 +233,7 @@ export function MeridianGalleryDemoVisuals(): ReactElement | null {
           {' — '}
           {exportConfirmation.filename}. Block-model export completed under open policy.
         </div>
-      ): null}
+      ) : null}
     </>
   );
 }

@@ -47,7 +47,11 @@ function readParams(params: JsonObject | undefined): Record<string, string> {
 }
 
 function slugify(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
 }
 
 function storageKey(persistenceKey: string): string {
@@ -71,24 +75,25 @@ function loadPersistedApplications(persistenceKey: string): CareerApplication[] 
 
 function savePersistedApplications(
   persistenceKey: string,
-  applications: readonly CareerApplication[]): void {
+  applications: readonly CareerApplication[],
+): void {
   if (typeof globalThis.localStorage === 'undefined') {
     return;
   }
   try {
     globalThis.localStorage.setItem(storageKey(persistenceKey), JSON.stringify(applications));
   } catch {
-     // Quota or privacy mode — in-memory layer still holds mutations for the session.
+    // Quota or privacy mode — in-memory layer still holds mutations for the session.
   }
 }
 
 function withLatency<T>(latencyMs: number, run: () => T | Promise<T>): Promise<T> {
   if (latencyMs <= 0) {
-    return Promise.resolve(run);
+    return Promise.resolve(run());
   }
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Promise.resolve(run).then(resolve).catch(reject);
+      Promise.resolve(run()).then(resolve).catch(reject);
     }, latencyMs);
   });
 }
@@ -99,8 +104,11 @@ function matchesSearch(job: CareerJob, search: string): boolean {
     job.title,
     job.department,
     job.location,
-    job.track ?? '',...job.tags,
-  ].join(' ').toLowerCase();
+    job.track ?? '',
+    ...job.tags,
+  ]
+    .join(' ')
+    .toLowerCase();
   return haystack.includes(needle);
 }
 
@@ -125,7 +133,8 @@ function filterJobs(jobs: readonly CareerJob[], params: Record<string, string>):
     result = result.filter(
       (job) =>
         job.location.toLowerCase().includes(locNeedle) ||
-        job.tags.some((tag) => tag.toLowerCase().includes(locNeedle)));
+        job.tags.some((tag) => tag.toLowerCase().includes(locNeedle)),
+    );
   }
   if (roleIntent) {
     const intentNeedle = roleIntent.toLowerCase().replace(/_/g, ' ');
@@ -133,7 +142,8 @@ function filterJobs(jobs: readonly CareerJob[], params: Record<string, string>):
       (job) =>
         job.tags.some((tag) => tag.toLowerCase().includes(intentNeedle)) ||
         job.title.toLowerCase().includes(intentNeedle) ||
-        job.department.toLowerCase().includes(intentNeedle));
+        job.department.toLowerCase().includes(intentNeedle),
+    );
   }
   if (search) {
     result = result.filter((job) => matchesSearch(job, search));
@@ -143,7 +153,8 @@ function filterJobs(jobs: readonly CareerJob[], params: Record<string, string>):
 
 function filterResources(
   resources: CareerDataset['resources'],
-  params: Record<string, string>): CareerDataset['resources'] {
+  params: Record<string, string>,
+): CareerDataset['resources'] {
   const search = params.search;
   if (!search) return [...resources];
   const needle = search.toLowerCase();
@@ -151,12 +162,14 @@ function filterResources(
     (resource) =>
       resource.title.toLowerCase().includes(needle) ||
       resource.category.toLowerCase().includes(needle) ||
-      resource.description.toLowerCase().includes(needle));
+      resource.description.toLowerCase().includes(needle),
+  );
 }
 
 function filterGrowthPaths(
   paths: CareerDataset['growthPaths'],
-  params: Record<string, string>): CareerDataset['growthPaths'] {
+  params: Record<string, string>,
+): CareerDataset['growthPaths'] {
   const fromRole = params.fromRole;
   if (!fromRole) return [...paths];
   const needle = fromRole.toLowerCase();
@@ -164,12 +177,14 @@ function filterGrowthPaths(
     (path) =>
       path.fromRole.toLowerCase().includes(needle) ||
       path.toRole.toLowerCase().includes(needle) ||
-      path.summary.toLowerCase().includes(needle));
+      path.summary.toLowerCase().includes(needle),
+  );
 }
 
 async function resolveDatasetInput(
   input: StaticCareerDatasetInput,
-  fetchFn: typeof fetch): Promise<CareerDataset> {
+  fetchFn: typeof fetch,
+): Promise<CareerDataset> {
   if ('url' in input) {
     const response = await fetchFn(input.url);
     if (!response.ok) {
@@ -184,30 +199,34 @@ async function resolveDatasetInput(
 /** Load inline dataset or fetch + validate URL-backed fixture once. */
 export async function resolveCareerDatasetInput(
   input: StaticCareerDatasetInput,
-  fetchFn: typeof fetch = fetch): Promise<CareerDataset> {
+  fetchFn: typeof fetch = fetch,
+): Promise<CareerDataset> {
   return resolveDatasetInput(input, fetchFn);
 }
 
 /**
- * Mock-first career DataAdapter ( ).
+ * Mock-first career DataAdapter (D34 / P5-T1).
  * Serves fixture data in-memory with optional localStorage-backed applications.
  */
 export function createStaticCareerAdapter(
   datasetInput: StaticCareerDatasetInput,
-  options: StaticCareerAdapterOptions = {}): DataAdapter {
+  options: StaticCareerAdapterOptions = {},
+): DataAdapter {
   const latencyMs = options.latencyMs ?? 0;
   const persistenceKey = options.persistenceKey ?? 'default';
   const fetchFn = options.fetchFn ?? fetch;
 
   let datasetPromise: Promise<CareerDataset> | null = null;
-  let resolvedDataset: CareerDataset | null = 'url' in datasetInput ? null: parseCareerDataset(datasetInput);
+  let resolvedDataset: CareerDataset | null = 'url' in datasetInput ? null : parseCareerDataset(datasetInput);
 
   const subscribers: Array<{ source: string; onChange: () => void; active: boolean }> = [];
 
-  let applications: CareerApplication[] = [...(resolvedDataset?.applications ?? []),...loadPersistedApplications(persistenceKey),
+  let applications: CareerApplication[] = [
+    ...(resolvedDataset?.applications ?? []),
+    ...loadPersistedApplications(persistenceKey),
   ];
 
-  const ensureDataset = async(): Promise<CareerDataset> => {
+  const ensureDataset = async (): Promise<CareerDataset> => {
     if (resolvedDataset) {
       return resolvedDataset;
     }
@@ -232,26 +251,27 @@ export function createStaticCareerAdapter(
   };
 
   const queryImpl = async (ref: SourceRef, params: Record<string, string>): Promise<unknown> => {
-    const dataset = await ensureDataset;
+    const dataset = await ensureDataset();
     switch (ref.source) {
       case 'career.jobs':
-        return filterJobs(dataset().jobs, params);
+        return filterJobs(dataset.jobs, params);
       case 'career.job': {
         const jobId = params.id ?? params.jobId;
         if (!jobId) return null;
-        return dataset().jobs.find((job) => job.id === jobId) ?? null;
+        return dataset.jobs.find((job) => job.id === jobId) ?? null;
       }
       case 'career.applications':
         return applications.map((application) => {
-          const job = dataset().jobs.find((entry) => entry.id === application.jobId);
-          return {...application,
+          const job = dataset.jobs.find((entry) => entry.id === application.jobId);
+          return {
+            ...application,
             jobId: job?.title ?? application.jobId,
           };
         });
       case 'career.paths':
-        return filterGrowthPaths(dataset().growthPaths, params);
+        return filterGrowthPaths(dataset.growthPaths, params);
       case 'career.resources':
-        return filterResources(dataset().resources, params);
+        return filterResources(dataset.resources, params);
       default:
         throw Object.assign(new Error(`Unknown career source "${ref.source}"`), {
           code: 'not_found' as const,
@@ -261,7 +281,8 @@ export function createStaticCareerAdapter(
 
   const mutateImpl = async (
     action: DeclaredAction,
-    payload: unknown): Promise<MutationResult> => {
+    payload: unknown,
+  ): Promise<MutationResult> => {
     if (action.source !== 'career.apply') {
       return {
         ok: false,
@@ -273,7 +294,7 @@ export function createStaticCareerAdapter(
     }
 
     const body = (payload ?? {}) as ApplyPayload;
-    const dataset = await ensureDataset;
+    const dataset = await ensureDataset();
     const fieldErrors: Record<string, string> = {};
     const jobId = readString(body.jobId);
     const name = readString(body.candidate?.name);
@@ -281,7 +302,7 @@ export function createStaticCareerAdapter(
 
     if (!jobId) {
       fieldErrors.jobId = 'Select a job to apply.';
-    } else if (!dataset().jobs.some((job) => job.id === jobId)) {
+    } else if (!dataset.jobs.some((job) => job.id === jobId)) {
       fieldErrors.jobId = 'Selected job was not found in the fixture dataset.';
     }
     if (!name) {
@@ -304,7 +325,7 @@ export function createStaticCareerAdapter(
       };
     }
 
-    const job = dataset().jobs.find((entry) => entry.id === jobId);
+    const job = dataset.jobs.find((entry) => entry.id === jobId);
     if (!job) {
       return {
         ok: false,

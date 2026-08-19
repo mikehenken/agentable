@@ -16,14 +16,16 @@ export function Agent({
   initials = 'AI',
   active = false,
   meta,
-  className,...props
+  className,
+  ...props
 }: AgentProps): React.ReactElement {
   return (
     <div className={cn('flex min-w-0 items-center gap-3', className)} {...props}>
       <div
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[11px] font-semibold text-white',
-          active ? 'bg-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,0.25)]': 'bg-indigo-600/90')}
+          active ? 'bg-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,0.25)]' : 'bg-indigo-600/90',
+        )}
         aria-hidden
       >
         {initials}
@@ -32,12 +34,12 @@ export function Agent({
         <p className="truncate text-sm font-medium text-[var(--vibe-text,#ececec)]">{name}</p>
         {description ? (
           <p className="truncate text-xs text-[var(--vibe-text-muted,#9a9a9a)]">{description}</p>
-        ): null}
+        ) : null}
         {meta ? (
           <p className="truncate text-[10px] text-[var(--vibe-text-faint,#6f6f6f)]" title={meta}>
             {meta}
           </p>
-        ): null}
+        ) : null}
       </div>
     </div>
   );

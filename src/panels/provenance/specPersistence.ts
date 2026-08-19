@@ -1,12 +1,12 @@
 /**
- * Pin-to-persist for agent-composed panel specs. Ephemeral
+ * Pin-to-persist for agent-composed panel specs (D12, D13). Ephemeral
  * composed instances carry `__composedSpec` until the user pins; pinning
  * promotes the validated envelope to `__spec` so tldraw snapshots restore
  * it like any other panel instance.
  */
 import type { JsonObject, PanelSpec, SpecOrigin } from '../types';
 
-/** Persisted composed spec envelope on a panel shape. */
+/** Persisted composed spec envelope on a panel shape (D13). */
 export const PANEL_SPEC_DATA_KEY = '__spec';
 
 /** Ephemeral composed spec before the user pins (stripped on export). */
@@ -37,7 +37,8 @@ export function readPinnedSpec(data: Record<string, unknown> | undefined): Panel
 }
 
 export function readEphemeralComposedSpec(
-  data: Record<string, unknown> | undefined): PanelSpec | null {
+  data: Record<string, unknown> | undefined,
+): PanelSpec | null {
   if (data === undefined) return null;
   return readSpecEnvelope(data[PANEL_COMPOSED_EPHEMERAL_KEY]);
 }
@@ -62,7 +63,7 @@ export function readPanelOrigin(data: Record<string, unknown> | undefined): Spec
 }
 
 export function buildPinnedShapePatch(spec: PanelSpec): JsonObject {
-  const envelope = {...(spec as unknown as JsonObject), origin: 'agent' as const };
+  const envelope = { ...(spec as unknown as JsonObject), origin: 'agent' as const };
   return {
     [PANEL_SPEC_DATA_KEY]: envelope,
     [PANEL_ORIGIN_DATA_KEY]: 'agent',
@@ -70,7 +71,7 @@ export function buildPinnedShapePatch(spec: PanelSpec): JsonObject {
 }
 
 export function buildEphemeralShapePatch(spec: PanelSpec): JsonObject {
-  const envelope = {...(spec as unknown as JsonObject), origin: 'agent' as const };
+  const envelope = { ...(spec as unknown as JsonObject), origin: 'agent' as const };
   return {
     [PANEL_COMPOSED_EPHEMERAL_KEY]: envelope,
     [PANEL_ORIGIN_DATA_KEY]: 'agent',

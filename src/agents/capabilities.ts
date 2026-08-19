@@ -1,5 +1,5 @@
 /**
- * Capability model for agent sessions and tool gating.
+ * Capability model for agent sessions (D20, D21) and tool gating (D49).
  */
 import type { EngineCapabilities } from '../engine/types';
 import { ENGINE_DRAW_UNAVAILABLE_CODE } from '../engine/agentDrawingTypes';
@@ -36,7 +36,7 @@ export interface GatedToolOffer {
   note?: CapabilityNote;
 }
 
-/** Capability-dependent tools and their requirements. */
+/** Capability-dependent tools and their requirements (D49). */
 export const TOOL_CAPABILITY_REQUIREMENTS: Readonly<
   Record<string, ToolCapabilityRequirement>
 > = {
@@ -45,7 +45,7 @@ export const TOOL_CAPABILITY_REQUIREMENTS: Readonly<
   compose_panel: { minContextTokens: 8_000, tools: true },
 };
 
-/** Vision tools degrade to structured read alternatives. */
+/** Vision tools degrade to structured read alternatives (D49). */
 export const TOOL_CAPABILITY_DEGRADATION: Readonly<
   Record<string, { fallbackTool: string; message: string }>
 > = {
@@ -61,7 +61,7 @@ const PANEL_READ_TOOLS = new Set([
   'describe_panel',
   'open_panel',
   'fill_panel',
-  // Digest drill-downs (03 section 3.1): all read free-fire.
+  // Digest drill-downs (03 section 3.1): all read / free-fire.
   'describe_context',
   'read_panel_state',
   'get_activity',
@@ -71,11 +71,16 @@ const PANEL_READ_TOOLS = new Set([
 
 const PANEL_UI_TOOLS = new Set(['compose_panel', 'patch_panel']);
 
-const DRAWING_UI_TOOLS = new Set<string>([...DRAWING_TOOL_NAMES,...AUTHORING_TOOLKIT_TOOL_NAMES,
+const DRAWING_UI_TOOLS = new Set<string>([
+  ...DRAWING_TOOL_NAMES,
+  ...AUTHORING_TOOLKIT_TOOL_NAMES,
 ]);
 
-/** Tools that require engine.capabilities.draw. */
-export const ENGINE_DRAW_REQUIRED_TOOLS: ReadonlySet<string> = new Set([...DRAWING_TOOL_NAMES,...AUTHORING_TOOLKIT_TOOL_NAMES,...WALKTHROUGH_TOOL_NAMES,
+/** Tools that require engine.capabilities.draw (D41, D50). */
+export const ENGINE_DRAW_REQUIRED_TOOLS: ReadonlySet<string> = new Set([
+  ...DRAWING_TOOL_NAMES,
+  ...AUTHORING_TOOLKIT_TOOL_NAMES,
+  ...WALKTHROUGH_TOOL_NAMES,
 ]);
 
 const PANEL_MUTATE_TOOLS = new Set(['run_panel_action']);
@@ -99,7 +104,8 @@ function inferApproval(toolName: string): CapabilityApproval {
 
 function bindingMeetsRequirement(
   caps: ModelCapabilities,
-  requirement: ToolCapabilityRequirement): boolean {
+  requirement: ToolCapabilityRequirement,
+): boolean {
   if (requirement.vision === true && !caps.vision) return false;
   if (requirement.tools === true && !caps.tools) return false;
   if (requirement.streaming === true && !caps.streaming) return false;
@@ -112,10 +118,11 @@ function bindingMeetsRequirement(
   return true;
 }
 
-/** Derive session capabilities from the tool registry. */
+/** Derive session capabilities from the tool registry (D21). */
 export function deriveCapabilities(
   session: AgentSession,
-  tools: readonly ToolDefinition[]): CapabilityDescriptor[] {
+  tools: readonly ToolDefinition[],
+): CapabilityDescriptor[] {
   return tools.map((tool) => {
     const name = tool.declaration.name;
     return {
@@ -128,10 +135,11 @@ export function deriveCapabilities(
   });
 }
 
-/** Gate tools for a resolved provider binding. */
+/** Gate tools for a resolved provider binding (D49). */
 export function gateToolsForCapabilities(
   tools: readonly ToolDefinition[],
-  binding: ProviderBinding): GatedToolOffer[] {
+  binding: ProviderBinding,
+): GatedToolOffer[] {
   const byName = new Map(tools.map((tool) => [tool.declaration.name, tool]));
   const offers: GatedToolOffer[] = [];
   const offeredNames = new Set<string>();
@@ -154,7 +162,8 @@ export function gateToolsForCapabilities(
         alias: binding.model,
       };
       const existingFallback = offers.find(
-        (offer) => offer.tool.declaration.name === fallbackName && offer.offered);
+        (offer) => offer.tool.declaration.name === fallbackName && offer.offered,
+      );
       if (existingFallback !== undefined && existingFallback.degradedFrom === undefined) {
         existingFallback.degradedFrom = name;
         existingFallback.note = degradationNote;
@@ -189,9 +198,10 @@ export function gateToolsForCapabilities(
   return offers;
 }
 
-/** Session-level transport notes for non-streaming bindings. */
+/** Session-level transport notes for non-streaming bindings (D49). */
 export function transportNotesForBinding(
-  binding: ProviderBinding): CapabilityNote[] {
+  binding: ProviderBinding,
+): CapabilityNote[] {
   if (binding.caps.streaming) return [];
   return [
     {
@@ -209,10 +219,11 @@ export interface EngineGatedToolOffer {
   note?: CapabilityNote;
 }
 
-/** Gate draw tools when the mounted engine lacks capabilities.draw. */
+/** Gate draw tools when the mounted engine lacks capabilities.draw (D41). */
 export function gateToolsForEngineCapabilities(
   tools: readonly ToolDefinition[],
-  capabilities: EngineCapabilities | null): EngineGatedToolOffer[] {
+  capabilities: EngineCapabilities | null,
+): EngineGatedToolOffer[] {
   const drawEnabled = capabilities?.draw === true;
   return tools.map((tool) => {
     const name = tool.declaration.name;
@@ -235,7 +246,8 @@ export function gateToolsForEngineCapabilities(
 
 /** Return only tools offered for engine capabilities. */
 export function selectEngineOfferedTools(
-  offers: readonly EngineGatedToolOffer[]): ToolDefinition[] {
+  offers: readonly EngineGatedToolOffer[],
+): ToolDefinition[] {
   return offers.filter((offer) => offer.offered).map((offer) => offer.tool);
 }
 

@@ -30,7 +30,8 @@ export interface A2UITranscriptRenderFailure {
 export type A2UITranscriptRenderOutcome = A2UITranscriptRenderResult | A2UITranscriptRenderFailure;
 
 function ingestA2UIStreamWithoutCatalog(
-  messages: readonly A2UIEnvelope[]): A2UIIngestResult {
+  messages: readonly A2UIEnvelope[],
+): A2UIIngestResult {
   const envelopes: A2UIEnvelope[] = [];
   const errors: A2UIIngestIssue[] = [];
 
@@ -63,7 +64,8 @@ function ingestA2UIStreamWithoutCatalog(
 
   const state = applyA2UIStream(
     surfaceId,
-    envelopes.map((entry) => parseA2UIEnvelope(entry)));
+    envelopes.map((entry) => parseA2UIEnvelope(entry)),
+  );
 
   if (state.deleted) {
     return {
@@ -128,19 +130,21 @@ function resolveNode(spec: PanelSpec, nodeId: string): SpecNode | undefined {
 
 function resolveBindingText(
   bindKey: string | undefined,
-  state: Record<string, unknown>): string | undefined {
+  state: Record<string, unknown>,
+): string | undefined {
   if (!bindKey) {
     return undefined;
   }
   const value = state[bindKey];
-  return typeof value === 'string' ? value: undefined;
+  return typeof value === 'string' ? value : undefined;
 }
 
 function collectBlocksFromNode(
   spec: PanelSpec,
   nodeId: string,
   state: Record<string, unknown>,
-  blocks: A2UIDisplayBlock[]): void {
+  blocks: A2UIDisplayBlock[],
+): void {
   const node = resolveNode(spec, nodeId);
   if (!node) {
     return;
@@ -161,13 +165,13 @@ function collectBlocksFromNode(
 
   if (node.type === 'list') {
     const bind = readStringProp(node.props, 'bind');
-    const rows = bind ? state[bind]: undefined;
+    const rows = bind ? state[bind] : undefined;
     if (Array.isArray(rows)) {
       for (const [index, row] of rows.entries()) {
         if (typeof row === 'object' && row !== null) {
           const record = row as Record<string, unknown>;
-          const title = typeof record.title === 'string' ? record.title: undefined;
-          const subtitle = typeof record.subtitle === 'string' ? record.subtitle: undefined;
+          const title = typeof record.title === 'string' ? record.title : undefined;
+          const subtitle = typeof record.subtitle === 'string' ? record.subtitle : undefined;
           if (title) {
             blocks.push({ id: `${nodeId}-${index}`, title, subtitle });
           }
@@ -184,7 +188,8 @@ function collectBlocksFromNode(
 
 /** Ingest A2UI envelopes and derive display blocks for the operator transcript. */
 export function renderA2UITranscriptContent(
-  envelopes: readonly A2UIEnvelope[]): A2UITranscriptRenderOutcome {
+  envelopes: readonly A2UIEnvelope[],
+): A2UITranscriptRenderOutcome {
   const ingest = ingestA2UIStreamWithoutCatalog(envelopes);
   if (!ingest.ok) {
     const message = ingest.errors[0]?.message ?? 'A2UI ingestion failed';
@@ -194,7 +199,8 @@ export function renderA2UITranscriptContent(
   const spec = ingest.spec;
   const stateRecord =
     typeof spec.state === 'object' && spec.state !== null && !Array.isArray(spec.state)
-      ? (spec.state as Record<string, unknown>): {};
+      ? (spec.state as Record<string, unknown>)
+      : {};
 
   const blocks: A2UIDisplayBlock[] = [];
   collectBlocksFromNode(spec, spec.root, stateRecord, blocks);
@@ -208,7 +214,8 @@ export function renderA2UITranscriptContent(
 
 export function renderA2UITranscriptTemplate(
   envelopes: readonly A2UIEnvelope[],
-  messageId: string): TemplateResult {
+  messageId: string,
+): TemplateResult {
   const outcome = renderA2UITranscriptContent(envelopes);
   if (!outcome.ok) {
     return html`
@@ -233,9 +240,11 @@ export function renderA2UITranscriptTemplate(
           <div part="a2ui-block" class="a2ui-block" data-a2ui-block-id=${block.id}>
             <p part="a2ui-block-title" class="a2ui-block-title">${block.title}</p>
             ${block.subtitle
-              ? html`<p part="a2ui-block-subtitle" class="a2ui-block-subtitle">${block.subtitle}</p>`: nothing}
+              ? html`<p part="a2ui-block-subtitle" class="a2ui-block-subtitle">${block.subtitle}</p>`
+              : nothing}
           </div>
-        `)}
+        `,
+      )}
     </div>
   `;
 }

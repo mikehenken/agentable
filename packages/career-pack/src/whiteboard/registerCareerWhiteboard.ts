@@ -1,5 +1,5 @@
 /**
- * — documented career whiteboard entry point (core-typed return values only).
+ * US-G5 — documented career whiteboard entry point (core-typed return values only).
  */
 import type { PartialCanvasTenantConfig } from '../../../../src/config/CanvasContext';
 import type { RawPanelDataPayload } from '../../../../src/config/panelDataNormalize';
@@ -55,20 +55,25 @@ function toBundleInput(input: RegisterCareerWhiteboardInput): CreateCareerWhiteb
     typeof panelData === 'object' &&
     'agentJobsGuide' in panelData &&
     typeof (panelData as { agentJobsGuide?: unknown }).agentJobsGuide === 'string'
-      ? (panelData as { agentJobsGuide: string }).agentJobsGuide: undefined;
+      ? (panelData as { agentJobsGuide: string }).agentJobsGuide
+      : undefined;
 
   const chatBundle = resolveCareerChatBundle(tenant);
   const effectiveBase = resolveCareerSystemPrompt(
     tenant,
-    input.tenantConfig.persona?.systemPrompt);
+    input.tenantConfig.persona?.systemPrompt,
+  );
   const enrichedPrompt = chatBundle.enrichSystemPrompt(effectiveBase, agentJobsGuide);
 
-  const tenantConfig: PartialCanvasTenantConfig = {...input.tenantConfig,
+  const tenantConfig: PartialCanvasTenantConfig = {
+    ...input.tenantConfig,
     tenant,
-    persona: {...input.tenantConfig.persona,
+    persona: {
+      ...input.tenantConfig.persona,
       systemPrompt: enrichedPrompt,
       starterPrompts: KNOWN_CAREER_TENANT_IDS.has(normalizedTenant)
-        ? [...chatBundle.starterPrompts]: (input.tenantConfig.persona?.starterPrompts ?? [...chatBundle.starterPrompts]),
+        ? [...chatBundle.starterPrompts]
+        : (input.tenantConfig.persona?.starterPrompts ?? [...chatBundle.starterPrompts]),
     },
   };
 
@@ -86,7 +91,8 @@ function toBundleInput(input: RegisterCareerWhiteboardInput): CreateCareerWhiteb
  * Returns empty wiring when career registration predicates are not met.
  */
 export function registerCareerWhiteboard(
-  input: RegisterCareerWhiteboardInput): RegisterCareerWhiteboardOutput {
+  input: RegisterCareerWhiteboardInput,
+): RegisterCareerWhiteboardOutput {
   const bundleInput = toBundleInput(input);
   if (!shouldRegisterCareerWhiteboardPanels(bundleInput)) {
     return {

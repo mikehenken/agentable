@@ -1,5 +1,5 @@
 /**
- * Activity ledger entries for agent drawing tools ( digest recency).
+ * Activity ledger entries for agent drawing tools (P8-T4 digest recency).
  */
 import type { ActivityLog } from './activity';
 import type {
@@ -35,24 +35,29 @@ function append(agentId: string, verb: string, target: string): void {
 
 export function recordDrawShapesActivity(
   agentId: string,
-  result: AgentDrawShapesResult): void {
+  result: AgentDrawShapesResult,
+): void {
   const target =
     result.createdShapeIds.length === 1
-      ? result.createdShapeIds[0] ?? 'none': `${result.createdShapeIds.length} shapes`;
+      ? result.createdShapeIds[0] ?? 'none'
+      : `${result.createdShapeIds.length} shapes`;
   append(agentId, 'draw_shapes', target);
 }
 
 export function recordAnnotatePanelActivity(
   agentId: string,
-  result: AgentAnnotatePanelResult): void {
+  result: AgentAnnotatePanelResult,
+): void {
   append(agentId, 'annotate_panel', result.panelId);
 }
 
 export function recordClearDrawingsActivity(
   agentId: string,
-  result: AgentClearDrawingsResult): void {
+  result: AgentClearDrawingsResult,
+): void {
   const target =
     result.removedShapeIds.length === 1
-      ? result.removedShapeIds[0] ?? result.agentId: `${result.removedShapeIds.length} marks`;
+      ? result.removedShapeIds[0] ?? result.agentId
+      : `${result.removedShapeIds.length} marks`;
   append(agentId, 'clear_agent_drawings', target);
 }

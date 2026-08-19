@@ -1,6 +1,6 @@
 /**
 
- * Resizable canvas + operator rail chrome for example 13 ( iter-7).
+ * Resizable canvas + operator rail chrome for example 13 (P13-T7 iter-7).
 
  */
 
@@ -62,7 +62,7 @@ function readStoredSize(): number {
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
 
-  const parsed = raw !== null ? Number.parseFloat(raw): Number.NaN;
+  const parsed = raw !== null ? Number.parseFloat(raw) : Number.NaN;
 
   if (!Number.isFinite(parsed)) {
 
@@ -84,21 +84,25 @@ export function CanvasWideAgentChrome({
 
 }: CanvasWideAgentChromeProps): ReactElement {
 
-  const [sidebarSize, setSidebarSize] = useState<number>(() => readStoredSize);
+  const [sidebarSize, setSidebarSize] = useState<number>(() => readStoredSize());
 
-  const [collapsed, setCollapsed] = useState<boolean>(() => readOperatorRailCollapsed);
+  const [collapsed, setCollapsed] = useState<boolean>(() => readOperatorRailCollapsed());
 
 
 
-  const defaultLayout = useMemo(() => ({
+  const defaultLayout = useMemo(
 
-      'gallery-main': collapsed ? 100: 100 - sidebarSize,
+    () => ({
 
-      'gallery-sidebar': collapsed ? 0: sidebarSize,
+      'gallery-main': collapsed ? 100 : 100 - sidebarSize,
+
+      'gallery-sidebar': collapsed ? 0 : sidebarSize,
 
     }),
 
-    [collapsed, sidebarSize]);
+    [collapsed, sidebarSize],
+
+  );
 
 
 
@@ -118,7 +122,9 @@ export function CanvasWideAgentChrome({
 
     },
 
-    []);
+    [],
+
+  );
 
 
 
@@ -166,7 +172,7 @@ export function CanvasWideAgentChrome({
 
   useEffect(() => {
 
-    window.localStorage.setItem(OPERATOR_RAIL_COLLAPSE_STORAGE_KEY, collapsed ? '1': '0');
+    window.localStorage.setItem(OPERATOR_RAIL_COLLAPSE_STORAGE_KEY, collapsed ? '1' : '0');
 
   }, [collapsed]);
 
@@ -180,7 +186,7 @@ export function CanvasWideAgentChrome({
 
       data-testid="gallery-resizable-chrome"
 
-      data-operator-rail-collapsed={collapsed ? 'true': 'false'}
+      data-operator-rail-collapsed={collapsed ? 'true' : 'false'}
 
       style={
 
@@ -238,7 +244,9 @@ export function CanvasWideAgentChrome({
 
                 'after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2',
 
-                'hover:after:w-1.5')}
+                'hover:after:w-1.5',
+
+              )}
 
             />
 
@@ -270,7 +278,9 @@ export function CanvasWideAgentChrome({
 
                     'border-[var(--vibe-border,rgb(255_255_255/0.09))] bg-[var(--vibe-composer-bg,#141414)]',
 
-                    'text-[var(--vibe-text-muted,#9a9a9a)] hover:text-[var(--vibe-text,#ececec)]')}
+                    'text-[var(--vibe-text-muted,#9a9a9a)] hover:text-[var(--vibe-text,#ececec)]',
+
+                  )}
 
                   onClick={handleCollapse}
 
@@ -288,7 +298,7 @@ export function CanvasWideAgentChrome({
 
           </>
 
-        ): null}
+        ) : null}
 
       </ResizablePanelGroup>
 

@@ -1,5 +1,5 @@
 /**
- * Mode-aware deterministic operator actions for gallery offline paths ( iter-11).
+ * Mode-aware deterministic operator actions for gallery / offline paths (P13-T7 iter-11).
  * Draw routes through executeTool → operatorCanvasToolsProxy → runGalleryScriptedTool.
  */
 import { MERIDIAN_DOCUMENT_ID } from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';
@@ -49,12 +49,15 @@ const BUILD_PANEL_PATTERN =
 interface WhiteboardScriptedHost extends HTMLElement {
   runScriptedTool?: (
     toolName: 'draw_shapes' | 'read_canvas' | 'clear_agent_drawings',
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
   runOperatorScriptedTool?: (
     toolName: 'draw_shapes' | 'read_canvas' | 'clear_agent_drawings',
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
   runMeridianDemo?: (
-    step: 'document' | 'wireframe' | 'full') => Promise<{
+    step: 'document' | 'wireframe' | 'full',
+  ) => Promise<{
     ok: boolean;
     document?: { ok: boolean; panelId: string; blockCount: number; title: string };
   }>;
@@ -79,7 +82,8 @@ async function resolveWhiteboardHost(): Promise<WhiteboardScriptedHost | null> {
  */
 export async function runOperatorModeOfflineAction(
   userText: string,
-  mode: OperatorMode): Promise<OperatorModeOfflineActionResult | null> {
+  mode: OperatorMode,
+): Promise<OperatorModeOfflineActionResult | null> {
   const canvasSummary = await summarizeCanvasViaWhiteboardHost(userText);
   if (canvasSummary !== null) {
     return {
@@ -98,9 +102,9 @@ export async function runOperatorModeOfflineAction(
 
   if (mode === 'build' && BUILD_PANEL_PATTERN.test(userText.trim())) {
     await waitForOperatorCanvasToolsReady(15_000);
-    const host = await resolveWhiteboardHost;
-    if (host !== null && typeof host().runMeridianDemo === 'function') {
-      const demo = await host().runMeridianDemo('document');
+    const host = await resolveWhiteboardHost();
+    if (host !== null && typeof host.runMeridianDemo === 'function') {
+      const demo = await host.runMeridianDemo('document');
       const documentResult = demo.document;
       if (documentResult?.ok === true) {
         return {
@@ -113,7 +117,8 @@ export async function runOperatorModeOfflineAction(
     }
 
     const openResult = await withAgentToolContextAsync(OPERATOR_TOOL_CONTEXT, () =>
-      executeTool('open_panel', { id: MERIDIAN_DOCUMENT_ID }));
+      executeTool('open_panel', { id: MERIDIAN_DOCUMENT_ID }),
+    );
     if (openResult.ok) {
       return {
         text: 'Opened document panel on the canvas with content blocks.',
@@ -133,7 +138,7 @@ export async function runOperatorModeOfflineAction(
 
   if (isOperatorDrawCapableMode(mode) && isOperatorDrawIntent(userText)) {
     await waitForOperatorCanvasToolsReady(15_000);
-    const host = await resolveWhiteboardHost;
+    const host = await resolveWhiteboardHost();
     if (host === null) {
       return {
         text: 'Draw tools are unavailable until the whiteboard finishes loading.',
@@ -144,7 +149,7 @@ export async function runOperatorModeOfflineAction(
     }
 
     if (isOperatorClearDrawIntent(userText)) {
-      await runOperatorClearDrawingsOnHost(host());
+      await runOperatorClearDrawingsOnHost(host);
       return {
         text: 'Cleared operator drawings from the canvas.',
         toolName: 'clear_agent_drawings',
@@ -157,22 +162,26 @@ export async function runOperatorModeOfflineAction(
       return null;
     }
 
-    const viewportRegion = await readOperatorViewportRegion(host());
-    const readRegion = await resolveOperatorProbeReadRegion(host());
-    const shapesBeforeDraw = await readOperatorDrawShapeEvidence(host(), readRegion);
+    const viewportRegion = await readOperatorViewportRegion(host);
+    const readRegion = await resolveOperatorProbeReadRegion(host);
+    const shapesBeforeDraw = await readOperatorDrawShapeEvidence(host, readRegion);
     const pageShapeCountBefore =
-      getEditor !== null
-        ? countOperatorPageShapes: (await readOperatorPageShapeCountFromHost(host())) ?? 0;
+      getEditor() !== null
+        ? countOperatorPageShapes()
+        : (await readOperatorPageShapeCountFromHost(host)) ?? 0;
     syncOperatorDrawViewport();
+
     const drawArgs = buildOperatorOfflineDrawArgs(userText, viewportRegion);
 
     const drawResult = await withAgentToolContextAsync(OPERATOR_TOOL_CONTEXT, () =>
-      executeTool('draw_shapes', drawArgs));
+      executeTool('draw_shapes', drawArgs),
+    );
 
     dispatchFitOperatorDrawing();
     await waitForDrawCameraSettle();
     syncOperatorDrawViewport();
-    const shapesAfterDraw = await readOperatorDrawShapeEvidence(host(), readRegion);
+
+    const shapesAfterDraw = await readOperatorDrawShapeEvidence(host, readRegion);
     const verdict = verifyOperatorDrawVisibility({
       drawResult,
       shapesBeforeDraw,
@@ -180,7 +189,7 @@ export async function runOperatorModeOfflineAction(
       pageShapeCountBefore,
       pageShapeCountAfter:
         resolvePageShapeCountAfterDraw(drawResult) ??
-        (await readOperatorPageShapeCountFromHost(host())) ??
+        (await readOperatorPageShapeCountFromHost(host)) ??
         undefined,
     });
     const drawOk = verdict.visibleOnCanvas;
@@ -188,19 +197,23 @@ export async function runOperatorModeOfflineAction(
 
     if (drawOk && verdict.createdShapeIds.length >= 2) {
       await withAgentToolContextAsync(OPERATOR_TOOL_CONTEXT, () =>
-        autoGroupCreatedShapes(OPERATOR_TOOL_CONTEXT, verdict.createdShapeIds));
+        autoGroupCreatedShapes(OPERATOR_TOOL_CONTEXT, verdict.createdShapeIds),
+      );
     }
 
     const demoSubject = isExactOperatorDemoDrawIntent(userText);
     const subject =
       demoSubject !== null
-        ? resolveOperatorDrawSubjectLabel(demoSubject): 'sketch';
+        ? resolveOperatorDrawSubjectLabel(demoSubject)
+        : 'sketch';
 
     return {
       text: drawOk
-        ? `Drew ${shapeCount} shape${shapeCount === 1 ? '': 's'} on the canvas (${subject}).`: buildDrawFailureMessage(drawResult, verdict),
+        ? `Drew ${shapeCount} shape${shapeCount === 1 ? '' : 's'} on the canvas (${subject}).`
+        : buildDrawFailureMessage(drawResult, verdict),
       toolName: 'draw_shapes',
-      toolArgs: {...drawArgs,
+      toolArgs: {
+        ...drawArgs,
         _createdShapeIds: verdict.createdShapeIds,
         _shapesBeforeDraw: shapesBeforeDraw,
         _shapesAfterDraw: shapesAfterDraw,
@@ -216,7 +229,8 @@ export async function runOperatorModeOfflineAction(
     return {
       text:
         mode === 'auto'
-          ? 'Auto mode is active — ask, build panels, or draw on the canvas as needed.': 'Draw mode is active — ask me to draw shapes, annotate a panel, or present a walkthrough.',
+          ? 'Auto mode is active — ask, build panels, or draw on the canvas as needed.'
+          : 'Draw mode is active — ask me to draw shapes, annotate a panel, or present a walkthrough.',
     };
   }
 
@@ -232,7 +246,8 @@ export async function runOperatorModeOfflineAction(
 export function formatOfflineActionToolLabel(
   toolName: string,
   args: Record<string, unknown>,
-  ok: boolean): string {
+  ok: boolean,
+): string {
   return formatToolCallLabel(toolName, args, ok);
 }
 

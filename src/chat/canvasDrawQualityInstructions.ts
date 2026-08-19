@@ -1,7 +1,9 @@
 /**
- * Shared canvas draw-quality instructions — same rules as example 08 in-canvas
+ * Shared canvas draw-quality instructions — same rules as example 08 / in-canvas
  * chat (Nova). Operator and live chat both import this; do not fork weaker copies.
- *** Core drawing rules: diagram auto-layout, label-in-geo, patch-in-place repair. */
+ */
+
+/** Core drawing rules: diagram auto-layout, label-in-geo, patch-in-place repair. */
 export const CANVAS_DRAW_QUALITY_INSTRUCTIONS = [
   'For flows, timelines, dependency maps, VPC/network/system diagrams, and anything with nodes and connections: call draw_shapes with diagram plus layout (flow, timeline, radial, or nested) so the canvas spaces nodes, centers labels inside boxes, and routes connectors — one structural diagram per draw_shapes call.',
   'VPC peering, cloud architecture, and network topology: use layout nested with region/container nodes (kind container) and child instances via parentId — never hand-placed shapes arrays.',

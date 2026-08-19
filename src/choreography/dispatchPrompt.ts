@@ -15,7 +15,8 @@ export interface ChatPromptDetail {
  */
 export function dispatchChatPrompt(
   prompt: string,
-  options: { source?: string } = {}): void {
+  options: { source?: string } = {},
+): void {
   if (typeof window === 'undefined') return;
 
   const trimmed = prompt.trim();
@@ -25,11 +26,12 @@ export function dispatchChatPrompt(
   window.dispatchEvent(
     new CustomEvent<ChatPromptDetail>(CHAT_PROMPT_EVENT, {
       detail: { prompt: trimmed, source: options.source },
-    }));
+    }),
+  );
   window.dispatchEvent(new CustomEvent(FOCUS_CHAT_INPUT_EVENT));
 }
 
-/** Surface chat without sending — palette agent focus paths. */
+/** Surface chat without sending — palette / agent focus paths. */
 export function dispatchOpenChat(): void {
   if (typeof window === 'undefined') return;
   window.dispatchEvent(new CustomEvent(OPEN_CHAT_EVENT));

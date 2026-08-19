@@ -1,7 +1,9 @@
 /**
- * Open agent canvas authoring toolkit contracts.
+ * Open agent canvas authoring toolkit contracts (D50, P12-T1).
  * Types-only: safe for agents, tools, and tests without importing tldraw.
- *** Meta key for wireframe stencil classification on agent marks. */
+ */
+
+/** Meta key for wireframe stencil classification on agent marks. */
 export const AGENT_WIREFRAME_STENCIL_META_KEY = 'agentableWireframeStencil' as const;
 
 /** Meta key for typed connector classification on agent arrows. */

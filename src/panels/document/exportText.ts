@@ -1,15 +1,22 @@
 /**
- * Plain-text extraction from document blocks for export.
+ * Plain-text extraction from document blocks for export (P12-T4).
  */
 import { sanitizePlainText, sanitizeTextRuns } from './sanitizeRuns';
 import type { DocBlock, TextRun } from './types';
 
 export function escapeXml(value: string): string {
-  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 export function runsToPlainText(runs: readonly TextRun[]): string {
-  return sanitizeTextRuns(runs).map((run) => run.text).join('');
+  return sanitizeTextRuns(runs)
+    .map((run) => run.text)
+    .join('');
 }
 
 export function wrapPlainText(text: string, maxWidth = 80): string[] {
@@ -30,7 +37,7 @@ export function wrapPlainText(text: string, maxWidth = 80): string[] {
 }
 
 export function blockToPlainLines(block: DocBlock, depth = 0): string[] {
-  const indent = ' '.repeat(depth);
+  const indent = '  '.repeat(depth);
 
   switch (block.type) {
     case 'heading':
@@ -40,8 +47,10 @@ export function blockToPlainLines(block: DocBlock, depth = 0): string[] {
     case 'list': {
       const lines: string[] = [];
       block.items.forEach((itemBlocks, index) => {
-        const marker = block.ordered ? `${index + 1}. `: '- ';
-        const itemText = itemBlocks.flatMap((nested) => blockToPlainLines(nested, depth + 1)).join(' ');
+        const marker = block.ordered ? `${index + 1}. ` : '- ';
+        const itemText = itemBlocks
+          .flatMap((nested) => blockToPlainLines(nested, depth + 1))
+          .join(' ');
         lines.push(`${indent}${marker}${itemText}`);
       });
       return lines;
@@ -55,7 +64,7 @@ export function blockToPlainLines(block: DocBlock, depth = 0): string[] {
       return lines;
     }
     case 'image': {
-      const alt = block.alt !== undefined ? sanitizePlainText(block.alt): block.assetId;
+      const alt = block.alt !== undefined ? sanitizePlainText(block.alt) : block.assetId;
       return [`${indent}[image: ${alt}]`];
     }
     case 'callout':

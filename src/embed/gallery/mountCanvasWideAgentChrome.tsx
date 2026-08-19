@@ -144,7 +144,9 @@ export interface MountCanvasWideAgentChromeResult {
 
 export function mountCanvasWideAgentChrome(
 
-  container: HTMLElement): MountCanvasWideAgentChromeResult {
+  container: HTMLElement,
+
+): MountCanvasWideAgentChromeResult {
 
   const mainPane = container.querySelector('.canvas-pane');
 
@@ -229,7 +231,11 @@ export function mountCanvasWideAgentChrome(
 
 
   mainPane.remove();
+
   operatorRail.remove();
+
+
+
   activeRoot?.unmount();
 
   activeRoot = createRoot(mountPoint);
@@ -260,7 +266,9 @@ export function mountCanvasWideAgentChrome(
 
               'operator-rail operator-rail-inner flex h-full min-h-0 flex-col',
 
-              'bg-[var(--vibe-surface,#1a1a1a)]')}
+              'bg-[var(--vibe-surface,#1a1a1a)]',
+
+            )}
 
             onMounted={remountSidebar}
 
@@ -268,7 +276,9 @@ export function mountCanvasWideAgentChrome(
 
         }
 
-      />);
+      />,
+
+    );
 
   });
 
@@ -298,13 +308,15 @@ export function mountCanvasWideAgentChrome(
 
 
 
-/** Await tldraw re-bind after resizable chrome mount (gallery-13 iter-13). */
+/** Await tldraw re-bind after resizable chrome mount (gallery-13 P13-T7 iter-13). */
 
 export async function awaitGalleryChromeWhiteboardReady(
 
   container: ParentNode,
 
-  timeoutMs = 25_000): Promise<boolean> {
+  timeoutMs = 25_000,
+
+): Promise<boolean> {
 
   if (typeof window !== 'undefined') {
 

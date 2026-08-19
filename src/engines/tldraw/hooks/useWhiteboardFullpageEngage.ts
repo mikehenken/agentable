@@ -25,7 +25,8 @@ export interface WhiteboardFullpageEngageState {
 }
 
 export function useWhiteboardFullpageEngage(
-  options: UseWhiteboardFullpageEngageOptions): WhiteboardFullpageEngageState {
+  options: UseWhiteboardFullpageEngageOptions,
+): WhiteboardFullpageEngageState {
   const { fullpageOnEngage, hostHeaderHeight, editor } = options;
   const [isEngaged, setIsEngaged] = useState(false);
   const engagedRef = useRef(false);
@@ -41,8 +42,8 @@ export function useWhiteboardFullpageEngage(
     if (engagedRef.current) {
       return;
     }
-    const host = resolveHost;
-    enterEmbedHostFullpage(host(), hostHeaderHeight);
+    const host = resolveHost();
+    enterEmbedHostFullpage(host, hostHeaderHeight);
     engagedRef.current = true;
     setIsEngaged(true);
   }, [hostHeaderHeight, resolveHost]);
@@ -51,8 +52,8 @@ export function useWhiteboardFullpageEngage(
     if (!engagedRef.current) {
       return;
     }
-    const host = resolveHost;
-    exitEmbedHostFullpage(host());
+    const host = resolveHost();
+    exitEmbedHostFullpage(host);
     engagedRef.current = false;
     setIsEngaged(false);
   }, [resolveHost]);
@@ -62,7 +63,7 @@ export function useWhiteboardFullpageEngage(
       return;
     }
 
-    const container = editor.getContainer;
+    const container = editor.getContainer();
     let pointerActive = false;
     let pointerMoved = false;
     let startX = 0;
@@ -106,16 +107,16 @@ export function useWhiteboardFullpageEngage(
       }
     };
 
-    container().addEventListener('pointerdown', onPointerDown);
-    container().addEventListener('pointermove', onPointerMove);
-    container().addEventListener('pointerup', onPointerUp);
-    container().addEventListener('pointercancel', onPointerUp);
+    container.addEventListener('pointerdown', onPointerDown);
+    container.addEventListener('pointermove', onPointerMove);
+    container.addEventListener('pointerup', onPointerUp);
+    container.addEventListener('pointercancel', onPointerUp);
 
     return () => {
-      container().removeEventListener('pointerdown', onPointerDown);
-      container().removeEventListener('pointermove', onPointerMove);
-      container().removeEventListener('pointerup', onPointerUp);
-      container().removeEventListener('pointercancel', onPointerUp);
+      container.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointermove', onPointerMove);
+      container.removeEventListener('pointerup', onPointerUp);
+      container.removeEventListener('pointercancel', onPointerUp);
     };
   }, [editor, enterFullpage, fullpageOnEngage]);
 
@@ -129,7 +130,7 @@ export function useWhiteboardFullpageEngage(
       }
     };
     document.addEventListener('keydown', onKeyDown);
-    return ()=> document.removeEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [exitFullpage, isEngaged]);
 
   useEffect(() => {
@@ -137,8 +138,8 @@ export function useWhiteboardFullpageEngage(
       if (!engagedRef.current) {
         return;
       }
-      const host = resolveHost;
-      exitEmbedHostFullpage(host());
+      const host = resolveHost();
+      exitEmbedHostFullpage(host);
       engagedRef.current = false;
     };
   }, [resolveHost]);

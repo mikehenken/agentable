@@ -1,11 +1,12 @@
 import { css } from 'lit';
 
 /**
- * Base layout tokens for the canvas-wide operator surface.
+ * Base layout tokens for the canvas-wide operator surface (D51).
  * Color tokens live in `operatorSurfaceDarkTheme` and MUST be applied after
  * `index.css` in the Lit static styles array so light `:host` defaults do not win.
  */
-export const operatorSurfaceBaseStyles = css`:host {
+export const operatorSurfaceBaseStyles = css`
+  :host {
     --operator-color-primary: var(--vibe-accent, #ff6b57);
     --operator-color-accent: var(--vibe-accent-2, #ff8f6b);
     --operator-color-surface: var(--vibe-background, #121212);
@@ -48,11 +49,12 @@ export const operatorSurfaceBaseStyles = css`:host {
 `;
 
 /**
- * Dark gallery Atlas vibe palette for operator shadow DOM.
+ * Dark gallery / Atlas vibe palette for operator shadow DOM.
  * Applied AFTER inlined `index.css` so shadcn + Landi light `:host` tokens
- * cannot override the operator surface ( theme fix).
+ * cannot override the operator surface (P13-T7 theme fix).
  */
-export const operatorSurfaceDarkTheme = css`:host {
+export const operatorSurfaceDarkTheme = css`
+  :host {
     color-scheme: dark;
 
     /* shadcn HSL tokens */
@@ -72,7 +74,7 @@ export const operatorSurfaceDarkTheme = css`:host {
     --accent-foreground: 0 0% 93%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 100% 0.09;
+    --border: 0 0% 100% / 0.09;
     --input: 0 0% 8%;
     --ring: 16 90% 55%;
 
@@ -110,68 +112,112 @@ export const operatorSurfaceDarkTheme = css`:host {
     --operator-color-text-muted: var(--vibe-text-muted);
 
     color: var(--operator-color-text);
-  }.operator-surface-shell {
+  }
+
+  .operator-surface-shell {
     background: var(--operator-color-surface);
     color: var(--operator-color-text);
-  }.operator-header {
+  }
+
+  .operator-header {
     background: var(--operator-color-surface);
     border-color: var(--operator-color-border);
-  }.thread-tabs {
+  }
+
+  .thread-tabs {
     background: var(--operator-color-panel);
     border-color: var(--operator-color-border);
-  }.thread-tab[aria-selected='true'] {
+  }
+
+  .thread-tab[aria-selected='true'] {
     background: var(--operator-color-surface);
     border-color: var(--operator-color-border);
     color: var(--operator-color-text);
-  }.thread-tab[aria-selected='false'] {
+  }
+
+  .thread-tab[aria-selected='false'] {
     color: var(--operator-color-text-muted);
-  }.thread-tab[aria-selected='false']:hover {
+  }
+
+  .thread-tab[aria-selected='false']:hover {
     color: var(--operator-color-text);
-  }.empty-transcript {
+  }
+
+  .empty-transcript {
     background: transparent;
     color: var(--vibe-text-faint);
-  }.composer-shell {
+  }
+
+  .composer-shell {
     background: var(--vibe-composer-bg);
     border-color: var(--operator-color-border);
-  }.operator-prompt-input {
+  }
+
+  .operator-prompt-input {
     border-color: var(--vibe-border);
     background: var(--vibe-composer-bg);
-  }.operator-prompt-input:focus-within {
+  }
+
+  .operator-prompt-input:focus-within {
     border-color: color-mix(in srgb, var(--vibe-accent) 55%, var(--vibe-border));
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--vibe-accent) 35%, transparent);
-  }.operator-model-switcher {
+  }
+
+  .operator-model-switcher {
     border-color: var(--vibe-border);
     background: color-mix(in srgb, var(--vibe-surface) 88%, #000);
     color: var(--vibe-text-muted);
-  }.operator-suggestion-chip {
+  }
+
+  .operator-suggestion-chip {
     border-color: var(--vibe-border);
     background: color-mix(in srgb, var(--vibe-surface) 90%, #000);
     color: var(--vibe-text-muted);
-  }.operator-suggestion-chip:hover {
+  }
+
+  .operator-suggestion-chip:hover {
     border-color: color-mix(in srgb, var(--vibe-accent) 40%, var(--vibe-border));
     background: var(--vibe-hover-bg);
     color: var(--vibe-text);
-  }.operator-overlay-scroll {
+  }
+
+  .operator-overlay-scroll {
     scrollbar-gutter: stable;
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
-  }.operator-overlay-scroll:hover {
+  }
+
+  .operator-overlay-scroll:hover {
     scrollbar-color: rgb(255 255 255 / 0.2) transparent;
-  }.operator-overlay-scroll::-webkit-scrollbar {
+  }
+
+  .operator-overlay-scroll::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-  }.operator-overlay-scroll::-webkit-scrollbar-track {
+  }
+
+  .operator-overlay-scroll::-webkit-scrollbar-track {
     background: transparent;
-  }.operator-overlay-scroll::-webkit-scrollbar-thumb {
+  }
+
+  .operator-overlay-scroll::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 999px;
-  }.operator-overlay-scroll:hover::-webkit-scrollbar-thumb {
+  }
+
+  .operator-overlay-scroll:hover::-webkit-scrollbar-thumb {
     background: rgb(255 255 255 / 0.2);
-  }.operator-overlay-scroll:active::-webkit-scrollbar-thumb {
+  }
+
+  .operator-overlay-scroll:active::-webkit-scrollbar-thumb {
     background: rgb(255 255 255 / 0.28);
-  }.composer-shell {
+  }
+
+  .composer-shell {
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
-  }.operator-prompt-input textarea {
+  }
+
+  .operator-prompt-input textarea {
     min-height: 2.75rem;
     padding-bottom: 0.625rem;
     line-height: 1.45;

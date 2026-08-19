@@ -15,12 +15,13 @@ export interface PersistenceKeyResolution {
 }
 
 function persistenceSuffix(tenant: string, persistenceScope?: string): string {
-  return persistenceScope ? `${tenant}-${persistenceScope}`: tenant;
+  return persistenceScope ? `${tenant}-${persistenceScope}` : tenant;
 }
 
 export function resolvePersistenceKeys(
   tenant: string,
-  persistenceScope?: string): PersistenceKeyResolution {
+  persistenceScope?: string,
+): PersistenceKeyResolution {
   const suffix = persistenceSuffix(tenant, persistenceScope);
   return {
     persistenceKey: `${PERSISTENCE_KEY_PREFIX}${suffix}`,

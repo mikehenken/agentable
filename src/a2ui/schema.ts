@@ -9,14 +9,17 @@ const jsonValue: z.ZodType<unknown> = z.lazy(() =>
     z.null(),
     z.array(jsonValue),
     z.record(z.string(), jsonValue),
-  ]));
+  ]),
+);
 
-const a2uiComponentSchema = z.object({
+const a2uiComponentSchema = z
+  .object({
     id: z.string().min(1),
     component: z.string().min(1),
     children: z.array(z.string().min(1)).optional(),
     child: z.string().min(1).optional(),
-  }).catchall(jsonValue);
+  })
+  .catchall(jsonValue);
 
 const createSurfaceSchema = z.object({
   surfaceId: z.string().min(1),
@@ -43,13 +46,15 @@ const deleteSurfaceSchema = z.object({
 });
 
 /** Validates a single A2UI v1.0 server-to-client envelope. */
-export const a2uiEnvelopeSchema = z.object({
+export const a2uiEnvelopeSchema = z
+  .object({
     version: z.string().min(1),
     createSurface: createSurfaceSchema.optional(),
     updateComponents: updateComponentsSchema.optional(),
     updateDataModel: updateDataModelSchema.optional(),
     deleteSurface: deleteSurfaceSchema.optional(),
-  }).superRefine((value, ctx) => {
+  })
+  .superRefine((value, ctx) => {
     const keys = [
       value.createSurface !== undefined,
       value.updateComponents !== undefined,
@@ -81,7 +86,8 @@ export function parseA2UIEnvelope(input: unknown): ParsedA2UIEnvelope {
 
 /** Safe parse returning structured issues instead of throwing. */
 export function safeParseA2UIEnvelope(
-  input: unknown): { ok: true; data: ParsedA2UIEnvelope } | { ok: false; message: string } {
+  input: unknown,
+): { ok: true; data: ParsedA2UIEnvelope } | { ok: false; message: string } {
   const result = a2uiEnvelopeSchema.safeParse(input);
   if (!result.success) {
     const message = result.error.issues.map((issue) => issue.message).join('; ');

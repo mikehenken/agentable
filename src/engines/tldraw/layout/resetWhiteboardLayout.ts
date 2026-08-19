@@ -31,9 +31,9 @@ export interface ResetWhiteboardLayoutOptions extends ResolveWhiteboardChromeIns
 
 function listPanelIds(editor: Editor): string[] {
   const ids: string[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
-     // The panel shape util is host-registered, so its type string sits
-     // outside tldraw's built-in TLShape union.
+  for (const shape of editor.getCurrentPageShapes()) {
+    // The panel shape util is host-registered, so its type string sits
+    // outside tldraw's built-in TLShape union.
     if ((shape.type as string) !== 'panel') continue;
     const panelId = (shape.props as { panelId?: string }).panelId;
     if (typeof panelId === 'string' && panelId.length > 0) {
@@ -49,7 +49,8 @@ function listPanelIds(editor: Editor): string[] {
  */
 export function resetWhiteboardLayout(
   editor: Editor,
-  options: ResetWhiteboardLayoutOptions = {}): number {
+  options: ResetWhiteboardLayoutOptions = {},
+): number {
   const openChat = options.openChat ?? true;
   const resetCamera = options.resetCamera ?? true;
   const clearContent = options.clearContent ?? true;
@@ -60,7 +61,7 @@ export function resetWhiteboardLayout(
     if (closePanelInCanvas(panelId)) {
       closed += 1;
     } else {
-       // Fallback if api binding is stale — delete by shape id.
+      // Fallback if api binding is stale — delete by shape id.
       const id = createShapeId(`panel:${panelId}`);
       if (editor.getShape(id)) {
         editor.deleteShapes([id]);
@@ -70,7 +71,10 @@ export function resetWhiteboardLayout(
   }
 
   if (clearContent) {
-    const leftover = editor.getCurrentPageShapes().filter((shape) => (shape.type as string) !== 'panel').map((shape) => shape.id);
+    const leftover = editor
+      .getCurrentPageShapes()
+      .filter((shape) => (shape.type as string) !== 'panel')
+      .map((shape) => shape.id);
     if (leftover.length > 0) {
       editor.deleteShapes(leftover);
     }
@@ -81,15 +85,15 @@ export function resetWhiteboardLayout(
   }
 
   if (openChat) {
-    const viewport = editor.getViewportPageBounds;
-    const chrome = resolveWhiteboardChromeInsets(viewport().w, options);
+    const viewport = editor.getViewportPageBounds();
+    const chrome = resolveWhiteboardChromeInsets(viewport.w, options);
     const chatSize = defaultWhiteboardPanelSize(editor, 'chat');
     openPanelInCanvas('chat', {
       focus: false,
       preserveZoom: true,
       position: {
-        x: snapToGrid(viewport().x + chrome.left),
-        y: snapToGrid(viewport().y + chrome.top),
+        x: snapToGrid(viewport.x + chrome.left),
+        y: snapToGrid(viewport.y + chrome.top),
       },
       size: chatSize,
       chrome: { title: 'Chat', minimized: false },

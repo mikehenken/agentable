@@ -1,6 +1,6 @@
 /**
 
- * Trusted asset resolution for insert_image.
+ * Trusted asset resolution for insert_image (D50, P12-T1).
 
  *
 
@@ -13,6 +13,7 @@
 import {
 
   AUTHORING_MARKUP_REJECTED_CODE,
+
   type AuthoringResolvedImageAsset,
 
 } from '../engine/authoringToolkitTypes';
@@ -23,13 +24,17 @@ import { validateAssetId } from '../security/codeExecutionBoundary';
 
 export type AuthoringAssetResolver = (
 
-  assetId: string) => AuthoringResolvedImageAsset | Promise<AuthoringResolvedImageAsset>;
+  assetId: string,
+
+) => AuthoringResolvedImageAsset | Promise<AuthoringResolvedImageAsset>;
 
 
 
 export type AuthoringImageGenerator = (
 
-  prompt: string) => AuthoringResolvedImageAsset | Promise<AuthoringResolvedImageAsset>;
+  prompt: string,
+
+) => AuthoringResolvedImageAsset | Promise<AuthoringResolvedImageAsset>;
 
 
 
@@ -113,7 +118,9 @@ export function rejectUntrustedImageFields(args: Record<string, unknown>): strin
 
 export async function resolveAuthoringImageAsset(
 
-  request: { assetId?: string; generatePrompt?: string }): Promise<AuthoringResolvedImageAsset> {
+  request: { assetId?: string; generatePrompt?: string },
+
+): Promise<AuthoringResolvedImageAsset> {
 
   const hasAssetId = typeof request.assetId === 'string' && request.assetId.length > 0;
 

@@ -32,7 +32,8 @@ function resolveCareerNavIcon(iconName: string): LucideIcon {
   if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
     // eslint-disable-next-line no-console
     console.warn(
-      `[career-pack] Unknown career nav icon "${iconName}"; falling back to Briefcase.`);
+      `[career-pack] Unknown career nav icon "${iconName}"; falling back to Briefcase.`,
+    );
   }
   return Briefcase;
 }
@@ -40,11 +41,14 @@ function resolveCareerNavIcon(iconName: string): LucideIcon {
 /** Convert career-pack nav items into chrome NavItemConfig (Lucide components). */
 export function careerNavItemsToNavConfig(
   items: readonly CareerNavItem[],
-  allowedPanelIds?: ReadonlySet<string>): NavItemConfig[] {
+  allowedPanelIds?: ReadonlySet<string>,
+): NavItemConfig[] {
   const filtered =
     allowedPanelIds !== undefined && allowedPanelIds.size > 0
       ? items.filter(
-          (item) => allowedPanelIds.has(item.panelId) || item.panelId === 'chat'): items;
+          (item) => allowedPanelIds.has(item.panelId) || item.panelId === 'chat',
+        )
+      : items;
 
   return filtered.map((item) => ({
     id: item.id,

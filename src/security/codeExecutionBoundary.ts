@@ -1,5 +1,5 @@
 /**
- * G4 code-execution boundary.
+ * G4 code-execution boundary (P12-T6).
  *
  * Untrusted strings from models, adapters, and host payloads must render as
  * inert plain text — never as HTML, script, or executable URLs.
@@ -26,12 +26,17 @@ export interface SanitizeInertTextOptions {
  */
 export function sanitizeInertText(
   value: string | undefined | null,
-  options: SanitizeInertTextOptions = {}): string {
+  options: SanitizeInertTextOptions = {},
+): string {
   if (value === undefined || value === null) {
     return '';
   }
   const trim = options.trim ?? false;
-  let next = value.replace(HTML_TAG_PATTERN, '').replace(JAVASCRIPT_SCHEME, '').replace(DATA_HTML_SCHEME, '').replace(EVENT_HANDLER_PATTERN, '');
+  let next = value
+    .replace(HTML_TAG_PATTERN, '')
+    .replace(JAVASCRIPT_SCHEME, '')
+    .replace(DATA_HTML_SCHEME, '')
+    .replace(EVENT_HANDLER_PATTERN, '');
   if (trim) {
     next = next.trim();
   }
@@ -45,13 +50,13 @@ export function sanitizePlainText(value: string): string {
 
 export function containsMarkupOrScript(value: string): boolean {
   if (HTML_TAG_PATTERN.test(value)) return true;
-  // HTML_TAG_PATTERN.lastIndex = 0;
+  HTML_TAG_PATTERN.lastIndex = 0;
   if (JAVASCRIPT_SCHEME.test(value)) return true;
-  // JAVASCRIPT_SCHEME.lastIndex = 0;
+  JAVASCRIPT_SCHEME.lastIndex = 0;
   if (DATA_HTML_SCHEME.test(value)) return true;
-  // DATA_HTML_SCHEME.lastIndex = 0;
+  DATA_HTML_SCHEME.lastIndex = 0;
   if (EVENT_HANDLER_PATTERN.test(value)) return true;
-  // EVENT_HANDLER_PATTERN.lastIndex = 0;
+  EVENT_HANDLER_PATTERN.lastIndex = 0;
   return false;
 }
 
@@ -95,7 +100,7 @@ export function sanitizeAssetIdForDisplay(value: string): string {
   return sanitizeInertText(value, { trim: true });
 }
 
-/** P14 gate — code preview tier stays off unless policy explicitly enables it. */
+/** P14 / D52 gate — code preview tier stays off unless policy explicitly enables it. */
 export function isCodePreviewAllowed(policy: ResolvedCanvasPolicy): boolean {
   return policy.allowCodePreview === true;
 }

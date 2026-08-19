@@ -29,7 +29,8 @@ const VIEWPORT_CORRUPTION_PAGE_H = 5000;
 const VIEWPORT_CORRUPTION_SCREEN_H = 5000;
 
 export function isViewportPageBoundsCorrupted(
-  viewport: { y: number; h: number } | undefined): boolean {
+  viewport: { y: number; h: number } | undefined,
+): boolean {
   if (viewport === undefined) {
     return true;
   }
@@ -52,7 +53,8 @@ export function resetEditorCameraIfViewportCorrupted(editor: Editor): boolean {
 
 function resolveViewportScreenBounds(
   editor: Editor,
-  override?: { w: number; h: number }): { w: number; h: number } | null {
+  override?: { w: number; h: number },
+): { w: number; h: number } | null {
   const synced = syncWhiteboardViewportScreenBounds(editor);
   if (synced !== null) {
     return synced;
@@ -83,7 +85,8 @@ function resolveViewportScreenBounds(
 export function computeFitZoomForPageBounds(
   bounds: AgentDrawingPageBounds,
   screen: { w: number; h: number },
-  options: FitAgentDrawingCameraOptions = {}): number {
+  options: FitAgentDrawingCameraOptions = {},
+): number {
   const inset = options.inset ?? DEFAULT_INSET;
   const toolbarClearancePx = options.toolbarClearancePx ?? DEFAULT_TOOLBAR_CLEARANCE_PX;
   const maxPageHeight = options.maxPageHeight ?? DEFAULT_MAX_PAGE_HEIGHT;
@@ -96,7 +99,9 @@ export function computeFitZoomForPageBounds(
     Math.min(
       (screen.w - inset * 2) / contentW,
       (screen.h - inset * 2 - toolbarClearancePx) / contentH,
-      maxZoom));
+      maxZoom,
+    ),
+  );
 }
 
 /**
@@ -106,7 +111,8 @@ export function computeFitZoomForPageBounds(
 export function fitAgentDrawingCamera(
   editor: Editor,
   bounds: AgentDrawingPageBounds,
-  options: FitAgentDrawingCameraOptions = {}): void {
+  options: FitAgentDrawingCameraOptions = {},
+): void {
   resetEditorCameraIfViewportCorrupted(editor);
 
   const inset = options.inset ?? DEFAULT_INSET;
@@ -119,7 +125,8 @@ export function fitAgentDrawingCamera(
   const contentW = Math.max(bounds.maxX - bounds.minX, 1);
   const contentH = Math.min(
     Math.max(bounds.maxY - bounds.minY, 1),
-    options.maxPageHeight ?? DEFAULT_MAX_PAGE_HEIGHT);
+    options.maxPageHeight ?? DEFAULT_MAX_PAGE_HEIGHT,
+  );
   const fitScreen = {
     w: screen.w,
     h: Math.max(screen.h - toolbarClearancePx, 120),
@@ -132,5 +139,6 @@ export function fitAgentDrawingCamera(
       y: -bounds.minY + (fitScreen.h - contentH * fitZoom) / 2 / fitZoom,
       z: fitZoom,
     },
-    { animation: { duration: 0 } });
+    { animation: { duration: 0 } },
+  );
 }

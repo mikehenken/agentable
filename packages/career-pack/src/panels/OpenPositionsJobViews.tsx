@@ -13,8 +13,10 @@ import { jobToneStyle } from './jobToneStyles';
 function CompatibilityBadge({ score }: { score: number }): ReactElement {
   const tone =
     score >= 90
-      ? 'bg-emerald-600 text-white ring-1 ring-emerald-700/40': score >= 80
-        ? 'bg-amber-400 text-amber-900': 'bg-blue-400 text-white';
+      ? 'bg-emerald-600 text-white ring-1 ring-emerald-700/40'
+      : score >= 80
+        ? 'bg-amber-400 text-amber-900'
+        : 'bg-blue-400 text-white';
 
   return (
     <span className={`${tone} rounded-full px-2 py-0.5 text-[10px] font-semibold shadow-sm`}>
@@ -91,11 +93,12 @@ export function OpenPositionsJobCard({
                 }}
                 className={`p-1.5 rounded-md transition-colors ${
                   saved
-                    ? 'text-amber-500 bg-amber-50': 'text-canvas-faint hover:text-amber-500 hover:bg-amber-50'
+                    ? 'text-amber-500 bg-amber-50'
+                    : 'text-canvas-faint hover:text-amber-500 hover:bg-amber-50'
                 }`}
-                aria-label={saved ? 'Remove saved': 'Save job'}
+                aria-label={saved ? 'Remove saved' : 'Save job'}
               >
-                <Bookmark size={14} fill={saved ? 'currentColor': 'none'} />
+                <Bookmark size={14} fill={saved ? 'currentColor' : 'none'} />
               </button>
             </div>
           </div>
@@ -115,7 +118,7 @@ export function OpenPositionsJobCard({
               <span className="text-[10.5px] text-canvas-faint">
                 +{(job.skillMatches ?? []).length - 3} more
               </span>
-            ): null}
+            ) : null}
           </div>
           <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-canvas-border">
             <span className="flex items-center gap-1 text-[12px] font-semibold text-canvas">
@@ -165,11 +168,12 @@ export function OpenPositionsJobDetail({
             onClick={onSave}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[12px] font-medium transition-colors ${
               saved
-                ? 'bg-amber-50 text-amber-700': 'bg-canvas-surface-subtle text-canvas-faint hover:bg-canvas-surface-subtle'
+                ? 'bg-amber-50 text-amber-700'
+                : 'bg-canvas-surface-subtle text-canvas-faint hover:bg-canvas-surface-subtle'
             }`}
           >
-            <Bookmark size={12} fill={saved ? 'currentColor': 'none'} />
-            {saved ? 'Saved': 'Save'}
+            <Bookmark size={12} fill={saved ? 'currentColor' : 'none'} />
+            {saved ? 'Saved' : 'Save'}
           </button>
         </div>
       </div>

@@ -1,8 +1,8 @@
 /**
- * Unified panel targeting resolver.
+ * Unified panel targeting resolver (D48, P11-T3).
  *
  * One engine-agnostic path from `open_panel` args to `EnginePanelPlacement`:
- * page-session slots, app-shell regions, or canvas coordinates.
+ * page-session slots (D44), app-shell regions, or canvas coordinates.
  */
 import type { PanelChromeOptions, PanelScope } from '../panels/types';
 import type { JsonObject } from '../panels/types';
@@ -74,7 +74,7 @@ function readNonEmptyString(value: unknown): string | undefined {
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readPosition(value: unknown): { x: number; y: number } | undefined {
@@ -125,14 +125,16 @@ function readPanelOpenTargetInput(value: unknown): PanelOpenTargetInput | undefi
     const order = readFiniteNumber(value.order);
     return {
       kind: 'region',
-      region,...(tabGroup !== undefined ? { tabGroup: Math.max(0, Math.trunc(tabGroup)) }: {}),...(order !== undefined ? { order: Math.max(0, Math.trunc(order)) }: {}),
+      region,
+      ...(tabGroup !== undefined ? { tabGroup: Math.max(0, Math.trunc(tabGroup)) } : {}),
+      ...(order !== undefined ? { order: Math.max(0, Math.trunc(order)) } : {}),
     };
   }
   if (kind === 'canvas') {
     const position = readPosition(value.position);
     if (position === undefined) return undefined;
     const size = readSize(value.size);
-    return size !== undefined ? { kind: 'canvas', position, size }: { kind: 'canvas', position };
+    return size !== undefined ? { kind: 'canvas', position, size } : { kind: 'canvas', position };
   }
   return undefined;
 }
@@ -167,23 +169,26 @@ function targetFromLegacyFields(input: PanelOpenResolveInput): PanelOpenTargetIn
   }
   if (hasLegacyRegion(input)) {
     const tabGroup =
-      input.tabGroup !== undefined ? Math.max(0, Math.trunc(input.tabGroup)): undefined;
-    const order = input.order !== undefined ? Math.max(0, Math.trunc(input.order)): undefined;
+      input.tabGroup !== undefined ? Math.max(0, Math.trunc(input.tabGroup)) : undefined;
+    const order = input.order !== undefined ? Math.max(0, Math.trunc(input.order)) : undefined;
     return {
       kind: 'region',
-      region: input.region!,...(tabGroup !== undefined ? { tabGroup }: {}),...(order !== undefined ? { order }: {}),
+      region: input.region!,
+      ...(tabGroup !== undefined ? { tabGroup } : {}),
+      ...(order !== undefined ? { order } : {}),
     };
   }
   const position = input.position!;
   const size = input.size;
-  return size !== undefined ? { kind: 'canvas', position, size }: { kind: 'canvas', position };
+  return size !== undefined ? { kind: 'canvas', position, size } : { kind: 'canvas', position };
 }
 
 /**
  * Parse untyped tool/MCP args into a normalized resolve input.
  */
 export function parsePanelOpenResolveInput(
-  args: Record<string, unknown>): PanelOpenResolveInput {
+  args: Record<string, unknown>,
+): PanelOpenResolveInput {
   const scope = readScope(args.scope);
   const target = readPanelOpenTargetInput(args.target);
   const slot = readNonEmptyString(args.slot);
@@ -192,9 +197,18 @@ export function parsePanelOpenResolveInput(
   const order = readFiniteNumber(args.order);
   const position = readPosition(args.position);
   const size = readSize(args.size);
-  const focus = typeof args.focus === 'boolean' ? args.focus: undefined;
+  const focus = typeof args.focus === 'boolean' ? args.focus : undefined;
 
-  return {...(scope !== undefined ? { scope }: {}),...(target !== undefined ? { target }: {}),...(slot !== undefined ? { slot }: {}),...(region !== undefined ? { region }: {}),...(tabGroup !== undefined ? { tabGroup: Math.max(0, Math.trunc(tabGroup)) }: {}),...(order !== undefined ? { order: Math.max(0, Math.trunc(order)) }: {}),...(position !== undefined ? { position }: {}),...(size !== undefined ? { size }: {}),...(focus !== undefined ? { focus }: {}),
+  return {
+    ...(scope !== undefined ? { scope } : {}),
+    ...(target !== undefined ? { target } : {}),
+    ...(slot !== undefined ? { slot } : {}),
+    ...(region !== undefined ? { region } : {}),
+    ...(tabGroup !== undefined ? { tabGroup: Math.max(0, Math.trunc(tabGroup)) } : {}),
+    ...(order !== undefined ? { order: Math.max(0, Math.trunc(order)) } : {}),
+    ...(position !== undefined ? { position } : {}),
+    ...(size !== undefined ? { size } : {}),
+    ...(focus !== undefined ? { focus } : {}),
   };
 }
 
@@ -203,14 +217,16 @@ export function parsePanelOpenResolveInput(
  */
 export function panelOpenResolveInputFromRuntimeArgs(
   scopeOrOptions?: PanelScope | PanelOpenResolveInput,
-  slotLegacy?: string): PanelOpenResolveInput {
+  slotLegacy?: string,
+): PanelOpenResolveInput {
   if (scopeOrOptions === undefined && slotLegacy === undefined) {
     return {};
   }
 
   if (slotLegacy !== undefined) {
     const scope = scopeOrOptions as PanelScope | undefined;
-    return {...(scope !== undefined ? { scope }: {}),
+    return {
+      ...(scope !== undefined ? { scope } : {}),
       slot: slotLegacy.trim(),
     };
   }
@@ -244,7 +260,8 @@ export function panelOpenResolveInputFromRuntimeArgs(
  */
 export function resolveOpenPanelPlacement(
   panelId: string,
-  input: PanelOpenResolveInput = {}): PanelOpenResolveResult {
+  input: PanelOpenResolveInput = {},
+): PanelOpenResolveResult {
   const normalizedId = panelId.trim();
   if (!normalizedId) {
     return {
@@ -274,8 +291,11 @@ export function resolveOpenPanelPlacement(
   }
 
   const placement: EnginePanelPlacement = {
-    panelId: normalizedId,...(input.scope !== undefined ? { scope: input.scope }: {}),
-    focus: input.focus ?? true,...(input.chrome !== undefined ? { chrome: input.chrome }: {}),...(input.data !== undefined ? { data: input.data }: {}),
+    panelId: normalizedId,
+    ...(input.scope !== undefined ? { scope: input.scope } : {}),
+    focus: input.focus ?? true,
+    ...(input.chrome !== undefined ? { chrome: input.chrome } : {}),
+    ...(input.data !== undefined ? { data: input.data } : {}),
   };
 
   if (target === undefined) {
@@ -286,7 +306,8 @@ export function resolveOpenPanelPlacement(
     case 'slot':
       return {
         ok: true,
-        placement: {...placement,
+        placement: {
+          ...placement,
           slot: target.slot,
         },
       };
@@ -295,7 +316,8 @@ export function resolveOpenPanelPlacement(
       const order = target.order ?? 0;
       return {
         ok: true,
-        placement: {...placement,
+        placement: {
+          ...placement,
           region: target.region,
           tabGroup,
           order,
@@ -309,8 +331,10 @@ export function resolveOpenPanelPlacement(
     case 'canvas':
       return {
         ok: true,
-        placement: {...placement,
-          position: target.position,...(target.size !== undefined ? { size: target.size }: {}),
+        placement: {
+          ...placement,
+          position: target.position,
+          ...(target.size !== undefined ? { size: target.size } : {}),
         },
       };
     default: {
@@ -326,8 +350,9 @@ export function resolveOpenPanelPlacement(
 
 /** Map resolved placement to host `PanelOpenOptions` (same shape minus panelId). */
 export function panelOpenOptionsFromPlacement(
-  placement: EnginePanelPlacement): Omit<EnginePanelPlacement, 'panelId'> {
-  const { panelId,...options } = placement;
+  placement: EnginePanelPlacement,
+): Omit<EnginePanelPlacement, 'panelId'> {
+  const { panelId, ...options } = placement;
   void panelId;
   return options;
 }

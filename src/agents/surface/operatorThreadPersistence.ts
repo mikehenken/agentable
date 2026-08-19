@@ -1,5 +1,5 @@
 /**
- * Operator thread tab persistence — localStorage per tenant (NAS parity, iter-5).
+ * Operator thread tab persistence — localStorage per tenant (NAS parity, P13-T7 iter-5).
  */
 import { DEFAULT_OPERATOR_THREADS } from './constants';
 import type { OperatorMessage, OperatorThread } from './types';
@@ -106,7 +106,7 @@ function writePersistedState(tenant: string, state: PersistedOperatorState): voi
   try {
     window.localStorage.setItem(storageKey(tenant), JSON.stringify(state));
   } catch {
-     // Quota exceeded or storage disabled — non-fatal.
+    // Quota exceeded or storage disabled — non-fatal.
   }
 }
 
@@ -115,8 +115,8 @@ export function loadOperatorThreadState(): {
   threads: readonly OperatorThread[];
   activeThreadId: string;
 } {
-  const tenant = resolveTenantSlug;
-  const persisted = readPersistedState(tenant());
+  const tenant = resolveTenantSlug();
+  const persisted = readPersistedState(tenant);
   if (persisted === null) {
     const fallback = DEFAULT_OPERATOR_THREADS[0];
     return {
@@ -133,21 +133,24 @@ export function loadOperatorThreadState(): {
 /** Persist operator tabs + active id (messages included — NAS local transcript parity). */
 export function persistOperatorThreadState(
   threads: readonly OperatorThread[],
-  activeThreadId: string): void {
+  activeThreadId: string,
+): void {
   if (threads.length === 0) {
     return;
   }
-  const tenant = resolveTenantSlug;
-  writePersistedState(tenant(), {
+  const tenant = resolveTenantSlug();
+  writePersistedState(tenant, {
     v: STORAGE_VERSION,
     activeThreadId,
-    threads: threads.map((thread) => ({...thread,
+    threads: threads.map((thread) => ({
+      ...thread,
       messages: thread.messages.filter(
         (message) =>
           isOperatorTextMessage(message) ||
           isOperatorA2UIMessage(message) ||
           message.kind === 'tool' ||
-          message.kind === 'reasoning'),
+          message.kind === 'reasoning',
+      ),
     })),
   });
 }

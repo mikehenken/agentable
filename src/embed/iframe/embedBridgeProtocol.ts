@@ -1,6 +1,6 @@
 /**
  * Typed postMessage bridge between a script-stripping parent host and an
- * agentable iframe surface.
+ * agentable iframe surface (D44 P9-T4).
  */
 import type { PageSessionSnapshot } from '../../session/pageSession';
 
@@ -82,7 +82,7 @@ export type EmbedBridgePayloadMap = {
 };
 
 export interface EmbedBridgeEnvelope<
-  // TType extends EmbedBridgeMessageType = EmbedBridgeMessageType,
+  TType extends EmbedBridgeMessageType = EmbedBridgeMessageType,
 > {
   v: EmbedBridgeVersion;
   type: TType;
@@ -109,7 +109,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 export function createBridgeEnvelope<TType extends EmbedBridgeMessageType>(
   type: TType,
-  payload: EmbedBridgePayloadMap[TType]): EmbedBridgeEnvelope<TType> {
+  payload: EmbedBridgePayloadMap[TType],
+): EmbedBridgeEnvelope<TType> {
   return { v: EMBED_BRIDGE_VERSION, type, payload };
 }
 
@@ -138,16 +139,18 @@ export function parseBridgeEnvelope(data: unknown): EmbedBridgeEnvelope | null {
 }
 
 export function isParentBridgeCommand(
-  envelope: EmbedBridgeEnvelope): envelope is EmbedBridgeEnvelope<EmbedBridgeParentCommandType> {
+  envelope: EmbedBridgeEnvelope,
+): envelope is EmbedBridgeEnvelope<EmbedBridgeParentCommandType> {
   return PARENT_COMMAND_TYPES.has(envelope.type);
 }
 
 export function isChildBridgeEvent(
-  envelope: EmbedBridgeEnvelope): envelope is EmbedBridgeEnvelope<EmbedBridgeChildEventType> {
+  envelope: EmbedBridgeEnvelope,
+): envelope is EmbedBridgeEnvelope<EmbedBridgeChildEventType> {
   return CHILD_EVENT_TYPES.has(envelope.type);
 }
 
-/** Default sandbox for oEmbed CMS iframe snippets (scripts only inside our origin). */
+/** Default sandbox for oEmbed / CMS iframe snippets (scripts only inside our origin). */
 export const IFRAME_EMBED_SANDBOX =
   'allow-scripts allow-popups allow-forms allow-popups-to-escape-sandbox' as const;
 

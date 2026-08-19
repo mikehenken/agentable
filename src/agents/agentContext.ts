@@ -1,5 +1,5 @@
 /**
- * Acting-agent context for tool execution.
+ * Acting-agent context for tool execution (D45).
  *
  * Threaded through panel tool handlers so mutations, HITL requests, and field
  * fills carry stable agent identity without polluting tool argument schemas.
@@ -13,7 +13,8 @@ let activeContext: AgentToolExecutionContext | null = null;
 
 export function withAgentToolContext<T>(
   context: AgentToolExecutionContext,
-  fn: () => T): T {
+  fn: () => T,
+): T {
   const previous = activeContext;
   activeContext = context;
   try {
@@ -25,11 +26,12 @@ export function withAgentToolContext<T>(
 
 export async function withAgentToolContextAsync<T>(
   context: AgentToolExecutionContext,
-  fn: () => Promise<T>): Promise<T> {
+  fn: () => Promise<T>,
+): Promise<T> {
   const previous = activeContext;
   activeContext = context;
   try {
-    return await fn;
+    return await fn();
   } finally {
     activeContext = previous;
   }
@@ -41,12 +43,13 @@ export function getAgentToolContext(): AgentToolExecutionContext | null {
 
 export function resolveAgentLabel(
   registry: { get(agentId: string): { label: string } | undefined },
-  agentId: string): string {
+  agentId: string,
+): string {
   return registry.get(agentId)?.label ?? agentId;
 }
 
 export function toApprovalActor(agentId: string): `agent:${string}` {
-  return agentId.startsWith('agent:') ? (agentId as `agent:${string}`): `agent:${agentId}`;
+  return agentId.startsWith('agent:') ? (agentId as `agent:${string}`) : `agent:${agentId}`;
 }
 
 export function approvalActorAgentId(actor: string): string | undefined {

@@ -35,7 +35,8 @@ export function OpenPositionsPanel({
       setSelectedId(intent.selectedJobId);
     } else if (typeof intent.selectedJobTitle === 'string' && intent.selectedJobTitle.trim()) {
       const match = jobs.find((job) =>
-        job.title.toLowerCase().includes(intent.selectedJobTitle!.toLowerCase()));
+        job.title.toLowerCase().includes(intent.selectedJobTitle!.toLowerCase()),
+      );
       if (match) {
         setSelectedId(match.id);
       }
@@ -49,14 +50,16 @@ export function OpenPositionsPanel({
 
     if (typeof intent.location === 'string' && intent.location.trim()) {
       setQuery((current) =>
-        current.trim().length > 0 ? `${current} ${intent.location}`: intent.location!);
+        current.trim().length > 0 ? `${current} ${intent.location}` : intent.location!,
+      );
     }
 
     if (typeof intent.track === 'string' && intent.track.trim()) {
       const normalizedTrack =
         openPositionsTrackLexicon.normalize(intent.track) ??
         inferJobTrack(intent.track, intent.department ?? '');
-      setFilterValues((current) => ({...current,
+      setFilterValues((current) => ({
+        ...current,
         track: normalizedTrack,
       }));
       if (!normalizedTrack && typeof intent.search !== 'string') {
@@ -66,7 +69,8 @@ export function OpenPositionsPanel({
 
     if (typeof intent.department === 'string') {
       const normalized = openPositionsDepartmentLexicon.normalize(intent.department);
-      setFilterValues((current) => ({...current,
+      setFilterValues((current) => ({
+        ...current,
         department: normalized ?? 'All',
       }));
       if (!normalized && typeof intent.search !== 'string') {
@@ -98,7 +102,8 @@ export function OpenPositionsPanel({
         }
       }
     },
-    [savedJobIds, toggleSavedJob]);
+    [savedJobIds, toggleSavedJob],
+  );
 
   const renderCard = useCallback(
     (job: PanelJobRow, ctx: { saved: boolean; onSelect: () => void; onSave: () => void }) => (
@@ -109,30 +114,33 @@ export function OpenPositionsPanel({
         onSave={ctx.onSave}
       />
     ),
-    []);
+    [],
+  );
 
   const renderDetail = useCallback(
     (job: PanelJobRow, ctx: { saved: boolean; onBack: () => void; onSave: () => void }) => (
       <OpenPositionsJobDetail job={job} saved={ctx.saved} onBack={ctx.onBack} onSave={ctx.onSave} />
     ),
-    []);
+    [],
+  );
 
   const getTitle = useCallback(
     ({ count, selected }: { count: number; selected: PanelJobRow | null }) =>
-      selected ? selected.title: `Open Positions · ${count}`,
-    []);
+      selected ? selected.title : `Open Positions · ${count}`,
+    [],
+  );
 
   const listTitle = getTitle({
     count: jobs.length,
     selected:
-      selectedId !== null ? jobs.find((job) => job.id === selectedId) ?? null: null,
+      selectedId !== null ? jobs.find((job) => job.id === selectedId) ?? null : null,
   });
 
   return (
     <div
       className="flex flex-col h-full min-h-[380px]"
       data-testid="open-positions-panel"
-      data-hosted-in-whiteboard={hostedInWhiteboard ? 'true': 'false'}
+      data-hosted-in-whiteboard={hostedInWhiteboard ? 'true' : 'false'}
     >
       {!hostedInWhiteboard && selectedId === null ? (
         <div
@@ -141,7 +149,7 @@ export function OpenPositionsPanel({
         >
           <h2 className="text-[15px] font-semibold text-canvas tracking-tight">{listTitle}</h2>
         </div>
-      ): null}
+      ) : null}
       <ListPanel<PanelJobRow>
         panelId="open-positions"
         items={[...jobs]}
@@ -153,7 +161,8 @@ export function OpenPositionsPanel({
             job.track,
             job.team,
             job.location,
-            job.property,...(job.skillMatches ?? []),
+            job.property,
+            ...(job.skillMatches ?? []),
           ].join(' ')
         }
         filters={[
@@ -174,7 +183,7 @@ export function OpenPositionsPanel({
         renderCard={renderCard}
         renderDetail={renderDetail}
         selectedId={selectedId}
-        onSelectedIdChange={(id) => setSelectedId(typeof id === 'number' ? id: null)}
+        onSelectedIdChange={(id) => setSelectedId(typeof id === 'number' ? id : null)}
         query={query}
         onQueryChange={setQuery}
         filterValues={filterValues}

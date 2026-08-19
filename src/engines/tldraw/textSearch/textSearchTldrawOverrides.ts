@@ -6,7 +6,8 @@ export const TEXT_SEARCH_ACTION_ID = 'text-search';
 /** tldraw action override — Ctrl/Cmd+F opens canvas text search. */
 export const textSearchTldrawOverrides: TLUiOverrides = {
   actions(_editor, actions) {
-    return {...actions,
+    return {
+      ...actions,
       [TEXT_SEARCH_ACTION_ID]: {
         id: TEXT_SEARCH_ACTION_ID,
         label: 'action.text-search',

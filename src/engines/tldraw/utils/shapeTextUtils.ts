@@ -8,7 +8,10 @@ export function friendlyPanelTitle(panelId: string, data: Record<string, unknown
     return title;
   }
   if (!panelId) return 'Panel';
-  return panelId.split(/[-_]/).map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1)).join(' ');
+  return panelId
+    .split(/[-_]/)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(' ');
 }
 
 export function isPanelShape(shape: TLShape): shape is PanelShape {
@@ -43,7 +46,7 @@ export function getShapeSearchText(editor: Editor, shape: TLShape): string | und
       if (key.startsWith('__')) continue;
       if (typeof value === 'string' && value.trim()) parts.push(value);
     }
-    return parts.length > 0 ? parts.join(' '): undefined;
+    return parts.length > 0 ? parts.join(' ') : undefined;
   }
 
   const metaName = shape.meta.name;
@@ -66,7 +69,7 @@ export function searchCanvasText(editor: Editor, query: string): CanvasTextSearc
   if (!normalizedQuery) return [];
 
   const results: CanvasTextSearchResult[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
     const text = getShapeSearchText(editor, shape);
     if (!text) continue;
     if (!text.toLowerCase().includes(normalizedQuery)) continue;

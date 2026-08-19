@@ -1,5 +1,5 @@
 /**
- * Map agent tool results to frozen telemetry error codes.
+ * Map agent tool results to frozen telemetry error codes (P15-T2).
  */
 import type { ToolResult } from '../panels/tools';
 import { SCOPE_DENIED_CODE } from '../agents/toolExecutor';
@@ -17,7 +17,10 @@ function readStructuredErrorCodes(payload: unknown): readonly TelemetryErrorCode
   if (!Array.isArray(record.errors)) {
     return [];
   }
-  const raw = record.errors.filter((entry): entry is { code?: unknown } => typeof entry === 'object' && entry !== null).map((entry) => (typeof entry.code === 'string' ? entry.code: undefined)).filter((code): code is string => code !== undefined);
+  const raw = record.errors
+    .filter((entry): entry is { code?: unknown } => typeof entry === 'object' && entry !== null)
+    .map((entry) => (typeof entry.code === 'string' ? entry.code : undefined))
+    .filter((code): code is string => code !== undefined);
   return normalizeTelemetryErrorCodes(raw);
 }
 

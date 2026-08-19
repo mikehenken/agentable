@@ -5,18 +5,18 @@
  * as a voice user.
  *
  * Why a thin module instead of CopilotKit:
- * M2.5 ships without the CopilotKit runtime (deferred to M3 per plan).
- * We want functional chat now - and the registry boundary we're putting
- * between `canvasTools` and the model wrapper means the eventual
- * CopilotKit adapter is a small refactor, not a rewrite.
+ *   M2.5 ships without the CopilotKit runtime (deferred to M3 per plan).
+ *   We want functional chat now - and the registry boundary we're putting
+ *   between `canvasTools` and the model wrapper means the eventual
+ *   CopilotKit adapter is a small refactor, not a rewrite.
  *
  * Flow:
- * 1. Caller sends conversation history + new user message.
- * 2. We call `ai.models.generateContent` with `tools: [{functionDeclarations}]`.
- * 3. If the model returns a `functionCall` part, we execute it via
- * `executeTool`, append a `functionResponse`, and call generate again.
- * Loop up to MAX_TOOL_ROUND_TRIPS to bound run-away tool loops.
- * 4. Return the final text response.
+ *   1. Caller sends conversation history + new user message.
+ *   2. We call `ai.models.generateContent` with `tools: [{functionDeclarations}]`.
+ *   3. If the model returns a `functionCall` part, we execute it via
+ *      `executeTool`, append a `functionResponse`, and call generate again.
+ *      Loop up to MAX_TOOL_ROUND_TRIPS to bound run-away tool loops.
+ *   4. Return the final text response.
  *
  * The credential resolution mirrors `geminiLiveClient`: static API key OR
  * thunk that mints a token. Phase A worker mint applies to both modalities.
@@ -79,17 +79,19 @@ export const CHAT_AGENT_TOOL_CONTEXT: AgentToolExecutionContext = {
 /** Merge draw_shapes tool output into operator-visible args for post-verify. */
 function enrichDrawShapesToolArgs(
   args: Record<string, unknown>,
-  result: { ok: boolean; result?: unknown }): Record<string, unknown> {
+  result: { ok: boolean; result?: unknown },
+): Record<string, unknown> {
   if (!result.ok || result.result === undefined || typeof result.result !== 'object') {
     return args;
   }
   const payload = result.result as { createdShapeIds?: unknown; _store?: unknown };
   const createdShapeIds = Array.isArray(payload.createdShapeIds)
-    ? payload.createdShapeIds.filter((id): id is string => typeof id === 'string'): [];
+    ? payload.createdShapeIds.filter((id): id is string => typeof id === 'string')
+    : [];
   if (createdShapeIds.length === 0) {
     return args;
   }
-  const enriched: Record<string, unknown> = {...args, _createdShapeIds: createdShapeIds };
+  const enriched: Record<string, unknown> = { ...args, _createdShapeIds: createdShapeIds };
   if (
     payload._store !== undefined &&
     typeof payload._store === 'object' &&
@@ -140,7 +142,8 @@ export function createTurnCanvasLedger(): TurnCanvasLedger {
         const removed = args._removedShapeIds;
         if (Array.isArray(removed)) {
           const removedSet = new Set(
-            removed.filter((id): id is string => typeof id === 'string'));
+            removed.filter((id): id is string => typeof id === 'string'),
+          );
           turnShapeIds = turnShapeIds.filter((id) => !removedSet.has(id));
           setTurnCanvasShapeIds(turnShapeIds);
         }
@@ -155,7 +158,7 @@ export function createTurnCanvasLedger(): TurnCanvasLedger {
         }
       }
     },
-    wipedScene: () => (sinceClear.length > 0 ? []: wiped),
+    wipedScene: () => (sinceClear.length > 0 ? [] : wiped),
     hasLiveDrawing: () => sinceClear.length > 0,
     getTurnShapeIds: () => [...turnShapeIds],
   };
@@ -163,7 +166,8 @@ export function createTurnCanvasLedger(): TurnCanvasLedger {
 
 function dispatchFitChatDrawing(
   executedCalls: readonly { name: string; ok: boolean }[],
-  agentId: string): void {
+  agentId: string,
+): void {
   if (typeof window === 'undefined') return;
   if (!executedCalls.some((call) => call.ok && CANVAS_DRAW_TOOLS.has(call.name))) {
     return;
@@ -171,7 +175,8 @@ function dispatchFitChatDrawing(
   window.dispatchEvent(
     new CustomEvent(FIT_AGENT_DRAWING_EVENT, {
       detail: { agentId },
-    }));
+    }),
+  );
 }
 
 export type ChatRole = 'user' | 'assistant';
@@ -223,7 +228,7 @@ export interface ChatTurnResult {
   text: string;
   /** Tool calls executed during this turn (in order). */
   toolCalls: Array<{ name: string; args: Record<string, unknown>; ok: boolean }>;
-  /** Model text emitted alongside tool calls (chain-of-thought pre-tool reasoning). */
+  /** Model text emitted alongside tool calls (chain-of-thought / pre-tool reasoning). */
   reasoning?: string;
 }
 
@@ -235,7 +240,7 @@ export type ChatSendProgressEvent =
 
 export interface ChatSendOptions {
   attachmentInlineData?: ReadonlyArray<{ mimeType: string; data: string }>;
-  /** Incremental turn updates for operator chat UI. */
+  /** Incremental turn updates for operator / chat UI (P13-T7 iter-12). */
   onProgress?: (event: ChatSendProgressEvent) => void;
   /** When aborted, in-flight fetch and tool rounds stop with AbortError. */
   signal?: AbortSignal;
@@ -251,7 +256,7 @@ function throwIfAborted(signal: AbortSignal | undefined): void {
 // "gemini-3.5-pro" (a turn against it fails with model NOT_FOUND before any
 // tool runs), so quality-first drawing uses the newest pro preview instead.
 const DEFAULT_MODEL = 'gemini-3.1-pro-preview';
-/** Hard cap on every tool execution (model + programmatic) per user send. */
+/** Hard cap on every tool execution (model + programmatic) per user send(). */
 export const MAX_TOOLS_PER_TURN = 10;
 // Room for draw, one repair pass, and a text-only close — not unbounded redraw loops.
 export const DEFAULT_MAX_ROUND_TRIPS = 8;
@@ -273,7 +278,8 @@ const DIAGRAM_ALREADY_DRAWN_ERROR =
 export function isSuccessfulDiagramDraw(
   name: string,
   args: Record<string, unknown>,
-  ok: boolean): boolean {
+  ok: boolean,
+): boolean {
   if (name !== 'draw_shapes' || !ok) {
     return false;
   }
@@ -362,7 +368,7 @@ function extractBase64Png(dataUrl: unknown): string | null {
     return null;
   }
   const data = dataUrl.slice(PNG_DATA_URL_PREFIX.length);
-  return data.length > 0 ? data: null;
+  return data.length > 0 ? data : null;
 }
 
 /**
@@ -383,7 +389,7 @@ function buildContents(history: ChatMessage[]): Content[] {
       continue;
     }
     out.push({
-      role: msg.role === 'assistant' ? 'model': 'user',
+      role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.text }],
     });
   }
@@ -402,7 +408,8 @@ export function createChatClient(options: ChatClientOptions) {
       name: d.name,
       description: d.description,
       parametersJsonSchema: d.parameters,
-    }));
+    }),
+  );
 
   const generationConfig = {
     systemInstruction: options.systemInstruction,
@@ -416,10 +423,12 @@ export function createChatClient(options: ChatClientOptions) {
    */
   async function runGenerate(
     contents: Content[],
-    { includeTools = true, signal }: { includeTools?: boolean; signal?: AbortSignal } = {}): Promise<GenerateResult> {
+    { includeTools = true, signal }: { includeTools?: boolean; signal?: AbortSignal } = {},
+  ): Promise<GenerateResult> {
     throwIfAborted(signal);
     const config = includeTools
-      ? generationConfig: { systemInstruction: options.systemInstruction };
+      ? generationConfig
+      : { systemInstruction: options.systemInstruction };
     if (options.proxyUrl) {
       const res = await fetch(options.proxyUrl, {
         method: 'POST',
@@ -430,7 +439,8 @@ export function createChatClient(options: ChatClientOptions) {
       if (!res.ok) {
         const detail = await res.text().catch(() => '');
         throw new Error(
-          `Chat proxy responded ${res.status}${detail ? `: ${detail}`: ''}`);
+          `Chat proxy responded ${res.status}${detail ? `: ${detail}` : ''}`,
+        );
       }
       return (await res.json()) as GenerateResult;
     }
@@ -440,21 +450,24 @@ export function createChatClient(options: ChatClientOptions) {
     }
     const apiKey =
       typeof options.apiKeySource === 'function'
-        ? await options.apiKeySource(): options.apiKeySource;
+        ? await options.apiKeySource()
+        : options.apiKeySource;
     const ai = new GoogleGenAI({ apiKey, apiVersion: 'v1beta' });
     return ai.models.generateContent({
       model,
       contents,
       config:
         signal !== undefined
-          ? {...config, abortSignal: signal }: config,
+          ? { ...config, abortSignal: signal }
+          : config,
     });
   }
 
   async function send(
     history: ChatMessage[],
     userMessage: string,
-    sendOptions?: ChatSendOptions): Promise<ChatTurnResult> {
+    sendOptions?: ChatSendOptions,
+  ): Promise<ChatTurnResult> {
     return withDrawUserMessageAsync(userMessage, async () =>
       withTurnCanvasShapeIdsAsync([], async () => {
     const onProgress = sendOptions?.onProgress;
@@ -475,7 +488,8 @@ export function createChatClient(options: ChatClientOptions) {
 
     // Working contents: history → user message, then we may append model
     // turns + tool responses across the round-trip loop.
-    const contents: Content[] = [...buildContents(history),
+    const contents: Content[] = [
+      ...buildContents(history),
       { role: 'user', parts: userParts },
     ];
 
@@ -545,7 +559,10 @@ export function createChatClient(options: ChatClientOptions) {
           parts: [{ text: hint }],
         });
         const closing = await runGenerate(contents, { includeTools: false, signal });
-        const closingText = (closing.candidates?.[0]?.content?.parts ?? []).map((part) => (typeof part.text === 'string' ? part.text: '')).join('').trim();
+        const closingText = (closing.candidates?.[0]?.content?.parts ?? [])
+          .map((part) => (typeof part.text === 'string' ? part.text : ''))
+          .join('')
+          .trim();
         if (closingText.length > 0) {
           return buildTurnResult(closingText);
         }
@@ -554,7 +571,9 @@ export function createChatClient(options: ChatClientOptions) {
       }
       return buildTurnResult(
         ledger.hasLiveDrawing()
-          ? 'The sketch is on the whiteboard.': 'I could not finish that sketch. Ask me to try again.');
+          ? 'The sketch is on the whiteboard.'
+          : 'I could not finish that sketch. Ask me to try again.',
+      );
     }
 
     const postDrawProgressHooks = {
@@ -565,7 +584,8 @@ export function createChatClient(options: ChatClientOptions) {
         name: string,
         args: Record<string, unknown>,
         ok: boolean,
-        error?: string): void => {
+        error?: string,
+      ): void => {
         recordToolExecution();
         toolCalls.push({ name, args, ok });
         onProgress?.({ type: 'tool-complete', name, args, ok, error });
@@ -576,7 +596,8 @@ export function createChatClient(options: ChatClientOptions) {
               detail: { name, args, ok, source: 'chat' },
               bubbles: true,
               composed: true,
-            }));
+            }),
+          );
         }
       },
     };
@@ -587,19 +608,23 @@ export function createChatClient(options: ChatClientOptions) {
     async function restoreWipedScene(): Promise<void> {
       for (const call of ledger.wipedScene()) {
         const result = await withAgentToolContextAsync(toolContext, () =>
-          executeTool(call.name, call.args));
+          executeTool(call.name, call.args),
+        );
         ledger.record(call.name, call.args, result.ok);
         toolCalls.push({ name: call.name, args: call.args, ok: result.ok });
       }
     }
 
     function buildTurnResult(text: string): ChatTurnResult {
-      const reasoning = reasoningSegments.map((segment) => segment.trim()).filter((segment) => segment.length > 0).join('\n\n');
+      const reasoning = reasoningSegments
+        .map((segment) => segment.trim())
+        .filter((segment) => segment.length > 0)
+        .join('\n\n');
       onProgress?.({ type: 'text-chunk', text, final: true });
       return {
         text,
         toolCalls,
-        reasoning: reasoning.length > 0 ? reasoning: undefined,
+        reasoning: reasoning.length > 0 ? reasoning : undefined,
       };
     }
 
@@ -607,7 +632,8 @@ export function createChatClient(options: ChatClientOptions) {
       throwIfAborted(signal);
       const errorHint =
         lastError !== undefined && lastError.trim().length > 0
-          ? ` Last error: ${lastError.trim()}`: '';
+          ? ` Last error: ${lastError.trim()}`
+          : '';
       contents.push({
         role: 'user',
         parts: [
@@ -620,7 +646,10 @@ export function createChatClient(options: ChatClientOptions) {
       });
       try {
         const closing = await runGenerate(contents, { includeTools: false, signal });
-        const closingText = (closing.candidates?.[0]?.content?.parts ?? []).map((part) => (typeof part.text === 'string' ? part.text: '')).join('').trim();
+        const closingText = (closing.candidates?.[0]?.content?.parts ?? [])
+          .map((part) => (typeof part.text === 'string' ? part.text : ''))
+          .join('')
+          .trim();
         if (closingText.length > 0) {
           await restoreWipedScene();
           dispatchFitChatDrawing(toolCalls, toolContext.agentId);
@@ -633,20 +662,22 @@ export function createChatClient(options: ChatClientOptions) {
       await restoreWipedScene();
       dispatchFitChatDrawing(toolCalls, toolContext.agentId);
       return buildTurnResult(
-        'I could not draw that diagram after several attempts. Please try rephrasing the request.');
+        'I could not draw that diagram after several attempts. Please try rephrasing the request.',
+      );
     }
 
     for (let round = 0; round < maxRoundTrips; round++) {
       throwIfAborted(signal);
       if (toolCapReached()) {
         return finishWithTextOnlyClosing(
-          'Stop calling tools now. In one short sentence, tell the user what you sketched.');
+          'Stop calling tools now. In one short sentence, tell the user what you sketched.',
+        );
       }
       injectClearBanIfNeeded();
       const response = await runGenerate(contents, { signal });
 
       // Pull the first candidate's content. Defensive: SDK shapes can
-      // include omit candidates depending on safety filters.
+      // include / omit candidates depending on safety filters.
       const candidate = response.candidates?.[0];
       const parts = (candidate?.content?.parts ?? []) as Part[];
 
@@ -740,15 +771,20 @@ export function createChatClient(options: ChatClientOptions) {
           ? {
               ok: false as const,
               error: refusal.error ?? 'Tool call refused for this turn.',
-            }: await withAgentToolContextAsync(toolContext, () =>
-              executeTool(fc.name, fc.args));
+            }
+          : await withAgentToolContextAsync(toolContext, () =>
+              executeTool(fc.name, fc.args),
+            );
         recordToolExecution();
         const completeArgs =
           fc.name === 'draw_shapes'
-            ? enrichDrawShapesToolArgs(fc.args, result): fc.name === 'clear_agent_drawings' && result.ok && result.result !== undefined
-              ? {...fc.args,
+            ? enrichDrawShapesToolArgs(fc.args, result)
+            : fc.name === 'clear_agent_drawings' && result.ok && result.result !== undefined
+              ? {
+                  ...fc.args,
                   _removedShapeIds: (result.result as { removedShapeIds?: unknown }).removedShapeIds,
-                }: fc.args;
+                }
+              : fc.args;
         ledger.record(fc.name, completeArgs, result.ok);
         toolCalls.push({ name: fc.name, args: completeArgs, ok: result.ok });
         onProgress?.({
@@ -756,7 +792,7 @@ export function createChatClient(options: ChatClientOptions) {
           name: fc.name,
           args: completeArgs,
           ok: result.ok,
-          error: result.ok ? undefined: result.error,
+          error: result.ok ? undefined : result.error,
         });
         roundResults.push({ name: fc.name, ok: result.ok });
 
@@ -790,7 +826,8 @@ export function createChatClient(options: ChatClientOptions) {
 
         if (fc.name === 'draw_shapes' && result.ok) {
           const createdIds = Array.isArray(completeArgs._createdShapeIds)
-            ? completeArgs._createdShapeIds.filter((id): id is string => typeof id === 'string'): [];
+            ? completeArgs._createdShapeIds.filter((id): id is string => typeof id === 'string')
+            : [];
           lastDrawCreatedIds = createdIds;
           const groupableIds = filterGroupableSiblingIds(createdIds);
           if (groupableIds.length >= 2) {
@@ -798,7 +835,8 @@ export function createChatClient(options: ChatClientOptions) {
             const groupResult = await autoGroupCreatedShapes(
               toolContext,
               groupableIds,
-              postDrawProgressHooks);
+              postDrawProgressHooks,
+            );
             ledger.record('group_shapes', groupArgs, groupResult.ok);
           }
         }
@@ -810,22 +848,26 @@ export function createChatClient(options: ChatClientOptions) {
             detail: { name: fc.name, args: completeArgs, ok: result.ok, source: 'chat' },
             bubbles: true,
             composed: true,
-          }));
+          }),
+        );
         let responsePayload: Record<string, unknown> = result.ok
-          ? { output: result.result }: { error: result.error };
+          ? { output: result.result }
+          : { error: result.error };
         // A screenshot result is an image, not text: base64 inside the
         // functionResponse JSON is invisible to the model and enormous.
         // Strip it there and attach it as a real inlineData image part so
         // the model actually sees the canvas it asked about.
         if (fc.name === 'screenshot_canvas' && result.ok) {
           const base64 = extractBase64Png(
-            (result.result as { dataUrl?: unknown } | undefined)?.dataUrl);
+            (result.result as { dataUrl?: unknown } | undefined)?.dataUrl,
+          );
           if (base64 !== null) {
             screenshotParts.push({
               inlineData: { mimeType: 'image/png', data: base64 },
             });
             responsePayload = {
-              output: {...(result.result as Record<string, unknown>),
+              output: {
+                ...(result.result as Record<string, unknown>),
                 dataUrl: '(attached as an image in the next message)',
               },
             };
@@ -851,7 +893,8 @@ export function createChatClient(options: ChatClientOptions) {
         contents.push({
           role: 'user',
           parts: [
-            { text: '[Screenshot] The requested canvas capture is attached.' },...screenshotParts,
+            { text: '[Screenshot] The requested canvas capture is attached.' },
+            ...screenshotParts,
           ],
         });
       }
@@ -862,13 +905,15 @@ export function createChatClient(options: ChatClientOptions) {
       // Skipped when the model already requested a screenshot this round, or
       // when a diagram path already succeeded with a clean layout probe.
       const drewThisRound = roundResults.some(
-        (entry) => entry.ok && CANVAS_DRAW_TOOLS.has(entry.name));
+        (entry) => entry.ok && CANVAS_DRAW_TOOLS.has(entry.name),
+      );
       if (drewThisRound) {
         postDrawReviewComplete = false;
       }
       if (toolCapReached()) {
         return finishWithTextOnlyClosing(
-          'Stop calling tools now. In one short sentence, tell the user what you sketched.');
+          'Stop calling tools now. In one short sentence, tell the user what you sketched.',
+        );
       }
       if (
         drewThisRound &&
@@ -890,7 +935,7 @@ export function createChatClient(options: ChatClientOptions) {
             layoutFixActive = false;
             continue;
           }
-          probe = {...probe, lints: filteredLints };
+          probe = { ...probe, lints: filteredLints };
         }
         if (probe.lints.length === 0) {
           postDrawReviewComplete = true;
@@ -904,7 +949,8 @@ export function createChatClient(options: ChatClientOptions) {
             if (!toolCapReached()) {
               postDrawProgressHooks.onToolStart('arrange', arrangeArgs);
               const arrangeResult = await withAgentToolContextAsync(toolContext, () =>
-                executeTool('arrange', arrangeArgs));
+                executeTool('arrange', arrangeArgs),
+              );
               recordToolExecution();
               postDrawProgressHooks.onToolComplete('arrange', arrangeArgs, arrangeResult.ok);
               ledger.record('arrange', arrangeArgs, arrangeResult.ok);
@@ -937,7 +983,8 @@ export function createChatClient(options: ChatClientOptions) {
             const arrangeArgs: Record<string, unknown> = { shapeIds: repairIds, layout: repairLayout };
             postDrawProgressHooks.onToolStart('arrange', arrangeArgs);
             const arrangeResult = await withAgentToolContextAsync(toolContext, () =>
-              executeTool('arrange', arrangeArgs));
+              executeTool('arrange', arrangeArgs),
+            );
             recordToolExecution();
             postDrawProgressHooks.onToolComplete('arrange', arrangeArgs, arrangeResult.ok);
             ledger.record('arrange', arrangeArgs, arrangeResult.ok);
@@ -963,8 +1010,10 @@ export function createChatClient(options: ChatClientOptions) {
     // user gets a real sentence about what was drawn instead of an internal
     // limit message.
     return finishWithTextOnlyClosing(
-      'Stop drawing now. In one short sentence, tell the user what you sketched.');
-    }));
+      'Stop drawing now. In one short sentence, tell the user what you sketched.',
+    );
+    }),
+    );
   }
 
   return { send };

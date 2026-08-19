@@ -8,9 +8,9 @@
  * pulses convincingly.
  *
  * Use cases:
- * - Offline dev (no API key in env)
- * - CI unit-test fixtures (deterministic playback)
- * - Demos where real Gemini Live latency is undesirable
+ *  - Offline dev (no API key in env)
+ *  - CI / unit-test fixtures (deterministic playback)
+ *  - Demos where real Gemini Live latency is undesirable
  *
  * Selection: `useGeminiLive` selects this when no `VITE_GEMINI_API_KEY` is
  * set OR when `VITE_LANDI_MOCK=1` OR when persona supplies `mock: true`
@@ -39,7 +39,7 @@ export interface MockVoiceTurn {
 }
 
 export interface MockVoiceScenario {
-  /** Identifier surfaced in logs telemetry. */
+  /** Identifier surfaced in logs / telemetry. */
   id: string;
   /** Optional opener spoken right after `connecting` → `speaking`. */
   greeting?: string;
@@ -57,8 +57,8 @@ export interface MockClientOptions {
    */
   loop?: boolean;
   /**
-   * Simulate a transport drop after this many ms from `start`. Used by
-   * resilience tests — the client stops mid-session and signals
+   * Simulate a transport drop after this many ms from `start()`. Used by
+   * D56 resilience tests — the client stops mid-session and signals
    * `onError`; a reconnecting caller resumes from the saved turn index.
    */
   simulateDropAfterMs?: number;
@@ -102,18 +102,21 @@ export function createMockVoiceClient(
   const baseScenario = options.scenario ?? DEFAULT_SCENARIO;
   const connectGreeting = resolveConnectGreeting(
     persona.greetingMode,
-    persona.voiceGreeting);
-   // Greeting precedence: explicit scenario greeting wins (test authors),
-   // then agent-first connect greeting from persona, else no opener.
+    persona.voiceGreeting,
+  );
+  // Greeting precedence: explicit scenario greeting wins (test authors),
+  // then agent-first connect greeting from persona, else no opener.
   const scenario: MockVoiceScenario = baseScenario.greeting
-    ? baseScenario: connectGreeting
-      ? {...baseScenario, greeting: connectGreeting }: {...baseScenario, greeting: undefined };
+    ? baseScenario
+    : connectGreeting
+      ? { ...baseScenario, greeting: connectGreeting }
+      : { ...baseScenario, greeting: undefined };
 
   let active = false;
   let inputLevel = 0;
   let outputLevel = 0;
-   // RAF-driven tick (matches real client: pauses on hidden tabs so the
-   // visualiser stays consistent with WebSocket session pause semantics).
+  // RAF-driven tick (matches real client: pauses on hidden tabs so the
+  // visualiser stays consistent with WebSocket session pause semantics).
   let rafHandle: number | null = null;
   let turnTimer: ReturnType<typeof setTimeout> | null = null;
   let turnStart = 0;
@@ -161,7 +164,7 @@ export function createMockVoiceClient(
     const t = Math.min(1, elapsed / Math.max(1, turnDuration));
     const env = envelope(t);
     if (mode === 'speaking') {
-       // Synthesised "voice" amplitude: sinusoidal jitter on top of the envelope.
+      // Synthesised "voice" amplitude: sinusoidal jitter on top of the envelope.
       const jitter = 0.4 + 0.6 * Math.abs(Math.sin(now / 90));
       outputLevel = env * jitter * 0.85;
       inputLevel = 0;

@@ -40,7 +40,7 @@ export function readShapeGraph(value: unknown): CanvasShapeGraph | null {
 }
 
 function finite(value: unknown): number | null {
-  return typeof value === 'number' && Number.isFinite(value) ? value: null;
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
 function nodeRect(node: CanvasShapeGraphNode): RectLike | null {
@@ -61,7 +61,7 @@ function nodeRect(node: CanvasShapeGraphNode): RectLike | null {
 function overlapArea(a: RectLike, b: RectLike): number {
   const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
   const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
-  return w > 0 && h > 0 ? w * h: 0;
+  return w > 0 && h > 0 ? w * h : 0;
 }
 
 function contains(outer: RectLike, inner: RectLike): boolean {
@@ -77,11 +77,12 @@ function labelFor(node: CanvasShapeGraphNode): string {
   const text = typeof node.text === 'string' ? node.text.trim() : '';
   if (text.length > 0) {
     const short =
-      text.length > LABEL_MAX_CHARS ? `${text.slice(0, LABEL_MAX_CHARS)}...`: text;
+      text.length > LABEL_MAX_CHARS ? `${text.slice(0, LABEL_MAX_CHARS)}...` : text;
     return `"${short}"`;
   }
   return `the ${node.kind ?? node.nativeType} at (${Math.round(
-    (node.geometry as { x?: number }).x ?? 0)}, ${Math.round((node.geometry as { y?: number }).y ?? 0)})`;
+    (node.geometry as { x?: number }).x ?? 0,
+  )}, ${Math.round((node.geometry as { y?: number }).y ?? 0)})`;
 }
 
 export interface CanvasLintOptions {
@@ -140,7 +141,11 @@ export function suggestFreeRegion(graph: CanvasShapeGraph): RectLike | null {
     return null;
   }
 
-  const obstacleRects = graph.shapes.filter((node) => node.kind === 'panel' || typeof node.agentId === 'string').map((node) => obstacleRect(node)).filter((rect): rect is RectLike => rect !== null).filter((rect) => overlapArea(rect, inset) > 0);
+  const obstacleRects = graph.shapes
+    .filter((node) => node.kind === 'panel' || typeof node.agentId === 'string')
+    .map((node) => obstacleRect(node))
+    .filter((rect): rect is RectLike => rect !== null)
+    .filter((rect) => overlapArea(rect, inset) > 0);
   if (obstacleRects.length === 0) {
     return inset;
   }
@@ -197,20 +202,24 @@ export function suggestFreeRegion(graph: CanvasShapeGraph): RectLike | null {
  */
 export function computeCanvasLints(
   graph: CanvasShapeGraph,
-  options: CanvasLintOptions = {}): string[] {
+  options: CanvasLintOptions = {},
+): string[] {
   const lints: string[] = [];
   const region = graph.region;
 
   const solids = graph.shapes.filter(
-    (node) => (node.kind === 'box' || node.kind === 'ellipse') && nodeRect(node) !== null);
+    (node) => (node.kind === 'box' || node.kind === 'ellipse') && nodeRect(node) !== null,
+  );
   // Text joins the visibility checks (under a panel, cut off) but not the
   // overlap checks: labels legitimately sit close to other shapes.
   const content = graph.shapes.filter(
     (node) =>
       (node.kind === 'box' || node.kind === 'ellipse' || node.kind === 'text') &&
-      nodeRect(node) !== null);
+      nodeRect(node) !== null,
+  );
   const panels = graph.shapes.filter(
-    (node) => node.kind === 'panel' && nodeRect(node) !== null);
+    (node) => node.kind === 'panel' && nodeRect(node) !== null,
+  );
 
   // 1. Partial overlaps between solid shapes. Full containment is allowed:
   // a container box holding smaller boxes is a deliberate grouping pattern.
@@ -225,7 +234,8 @@ export function computeCanvasLints(
       if (contains(a, b) || contains(b, a)) continue;
       if (reported < MAX_REPORTED_OVERLAPS) {
         lints.push(
-          `${labelFor(solids[i]!)} and ${labelFor(solids[j]!)} overlap; separate them.`);
+          `${labelFor(solids[i]!)} and ${labelFor(solids[j]!)} overlap; separate them.`,
+        );
         reported += 1;
       } else {
         unreported += 1;
@@ -254,7 +264,8 @@ export function computeCanvasLints(
       };
       if (overlapArea(grown, b) > 0) {
         lints.push(
-          `${labelFor(solids[i]!)} and ${labelFor(solids[j]!)} touch; add breathing room between them.`);
+          `${labelFor(solids[i]!)} and ${labelFor(solids[j]!)} touch; add breathing room between them.`,
+        );
         touchesReported += 1;
       }
     }
@@ -272,9 +283,10 @@ export function computeCanvasLints(
     });
     if (covered.length === 0) continue;
     anyUnderPanel = true;
-    const panelName = panel.panel?.panelId ? `"${panel.panel.panelId}"`: 'an open';
+    const panelName = panel.panel?.panelId ? `"${panel.panel.panelId}"` : 'an open';
     lints.push(
-      `${covered.length} of your shapes sit under the ${panelName} panel (for example ${labelFor(covered[0]!)}); move them clear of it.`);
+      `${covered.length} of your shapes sit under the ${panelName} panel (for example ${labelFor(covered[0]!)}); move them clear of it.`,
+    );
   }
   // Actionable follow-up: the model draws in page coordinates, so telling it
   // WHERE the clear space is lets one redraw converge instead of guessing.
@@ -283,8 +295,11 @@ export function computeCanvasLints(
     if (free !== null) {
       lints.push(
         `Clear canvas space runs from x ${Math.round(free.x)} to ${Math.round(
-          free.x + free.w)}, y ${Math.round(free.y)} to ${Math.round(
-          free.y + free.h)}; place every shape inside that area.`);
+          free.x + free.w,
+        )}, y ${Math.round(free.y)} to ${Math.round(
+          free.y + free.h,
+        )}; place every shape inside that area.`,
+      );
     }
   }
 
@@ -305,20 +320,24 @@ export function computeCanvasLints(
   });
   if (cutOff.length > 0) {
     lints.push(
-      `${cutOff.length} of your shapes extend past the visible view (for example ${labelFor(cutOff[0]!)}).`);
+      `${cutOff.length} of your shapes extend past the visible view (for example ${labelFor(cutOff[0]!)}).`,
+    );
   }
 
   // 4. A multi-node sketch with no connectors usually means the model drew
   // the boxes and forgot the relationships the user asked about.
   const agentSolids = solids.filter(
-    (node) => options.agentId === undefined || node.agentId === options.agentId);
+    (node) => options.agentId === undefined || node.agentId === options.agentId,
+  );
   const agentConnectors = graph.shapes.filter(
     (node) =>
       (node.kind === 'arrow' || node.kind === 'freehand') &&
-      (options.agentId === undefined || node.agentId === options.agentId));
+      (options.agentId === undefined || node.agentId === options.agentId),
+  );
   if (agentSolids.length >= 3 && agentConnectors.length === 0) {
     lints.push(
-      'Your sketch has no connecting arrows; if the request involves flow, sequence, or connections, add arrows between the related shapes.');
+      'Your sketch has no connecting arrows; if the request involves flow, sequence, or connections, add arrows between the related shapes.',
+    );
   }
 
   if (graph.truncated === true) {

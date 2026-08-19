@@ -11,7 +11,8 @@ import { registerCareerWhiteboard } from '../whiteboard/registerCareerWhiteboard
 let unregisterProvider: (() => void) | null = null;
 
 function resolveCareerEmbedWiring(
-  input: WhiteboardWiringProviderInput): WhiteboardWiringProviderResult | null {
+  input: WhiteboardWiringProviderInput,
+): WhiteboardWiringProviderResult | null {
   const result = registerCareerWhiteboard({
     tenantConfig: input.tenantConfig,
     configDocument: input.configDocument,
@@ -32,7 +33,7 @@ function resolveCareerEmbedWiring(
   };
 }
 
-/** Idempotent — call after `<agentable-whiteboard>` `<agentable-canvas>` script loads. */
+/** Idempotent — call after `<agentable-whiteboard>` / `<agentable-canvas>` script loads. */
 export function ensureCareerWhiteboardEmbedProviderRegistered(): void {
   if (unregisterProvider !== null) {
     return;

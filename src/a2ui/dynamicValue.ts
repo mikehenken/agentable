@@ -8,7 +8,7 @@ function jsonPointerToPathSegments(pointer: string): string[] {
   if (pointer === '' || pointer === '/') {
     return [];
   }
-  const normalized = pointer.startsWith('/') ? pointer.slice(1): pointer;
+  const normalized = pointer.startsWith('/') ? pointer.slice(1) : pointer;
   return normalized.split('/').map((segment) => segment.replace(/~1/g, '/').replace(/~0/g, '~'));
 }
 
@@ -29,21 +29,22 @@ export function readDataModelPath(dataModel: JsonObject, pointer: string): JsonV
 export function writeDataModelPath(
   dataModel: JsonObject,
   pointer: string | undefined,
-  value: JsonValue | undefined): JsonObject {
-  const path = pointer === undefined || pointer === '' ? '/': pointer;
+  value: JsonValue | undefined,
+): JsonObject {
+  const path = pointer === undefined || pointer === '' ? '/' : pointer;
   if (path === '/') {
-    return isRecord(value) ? {...value }: {};
+    return isRecord(value) ? { ...value } : {};
   }
   const segments = jsonPointerToPathSegments(path);
   if (segments.length === 0) {
-    return isRecord(value) ? {...value }: dataModel;
+    return isRecord(value) ? { ...value } : dataModel;
   }
-  const root: JsonObject = {...dataModel };
+  const root: JsonObject = { ...dataModel };
   let cursor: JsonObject = root;
   for (let index = 0; index < segments.length - 1; index += 1) {
     const key = segments[index]!;
     const next = cursor[key];
-    const nextObject: JsonObject = isRecord(next) ? {...next }: {};
+    const nextObject: JsonObject = isRecord(next) ? { ...next } : {};
     cursor[key] = nextObject;
     cursor = nextObject;
   }
@@ -68,11 +69,12 @@ export type ResolveDynamicResult =
 
 /**
  * Resolve an A2UI Dynamic* value: literal primitives, `{ path }`, or
- * `{ literalString }` `{ literalNumber }` wrappers from older examples.
+ * `{ literalString }` / `{ literalNumber }` wrappers from older examples.
  */
 export function resolveDynamicValue(
   raw: unknown,
-  options: ResolveDynamicOptions): ResolveDynamicResult {
+  options: ResolveDynamicOptions,
+): ResolveDynamicResult {
   if (
     raw === null ||
     typeof raw === 'string' ||
@@ -114,7 +116,8 @@ export function resolveDynamicValue(
 
 export function resolveDynamicString(
   raw: unknown,
-  options: ResolveDynamicOptions): ResolveDynamicResult {
+  options: ResolveDynamicOptions,
+): ResolveDynamicResult {
   const resolved = resolveDynamicValue(raw, options);
   if (!resolved.ok) {
     return resolved;
@@ -130,5 +133,5 @@ export function resolveDynamicString(
 
 /** Convert `/contact/email` to nested `{ contact: { email } }` for PanelSpec.state. */
 export function dataModelToPanelState(dataModel: JsonObject): JsonObject {
-  return {...dataModel };
+  return { ...dataModel };
 }

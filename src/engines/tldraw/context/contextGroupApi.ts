@@ -82,12 +82,14 @@ export interface ResolvedContextFrameGroup {
 }
 
 function readContextGroupMetaRaw(
-  meta: Record<string, unknown>): unknown {
+  meta: Record<string, unknown>,
+): unknown {
   return meta[CONTEXT_META_KEY] ?? meta[LEGACY_CONTEXT_META_KEY];
 }
 
 export function getContextGroupMeta(
-  shape: { meta?: Record<string, unknown>; type?: string; props?: unknown } | null | undefined): ContextGroupMeta | null {
+  shape: { meta?: Record<string, unknown>; type?: string; props?: unknown } | null | undefined,
+): ContextGroupMeta | null {
   if (!shape?.meta) return null;
   const raw = readContextGroupMetaRaw(shape.meta);
   if (!raw || typeof raw !== 'object') return null;
@@ -101,7 +103,8 @@ export function getContextGroupMeta(
 
 function frameLabelFromShape(
   shape: { type: string; props: unknown } | null | undefined,
-  fallback: string): string {
+  fallback: string,
+): string {
   if (!shape || shape.type !== 'frame') return fallback;
   const name = (shape.props as { name?: unknown }).name;
   return typeof name === 'string' && name.trim() ? name.trim() : fallback;
@@ -110,7 +113,8 @@ function frameLabelFromShape(
 /** Walk parent chain (or panel data) to find the enclosing site context group. */
 export function findContextFrameGroupForShape(
   editor: Editor,
-  shapeId: TLShapeId): ResolvedContextFrameGroup | null {
+  shapeId: TLShapeId,
+): ResolvedContextFrameGroup | null {
   let currentId: TLShapeId | undefined = shapeId;
 
   while (currentId) {
@@ -128,7 +132,8 @@ export function findContextFrameGroupForShape(
 
     if (shape.type === 'panel') {
       const siteId = resolveContextIdFromPanelData(
-        (shape.props as { data?: Record<string, unknown> }).data);
+        (shape.props as { data?: Record<string, unknown> }).data,
+      );
       if (siteId) {
         const frameId = contextGroupFrameId({ kind: 'site', id: siteId });
         const frame = editor.getShape(frameId);
@@ -173,7 +178,8 @@ export function contextGroupFrameId(ref: Pick<ContextGroupRef, 'kind' | 'id'>): 
 }
 
 export function resolveContextIdFromPanelData(
-  data: Record<string, unknown> | undefined): string | null {
+  data: Record<string, unknown> | undefined,
+): string | null {
   if (!data) return null;
   // Typed scope first (contextId is the siteId on landi hosts), then the
   // plain siteId key host panels have always passed in panelProps.
@@ -190,7 +196,7 @@ function inferCommonSiteId(editor: Editor, panelIds: string[]): string | null {
     const siteId = resolveContextIdFromPanelData(data);
     if (siteId) siteIds.add(siteId);
   }
-  return siteIds.size === 1 ? [...siteIds][0] ?? null: null;
+  return siteIds.size === 1 ? [...siteIds][0] ?? null : null;
 }
 
 function snapFrameOrigin(editor: Editor, frameId: TLShapeId): void {
@@ -206,7 +212,8 @@ function snapFrameOrigin(editor: Editor, frameId: TLShapeId): void {
 
 function isContextGroupFrame(
   editor: Editor,
-  frameId: TLShapeId): ContextGroupMeta | null {
+  frameId: TLShapeId,
+): ContextGroupMeta | null {
   const frame = editor.getShape(frameId);
   if (!frame || frame.type !== 'frame') return null;
   return getContextGroupMeta(frame);
@@ -216,7 +223,8 @@ function isContextGroupFrame(
 export function ensurePanelInContextFrame(
   editor: Editor,
   panelShapeId: TLShapeId,
-  frameId: TLShapeId): void {
+  frameId: TLShapeId,
+): void {
   const panel = editor.getShape(panelShapeId);
   if (!panel || panel.type !== 'panel') return;
   const panelId = (panel.props as { panelId?: unknown }).panelId;
@@ -228,7 +236,8 @@ export function ensurePanelInContextFrame(
 function computeFrameContentTarget(
   editor: Editor,
   frameId: TLShapeId,
-  padding: number): FrameContentTarget | null {
+  padding: number,
+): FrameContentTarget | null {
   const frame = editor.getShape<TLFrameShape>(frameId);
   if (!frame || frame.type !== 'frame') return null;
 
@@ -241,7 +250,8 @@ function computeFrameContentTarget(
       const geometry = editor.getShapeGeometry(shape.id);
       const transform = editor.getShapeLocalTransform(shape);
       return transform?.applyToPoints(geometry.vertices) ?? [];
-    }));
+    }),
+  );
 
   return {
     w: bounds.w + 2 * padding,
@@ -253,7 +263,7 @@ function computeFrameContentTarget(
 
 function clampAxisDelta(delta: number, maxDelta: number): number {
   if (Math.abs(delta) <= maxDelta) return delta;
-  return delta > 0 ? maxDelta: -maxDelta;
+  return delta > 0 ? maxDelta : -maxDelta;
 }
 
 function applyPreviewFrameFit(
@@ -261,7 +271,8 @@ function applyPreviewFrameFit(
   frameId: TLShapeId,
   target: FrameContentTarget,
   childIds: TLShapeId[],
-  options: Required<Pick<FitContextGroupFrameOptions, 'minDelta' | 'maxDeltaPerFrame'>>): boolean {
+  options: Required<Pick<FitContextGroupFrameOptions, 'minDelta' | 'maxDeltaPerFrame'>>,
+): boolean {
   const frame = editor.getShape<TLFrameShape>(frameId);
   if (!frame || frame.type !== 'frame') return false;
 
@@ -271,10 +282,10 @@ function applyPreviewFrameFit(
   const dh = target.h - currentH;
 
   // During drag preview, only grow the frame — final fit handles shrink.
-  const growW = dw > 0 ? clampAxisDelta(dw, options.maxDeltaPerFrame): 0;
-  const growH = dh > 0 ? clampAxisDelta(dh, options.maxDeltaPerFrame): 0;
-  const shiftX = growW > 0 || growH > 0 ? clampAxisDelta(target.dx, options.maxDeltaPerFrame): 0;
-  const shiftY = growW > 0 || growH > 0 ? clampAxisDelta(target.dy, options.maxDeltaPerFrame): 0;
+  const growW = dw > 0 ? clampAxisDelta(dw, options.maxDeltaPerFrame) : 0;
+  const growH = dh > 0 ? clampAxisDelta(dh, options.maxDeltaPerFrame) : 0;
+  const shiftX = growW > 0 || growH > 0 ? clampAxisDelta(target.dx, options.maxDeltaPerFrame) : 0;
+  const shiftY = growW > 0 || growH > 0 ? clampAxisDelta(target.dy, options.maxDeltaPerFrame) : 0;
 
   if (
     growW < options.minDelta &&
@@ -300,7 +311,8 @@ function applyPreviewFrameFit(
           x: shape.x + shiftX,
           y: shape.y + shiftY,
         };
-      }));
+      }),
+    );
 
     changes.push({
       id: frame.id,
@@ -322,7 +334,8 @@ function applyPreviewFrameFit(
 function fitContextGroupFrameImmediate(
   editor: Editor,
   frameId: TLShapeId,
-  padding: number): void {
+  padding: number,
+): void {
   fitFrameToContent(editor, frameId, { padding });
   snapFrameOrigin(editor, frameId);
 }
@@ -337,7 +350,8 @@ function fitContextGroupFrameImmediate(
 export function fitContextGroupFrameToContent(
   editor: Editor,
   frameId: TLShapeId,
-  options: FitContextGroupFrameOptions = {}): boolean {
+  options: FitContextGroupFrameOptions = {},
+): boolean {
   const meta = isContextGroupFrame(editor, frameId);
   if (!meta) return false;
 
@@ -392,7 +406,8 @@ export function fitContextGroupFrameToContent(
 /** Fit the site context frame that contains (or owns) the given shape. */
 export function fitContextFrameGroupForShape(
   editor: Editor,
-  shapeId: TLShapeId): boolean {
+  shapeId: TLShapeId,
+): boolean {
   const ctx = findContextFrameGroupForShape(editor, shapeId);
   if (!ctx) return false;
 
@@ -480,7 +495,8 @@ function frameGeometryChanged(prev: TLShape, next: TLShape): boolean {
  * is resized (not just when a panel is resized).
  */
 export function collectContextGroupFrameIdsFromStoreDiff(
-  diff: RecordsDiffLike): TLShapeId[] {
+  diff: RecordsDiffLike,
+): TLShapeId[] {
   const ids = new Set<TLShapeId>();
 
   for (const pair of Object.values(diff.updated)) {
@@ -511,10 +527,11 @@ export function ensureContextGroupFrame(editor: Editor, ref: ContextGroupRef): T
         w: GRID_SIZE * 40,
         h: GRID_SIZE * 30,
         name: ref.label,
-        color: ref.kind === 'agency' ? 'violet': 'blue',
+        color: ref.kind === 'agency' ? 'violet' : 'blue',
       },
       meta: {
-        [CONTEXT_META_KEY]: { kind: ref.kind, id: ref.id },...(ref.agencyId ? { agencyId: ref.agencyId }: {}),
+        [CONTEXT_META_KEY]: { kind: ref.kind, id: ref.id },
+        ...(ref.agencyId ? { agencyId: ref.agencyId } : {}),
       },
     });
   } else if (existing.type === 'frame') {
@@ -545,11 +562,14 @@ export function ensureContextGroupFrame(editor: Editor, ref: ContextGroupRef): T
 export function assignPanelsToContextGroup(
   editor: Editor,
   panelIds: string[],
-  ref: ContextGroupRef): boolean {
+  ref: ContextGroupRef,
+): boolean {
   const scopedIds = filterContextFramePanelIds(panelIds);
   if (scopedIds.length === 0) return false;
 
-  const panelShapeIds = scopedIds.map((panelId) => createShapeId(`panel:${panelId}`)).filter((id) => Boolean(editor.getShape(id)));
+  const panelShapeIds = scopedIds
+    .map((panelId) => createShapeId(`panel:${panelId}`))
+    .filter((id) => Boolean(editor.getShape(id)));
 
   if (panelShapeIds.length === 0) return false;
 
@@ -564,7 +584,8 @@ export function assignPanelsToSiteGroup(
   editor: Editor,
   panelIds: string[],
   siteId: string,
-  options: AssignPanelsOptions = {}): boolean {
+  options: AssignPanelsOptions = {},
+): boolean {
   return assignPanelsToContextGroup(editor, panelIds, {
     kind: 'site',
     id: siteId,
@@ -575,7 +596,8 @@ export function assignPanelsToSiteGroup(
 
 export function panelsAlreadyInContextFrame(
   editor: Editor,
-  panelShapeIds: TLShapeId[]): boolean {
+  panelShapeIds: TLShapeId[],
+): boolean {
   if (panelShapeIds.length < 2) return false;
   const parentIds = panelShapeIds.map((id) => editor.getShape(id)?.parentId);
   const firstParent = parentIds[0];
@@ -589,7 +611,8 @@ export function panelsAlreadyInContextFrame(
 export function groupPanelsWithContext(
   editor: Editor,
   panelIds: string[],
-  options: AssignPanelsOptions & { siteId?: string } = {}): boolean {
+  options: AssignPanelsOptions & { siteId?: string } = {},
+): boolean {
   if (panelIds.length === 0) return false;
 
   const shapeIds = panelIds.map((panelId) => createShapeId(`panel:${panelId}`));

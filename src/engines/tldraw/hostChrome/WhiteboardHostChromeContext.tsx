@@ -16,7 +16,8 @@ export interface WhiteboardHostChromeContextValue {
 }
 
 const WhiteboardHostChromeContext = createContext<WhiteboardHostChromeContextValue | null>(
-  null);
+  null,
+);
 
 export interface WhiteboardHostChromeProviderProps {
   chrome: ResolvedWhiteboardHostChrome;
@@ -37,13 +38,15 @@ export function WhiteboardHostChromeProvider({
     setIsCanvasExpanded(false);
   }, []);
 
-  const value = useMemo((): WhiteboardHostChromeContextValue => ({
+  const value = useMemo(
+    (): WhiteboardHostChromeContextValue => ({
       chrome,
       isCanvasExpanded,
       toggleCanvasExpand,
       exitCanvasExpand,
     }),
-    [chrome, isCanvasExpanded, toggleCanvasExpand, exitCanvasExpand]);
+    [chrome, isCanvasExpanded, toggleCanvasExpand, exitCanvasExpand],
+  );
 
   return (
     <WhiteboardHostChromeContext.Provider value={value}>

@@ -1,5 +1,5 @@
 /**
- * Session-scoped activity ledger (03 section 3.3).
+ * Session-scoped activity ledger (03 section 3.3, D53).
  *
  * Append-only ring buffer powering digest recency, provenance chains, and
  * the per-actor reversal ledger. Hosts may persist entries via adapter later.
@@ -13,7 +13,7 @@ export type ActivityProvenance =
   | { derivedFrom: 'user' }
   | { derivedFrom: `agent:${string}` };
 
-/** Inverse action reference for compensating reversal under HITL. */
+/** Inverse action reference for compensating reversal under HITL (D53). */
 export interface DeclaredInverseAction {
   panelId: string;
   definitionId: string;
@@ -25,7 +25,7 @@ export interface ActivityReversalMeta {
   /** Compensating action when reversible; omitted when irreversible. */
   inverse?: DeclaredInverseAction;
   reversible: boolean;
-  /** Persisted panel mutations are never stack-undoable. */
+  /** Persisted panel mutations are never stack-undoable (D53). */
   persisted: boolean;
   /** When this entry reverses another ledger row. */
   reversesEntryId?: string;
@@ -69,24 +69,25 @@ function nextEntryId(): string {
 export function createActivityLog(capacity: number = DEFAULT_CAPACITY): ActivityLog {
   const entries: ActivityEntry[] = [];
   const byId = new Map<string, ActivityEntry>();
-  const listeners = new Set<() => void>;
+  const listeners = new Set<() => void>();
 
   const notify = (): void => {
-    for (const listener of listeners) listener;
+    for (const listener of listeners) listener();
   };
 
   return {
     append(entry: Omit<ActivityEntry, 'id' | 'ts'>): ActivityEntry {
-      const full: ActivityEntry = {...entry,
+      const full: ActivityEntry = {
+        ...entry,
         id: nextEntryId(),
         ts: new Date().toISOString(),
       };
       entries.push(full);
       byId.set(full.id, full);
       while (entries.length > capacity) {
-        const removed = entries.shift;
+        const removed = entries.shift();
         if (removed !== undefined) {
-          byId.delete(removed().id);
+          byId.delete(removed.id);
         }
       }
       notify();
@@ -112,8 +113,10 @@ export function createActivityLog(capacity: number = DEFAULT_CAPACITY): Activity
     markReversed(originalId: string, reversalEntryId: string): void {
       const original = byId.get(originalId);
       if (original === undefined) return;
-      const updated: ActivityEntry = {...original,
-        reversal: {...original.reversal,
+      const updated: ActivityEntry = {
+        ...original,
+        reversal: {
+          ...original.reversal,
           reversedByEntryId: reversalEntryId,
         },
       };

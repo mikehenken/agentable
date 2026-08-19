@@ -6,7 +6,8 @@ export type ApprovalCardState =
   | 'empty';
 
 export function resolveApprovalCardState(
-  request: PendingApprovalRequest | null): ApprovalCardState {
+  request: PendingApprovalRequest | null,
+): ApprovalCardState {
   if (request === null) return 'empty';
-  return request.phase === 'destructive_confirm' ? 'destructive_confirm': 'review';
+  return request.phase === 'destructive_confirm' ? 'destructive_confirm' : 'review';
 }

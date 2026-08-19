@@ -1,5 +1,5 @@
 /**
- * Read-only panel and catalog introspection for describe_panel.
+ * Read-only panel and catalog introspection for describe_panel (D43).
  */
 import type { PanelRegistry } from '../registry';
 import { derivePanelAgentMeta } from '../registryMetadata';
@@ -19,12 +19,13 @@ export interface DescribePanelDependencies {
 }
 
 function readNonEmptyString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function describeCatalogEntry(
   catalogEntry: string,
-  catalog: ReadonlyMap<string, CatalogEntry>): DescribeCatalogEntryResult | { error: string } {
+  catalog: ReadonlyMap<string, CatalogEntry>,
+): DescribeCatalogEntryResult | { error: string } {
   const entry = catalog.get(catalogEntry);
   if (entry === undefined) {
     return { error: `unknown catalog entry "${catalogEntry}"` };
@@ -41,12 +42,13 @@ function describeCatalogEntry(
 }
 
 function specFromDefinition(definition: PanelDefinition): PanelSpec | undefined {
-  return definition.kind === 'spec' ? definition.spec: undefined;
+  return definition.kind === 'spec' ? definition.spec : undefined;
 }
 
 function describeRegisteredPanel(
   panelId: string,
-  registry: PanelRegistry): DescribePanelResult | { error: string } {
+  registry: PanelRegistry,
+): DescribePanelResult | { error: string } {
   const definition = registry.get(panelId);
   if (definition === undefined) {
     return { error: `unknown panel id "${panelId}"` };
@@ -72,7 +74,8 @@ function describeRegisteredPanel(
 
 export function describePanel(
   args: DescribePanelArgs,
-  deps: DescribePanelDependencies): DescribePanelOutcome {
+  deps: DescribePanelDependencies,
+): DescribePanelOutcome {
   const panelId = readNonEmptyString(args.panelId);
   const catalogEntry = readNonEmptyString(args.catalogEntry);
 

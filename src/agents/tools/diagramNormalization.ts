@@ -1,5 +1,5 @@
 /**
- * Auto-fix LLM diagram payloads before strict parsing.
+ * Auto-fix LLM diagram payloads before strict parsing (P13-T7).
  */
 import type {
   AgentDiagramEdge,
@@ -12,7 +12,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readNodeKind(value: unknown): AgentDiagramNodeKind | undefined {
@@ -61,8 +61,11 @@ function readLayoutMode(value: unknown): AgentDiagramLayoutMode | undefined {
 function readSketchText(value: unknown): string | undefined {
   const text = readString(value);
   if (text === undefined) return undefined;
-  const cleaned = text.replace(/\\r\\n|\\n|\\r/g, '\n').replace(/\\t/g, ' ').trim();
-  return cleaned.length > 0 ? cleaned: undefined;
+  const cleaned = text
+    .replace(/\\r\\n|\\n|\\r/g, '\n')
+    .replace(/\\t/g, ' ')
+    .trim();
+  return cleaned.length > 0 ? cleaned : undefined;
 }
 
 function readDiagramLabelField(value: unknown): string | undefined {
@@ -76,8 +79,12 @@ function readDiagramLabelField(value: unknown): string | undefined {
 }
 
 function slugifyDiagramId(label: string, index: number): string {
-  const slug = label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-  return slug.length > 0 ? slug: `node-${index + 1}`;
+  const slug = label
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug.length > 0 ? slug : `node-${index + 1}`;
 }
 
 function normalizeLayoutMode(value: unknown): AgentDiagramLayoutMode | undefined {
@@ -118,7 +125,7 @@ function normalizeLayoutMode(value: unknown): AgentDiagramLayoutMode | undefined
  * remap edge endpoints, and normalize layout aliases before strict parsing.
  */
 export function normalizeDiagramPayload(args: Record<string, unknown>): Record<string, unknown> {
-  const next: Record<string, unknown> = {...args };
+  const next: Record<string, unknown> = { ...args };
   const diagram = args.diagram;
   let layout = normalizeLayoutMode(args.layout);
   if ((layout === undefined || layout === 'none') && isRecord(diagram)) {
@@ -176,21 +183,22 @@ export function normalizeDiagramPayload(args: Record<string, unknown>): Record<s
     const kind = readNodeKindFromAliases(raw);
     const parentId = readString(raw.parentId);
     const remappedParent =
-      parentId !== undefined && idRemap.has(parentId) ? idRemap.get(parentId): parentId;
+      parentId !== undefined && idRemap.has(parentId) ? idRemap.get(parentId) : parentId;
     const nodeEntry =
       kind !== undefined
-        ? { id, label, kind,...(remappedParent !== undefined ? { parentId: remappedParent }: {}) }: { id, label,...(remappedParent !== undefined ? { parentId: remappedParent }: {}) };
+        ? { id, label, kind, ...(remappedParent !== undefined ? { parentId: remappedParent } : {}) }
+        : { id, label, ...(remappedParent !== undefined ? { parentId: remappedParent } : {}) };
     nodes.push(nodeEntry);
   }
 
-   // Second pass: remap parentId after all ids are finalized.
+  // Second pass: remap parentId after all ids are finalized.
   for (const node of nodes) {
     if (node.parentId !== undefined && idRemap.has(node.parentId)) {
       node.parentId = idRemap.get(node.parentId);
     }
   }
 
-  const normalizedDiagram: Record<string, unknown> = {...diagram, nodes };
+  const normalizedDiagram: Record<string, unknown> = { ...diagram, nodes };
   delete normalizedDiagram.layout;
 
   if (Array.isArray(diagram.edges)) {
@@ -219,7 +227,7 @@ export function normalizeDiagramPayload(args: Record<string, unknown>): Record<s
       }
       if (from === undefined || to === undefined) continue;
       const edgeLabel = readDiagramLabelField(raw);
-      edges.push(edgeLabel !== undefined ? { from, to, label: edgeLabel }: { from, to });
+      edges.push(edgeLabel !== undefined ? { from, to, label: edgeLabel } : { from, to });
     }
     if (edges.length > 0) {
       normalizedDiagram.edges = edges;

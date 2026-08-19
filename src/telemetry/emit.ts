@@ -1,6 +1,6 @@
 /**
 
- * Internal telemetry emit helpers for panel runtime and agent hooks.
+ * Internal telemetry emit helpers for panel runtime and agent hooks (D55).
 
  */
 
@@ -9,12 +9,19 @@ import type { TelemetryErrorCode } from './frozenErrorCodes';
 import type {
 
   ComposeTelemetryEvent,
+
   CostTelemetryEvent,
+
   EmbedTelemetryEvent,
+
   HitlTelemetryEvent,
+
   TelemetryEvent,
+
   ToolTelemetryEvent,
+
   VoiceTelemetryEvent,
+
 } from './types';
 
 
@@ -25,13 +32,17 @@ export type TelemetryEmit = (event: TelemetryEvent) => void;
 
 export function buildComposeTelemetryEvent(
 
-  input: Omit<ComposeTelemetryEvent, 'ts' | 'family'>): ComposeTelemetryEvent {
+  input: Omit<ComposeTelemetryEvent, 'ts' | 'family'>,
+
+): ComposeTelemetryEvent {
 
   return {
 
     ts: new Date().toISOString(),
 
-    family: 'compose',...input,
+    family: 'compose',
+
+    ...input,
 
   };
 
@@ -41,13 +52,17 @@ export function buildComposeTelemetryEvent(
 
 export function buildHitlTelemetryEvent(
 
-  input: Omit<HitlTelemetryEvent, 'ts' | 'family'>): HitlTelemetryEvent {
+  input: Omit<HitlTelemetryEvent, 'ts' | 'family'>,
+
+): HitlTelemetryEvent {
 
   return {
 
     ts: new Date().toISOString(),
 
-    family: 'hitl',...input,
+    family: 'hitl',
+
+    ...input,
 
   };
 
@@ -57,13 +72,17 @@ export function buildHitlTelemetryEvent(
 
 export function buildToolTelemetryEvent(
 
-  input: Omit<ToolTelemetryEvent, 'ts' | 'family'>): ToolTelemetryEvent {
+  input: Omit<ToolTelemetryEvent, 'ts' | 'family'>,
+
+): ToolTelemetryEvent {
 
   return {
 
     ts: new Date().toISOString(),
 
-    family: 'tool',...input,
+    family: 'tool',
+
+    ...input,
 
   };
 
@@ -73,13 +92,17 @@ export function buildToolTelemetryEvent(
 
 export function buildVoiceTelemetryEvent(
 
-  input: Omit<VoiceTelemetryEvent, 'ts' | 'family'>): VoiceTelemetryEvent {
+  input: Omit<VoiceTelemetryEvent, 'ts' | 'family'>,
+
+): VoiceTelemetryEvent {
 
   return {
 
     ts: new Date().toISOString(),
 
-    family: 'voice',...input,
+    family: 'voice',
+
+    ...input,
 
   };
 
@@ -89,13 +112,17 @@ export function buildVoiceTelemetryEvent(
 
 export function buildCostTelemetryEvent(
 
-  input: Omit<CostTelemetryEvent, 'ts' | 'family'>): CostTelemetryEvent {
+  input: Omit<CostTelemetryEvent, 'ts' | 'family'>,
+
+): CostTelemetryEvent {
 
   return {
 
     ts: new Date().toISOString(),
 
-    family: 'cost',...input,
+    family: 'cost',
+
+    ...input,
 
   };
 
@@ -105,13 +132,17 @@ export function buildCostTelemetryEvent(
 
 export function buildEmbedTelemetryEvent(
 
-  input: Omit<EmbedTelemetryEvent, 'ts' | 'family'>): EmbedTelemetryEvent {
+  input: Omit<EmbedTelemetryEvent, 'ts' | 'family'>,
+
+): EmbedTelemetryEvent {
 
   return {
 
     ts: new Date().toISOString(),
 
-    family: 'embed',...input,
+    family: 'embed',
+
+    ...input,
 
   };
 

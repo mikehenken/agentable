@@ -1,5 +1,5 @@
 /**
- * Anon-key tenant embed config lookup ( ).
+ * Anon-key tenant embed config lookup (D44 / P9-T6).
  *
  * Fetches a public tenant config document via anon/public key — no service role
  * or provider secrets in the client bundle (G3).
@@ -45,7 +45,8 @@ export class AnonKeyTenantLookupError extends Error {
   constructor(
     code: AnonKeyTenantLookupError['code'],
     message: string,
-    status?: number) {
+    status?: number,
+  ) {
     super(message);
     this.name = 'AnonKeyTenantLookupError';
     this.code = code;
@@ -60,7 +61,7 @@ export function normalizeApiBaseUrl(apiBaseUrl: string): string {
 export function normalizeConfigPath(configPath: string | undefined): string {
   const path = (configPath ?? DEFAULT_EMBED_CONFIG_PATH).trim();
   if (!path) return DEFAULT_EMBED_CONFIG_PATH;
-  return path.startsWith('/') ? path: `/${path}`;
+  return path.startsWith('/') ? path : `/${path}`;
 }
 
 /**
@@ -76,7 +77,7 @@ export function buildAnonKeyTenantLookupUrl(input: {
   const path = normalizeConfigPath(input.configPath);
   const url = new URL(`${base}${path}`, 'http://localhost');
   url.searchParams.set('anonKey', input.anonKey.trim());
-  return `${base}${path}?${url.searchParams.toString}`;
+  return `${base}${path}?${url.searchParams.toString()}`;
 }
 
 export function hasAnonKeyTenantLookup(input: {
@@ -90,7 +91,8 @@ export function hasAnonKeyTenantLookup(input: {
  * Fetch tenant embed config by anon/public key with TTL caching and sanitization.
  */
 export async function fetchTenantEmbedConfigByAnonKey(
-  input: AnonKeyTenantLookupInput): Promise<AnonKeyTenantLookupResult> {
+  input: AnonKeyTenantLookupInput,
+): Promise<AnonKeyTenantLookupResult> {
   const anonKey = input.anonKey.trim();
   if (!anonKey) {
     throw new AnonKeyTenantLookupError('missing_anon_key', 'anon-key is empty');
@@ -140,7 +142,8 @@ export async function fetchTenantEmbedConfigByAnonKey(
     throw new AnonKeyTenantLookupError(
       'http_error',
       `anon-key tenant lookup failed: HTTP ${response.status}`,
-      response.status);
+      response.status,
+    );
   }
 
   let raw: unknown;

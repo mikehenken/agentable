@@ -1,5 +1,5 @@
 /**
- * Operator-only gallery mode: suppress Atlas chat PanelShape on canvas.
+ * Operator-only gallery mode (P13-T7): suppress Atlas chat PanelShape on canvas.
  * Persistence can restore a chat panel even when openChatOnMount is false — purge
  * on mount and guard the store so operator rail remains the sole chat surface.
  */
@@ -26,18 +26,21 @@ function readPanelId(shape: { type: string; props: unknown }): string | undefine
     return undefined;
   }
   const props = shape.props as { panelId?: unknown };
-  return typeof props.panelId === 'string' ? props.panelId: undefined;
+  return typeof props.panelId === 'string' ? props.panelId : undefined;
 }
 
 /** Shape ids for chat PanelShape instances on the current page. */
 export function listChatPanelShapeIds(editor: Editor): TLShapeId[] {
   const canonicalId = createShapeId(`panel:${CHAT_PANEL_ID}`);
-  return editor.getCurrentPageShapes().filter((shape) => {
+  return editor
+    .getCurrentPageShapes()
+    .filter((shape) => {
       if (shape.id === canonicalId) {
         return true;
       }
       return readPanelId(shape) === CHAT_PANEL_ID;
-    }).map((shape) => shape.id);
+    })
+    .map((shape) => shape.id);
 }
 
 /** Remove chat PanelShape instances; returns count deleted. */
@@ -63,7 +66,8 @@ export function bindCanvasChatSuppressionGuard(editor: Editor): () => void {
 
   purgeChatPanelShapes(editor);
 
-  const unlisten = editor.store.listen(() => {
+  const unlisten = editor.store.listen(
+    () => {
       if (!suppressActive) {
         return;
       }
@@ -72,9 +76,10 @@ export function bindCanvasChatSuppressionGuard(editor: Editor): () => void {
         editor.deleteShapes(ids);
       }
     },
-    { source: 'user', scope: 'document' });
+    { source: 'user', scope: 'document' },
+  );
 
-  guardUnbind = ()=> {
+  guardUnbind = () => {
     unlisten();
     guardUnbind = null;
   };

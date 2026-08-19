@@ -1,12 +1,12 @@
 /**
- * lazy hydration — visibility-gated panel activation.
+ * P9-T5 lazy hydration — visibility-gated panel activation (D44).
  *
  * Shared IntersectionObserver helpers for `<agentable-panel>` and auto-mount
  * placeholders. Uses the same root margin for prefetch-before-visible.
  */
 import { css, html, type TemplateResult } from 'lit';
 
-/** Lit DOM attribute for deferred hydration until visible. */
+/** Lit / DOM attribute for deferred hydration until visible. */
 export const LAZY_HYDRATE_ATTR = 'lazy-hydrate';
 
 /** Placeholder marker on auto-mount hosts. */
@@ -58,7 +58,8 @@ export function readLazyHydrateFlag(element: Element): boolean {
 export function observeLazyVisibility(
   target: Element,
   onVisible: () => void,
-  options: LazyVisibilityOptions = {}): LazyVisibilityHandle {
+  options: LazyVisibilityOptions = {},
+): LazyVisibilityHandle {
   if (typeof IntersectionObserver === 'undefined') {
     onVisible();
     return { disconnect: () => undefined };
@@ -82,7 +83,8 @@ export function observeLazyVisibility(
       root: options.root ?? null,
       rootMargin: options.rootMargin ?? DEFAULT_LAZY_ROOT_MARGIN,
       threshold: options.threshold ?? 0,
-    });
+    },
+  );
 
   observer.observe(target);
 
@@ -95,7 +97,8 @@ export function observeLazyVisibility(
 }
 
 /** Skeleton CSS shared by Lit shadow DOM and light-DOM placeholders. */
-export const panelEmbedSkeletonStyles = css`.agentable-panel-embed-skeleton {
+export const panelEmbedSkeletonStyles = css`
+  .agentable-panel-embed-skeleton {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -105,7 +108,9 @@ export const panelEmbedSkeletonStyles = css`.agentable-panel-embed-skeleton {
     padding: 16px;
     border-radius: var(--landi-radius-panel, 12px);
     background: var(--landi-color-background, #f0f0ec);
-  }.agentable-panel-embed-skeleton__bar {
+  }
+
+  .agentable-panel-embed-skeleton__bar {
     height: 14px;
     border-radius: 999px;
     background: linear-gradient(
@@ -115,12 +120,18 @@ export const panelEmbedSkeletonStyles = css`.agentable-panel-embed-skeleton {
       color-mix(in srgb, var(--landi-color-primary, #3b82f6) 12%, transparent) 100%
     );
     animation: agentable-panel-skeleton-pulse 1.4s ease-in-out infinite;
-  }.agentable-panel-embed-skeleton__bar--title {
+  }
+
+  .agentable-panel-embed-skeleton__bar--title {
     width: 42%;
     height: 18px;
-  }.agentable-panel-embed-skeleton__bar--body {
+  }
+
+  .agentable-panel-embed-skeleton__bar--body {
     width: 100%;
-  }.agentable-panel-embed-skeleton__bar--body-short {
+  }
+
+  .agentable-panel-embed-skeleton__bar--body-short {
     width: 72%;
   }
 
@@ -135,7 +146,7 @@ export const panelEmbedSkeletonStyles = css`.agentable-panel-embed-skeleton {
   }
 `;
 
-/** Lit skeleton template (part=skeleton, skeleton-first). */
+/** Lit skeleton template (part=skeleton, D44 skeleton-first). */
 export function renderPanelEmbedSkeletonTemplate(loadingLabel = 'Loading panel…'): TemplateResult {
   return html`
     <div
@@ -196,7 +207,8 @@ export function clearPlaceholderEmbedSkeleton(host: HTMLElement): void {
 
 const PLACEHOLDER_SKELETON_STYLE_ID = 'agentable-panel-embed-skeleton-styles';
 
-const PLACEHOLDER_SKELETON_CSS = `.${PANEL_EMBED_SKELETON_CLASS} {
+const PLACEHOLDER_SKELETON_CSS = `
+.${PANEL_EMBED_SKELETON_CLASS} {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -206,7 +218,9 @@ const PLACEHOLDER_SKELETON_CSS = `.${PANEL_EMBED_SKELETON_CLASS} {
   padding: 16px;
   border-radius: var(--landi-radius-panel, 12px);
   background: var(--landi-color-background, #f0f0ec);
-}.${PANEL_EMBED_SKELETON_CLASS}.agentable-panel-embed-skeleton__bar {
+}
+
+.${PANEL_EMBED_SKELETON_CLASS} .agentable-panel-embed-skeleton__bar {
   height: 14px;
   border-radius: 999px;
   background: linear-gradient(
@@ -216,14 +230,22 @@ const PLACEHOLDER_SKELETON_CSS = `.${PANEL_EMBED_SKELETON_CLASS} {
     color-mix(in srgb, var(--landi-color-primary, #3b82f6) 12%, transparent) 100%
   );
   animation: agentable-panel-skeleton-pulse 1.4s ease-in-out infinite;
-}.${PANEL_EMBED_SKELETON_CLASS}.agentable-panel-embed-skeleton__bar--title {
+}
+
+.${PANEL_EMBED_SKELETON_CLASS} .agentable-panel-embed-skeleton__bar--title {
   width: 42%;
   height: 18px;
-}.${PANEL_EMBED_SKELETON_CLASS}.agentable-panel-embed-skeleton__bar--body {
+}
+
+.${PANEL_EMBED_SKELETON_CLASS} .agentable-panel-embed-skeleton__bar--body {
   width: 100%;
-}.${PANEL_EMBED_SKELETON_CLASS}.agentable-panel-embed-skeleton__bar--body-short {
+}
+
+.${PANEL_EMBED_SKELETON_CLASS} .agentable-panel-embed-skeleton__bar--body-short {
   width: 72%;
-}.${PANEL_EMBED_SKELETON_CLASS}.visually-hidden {
+}
+
+.${PANEL_EMBED_SKELETON_CLASS} .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;

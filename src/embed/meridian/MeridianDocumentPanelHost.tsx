@@ -1,5 +1,5 @@
 /**
- * Whiteboard body for the Meridian document spec panel ( gallery).
+ * Whiteboard body for the Meridian document spec panel (P12-T7 gallery).
  */
 import { useMemo, type ReactElement } from 'react';
 import { createDocumentPanelDefinition } from '../../agents/panels/documentPanel';
@@ -18,7 +18,9 @@ interface PanelShapeData {
 function readScope(data: PanelShapeData | undefined): PanelScope {
   if (typeof data?.scope === 'object' && data.scope !== null && !Array.isArray(data.scope)) {
     const record = data.scope as Record<string, unknown>;
-    return {...(typeof record.contextId === 'string' ? { contextId: record.contextId }: {}),...(typeof record.entityId === 'string' ? { entityId: record.entityId }: {}),
+    return {
+      ...(typeof record.contextId === 'string' ? { contextId: record.contextId } : {}),
+      ...(typeof record.entityId === 'string' ? { entityId: record.entityId } : {}),
     };
   }
   return { contextId: 'workspace', entityId: 'meridian-product-brief' };
@@ -26,20 +28,20 @@ function readScope(data: PanelShapeData | undefined): PanelScope {
 
 export function MeridianDocumentPanelHost(props: WhiteboardPanelProps): ReactElement {
   const { data, hostedInWhiteboard = false } = props;
-  const { host } = useMeridianGalleryHost;
+  const { host } = useMeridianGalleryHost();
   const lifecycle = host.data.lifecycle;
   const scope = useMemo(() => readScope(data as PanelShapeData | undefined), [data]);
-  const definition = useMemo(() => createDocumentPanelDefinition, []);
+  const definition = useMemo(() => createDocumentPanelDefinition(), []);
 
   const normalized = useMemo((): NormalizedPanelSpec | null => {
-    if (definition().kind !== 'spec') return null;
-    const validation = validateSpec(definition().spec, {
+    if (definition.kind !== 'spec') return null;
+    const validation = validateSpec(definition.spec, {
       catalog: defaultCatalog,
       adapterSources: new Set(['workspace.documents']),
       hostActions: new Set(['export_document']),
-      panelRegistry: new Set(host.panels.ids),
+      panelRegistry: new Set(host.panels.ids()),
     });
-    return validation.ok ? validation.spec: null;
+    return validation.ok ? validation.spec : null;
   }, [definition, host.panels]);
 
   if (lifecycle === null || normalized === null) {
@@ -55,7 +57,7 @@ export function MeridianDocumentPanelHost(props: WhiteboardPanelProps): ReactEle
       data-testid="meridian-document-panel"
       data-qa-host="meridian-document-panel-host"
       data-panel-id={DOCUMENT_PANEL_ID}
-      data-hosted-in-whiteboard={hostedInWhiteboard ? 'true': 'false'}
+      data-hosted-in-whiteboard={hostedInWhiteboard ? 'true' : 'false'}
       style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}
     >
       <EmbedPanelApprovalLayer panelId={DOCUMENT_PANEL_ID} />
@@ -69,7 +71,7 @@ export function MeridianDocumentPanelHost(props: WhiteboardPanelProps): ReactEle
 export function createMeridianDocumentPanelLoader(): () => Promise<{
   default: React.ComponentType<WhiteboardPanelProps>;
 }> {
-  return ()=>
+  return () =>
     Promise.resolve({
       default: MeridianDocumentPanelHost,
     });

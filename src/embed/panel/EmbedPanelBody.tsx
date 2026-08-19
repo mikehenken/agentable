@@ -78,11 +78,17 @@ function PanelLoadingPlaceholder(): ReactElement {
 
 function useLazyReactPanel(
 
-  definition: Extract<PanelDefinition, { kind: 'react' }>): LazyExoticComponent<ComponentType<ReactPanelLoaderProps>> {
+  definition: Extract<PanelDefinition, { kind: 'react' }>,
 
-  return useMemo(() => lazy(definition.loader) as LazyExoticComponent<ComponentType<ReactPanelLoaderProps>>,
+): LazyExoticComponent<ComponentType<ReactPanelLoaderProps>> {
 
-    [definition]);
+  return useMemo(
+
+    () => lazy(definition.loader) as LazyExoticComponent<ComponentType<ReactPanelLoaderProps>>,
+
+    [definition],
+
+  );
 
 }
 
@@ -114,11 +120,11 @@ function SpecPanelBody(props: {
 
       hostActions: new Set(),
 
-      panelRegistry: new Set(host.panels.ids),
+      panelRegistry: new Set(host.panels.ids()),
 
     });
 
-    return validation.ok ? validation.spec: null;
+    return validation.ok ? validation.spec : null;
 
   }, [props.definition.spec, props.adapterSources, host.panels]);
 

@@ -1,19 +1,19 @@
 /**
  * @docs/features/agentable-panel-single-element.md
- * `<agentable-panel>` — Lit custom-element wrapper for a single panel surface.
+ * `<agentable-panel>` — Lit custom-element wrapper for a single panel surface (D44).
  *
  * Panel-only embed: chrome, adapter lifecycle, HITL approval layer, no canvas.
  *
- * <agentable-panel
- * panel="open-positions"
- * config-url="/config/sandals-career.json"
- * primary-color="#0077B6"
- * locale="en"
- * ></agentable-panel>
- * <script type="module" src="/embed/agentable-panel.js"></script>
+ *     <agentable-panel
+ *       panel="open-positions"
+ *       config-url="/config/sandals-career.json"
+ *       primary-color="#0077B6"
+ *       locale="en"
+ *     ></agentable-panel>
+ *     <script type="module" src="/embed/agentable-panel.js"></script>
  *
  * Named page slots (section 15): `slot-name="sidebar"` maps to
- * `data-agentable-slot="sidebar"` for agent `open_panel` targeting.
+ * `data-agentable-slot="sidebar"` for agent `open_panel` targeting (P9-T2).
  *
  * Events bubble + cross the shadow boundary (`composed: true`).
  */
@@ -201,11 +201,11 @@ export class AgentablePanelElement extends LitElement {
   @property({ type: Boolean, attribute: 'hide-chrome' })
   declare hideChrome: boolean;
 
-  /** Named page-session slot id. */
+  /** Named page-session slot id (D44). */
   @property({ type: String, attribute: 'slot-name' })
   declare slotName: string;
 
-  /** Defer session join + React mount until the element intersects the viewport. */
+  /** Defer session join + React mount until the element intersects the viewport (P9-T5). */
   @property({ type: Boolean, attribute: 'lazy-hydrate' })
   declare lazyHydrate: boolean;
 
@@ -261,7 +261,8 @@ export class AgentablePanelElement extends LitElement {
     unsafeCSS(panelEmbedGalleryDarkStyles),
     unsafeCSS(panelEmbedCareerLightStyles),
     panelEmbedSkeletonStyles,
-    css`.visually-hidden {
+    css`
+      .visually-hidden {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -271,7 +272,8 @@ export class AgentablePanelElement extends LitElement {
         clip: rect(0, 0, 0, 0);
         white-space: nowrap;
         border: 0;
-      }:host {
+      }
+      :host {
         display: block;
         position: relative;
         width: 100%;
@@ -279,7 +281,8 @@ export class AgentablePanelElement extends LitElement {
         contain: layout paint;
         background: var(--landi-color-background, #f0f0ec);
         --landi-radius-panel: var(--landi-radius-lg, 12px);
-      }.agentable-panel-mount {
+      }
+      .agentable-panel-mount {
         position: relative;
         width: 100%;
         min-height: inherit;
@@ -334,6 +337,7 @@ export class AgentablePanelElement extends LitElement {
       changed.has('hideChrome') ||
       changed.has('slotName') ||
       configSourceChanged;
+
     if (configSourceChanged && hasEmbedConfigSource(this)) {
       void this._reloadConfig(false);
       return;
@@ -405,18 +409,18 @@ export class AgentablePanelElement extends LitElement {
 
   private _attributeSnapshot(): EmbedAttributeSnapshot {
     return {
-      tenant: this.hasAttribute('tenant') ? this.tenant: '',
-      primaryColor: this.hasAttribute('primary-color') ? this.primaryColor: '',
-      welcomeMessage: this.hasAttribute('welcome-message') ? this.welcomeMessage: '',
-      apiEndpoint: this.hasAttribute('api-endpoint') ? this.apiEndpoint: '',
+      tenant: this.hasAttribute('tenant') ? this.tenant : '',
+      primaryColor: this.hasAttribute('primary-color') ? this.primaryColor : '',
+      welcomeMessage: this.hasAttribute('welcome-message') ? this.welcomeMessage : '',
+      apiEndpoint: this.hasAttribute('api-endpoint') ? this.apiEndpoint : '',
       voiceEnabled: this.voiceEnabled,
       voiceEnabledSet: this.hasAttribute('voice-enabled'),
       snapGrid: this.snapGrid,
       snapGridSet: this.hasAttribute('snap-grid'),
-      systemPrompt: this.hasAttribute('system-prompt') ? this.systemPrompt: '',
-      voiceGreeting: this.hasAttribute('voice-greeting') ? this.voiceGreeting: '',
-      greetingMode: this.hasAttribute('voice-greeting-mode') ? this.greetingMode: '',
-      tokenEndpoint: this.hasAttribute('token-endpoint') ? this.tokenEndpoint: '',
+      systemPrompt: this.hasAttribute('system-prompt') ? this.systemPrompt : '',
+      voiceGreeting: this.hasAttribute('voice-greeting') ? this.voiceGreeting : '',
+      greetingMode: this.hasAttribute('voice-greeting-mode') ? this.greetingMode : '',
+      tokenEndpoint: this.hasAttribute('token-endpoint') ? this.tokenEndpoint : '',
       fullpageOnEngage: false,
       fullscreenOnEngage: false,
       fullpageOnEngageSet: false,
@@ -425,7 +429,7 @@ export class AgentablePanelElement extends LitElement {
       canvasBehavior: '',
       canvasZoom: '',
       hostHeaderHeight: '',
-      locale: this.hasAttribute('locale') ? this.locale: '',
+      locale: this.hasAttribute('locale') ? this.locale : '',
       toolbarConfigJson: '',
     };
   }
@@ -435,7 +439,8 @@ export class AgentablePanelElement extends LitElement {
       DEFAULT_CONFIG,
       this._configDocument,
       this._attributeSnapshot(),
-      this._panelDataRaw);
+      this._panelDataRaw,
+    );
     this._syncAgentStores(this._panelDataRaw);
     this._applyBrandTokens(this._resolved.primaryColor);
   }
@@ -460,7 +465,8 @@ export class AgentablePanelElement extends LitElement {
     try {
       if (hasEmbedConfigSource(this)) {
         const resolved = await resolveEmbedPanelData(
-          buildEmbedConfigSourceInput(this, fetch.bind(globalThis)));
+          buildEmbedConfigSourceInput(this, fetch.bind(globalThis)),
+        );
         this._configDocument = resolved.configDoc;
         this._panelDataRaw = resolved.panelDataRaw;
       } else {
@@ -474,6 +480,7 @@ export class AgentablePanelElement extends LitElement {
     }
 
     this._recomputeResolved();
+
     if (this._shouldMountReact()) {
       if (!this._root) {
         await this._mountReact();
@@ -484,7 +491,8 @@ export class AgentablePanelElement extends LitElement {
 
     if (dispatchEvent) {
       const base = buildEmbedConfigReloadDetail(ok, caughtError);
-      const detail: AgentablePanelConfigReloadDetail = {...base,
+      const detail: AgentablePanelConfigReloadDetail = {
+        ...base,
         panelId: this.panel,
       };
       this.dispatchEvent(
@@ -492,7 +500,8 @@ export class AgentablePanelElement extends LitElement {
           bubbles: true,
           composed: true,
           detail,
-        }));
+        }),
+      );
     }
   }
 
@@ -590,7 +599,8 @@ export class AgentablePanelElement extends LitElement {
               bubbles: true,
               composed: true,
               detail: { panelId, phase },
-            }));
+            }),
+          );
         },
         onReady: (detail) => {
           this.dispatchEvent(
@@ -598,23 +608,26 @@ export class AgentablePanelElement extends LitElement {
               bubbles: true,
               composed: true,
               detail,
-            }));
+            }),
+          );
         },
         onAdapterLoaded: (detail) => {
           this.dispatchEvent(
             new CustomEvent<AgentablePanelAdapterDetail>('agentable:adapter-loaded', {
               bubbles: true,
               composed: true,
-              detail: {...detail, panelId },
-            }));
+              detail: { ...detail, panelId },
+            }),
+          );
         },
         onError: (detail) => {
           this.dispatchEvent(
             new CustomEvent<AgentablePanelErrorDetail>('agentable:panel-error', {
               bubbles: true,
               composed: true,
-              detail: {...detail, panelId },
-            }));
+              detail: { ...detail, panelId },
+            }),
+          );
         },
         onChromeChange: (detail) => {
           this.dispatchEvent(
@@ -622,7 +635,8 @@ export class AgentablePanelElement extends LitElement {
               bubbles: true,
               composed: true,
               detail: { panelId, minimized: detail.minimized },
-            }));
+            }),
+          );
         },
         onApprovalPending: (detail) => {
           this.dispatchEvent(
@@ -630,8 +644,10 @@ export class AgentablePanelElement extends LitElement {
               bubbles: true,
               composed: true,
               detail: { panelId, count: detail.count },
-            }));
+            }),
+          );
         },
-      }));
+      }),
+    );
   }
 }

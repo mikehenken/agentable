@@ -1,5 +1,5 @@
 /**
- * Structured block operations for the document primitive.
+ * Structured block operations for the document primitive (D50, P12-T2).
  * Agents edit through insert/replace/move/remove — never markup.
  */
 import type { BlockOp, DocBlock, DocBlockInput } from './types';
@@ -31,7 +31,7 @@ function normalizeBlockInput(input: DocBlockInput): DocBlock {
         id,
         type: 'list',
         ordered: input.ordered,
-        items: input.items.map((group) => group.map((item) => ({...item }))),
+        items: input.items.map((group) => group.map((item) => ({ ...item }))),
       };
     case 'table':
       return { id, type: 'table', rows: input.rows.map((row) => row.map((cell) => [...cell])) };
@@ -39,7 +39,8 @@ function normalizeBlockInput(input: DocBlockInput): DocBlock {
       return {
         id,
         type: 'image',
-        assetId: input.assetId,...(input.alt !== undefined ? { alt: input.alt }: {}),
+        assetId: input.assetId,
+        ...(input.alt !== undefined ? { alt: input.alt } : {}),
       };
     case 'callout':
       return { id, type: 'callout', tone: input.tone, runs: [...input.runs] };
@@ -68,7 +69,7 @@ function clampIndex(index: number, length: number): number {
  * Apply one block op immutably. Throws on invalid indices or missing block ids.
  */
 export function applyBlockOp(blocks: readonly DocBlock[], op: BlockOp): DocBlock[] {
-  const next = blocks.map((block) => ({...block }));
+  const next = blocks.map((block) => ({ ...block }));
 
   switch (op.op) {
     case 'insert': {
@@ -78,7 +79,7 @@ export function applyBlockOp(blocks: readonly DocBlock[], op: BlockOp): DocBlock
     }
     case 'replace': {
       const index = findBlockIndex(next, op.blockId);
-      next[index] = normalizeBlockInput({...op.block, id: op.blockId });
+      next[index] = normalizeBlockInput({ ...op.block, id: op.blockId });
       return next;
     }
     case 'move': {

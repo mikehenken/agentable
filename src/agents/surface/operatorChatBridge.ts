@@ -1,6 +1,6 @@
 /**
  * Operator chat bridge — sends composer messages through the operator agent
- * tool context scope. Does not publish into page session.
+ * tool context (P13-T2 scope). Does not publish into D44 page session.
  */
 import { createChatClient, type ChatMessage, type ChatSendProgressEvent, formatToolReasoningStatus } from '../../chat/geminiChatClient';
 import { formatToolCallLabel } from '../../chat/toolCallLabels';
@@ -54,7 +54,8 @@ export function abortOperatorMessage(threadId: string): void {
 /** Abort in-flight generation and return threads with `generating: false` for immediate UI. */
 export function forceStopOperatorThread(
   threadId: string,
-  threads: readonly OperatorThread[]): OperatorThread[] {
+  threads: readonly OperatorThread[],
+): OperatorThread[] {
   abortOperatorMessage(threadId);
   return setThreadGenerating([...threads], threadId, false);
 }
@@ -73,9 +74,11 @@ function endThreadAbortController(threadId: string): void {
 function setThreadGenerating(
   threads: OperatorThread[],
   threadId: string,
-  generating: boolean): OperatorThread[] {
+  generating: boolean,
+): OperatorThread[] {
   return threads.map((thread) =>
-    thread.id === threadId ? {...thread, generating }: thread);
+    thread.id === threadId ? { ...thread, generating } : thread,
+  );
 }
 
 /** Gallery-safe tools that bypass live chat (deterministic whiteboard host path). */
@@ -85,7 +88,8 @@ function shouldBypassLiveChatForModeAction(
   action: Awaited<ReturnType<typeof runOperatorModeOfflineAction>>,
   liveChatEnabled: boolean,
   mode: OperatorMode,
-  userText: string): action is NonNullable<Awaited<ReturnType<typeof runOperatorModeOfflineAction>>> {
+  userText: string,
+): action is NonNullable<Awaited<ReturnType<typeof runOperatorModeOfflineAction>>> {
   if (action === null) {
     return false;
   }
@@ -110,7 +114,8 @@ function shouldBypassLiveChatForModeAction(
 interface WhiteboardScriptedHost extends HTMLElement {
   runScriptedTool?: (
     toolName: 'read_canvas',
-    args?: Record<string, unknown>) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
   whenReady?: (timeoutMs?: number) => Promise<boolean>;
 }
 
@@ -132,21 +137,25 @@ async function resolveWhiteboardHostForDrawVerify(): Promise<{
 
 async function appendPostDrawLayoutReviewMessages(
   toolMessages: OperatorToolMessage[],
-  drawIndex: number): Promise<OperatorToolMessage[]> {
+  drawIndex: number,
+): Promise<OperatorToolMessage[]> {
   const drawMessage = toolMessages[drawIndex];
   const createdFromArgs = Array.isArray(drawMessage?.args._createdShapeIds)
-    ? drawMessage.args._createdShapeIds.filter((id): id is string => typeof id === 'string'): [];
+    ? drawMessage.args._createdShapeIds.filter((id): id is string => typeof id === 'string')
+    : [];
 
   const drawLayout =
     typeof drawMessage?.args.layout === 'string'
-      ? (drawMessage.args.layout as AgentDiagramLayoutMode): undefined;
+      ? (drawMessage.args.layout as AgentDiagramLayoutMode)
+      : undefined;
   const repairLayout = resolvePostDrawArrangeLayout(drawLayout);
 
   const repair = await runSharedPostDrawRepairPipeline(
     OPERATOR_TOOL_CONTEXT,
     createdFromArgs,
     undefined,
-    repairLayout);
+    repairLayout,
+  );
 
   const extraMessages: OperatorToolMessage[] = repair.steps.map((step) => ({
     id: createMessageId('op_tool'),
@@ -158,14 +167,19 @@ async function appendPostDrawLayoutReviewMessages(
     timestamp: new Date().toISOString(),
   }));
 
-  return [...toolMessages.slice(0, drawIndex + 1),...extraMessages,...toolMessages.slice(drawIndex + 1),
+  return [
+    ...toolMessages.slice(0, drawIndex + 1),
+    ...extraMessages,
+    ...toolMessages.slice(drawIndex + 1),
   ];
 }
 
 async function postVerifyDrawToolMessages(
-  toolMessages: OperatorToolMessage[]): Promise<OperatorToolMessage[]> {
+  toolMessages: OperatorToolMessage[],
+): Promise<OperatorToolMessage[]> {
   const drawIndex = toolMessages.findIndex(
-    (message) => message.toolName === 'draw_shapes' && message.ok);
+    (message) => message.toolName === 'draw_shapes' && message.ok,
+  );
   if (drawIndex < 0) {
     return toolMessages;
   }
@@ -177,13 +191,15 @@ async function postVerifyDrawToolMessages(
   }
 
   if (hostResolved === null || !hostResolved.ready) {
-    const failedMessage: OperatorToolMessage = {...drawMessage,
+    const failedMessage: OperatorToolMessage = {
+      ...drawMessage,
       ok: false,
-      args: {...drawMessage.args,
+      args: {
+        ...drawMessage.args,
         _whiteboardNotReady: true,
       },
     };
-    return toolMessages.map((message, index) => (index === drawIndex ? failedMessage: message));
+    return toolMessages.map((message, index) => (index === drawIndex ? failedMessage : message));
   }
 
   const host = hostResolved.host;
@@ -194,7 +210,8 @@ async function postVerifyDrawToolMessages(
   const readRegion = await resolveOperatorProbeReadRegion(host);
   const shapesAfterDraw = await readOperatorDrawShapeEvidence(host, readRegion);
   const createdFromArgs = Array.isArray(drawMessage.args._createdShapeIds)
-    ? drawMessage.args._createdShapeIds.filter((id): id is string => typeof id === 'string'): [];
+    ? drawMessage.args._createdShapeIds.filter((id): id is string => typeof id === 'string')
+    : [];
   const shapesBeforeDraw =
     drawMessage.args._shapesBeforeDraw &&
     typeof drawMessage.args._shapesBeforeDraw === 'object' &&
@@ -204,19 +221,24 @@ async function postVerifyDrawToolMessages(
           count: (drawMessage.args._shapesBeforeDraw as { count: number }).count,
           blueGeo:
             typeof (drawMessage.args._shapesBeforeDraw as { blueGeo?: unknown }).blueGeo === 'number'
-              ? (drawMessage.args._shapesBeforeDraw as { blueGeo: number }).blueGeo: 0,
-        }: null;
+              ? (drawMessage.args._shapesBeforeDraw as { blueGeo: number }).blueGeo
+              : 0,
+        }
+      : null;
   const pageShapeCountBefore =
     typeof drawMessage.args._pageShapeCountBefore === 'number'
-      ? drawMessage.args._pageShapeCountBefore: undefined;
+      ? drawMessage.args._pageShapeCountBefore
+      : undefined;
   const storeFromArgs = drawMessage.args._store;
   const drawResult = {
     ok: drawMessage.ok,
     result: {
-      createdShapeIds: createdFromArgs,...(storeFromArgs !== undefined &&
+      createdShapeIds: createdFromArgs,
+      ...(storeFromArgs !== undefined &&
       typeof storeFromArgs === 'object' &&
       storeFromArgs !== null
-        ? { _store: storeFromArgs }: {}),
+        ? { _store: storeFromArgs }
+        : {}),
     },
   };
 
@@ -230,7 +252,8 @@ async function postVerifyDrawToolMessages(
   if (verdict.visibleOnCanvas) {
     const drawLayout =
       typeof drawMessage.args.layout === 'string'
-        ? (drawMessage.args.layout as AgentDiagramLayoutMode): undefined;
+        ? (drawMessage.args.layout as AgentDiagramLayoutMode)
+        : undefined;
     if (drawLayout === 'nested') {
       // Live chat already ran group/read/screenshot for nested diagrams.
       return toolMessages;
@@ -238,34 +261,40 @@ async function postVerifyDrawToolMessages(
     return appendPostDrawLayoutReviewMessages(toolMessages, drawIndex);
   }
 
-  const failedMessage: OperatorToolMessage = {...drawMessage,
+  const failedMessage: OperatorToolMessage = {
+    ...drawMessage,
     ok: false,
-    args: {...drawMessage.args,
-      _createdShapeIds: verdict.createdShapeIds.length > 0 ? verdict.createdShapeIds: createdFromArgs,
+    args: {
+      ...drawMessage.args,
+      _createdShapeIds: verdict.createdShapeIds.length > 0 ? verdict.createdShapeIds : createdFromArgs,
       _shapesAfterDraw: shapesAfterDraw,
       _store: verdict.storeEvidence,
       _verifyFailure: buildDrawFailureMessage(drawResult, verdict),
     },
   };
 
-  return toolMessages.map((message, index) => (index === drawIndex ? failedMessage: message));
+  return toolMessages.map((message, index) => (index === drawIndex ? failedMessage : message));
 }
 
 async function appendVerifiedAssistantReply(
   threads: OperatorThread[],
   activeThreadId: string,
   assistantText: string,
-  toolMessages: OperatorToolMessage[]): Promise<OperatorThread[]> {
+  toolMessages: OperatorToolMessage[],
+): Promise<OperatorThread[]> {
   const verifiedTools = await postVerifyDrawToolMessages(toolMessages);
   const drawFailed = verifiedTools.some(
-    (message) => message.toolName === 'draw_shapes' && !message.ok);
+    (message) => message.toolName === 'draw_shapes' && !message.ok,
+  );
   const drawSucceeded = verifiedTools.some(
-    (message) => message.toolName === 'draw_shapes' && message.ok);
+    (message) => message.toolName === 'draw_shapes' && message.ok,
+  );
 
   let text = assistantText;
   if (drawFailed && drawSucceeded === false && /drew|draw_shapes|rectangle|visible on the canvas/i.test(text)) {
     text = assistantText.toLowerCase().includes('draw failed')
-      ? assistantText: 'Draw failed: shape was created but is not visible in the viewport.';
+      ? assistantText
+      : 'Draw failed: shape was created but is not visible in the viewport.';
   }
 
   return appendAssistantReply(threads, activeThreadId, text, verifiedTools);
@@ -287,11 +316,14 @@ function resolveOperatorSystemInstruction(mode: OperatorMode, userText?: string)
   const modeLine = `Current operator mode: ${mode}. Only use tools allowed in this mode.`;
   const diagramHint =
     userText !== undefined && (mode === 'auto' || mode === 'draw')
-      ? buildDiagramIntentHint(userText): '';
+      ? buildDiagramIntentHint(userText)
+      : '';
   const capabilityLines =
     mode === 'auto'
-      ? `\n\n${AUTO_MODE_SYSTEM_LINES}${diagramHint}`: mode === 'draw'
-        ? `\n\n${DRAW_MODE_SYSTEM_LINES}${diagramHint}`: '';
+      ? `\n\n${AUTO_MODE_SYSTEM_LINES}${diagramHint}`
+      : mode === 'draw'
+        ? `\n\n${DRAW_MODE_SYSTEM_LINES}${diagramHint}`
+        : '';
   if (!(whiteboard instanceof HTMLElement)) {
     return `${DEFAULT_OPERATOR_SYSTEM}\n\n${modeLine}${capabilityLines}`;
   }
@@ -305,10 +337,13 @@ function resolveOperatorSystemInstruction(mode: OperatorMode, userText?: string)
 function appendMessage(
   threads: readonly OperatorThread[],
   activeThreadId: string,
-  message: OperatorMessage): OperatorThread[] {
+  message: OperatorMessage,
+): OperatorThread[] {
   return threads.map((thread) =>
     thread.id === activeThreadId
-      ? {...thread, messages: [...thread.messages, message] }: thread);
+      ? { ...thread, messages: [...thread.messages, message] }
+      : thread,
+  );
 }
 
 function operatorMessagesToChatHistory(messages: readonly OperatorMessage[]): ChatMessage[] {
@@ -322,7 +357,7 @@ function operatorMessagesToChatHistory(messages: readonly OperatorMessage[]): Ch
     }
     history.push({
       id: message.id,
-      role: message.role === 'assistant' ? 'assistant': 'user',
+      role: message.role === 'assistant' ? 'assistant' : 'user',
       text: message.text,
       source: 'text',
       createdAt: message.timestamp,
@@ -336,7 +371,8 @@ function appendAssistantReply(
   activeThreadId: string,
   assistantText: string,
   toolMessages?: readonly OperatorToolMessage[],
-  reasoningMessage?: OperatorReasoningMessage): OperatorThread[] {
+  reasoningMessage?: OperatorReasoningMessage,
+): OperatorThread[] {
   let nextThreads = threads;
   if (reasoningMessage !== undefined) {
     nextThreads = appendMessage(nextThreads, activeThreadId, reasoningMessage);
@@ -356,7 +392,8 @@ function appendAssistantReply(
 
 async function resolveOfflineAssistantReply(
   userText: string,
-  mode: OperatorMode): Promise<{
+  mode: OperatorMode,
+): Promise<{
   text: string;
   toolMessages: OperatorToolMessage[];
 }> {
@@ -377,7 +414,8 @@ async function resolveOfflineAssistantReply(
 }
 
 function toAttachmentRefs(
-  attachments: readonly OperatorOutboundAttachment[]): OperatorAttachmentRef[] {
+  attachments: readonly OperatorOutboundAttachment[],
+): OperatorAttachmentRef[] {
   return attachments.map((attachment) => ({
     id: createMessageId('op_att'),
     name: attachment.label,
@@ -404,7 +442,7 @@ export interface SendOperatorMessageInput {
   activeThreadId: string;
   mode: OperatorMode;
   attachments?: readonly OperatorOutboundAttachment[];
-  /** Push partial thread state during live chat (streaming UX). */
+  /** Push partial thread state during live chat (P13-T7 iter-12 streaming UX). */
   onThreadsUpdate?: (threads: OperatorThread[]) => void;
 }
 
@@ -415,7 +453,8 @@ export interface SendOperatorMessageResult {
 
 /** Append a user turn to the active thread and attempt an operator-scoped reply. */
 export async function sendOperatorMessage(
-  input: SendOperatorMessageInput): Promise<SendOperatorMessageResult> {
+  input: SendOperatorMessageInput,
+): Promise<SendOperatorMessageResult> {
   const trimmed = input.text.trim();
   const hasAttachments = (input.attachments?.length ?? 0) > 0;
   if (!trimmed && !hasAttachments) {
@@ -436,7 +475,8 @@ export async function sendOperatorMessage(
     timestamp,
     attachments:
       input.attachments && input.attachments.length > 0
-        ? toAttachmentRefs(input.attachments): undefined,
+        ? toAttachmentRefs(input.attachments)
+        : undefined,
   };
 
   let nextThreads = appendMessage(input.threads, input.activeThreadId, userMessage);
@@ -457,7 +497,8 @@ export async function sendOperatorMessage(
     input.onThreadsUpdate?.([...nextThreads]);
   };
 
-  const finish = (result: SendOperatorMessageResult): SendOperatorMessageResult => ({...result,
+  const finish = (result: SendOperatorMessageResult): SendOperatorMessageResult => ({
+    ...result,
     threads: setThreadGenerating(result.threads, input.activeThreadId, false),
   });
 
@@ -466,7 +507,8 @@ export async function sendOperatorMessage(
   try {
     const liveChatEnabled = resolveOperatorLiveChatEnabled();
     const modeAction = await withDrawUserMessageAsync(trimmed, () =>
-      runOperatorModeOfflineAction(trimmed, input.mode));
+      runOperatorModeOfflineAction(trimmed, input.mode),
+    );
     if (shouldBypassLiveChatForModeAction(modeAction, liveChatEnabled, input.mode, trimmed)) {
       const toolMessages: OperatorToolMessage[] = [];
       if (modeAction.toolName !== undefined) {
@@ -484,7 +526,8 @@ export async function sendOperatorMessage(
         nextThreads,
         input.activeThreadId,
         modeAction.text,
-        toolMessages);
+        toolMessages,
+      );
       return finish({ threads: nextThreads });
     }
 
@@ -510,7 +553,8 @@ export async function sendOperatorMessage(
         nextThreads,
         input.activeThreadId,
         offline.text,
-        offline.toolMessages);
+        offline.toolMessages,
+      );
       return finish({ threads: nextThreads });
     }
 
@@ -525,7 +569,8 @@ export async function sendOperatorMessage(
         nextThreads,
         input.activeThreadId,
         offline.text,
-        offline.toolMessages);
+        offline.toolMessages,
+      );
       return finish({ threads: nextThreads });
     }
 
@@ -534,7 +579,8 @@ export async function sendOperatorMessage(
 
     const drawPageCountBefore =
       isOperatorDrawCapableMode(input.mode) && isOperatorDrawIntent(trimmed)
-        ? countOperatorPageShapes(): undefined;
+        ? countOperatorPageShapes()
+        : undefined;
 
     const streamingReasoning = buildReasoningMessage(REASONING_PLACEHOLDER, true);
     nextThreads = appendMessage(nextThreads, input.activeThreadId, streamingReasoning);
@@ -551,21 +597,28 @@ export async function sendOperatorMessage(
       pushThreads(
         nextThreads.map((thread) =>
           thread.id === input.activeThreadId
-            ? {...thread,
+            ? {
+                ...thread,
                 messages: thread.messages.map((message) =>
                   message.id === streamingReasoning.id && message.kind === 'reasoning'
-                    ? {...message,
+                    ? {
+                        ...message,
                         text,
                         streaming,
-                      }: message),
-              }: thread));
+                      }
+                    : message,
+                ),
+              }
+            : thread,
+        ),
+      );
     };
 
     const revealReasoningIncrementally = (fullText: string, streaming: boolean): void => {
       clearReasoningRevealHandle();
       const normalized = fullText.trim();
       if (!streaming || normalized.length === 0) {
-        patchReasoningMessage(normalized.length > 0 ? normalized: REASONING_PLACEHOLDER, streaming);
+        patchReasoningMessage(normalized.length > 0 ? normalized : REASONING_PLACEHOLDER, streaming);
         return;
       }
       // Stream model text immediately — word-chunk reveal only for long prose.
@@ -600,13 +653,15 @@ export async function sendOperatorMessage(
       const status = formatToolReasoningStatus(toolName);
       const active = nextThreads.find((thread) => thread.id === input.activeThreadId);
       const currentReasoning = active?.messages.find(
-        (message) => message.id === streamingReasoning.id && message.kind === 'reasoning');
+        (message) => message.id === streamingReasoning.id && message.kind === 'reasoning',
+      );
       const prior =
         currentReasoning?.kind === 'reasoning' &&
         currentReasoning.text.trim().length > 0 &&
         currentReasoning.text !== REASONING_PLACEHOLDER
-          ? currentReasoning.text.trim() : '';
-      const merged = prior.length > 0 ? `${prior}\n${status}`: status;
+          ? currentReasoning.text.trim()
+          : '';
+      const merged = prior.length > 0 ? `${prior}\n${status}` : status;
       patchReasoningMessage(merged, true);
     };
 
@@ -643,20 +698,26 @@ export async function sendOperatorMessage(
         pushThreads(
           nextThreads.map((thread) =>
             thread.id === input.activeThreadId
-              ? {...thread,
+              ? {
+                  ...thread,
                   messages: thread.messages.map((message) => {
                     if (message.id !== targetId || message.kind !== 'tool') {
                       return message;
                     }
-                    return {...message,
+                    return {
+                      ...message,
                       ok: event.ok,
                       error: event.error,
                       args:
                         event.name === 'draw_shapes' && drawPageCountBefore !== undefined
-                          ? {...event.args, _pageShapeCountBefore: drawPageCountBefore }: event.args,
+                          ? { ...event.args, _pageShapeCountBefore: drawPageCountBefore }
+                          : event.args,
                     };
                   }),
-                }: thread));
+                }
+              : thread,
+          ),
+        );
         return;
       }
 
@@ -664,19 +725,24 @@ export async function sendOperatorMessage(
         pushThreads(
           nextThreads.map((thread) =>
             thread.id === input.activeThreadId
-              ? {...thread,
+              ? {
+                  ...thread,
                   messages: thread.messages.flatMap((message) => {
                     if (message.id !== streamingReasoning.id || message.kind !== 'reasoning') {
                       return [message];
                     }
                     return [
-                      {...message,
+                      {
+                        ...message,
                         streaming: false,
                         text: event.text,
                       } satisfies OperatorReasoningMessage,
                     ];
                   }),
-                }: thread));
+                }
+              : thread,
+          ),
+        );
       }
     };
 
@@ -689,12 +755,14 @@ export async function sendOperatorMessage(
           })),
           onProgress: applyChatProgress,
           signal,
-        }));
+        }),
+      );
 
       const reasoningText = result.reasoning?.trim() ?? '';
       nextThreads = nextThreads.map((thread) =>
         thread.id === input.activeThreadId
-          ? {...thread,
+          ? {
+              ...thread,
               messages: thread.messages.flatMap((message) => {
                 if (message.id !== streamingReasoning.id || message.kind !== 'reasoning') {
                   return [message];
@@ -702,25 +770,31 @@ export async function sendOperatorMessage(
                 const streamedText = message.text.trim();
                 const finalText =
                   reasoningText.length > 0
-                    ? reasoningText: streamedText.length > 0 && streamedText !== REASONING_PLACEHOLDER
-                      ? streamedText: '';
+                    ? reasoningText
+                    : streamedText.length > 0 && streamedText !== REASONING_PLACEHOLDER
+                      ? streamedText
+                      : '';
                 if (finalText.length === 0) {
                   return [];
                 }
                 return [
-                  {...message,
+                  {
+                    ...message,
                     streaming: false,
                     text: finalText,
                   } satisfies OperatorReasoningMessage,
                 ];
               }),
-            }: thread);
+            }
+          : thread,
+      );
 
       const activeAfterStream = nextThreads.find((thread) => thread.id === input.activeThreadId);
       const streamedToolMessages: OperatorToolMessage[] =
         activeAfterStream?.messages.filter(
           (message): message is OperatorToolMessage =>
-            message.kind === 'tool' && message.timestamp >= streamingReasoning.timestamp) ?? [];
+            message.kind === 'tool' && message.timestamp >= streamingReasoning.timestamp,
+        ) ?? [];
 
       const fallbackToolMessages: OperatorToolMessage[] = result.toolCalls.map((toolCall) => ({
         id: createMessageId('op_tool'),
@@ -729,13 +803,14 @@ export async function sendOperatorMessage(
         toolName: toolCall.name,
         args:
           toolCall.name === 'draw_shapes' && drawPageCountBefore !== undefined
-            ? {...toolCall.args, _pageShapeCountBefore: drawPageCountBefore }: toolCall.args,
+            ? { ...toolCall.args, _pageShapeCountBefore: drawPageCountBefore }
+            : toolCall.args,
         ok: toolCall.ok,
         timestamp: new Date().toISOString(),
       }));
 
       const toolMessagesForVerify =
-        streamedToolMessages.length > 0 ? streamedToolMessages: fallbackToolMessages;
+        streamedToolMessages.length > 0 ? streamedToolMessages : fallbackToolMessages;
 
       const lastToolCall = result.toolCalls[result.toolCalls.length - 1];
       const assistantText =
@@ -743,14 +818,17 @@ export async function sendOperatorMessage(
         formatToolCallLabel(
           lastToolCall?.name ?? 'tool',
           lastToolCall?.args ?? {},
-          lastToolCall?.ok ?? true);
+          lastToolCall?.ok ?? true,
+        );
 
       if (streamedToolMessages.length > 0) {
         const verifiedTools = await postVerifyDrawToolMessages(toolMessagesForVerify);
         const drawFailed = verifiedTools.some(
-          (message) => message.toolName === 'draw_shapes' && !message.ok);
+          (message) => message.toolName === 'draw_shapes' && !message.ok,
+        );
         const drawSucceeded = verifiedTools.some(
-          (message) => message.toolName === 'draw_shapes' && message.ok);
+          (message) => message.toolName === 'draw_shapes' && message.ok,
+        );
         let text = assistantText;
         if (
           drawFailed &&
@@ -758,7 +836,8 @@ export async function sendOperatorMessage(
           /drew|draw_shapes|rectangle|visible on the canvas/i.test(text)
         ) {
           text = assistantText.toLowerCase().includes('draw failed')
-            ? assistantText: 'Draw failed: shape was created but is not visible in the viewport.';
+            ? assistantText
+            : 'Draw failed: shape was created but is not visible in the viewport.';
         }
 
         nextThreads = nextThreads.map((thread) => {
@@ -767,7 +846,8 @@ export async function sendOperatorMessage(
           }
           const withoutStreamedTools = thread.messages.filter(
             (message) =>
-              !(message.kind === 'tool' && message.timestamp >= streamingReasoning.timestamp));
+              !(message.kind === 'tool' && message.timestamp >= streamingReasoning.timestamp),
+          );
           const assistantMessage: OperatorTextMessage = {
             id: createMessageId('op_a'),
             role: 'assistant',
@@ -775,8 +855,9 @@ export async function sendOperatorMessage(
             text,
             timestamp: new Date().toISOString(),
           };
-          return {...thread,
-            messages: [...withoutStreamedTools,...verifiedTools, assistantMessage],
+          return {
+            ...thread,
+            messages: [...withoutStreamedTools, ...verifiedTools, assistantMessage],
           };
         });
         input.onThreadsUpdate?.([...nextThreads]);
@@ -787,7 +868,8 @@ export async function sendOperatorMessage(
         nextThreads,
         input.activeThreadId,
         assistantText,
-        toolMessagesForVerify);
+        toolMessagesForVerify,
+      );
       return finish({ threads: nextThreads });
     } catch (err) {
       clearReasoningRevealHandle();
@@ -795,15 +877,19 @@ export async function sendOperatorMessage(
         markGenerating(false);
         nextThreads = nextThreads.map((thread) =>
           thread.id === input.activeThreadId
-            ? {...thread,
+            ? {
+                ...thread,
                 messages: thread.messages.filter(
                   (message) =>
                     !(
                       message.kind === 'reasoning' &&
                       message.id === streamingReasoning.id &&
                       message.streaming === true
-                    )),
-              }: thread);
+                    ),
+                ),
+              }
+            : thread,
+        );
         return finish({ threads: nextThreads, error: 'Generation stopped.' });
       }
 
@@ -811,16 +897,19 @@ export async function sendOperatorMessage(
         (thread) =>
           thread.id !== input.activeThreadId ||
           !thread.messages.some(
-            (message) => message.id === streamingReasoning.id && message.kind === 'reasoning'));
+            (message) => message.id === streamingReasoning.id && message.kind === 'reasoning',
+          ),
+      );
 
       const offline = await resolveOfflineAssistantReply(trimmed, input.mode);
       nextThreads = appendAssistantReply(
         nextThreads,
         input.activeThreadId,
         offline.text,
-        offline.toolMessages);
+        offline.toolMessages,
+      );
 
-      const message = err instanceof Error ? err.message: 'Operator chat failed';
+      const message = err instanceof Error ? err.message : 'Operator chat failed';
       return finish({ threads: nextThreads, error: message });
     }
   } finally {

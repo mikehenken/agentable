@@ -1,13 +1,13 @@
 /**
- * `<agent-status-pill>` — Lit widget (widgets family).
+ * `<agent-status-pill>` — Lit widget (D44 widgets family, P9-T3).
  *
  * Read-only agent status badge subscribing to `window.__agentStatusKernel__`.
  * Host runtimes publish registry rows; marketing pages embed the pill without
  * React.
  *
  * Usage:
- * <script type="module" src="/embed/agent-status-pill.js"></script>
- * <agent-status-pill agent-id="concierge"></agent-status-pill>
+ *   <script type="module" src="/embed/agent-status-pill.js"></script>
+ *   <agent-status-pill agent-id="concierge"></agent-status-pill>
  */
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -84,11 +84,16 @@ export class AgentStatusPillElement extends LitElement {
 
   static styles = [
     widgetHostTokens,
-    css`:host {
+    css`
+      :host {
         display: inline-flex;
-      }:host([hidden]) {
+      }
+
+      :host([hidden]) {
         display: none;
-      }.pill {
+      }
+
+      .pill {
         display: inline-flex;
         align-items: center;
         gap: 0.375rem;
@@ -102,18 +107,27 @@ export class AgentStatusPillElement extends LitElement {
         border: 1px solid var(--landi-widget-color-border);
         background: var(--landi-widget-color-surface);
         color: var(--landi-widget-color-text-muted);
-      }.pill.running {
+      }
+
+      .pill.running {
         color: var(--landi-widget-color-primary);
         border-color: color-mix(in srgb, var(--landi-widget-color-primary) 35%, transparent);
         background: color-mix(in srgb, var(--landi-widget-color-primary) 10%, white);
-      }.pill.waiting_approval {
+      }
+
+      .pill.waiting_approval {
         color: var(--landi-widget-color-accent);
         border-color: color-mix(in srgb, var(--landi-widget-color-accent) 40%, transparent);
         background: color-mix(in srgb, var(--landi-widget-color-accent) 12%, white);
-      }.pill.error,.pill.cancelled {
+      }
+
+      .pill.error,
+      .pill.cancelled {
         color: var(--landi-widget-color-error);
         border-color: color-mix(in srgb, var(--landi-widget-color-error) 35%, transparent);
-      }.spinner {
+      }
+
+      .spinner {
         width: 0.75rem;
         height: 0.75rem;
         border: 2px solid currentColor;
@@ -128,7 +142,8 @@ export class AgentStatusPillElement extends LitElement {
         }
       }
 
-      @media (prefers-reduced-motion: reduce) {.spinner {
+      @media (prefers-reduced-motion: reduce) {
+        .spinner {
           animation-duration: 2s;
         }
       }
@@ -139,6 +154,7 @@ export class AgentStatusPillElement extends LitElement {
     super.connectedCallback();
     this._pageSession = bindWidgetPageSession('agent-status-pill');
     this._pageSession.join();
+
     this._unsubscribe?.();
     const kernel = ensureAgentStatusKernel();
     this._unsubscribe = kernel.agents.subscribe((snapshot) => {
@@ -173,7 +189,8 @@ export class AgentStatusPillElement extends LitElement {
           },
           bubbles: true,
           composed: true,
-        }));
+        }),
+      );
     }
 
     if (!next && previous) {
@@ -211,10 +228,11 @@ export class AgentStatusPillElement extends LitElement {
         class=${pillClasses}
         role="status"
         aria-live="polite"
-        aria-label=${`${this._displayLabel()}: ${visibleStatus}${taskHint ? `. ${taskHint}`: ''}`}
+        aria-label=${`${this._displayLabel()}: ${visibleStatus}${taskHint ? `. ${taskHint}` : ''}`}
       >
         ${status === 'running'
-          ? html`<span class="spinner" part="spinner" aria-hidden="true"></span>`: null}
+          ? html`<span class="spinner" part="spinner" aria-hidden="true"></span>`
+          : null}
         <span part="label">${this._displayLabel()}</span>
         <span part="status">${visibleStatus}</span>
       </span>

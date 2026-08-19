@@ -1,5 +1,5 @@
 /**
- * tldraw camera adapter for story-mode walkthrough.
+ * tldraw camera adapter for story-mode walkthrough (P8-T6).
  */
 import { createShapeId, type Editor, type TLShapeId } from 'tldraw';
 import { bindWalkthroughRuntime } from '../../../agents/walkthroughBridge';
@@ -59,21 +59,25 @@ function shapeBounds(editor: Editor, shapeId: string): Rect | null {
 
 export function resolveWalkthroughTargetBounds(
   editor: Editor,
-  target: WalkthroughTarget): Rect | null {
+  target: WalkthroughTarget,
+): Rect | null {
   if (target.kind === 'panel') {
     return shapeBounds(editor, panelShapeId(target.panelId));
   }
   if (target.kind === 'frame' || target.kind === 'shape') {
-    const id = target.kind === 'frame' ? target.frameId: target.shapeId;
+    const id = target.kind === 'frame' ? target.frameId : target.shapeId;
     return shapeBounds(editor, id);
   }
-  const rects = target.shapeIds.map((shapeId) => shapeBounds(editor, shapeId)).filter((rect): rect is Rect => rect !== null);
+  const rects = target.shapeIds
+    .map((shapeId) => shapeBounds(editor, shapeId))
+    .filter((rect): rect is Rect => rect !== null);
   return unionBounds(rects);
 }
 
 export function resolveWalkthroughTargetIntent(
   editor: Editor,
-  target: WalkthroughTarget): WalkthroughCameraIntent | null {
+  target: WalkthroughTarget,
+): WalkthroughCameraIntent | null {
   const rect = resolveWalkthroughTargetBounds(editor, target);
   if (rect === null) return null;
   return { kind: 'zoomTo', rect, inset: 64 };
@@ -81,7 +85,8 @@ export function resolveWalkthroughTargetIntent(
 
 export function applyWalkthroughCameraIntent(
   editor: Editor,
-  intent: WalkthroughCameraIntent): void {
+  intent: WalkthroughCameraIntent,
+): void {
   if (intent.kind !== 'zoomTo') return;
   const rect = readRect(intent.rect);
   if (rect === null) return;
@@ -90,13 +95,15 @@ export function applyWalkthroughCameraIntent(
     {
       inset: intent.inset ?? 64,
       animation: { duration: 220 },
-    });
+    },
+  );
 }
 
 /** Try panel id, direct shape id, then raw frame id. */
 export function resolveWalkthroughSingleTargetIntent(
   editor: Editor,
-  id: string): WalkthroughCameraIntent | null {
+  id: string,
+): WalkthroughCameraIntent | null {
   const panelIntent = resolveWalkthroughTargetIntent(editor, { kind: 'panel', panelId: id });
   if (panelIntent !== null) return panelIntent;
 
@@ -107,7 +114,8 @@ export function resolveWalkthroughSingleTargetIntent(
 }
 
 export function createWalkthroughTargetResolver(
-  editor: Editor): (target: WalkthroughTarget) => WalkthroughCameraIntent | null {
+  editor: Editor,
+): (target: WalkthroughTarget) => WalkthroughCameraIntent | null {
   return (target: WalkthroughTarget) => {
     if (target.kind === 'panel') {
       const panelIntent = resolveWalkthroughTargetIntent(editor, target);
@@ -120,11 +128,14 @@ export function createWalkthroughTargetResolver(
 
 export function subscribeWalkthroughUserCameraCancel(
   editor: Editor,
-  onUserInput: () => void): () => void {
-  return editor.store.listen(() => {
+  onUserInput: () => void,
+): () => void {
+  return editor.store.listen(
+    () => {
       onUserInput();
     },
-    { source: 'user', scope: 'session' });
+    { source: 'user', scope: 'session' },
+  );
 }
 
 export function bindWalkthroughForEditor(editor: Editor, camera: CameraQueue): () => void {

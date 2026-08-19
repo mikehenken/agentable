@@ -8,5 +8,6 @@ export function parseOperatorDefaultMode(raw: string | null | undefined): Operat
     return null;
   }
   return OPERATOR_MODE_VALUES.includes(trimmed as OperatorMode)
-    ? (trimmed as OperatorMode): null;
+    ? (trimmed as OperatorMode)
+    : null;
 }

@@ -86,14 +86,16 @@ export function shouldExpandNavSidebar(viewportWidth: number): boolean {
 
 export function snapToGrid(
   value: number,
-  gridSize: number = GRID_SIZE): number {
+  gridSize: number = GRID_SIZE,
+): number {
   return Math.round(value / gridSize) * gridSize;
 }
 
 export function snapRect(
   rect: LayoutRect,
 
-  gridSize: number = GRID_SIZE): LayoutRect {
+  gridSize: number = GRID_SIZE,
+): LayoutRect {
   return {
     x: snapToGrid(rect.x, gridSize),
 
@@ -112,7 +114,8 @@ export function clampRectToViewport(
 
   minW: number = GRID_SIZE,
 
-  minH: number = GRID_SIZE): LayoutRect {
+  minH: number = GRID_SIZE,
+): LayoutRect {
   const { w: clampedW, h: clampedH } = clampPanelSize(
     rect.w,
 
@@ -122,21 +125,27 @@ export function clampRectToViewport(
 
     minH,
 
-    viewport);
+    viewport,
+  );
 
   const x = Math.max(
     viewport.left,
+
     Math.min(rect.x, viewport.right - clampedW),
   );
+
   const y = Math.max(
     viewport.top,
+
     Math.min(rect.y, viewport.bottom - clampedH),
   );
+
   return { x, y, w: clampedW, h: clampedH };
 }
 
 export function getViewportLayoutConfig(
-  options: ViewportLayoutOptions): ViewportLayoutConfig {
+  options: ViewportLayoutOptions,
+): ViewportLayoutConfig {
   const {
     viewportWidth,
 
@@ -154,7 +163,8 @@ export function getViewportLayoutConfig(
   } = options;
 
   const navW = navSidebarExpanded
-    ? NAV_SIDEBAR_W_EXPANDED: NAV_SIDEBAR_W_COLLAPSED;
+    ? NAV_SIDEBAR_W_EXPANDED
+    : NAV_SIDEBAR_W_COLLAPSED;
 
   const contentLeft = NAV_SIDEBAR_X + navW + gap;
 
@@ -181,14 +191,15 @@ export function panelLayoutToRect(panel: PanelLayout): LayoutRect {
 
     w: panel.w ?? 400,
 
-    h: minimized ? MINIMIZED_PANEL_H: (panel.h ?? 300),
+    h: minimized ? MINIMIZED_PANEL_H : (panel.h ?? 300),
   };
 }
 
 export function rectsOverlap(
   a: LayoutRect,
   b: LayoutRect,
-  gap: number): boolean {
+  gap: number,
+): boolean {
   return !(
     a.x + a.w + gap <= b.x ||
     b.x + b.w + gap <= a.x ||
@@ -206,7 +217,8 @@ export function clampPanelSize(
 
   minH: number,
 
-  viewport: ViewportLayoutConfig): { w: number; h: number } {
+  viewport: ViewportLayoutConfig,
+): { w: number; h: number } {
   const maxW = Math.max(minW, viewport.right - viewport.left);
 
   const maxH = Math.max(minH, viewport.bottom - viewport.top);
@@ -227,7 +239,8 @@ function candidateFitsViewport(
 
   h: number,
 
-  viewport: ViewportLayoutConfig): boolean {
+  viewport: ViewportLayoutConfig,
+): boolean {
   return (
     x >= viewport.left &&
     y >= viewport.top &&
@@ -241,7 +254,8 @@ function hasOverlapWithObstacles(
 
   obstacles: LayoutRect[],
 
-  gap: number): boolean {
+  gap: number,
+): boolean {
   return obstacles.some((obstacle) => rectsOverlap(candidate, obstacle, gap));
 }
 
@@ -249,11 +263,14 @@ function computeColumnWidth(
   contentWidth: number,
   columns: number,
   gap: number,
-  snapGrid: boolean): number {
+  snapGrid: boolean,
+): number {
   const rawColumnWidth = Math.floor(
-    (contentWidth - gap * (columns - 1)) / columns);
+    (contentWidth - gap * (columns - 1)) / columns,
+  );
   return snapGrid
-    ? Math.max(GRID_SIZE, snapToGrid(rawColumnWidth)): Math.max(280, rawColumnWidth);
+    ? Math.max(GRID_SIZE, snapToGrid(rawColumnWidth))
+    : Math.max(280, rawColumnWidth);
 }
 
 /**
@@ -268,7 +285,8 @@ function snapPositionAvoidingOverlap(
   h: number,
   obstacles: LayoutRect[],
   viewport: ViewportLayoutConfig,
-  snapGrid: boolean): { x: number; y: number } {
+  snapGrid: boolean,
+): { x: number; y: number } {
   if (!snapGrid) {
     return { x, y };
   }
@@ -317,7 +335,8 @@ function snapPositionAvoidingOverlap(
   }
 
   return snapGrid
-    ? { x: snapToGrid(x), y: snapToGrid(y) }: { x, y };
+    ? { x: snapToGrid(x), y: snapToGrid(y) }
+    : { x, y };
 }
 
 function tryPlacementAt(
@@ -327,7 +346,8 @@ function tryPlacementAt(
   h: number,
   obstacles: LayoutRect[],
   viewport: ViewportLayoutConfig,
-  snapGrid: boolean): { x: number; y: number } | null {
+  snapGrid: boolean,
+): { x: number; y: number } | null {
   const candidate: LayoutRect = { x, y, w, h };
 
   if (!candidateFitsViewport(x, y, w, h, viewport)) {
@@ -356,7 +376,8 @@ function findBesideObstaclePositions(
   h: number,
   obstacles: LayoutRect[],
   viewport: ViewportLayoutConfig,
-  snapGrid: boolean): { x: number; y: number } | null {
+  snapGrid: boolean,
+): { x: number; y: number } | null {
   const { gap } = viewport;
   const candidates: Array<{ x: number; y: number }> = [];
 
@@ -364,7 +385,8 @@ function findBesideObstaclePositions(
     candidates.push(
       { x: obstacle.x + obstacle.w + gap, y: obstacle.y },
       { x: obstacle.x + obstacle.w + gap, y: viewport.top },
-      { x: viewport.left, y: obstacle.y + obstacle.h + gap });
+      { x: viewport.left, y: obstacle.y + obstacle.h + gap },
+    );
   }
 
   candidates.sort((a, b) => a.y - b.y || a.x - b.x);
@@ -377,7 +399,8 @@ function findBesideObstaclePositions(
       h,
       obstacles,
       viewport,
-      snapGrid);
+      snapGrid,
+    );
     if (placed) {
       return placed;
     }
@@ -399,7 +422,8 @@ function findCascadePastObstacles(
   h: number,
   obstacles: LayoutRect[],
   viewport: ViewportLayoutConfig,
-  snapGrid: boolean): { x: number; y: number } {
+  snapGrid: boolean,
+): { x: number; y: number } {
   const { gap, left } = viewport;
 
   /** Snap without rounding Y down into an obstacle (use ceil on Y when needed). */
@@ -407,7 +431,8 @@ function findCascadePastObstacles(
     if (!snapGrid) {
       const candidate: LayoutRect = { x, y, w, h };
       return hasOverlapWithObstacles(candidate, obstacles, gap)
-        ? null: { x, y };
+        ? null
+        : { x, y };
     }
 
     const snappedX = snapToGrid(x);
@@ -432,9 +457,10 @@ function findCascadePastObstacles(
     return atLeft;
   }
 
-   // Try right of the rightmost obstacle on a new row under the pack.
+  // Try right of the rightmost obstacle on a new row under the pack.
   const rightmost = obstacles.reduce((max, o) =>
-    o.x + o.w > max.x + max.w ? o: max);
+    o.x + o.w > max.x + max.w ? o : max,
+  );
   const besideX = rightmost.x + rightmost.w + gap;
   const beside = tryPoint(besideX, stackY);
   if (beside) {
@@ -460,9 +486,10 @@ function findCascadePastObstacles(
   const n = obstacles.length;
   return (
     tryPoint(left + n * CASCADE_STEP, stackY + n * CASCADE_STEP) ?? {
-      x: snapGrid ? snapToGrid(left + n * CASCADE_STEP): left + n * CASCADE_STEP,
+      x: snapGrid ? snapToGrid(left + n * CASCADE_STEP) : left + n * CASCADE_STEP,
       y: snapGrid
-        ? Math.ceil((stackY + n * CASCADE_STEP) / GRID_SIZE) * GRID_SIZE: stackY + n * CASCADE_STEP,
+        ? Math.ceil((stackY + n * CASCADE_STEP) / GRID_SIZE) * GRID_SIZE
+        : stackY + n * CASCADE_STEP,
     }
   );
 }
@@ -482,7 +509,8 @@ function findStackBelowPosition(
 
   viewport: ViewportLayoutConfig,
 
-  snapGrid: boolean): { x: number; y: number } {
+  snapGrid: boolean,
+): { x: number; y: number } {
   const { gap, left } = viewport;
 
   const maxX = viewport.right - w;
@@ -490,9 +518,10 @@ function findStackBelowPosition(
 
   const startY =
     obstacles.length === 0
-      ? viewport.top: Math.max(...obstacles.map((o) => o.y + o.h + gap));
+      ? viewport.top
+      : Math.max(...obstacles.map((o) => o.y + o.h + gap));
 
-  const scanStep = snapGrid ? GRID_SIZE: gap;
+  const scanStep = snapGrid ? GRID_SIZE : gap;
 
   if (maxX >= left && maxY >= viewport.top) {
     for (let y = Math.min(startY, maxY); y <= maxY; y += scanStep) {
@@ -523,7 +552,8 @@ function findStackBelowPosition(
       h,
       obstacles,
       viewport,
-      snapGrid);
+      snapGrid,
+    );
     const nudgedRect: LayoutRect = { x: nudged.x, y: nudged.y, w, h };
     if (
       candidateFitsViewport(nudged.x, nudged.y, w, h, viewport) &&
@@ -553,12 +583,13 @@ export function findNonOverlappingPosition(
 
   viewport: ViewportLayoutConfig,
 
-  options: PlacementOptions = {}): { x: number; y: number } {
+  options: PlacementOptions = {},
+): { x: number; y: number } {
   const snapGrid = options.snapGrid ?? false;
 
   const { gap } = viewport;
 
-  const scanStep = snapGrid ? GRID_SIZE: gap;
+  const scanStep = snapGrid ? GRID_SIZE : gap;
 
   const maxX = viewport.right - panelW;
 
@@ -580,7 +611,8 @@ export function findNonOverlappingPosition(
             panelH,
             obstacles,
             viewport,
-            snapGrid);
+            snapGrid,
+          );
           if (placed) {
             return placed;
           }
@@ -594,7 +626,8 @@ export function findNonOverlappingPosition(
     panelH,
     obstacles,
     viewport,
-    snapGrid);
+    snapGrid,
+  );
   if (beside) {
     return beside;
   }
@@ -636,13 +669,14 @@ function getResponsiveColumnCount(
   contentWidth: number,
   panels: OrganizePanelInput[],
   gap: number,
-  snapGrid: boolean): number {
+  snapGrid: boolean,
+): number {
   let columns = 3;
   if (contentWidth < MOBILE_BP) columns = 1;
   else if (contentWidth < TABLET_BP) columns = 2;
 
   const maxMinW =
-    panels.length > 0 ? Math.max(...panels.map((p) => p.minW)): 280;
+    panels.length > 0 ? Math.max(...panels.map((p) => p.minW)) : 280;
 
   while (columns > 1) {
     const columnWidth = computeColumnWidth(contentWidth, columns, gap, snapGrid);
@@ -666,10 +700,11 @@ export function organizePanelsResponsive(
 
   viewport: ViewportLayoutConfig,
 
-  options: OrganizeOptions = {}): Record<string, OrganizedPanelLayout> {
+  options: OrganizeOptions = {},
+): Record<string, OrganizedPanelLayout> {
   const snapGrid = options.snapGrid ?? false;
 
-  const gap = snapGrid ? GRID_SIZE: viewport.gap;
+  const gap = snapGrid ? GRID_SIZE : viewport.gap;
 
   const { left, right, top, bottom } = viewport;
 
@@ -681,11 +716,11 @@ export function organizePanelsResponsive(
 
   const result: Record<string, OrganizedPanelLayout> = {};
 
-  let rowY = snapGrid ? snapToGrid(top): top;
+  let rowY = snapGrid ? snapToGrid(top) : top;
 
   let rowMaxH = 0;
 
-  let colX = snapGrid ? snapToGrid(left): left;
+  let colX = snapGrid ? snapToGrid(left) : left;
 
   let colCount = 0;
 
@@ -696,14 +731,16 @@ export function organizePanelsResponsive(
       panel.minW,
       Math.min(panel.w, contentWidth),
     );
+
     const rawH = Math.max(
       panel.minH,
       Math.min(panel.h, maxContentH),
     );
-    let w = snapGrid ? Math.max(GRID_SIZE, snapToGrid(rawW)): rawW;
+
+    let w = snapGrid ? Math.max(GRID_SIZE, snapToGrid(rawW)) : rawW;
     w = Math.min(w, contentWidth);
 
-    let h = snapGrid ? Math.max(GRID_SIZE, snapToGrid(rawH)): rawH;
+    let h = snapGrid ? Math.max(GRID_SIZE, snapToGrid(rawH)) : rawH;
     h = Math.min(h, maxContentH);
 
     const wrapRow = (): void => {
@@ -711,26 +748,26 @@ export function organizePanelsResponsive(
       rowY += rowMaxH + gap;
       if (snapGrid) rowY = snapToGrid(rowY);
       rowMaxH = 0;
-      colX = snapGrid ? snapToGrid(left): left;
+      colX = snapGrid ? snapToGrid(left) : left;
     };
 
-    let candidateX = snapGrid ? snapToGrid(colX): colX;
+    let candidateX = snapGrid ? snapToGrid(colX) : colX;
 
     if (colCount > 0 && candidateX + w > right) {
       wrapRow();
-      candidateX = snapGrid ? snapToGrid(colX): colX;
+      candidateX = snapGrid ? snapToGrid(colX) : colX;
     }
 
     if (colCount >= maxColumns) {
       wrapRow();
-      candidateX = snapGrid ? snapToGrid(colX): colX;
+      candidateX = snapGrid ? snapToGrid(colX) : colX;
     }
 
     const remainingRowW = right - candidateX;
     if (w > remainingRowW) {
       if (remainingRowW < panel.minW) {
         wrapRow();
-        candidateX = snapGrid ? snapToGrid(colX): colX;
+        candidateX = snapGrid ? snapToGrid(colX) : colX;
       }
       w = Math.min(w, right - candidateX);
       if (snapGrid) w = Math.max(GRID_SIZE, snapToGrid(w));
@@ -738,9 +775,9 @@ export function organizePanelsResponsive(
       w = Math.min(w, right - candidateX);
     }
 
-    const x = snapGrid ? snapToGrid(colX): colX;
+    const x = snapGrid ? snapToGrid(colX) : colX;
 
-    const y = snapGrid ? snapToGrid(rowY): rowY;
+    const y = snapGrid ? snapToGrid(rowY) : rowY;
 
     const availableH = Math.max(GRID_SIZE, bottom - y);
     let placedH = Math.min(h, availableH);
@@ -771,7 +808,7 @@ export function getNavLayout(navSidebarExpanded: boolean): {
 
     y: NAV_SIDEBAR_TOP,
 
-    w: navSidebarExpanded ? NAV_SIDEBAR_W_EXPANDED: NAV_SIDEBAR_W_COLLAPSED,
+    w: navSidebarExpanded ? NAV_SIDEBAR_W_EXPANDED : NAV_SIDEBAR_W_COLLAPSED,
   };
 }
 
@@ -830,10 +867,12 @@ export const DEFAULT_CHAT_MIN_HEIGHT = 280;
 export function computeFreeCanvasArea(
   panels: Record<string, PanelLayout>,
 
-  viewport: ViewportLayoutConfig): number {
+  viewport: ViewportLayoutConfig,
+): number {
   const viewportArea =
     Math.max(0, viewport.right - viewport.left) *
     Math.max(0, viewport.bottom - viewport.top);
+
   let used = 0;
 
   for (const [id, panel] of Object.entries(panels)) {
@@ -852,7 +891,8 @@ export function computeFreeCanvasArea(
  */
 export function computeNavSidebarHeight(
   navSidebarExpanded: boolean,
-  itemCount: number = NAV_SIDEBAR_DEFAULT_ITEM_COUNT): number {
+  itemCount: number = NAV_SIDEBAR_DEFAULT_ITEM_COUNT,
+): number {
   const items = Math.max(0, itemCount);
   if (navSidebarExpanded) {
     return NAV_SIDEBAR_EXPANDED_HEADER_H + items * NAV_SIDEBAR_ITEM_ROW_H;
@@ -863,7 +903,8 @@ export function computeNavSidebarHeight(
 /** Dock voice whenever the panel is visible (sidebar footer slot geometry). */
 export function shouldDockVoicePanel(
   _freeArea: number,
-  voiceVisible: boolean): boolean {
+  voiceVisible: boolean,
+): boolean {
   return voiceVisible;
 }
 
@@ -873,7 +914,7 @@ export function shouldDockVoicePanel(
 export function getVoiceDockLayout(options: VoiceDockOptions = {}): LayoutRect {
   const expanded = options.navSidebarExpanded ?? false;
   const itemCount = options.sidebarItemCount ?? NAV_SIDEBAR_DEFAULT_ITEM_COUNT;
-  const w = expanded ? NAV_SIDEBAR_W_EXPANDED: NAV_SIDEBAR_W_COLLAPSED;
+  const w = expanded ? NAV_SIDEBAR_W_EXPANDED : NAV_SIDEBAR_W_COLLAPSED;
   const sidebarH = computeNavSidebarHeight(expanded, itemCount);
   const y = NAV_SIDEBAR_TOP + sidebarH;
 
@@ -881,7 +922,7 @@ export function getVoiceDockLayout(options: VoiceDockOptions = {}): LayoutRect {
     x: NAV_SIDEBAR_X,
     y,
     w,
-    h: expanded ? VOICE_DOCK_PANEL_H: VOICE_DOCK_PANEL_H_COLLAPSED,
+    h: expanded ? VOICE_DOCK_PANEL_H : VOICE_DOCK_PANEL_H_COLLAPSED,
   };
 }
 
@@ -890,15 +931,18 @@ export function getVoiceDockLayout(options: VoiceDockOptions = {}): LayoutRect {
  * Reflects actual left chrome stack height (voice included only when visible).
  */
 export function getSidebarColumnLayout(
-  options: SidebarColumnOptions = {}): LayoutRect {
+  options: SidebarColumnOptions = {},
+): LayoutRect {
   const expanded = options.navSidebarExpanded ?? false;
   const itemCount = options.sidebarItemCount ?? NAV_SIDEBAR_DEFAULT_ITEM_COUNT;
   const voiceVisible = options.voiceVisible ?? false;
-  const w = expanded ? NAV_SIDEBAR_W_EXPANDED: NAV_SIDEBAR_W_COLLAPSED;
+  const w = expanded ? NAV_SIDEBAR_W_EXPANDED : NAV_SIDEBAR_W_COLLAPSED;
   const sidebarH = computeNavSidebarHeight(expanded, itemCount);
   const voiceH = voiceVisible
     ? expanded
-      ? VOICE_DOCK_PANEL_H: VOICE_DOCK_PANEL_H_COLLAPSED: 0;
+      ? VOICE_DOCK_PANEL_H
+      : VOICE_DOCK_PANEL_H_COLLAPSED
+    : 0;
 
   return {
     x: NAV_SIDEBAR_X,
@@ -914,10 +958,12 @@ export function getSidebarColumnLayout(
  */
 export function getChatColumnTargetHeight(
   navSidebarExpanded: boolean = false,
-  itemCount: number = NAV_SIDEBAR_DEFAULT_ITEM_COUNT): number {
+  itemCount: number = NAV_SIDEBAR_DEFAULT_ITEM_COUNT,
+): number {
   const sidebarH = computeNavSidebarHeight(navSidebarExpanded, itemCount);
   const voiceH = navSidebarExpanded
-    ? VOICE_DOCK_PANEL_H: VOICE_DOCK_PANEL_H_COLLAPSED;
+    ? VOICE_DOCK_PANEL_H
+    : VOICE_DOCK_PANEL_H_COLLAPSED;
 
   return sidebarH + voiceH;
 }
@@ -933,7 +979,8 @@ export interface DefaultChatLayoutOptions {
  * Default Assistant chat rect: content-left x, fixed sidebar+voice column height, compact width.
  */
 export function getDefaultChatLayout(
-  options: DefaultChatLayoutOptions): LayoutRect {
+  options: DefaultChatLayoutOptions,
+): LayoutRect {
   const expanded = options.navSidebarExpanded ?? false;
   const itemCount = options.sidebarItemCount ?? NAV_SIDEBAR_DEFAULT_ITEM_COUNT;
   const targetH = getChatColumnTargetHeight(expanded, itemCount);
@@ -963,7 +1010,8 @@ export function ensurePanelVisible(
 
   pan: { x: number; y: number },
 
-  viewport: ViewportLayoutConfig): { x: number; y: number } {
+  viewport: ViewportLayoutConfig,
+): { x: number; y: number } {
   let panX = pan.x;
 
   let panY = pan.y;

@@ -1,5 +1,5 @@
 /**
- * Wireframe stencil expansion for draw_shapes.
+ * Wireframe stencil expansion for draw_shapes (D50, P12-T1).
  *
  * Closed-schema placeholders so connected wireframe sets read as wireframes,
  * not raw rectangles.
@@ -14,7 +14,8 @@ const WIREFRAME_DASH = 'dashed' as const;
 const WIREFRAME_COLOR = 'grey';
 
 function assertRectGeometry(
-  geometry: AgentDrawGeometry): { x: number; y: number; w: number; h: number } {
+  geometry: AgentDrawGeometry,
+): { x: number; y: number; w: number; h: number } {
   if (geometry.kind !== 'rect') {
     throw new Error('wireframe stencil requires geometry.kind "rect"');
   }
@@ -31,11 +32,12 @@ function stencilMeta(stencil: WireframeStencilKind): Record<string, string> {
 function boxShape(
   rect: { x: number; y: number; w: number; h: number },
   stencil: WireframeStencilKind,
-  label?: string): AgentDrawShapeInput[] {
+  label?: string,
+): AgentDrawShapeInput[] {
   const shapes: AgentDrawShapeInput[] = [
     {
       kind: 'box',
-      geometry: { kind: 'rect',...rect },
+      geometry: { kind: 'rect', ...rect },
       style: { color: WIREFRAME_COLOR, fill: 'none', dash: WIREFRAME_DASH },
       meta: stencilMeta(stencil),
     },
@@ -60,7 +62,8 @@ function boxShape(
 export function expandWireframeStencil(
   stencil: WireframeStencilKind,
   geometry: AgentDrawGeometry,
-  text?: string): AgentDrawShapeInput[] {
+  text?: string,
+): AgentDrawShapeInput[] {
   switch (stencil) {
     case 'label': {
       const rect = assertRectGeometry(geometry);
@@ -107,7 +110,8 @@ export function expandWireframeStencil(
     case 'card': {
       const rect = assertRectGeometry(geometry);
       const title = text ?? 'Card title';
-      return [...boxShape(rect, stencil),
+      return [
+        ...boxShape(rect, stencil),
         {
           kind: 'text',
           text: title,

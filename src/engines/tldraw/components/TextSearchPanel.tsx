@@ -33,21 +33,21 @@ function clampIndex(index: number, length: number): number {
 }
 
 const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
-  const editor = useEditor;
+  const editor = useEditor();
   const showSearch = showTextSearchAtom.get();
-  const query = textSearchQueryAtom.get;
+  const query = textSearchQueryAtom.get();
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const results = useMemo((): CanvasTextSearchResult[] => {
-    if (!showSearch || !query().trim()) return [];
-    return searchCanvasText(editor(), query());
+    if (!showSearch || !query.trim()) return [];
+    return searchCanvasText(editor, query);
   }, [editor, query, showSearch]);
 
   useEffect(() => {
     if (showSearch) {
       inputRef.current?.focus();
-      inputRef.current?.select;
+      inputRef.current?.select();
     }
   }, [showSearch]);
 
@@ -62,9 +62,10 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
 
   const handleSelectResult = useCallback(
     (result: CanvasTextSearchResult): void => {
-      focusShapeInCanvas(editor(), result.shapeId);
+      focusShapeInCanvas(editor, result.shapeId);
     },
-    [editor]);
+    [editor],
+  );
 
   const handleInputKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -96,7 +97,8 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
         }
       }
     },
-    [activeIndex, handleClose, handleSelectResult, results]);
+    [activeIndex, handleClose, handleSelectResult, results],
+  );
 
   const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -105,9 +107,11 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
   if (!showSearch) return null;
 
   const resultCountLabel =
-    query().trim().length === 0
-      ? 'Type to search canvas text': results.length === 0
-        ? 'No matches': `${results.length} match${results.length === 1 ? '': 'es'}`;
+    query.trim().length === 0
+      ? 'Type to search canvas text'
+      : results.length === 0
+        ? 'No matches'
+        : `${results.length} match${results.length === 1 ? '' : 'es'}`;
 
   return (
     <div className="whiteboard-text-search" data-testid="canvas-text-search">
@@ -144,10 +148,10 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
           <span>
             ↑↓ navigate · Enter focus
           </span>
-        ): null}
+        ) : null}
       </div>
 
-      {query().trim().length > 0 && results.length > 0 ? (
+      {query.trim().length > 0 && results.length > 0 ? (
         <ul className="whiteboard-text-search__results" data-testid="canvas-text-search-results">
           {results.map((result, index) => (
             <li key={result.shapeId}>
@@ -155,8 +159,10 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
                 type="button"
                 className={[
                   'whiteboard-text-search__result',
-                  index === activeIndex ? 'whiteboard-text-search__result--active': '',
-                ].filter(Boolean).join(' ')}
+                  index === activeIndex ? 'whiteboard-text-search__result--active' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
                 data-testid={`canvas-text-search-result-${result.shapeId}`}
                 onPointerDown={(event) => {
                   event.preventDefault();
@@ -172,13 +178,13 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
             </li>
           ))}
         </ul>
-      ): null}
+      ) : null}
 
-      {query().trim().length > 0 && results.length === 0 ? (
+      {query.trim().length > 0 && results.length === 0 ? (
         <p className="whiteboard-text-search__empty" data-testid="canvas-text-search-empty">
-          No shapes match &ldquo;{query().trim()}&rdquo;
+          No shapes match &ldquo;{query.trim()}&rdquo;
         </p>
-      ): null}
+      ) : null}
     </div>
   );
 });
@@ -187,11 +193,12 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
  * HelperButtons slot — text search only.
  *
  * Intentionally does **not** render tldraw's `DefaultHelperButtons`: that
- * slot includes "← Back to content", which is wrong for career Sandals
+ * slot includes "← Back to content", which is wrong for career / Sandals
  * whiteboard embeds (it appears next to the Menu rail when the camera is
  * away from shapes). Search still opens via Ctrl/Cmd+F overrides.
  */
 export const TextSearchPanel = track(function TextSearchPanel(
-  _props: TLUiHelperButtonsProps): ReactElement {
+  _props: TLUiHelperButtonsProps,
+): ReactElement {
   return <TextSearchBar />;
 });

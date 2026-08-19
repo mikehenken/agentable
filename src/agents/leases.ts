@@ -1,5 +1,5 @@
 /**
- * Scope leases: advisory TTL claims for contested panel/source scopes.
+ * Scope leases (D23): advisory TTL claims for contested panel/source scopes.
  * Soft in v1 — conflicts warn (activity) and return holder info; they do not block.
  */
 export interface LeaseClaimInput {
@@ -60,7 +60,7 @@ export function createLeaseManager(options?: {
     for (const listener of listeners) listener();
   };
 
-  const cloneLease = (lease: Lease): Lease => ({...lease });
+  const cloneLease = (lease: Lease): Lease => ({ ...lease });
 
   const dropLease = (lease: Lease): void => {
     byScope.delete(lease.scope);
@@ -107,7 +107,8 @@ export function createLeaseManager(options?: {
 
       // Same source renews in place.
       if (existing !== undefined && existing.source === input.source) {
-        const renewed: Lease = {...existing,
+        const renewed: Lease = {
+          ...existing,
           claimedAt: at,
           expiresAt: at + input.ttlMs,
           ttlMs: input.ttlMs,
@@ -152,7 +153,7 @@ export function createLeaseManager(options?: {
     get(scope: string): Lease | undefined {
       gcInternal(now());
       const lease = byScope.get(scope);
-      return lease !== undefined ? cloneLease(lease): undefined;
+      return lease !== undefined ? cloneLease(lease) : undefined;
     },
 
     list(): readonly Lease[] {

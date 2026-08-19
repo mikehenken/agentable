@@ -20,7 +20,7 @@
  * boxes that overflowed their labels. This module now draws a dedicated,
  * hand-sized, explicit-shapes fixture instead of either.
  *
- * Executes through the same `executeTool('draw_shapes',...)` path the live
+ * Executes through the same `executeTool('draw_shapes', ...)` path the live
  * Gemini clients use, bound to the same `CHAT_AGENT_TOOL_CONTEXT` used by
  * `geminiChatClient.ts`, so provenance stamping and tool-call telemetry stay
  * consistent whichever path drew a mark.
@@ -35,9 +35,9 @@ import { APOGEE_LAUNCH_SEQUENCE_SHAPES } from './fixtures/apogeeAerospace';
 import { withAgentToolContextAsync } from '../agents/agentContext';
 import { isDrawCapabilityAvailable } from '../agents/engineBridge';
 import { executeTool } from '../agents/tools/canvasTools';
- // Import the event name from the constants module directly (not the
- // choreography barrel, which re-exports engine-specific helpers) so the
- // engine-agnostic chat layer stays free of any tldraw import.
+// Import the event name from the constants module directly (not the
+// choreography barrel, which re-exports engine-specific helpers) so the
+// engine-agnostic chat layer stays free of any tldraw import.
 import { FIT_AGENT_DRAWING_EVENT } from '../choreography/constants';
 import { CHAT_AGENT_TOOL_CONTEXT } from './geminiChatClient';
 
@@ -65,15 +65,18 @@ const NOT_CONFIGURED_TEXT =
  */
 async function runOfflineTool(
   name: string,
-  args: Record<string, unknown>): Promise<OfflineDrawFallbackToolCall> {
+  args: Record<string, unknown>,
+): Promise<OfflineDrawFallbackToolCall> {
   const result = await withAgentToolContextAsync(CHAT_AGENT_TOOL_CONTEXT, () =>
-    executeTool(name, args));
+    executeTool(name, args),
+  );
   window.dispatchEvent(
     new CustomEvent('landi:tool-call', {
       detail: { name, args, ok: result.ok, source: 'chat' },
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
   return { name, args, ok: result.ok };
 }
 
@@ -84,14 +87,15 @@ async function runOfflineTool(
  * fixture instead of stacking additional copies on the canvas.
  */
 export async function runOfflineDrawFallback(): Promise<OfflineDrawFallbackResult> {
-  if (!isDrawCapabilityAvailable) {
+  if (!isDrawCapabilityAvailable()) {
     return { text: NOT_CONFIGURED_TEXT, toolCalls: [] };
   }
 
   const toolCalls: OfflineDrawFallbackToolCall[] = [];
 
   toolCalls.push(
-    await runOfflineTool('clear_agent_drawings', { agentId: CHAT_AGENT_TOOL_CONTEXT.agentId }));
+    await runOfflineTool('clear_agent_drawings', { agentId: CHAT_AGENT_TOOL_CONTEXT.agentId }),
+  );
 
   const drawArgs: Record<string, unknown> = {
     shapes: APOGEE_LAUNCH_SEQUENCE_SHAPES,
@@ -100,21 +104,23 @@ export async function runOfflineDrawFallback(): Promise<OfflineDrawFallbackResul
   toolCalls.push(drawCall);
 
   if (drawCall.ok) {
-     // Reveal the whole sketch. The hand-composed launch sequence is wider
-     // than the default viewport, and the chat panel covers the canvas's
-     // left half, so without this the visitor only sees the first node or
-     // two. The tldraw shell listens for this event and zooms to fit the
-     // marks stamped with this agent id. Dispatched only on the offline demo
-     // path; the live persona lays diagrams out within the current viewport.
+    // Reveal the whole sketch. The hand-composed launch sequence is wider
+    // than the default viewport, and the chat panel covers the canvas's
+    // left half, so without this the visitor only sees the first node or
+    // two. The tldraw shell listens for this event and zooms to fit the
+    // marks stamped with this agent id. Dispatched only on the offline demo
+    // path; the live persona lays diagrams out within the current viewport.
     window.dispatchEvent(
       new CustomEvent(FIT_AGENT_DRAWING_EVENT, {
         detail: { agentId: CHAT_AGENT_TOOL_CONTEXT.agentId },
-      }));
+      }),
+    );
   }
 
   const ok = drawCall.ok;
   const text = ok
-    ? 'Offline demo mode: no live chat endpoint is configured, so here is a deterministic sample sketch instead of a real answer. Connect a chatProxyUrl or a dev API key for live responses.': 'Offline demo mode: no live chat endpoint is configured, and the sample sketch could not be drawn on this canvas. Connect a chatProxyUrl or a dev API key for live responses.';
+    ? 'Offline demo mode: no live chat endpoint is configured, so here is a deterministic sample sketch instead of a real answer. Connect a chatProxyUrl or a dev API key for live responses.'
+    : 'Offline demo mode: no live chat endpoint is configured, and the sample sketch could not be drawn on this canvas. Connect a chatProxyUrl or a dev API key for live responses.';
 
   return { text, toolCalls };
 }

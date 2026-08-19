@@ -1,9 +1,11 @@
 /**
- * Operator surface placement kinds and typed events ( §13).
+ * Operator surface placement kinds and typed events (P13-T4, D51 §13).
  *
- * Four host placements share one page session while each wrapper
+ * Four host placements share one page session (D44) while each wrapper
  * mounts `<agentable-operator-surface>` and emits consistent lifecycle events.
- *** Where the operator surface is anchored on the host page. */
+ */
+
+/** Where the operator surface is anchored on the host page. */
 export type OperatorSurfacePlacementKind = 'dock-inside' | 'dock-outside' | 'slot' | 'floating';
 
 export const OPERATOR_SURFACE_PLACEMENT_KINDS: readonly OperatorSurfacePlacementKind[] = [
@@ -42,6 +44,6 @@ export interface OperatorPlacementEventMap {
 }
 
 declare global {
-   // eslint-disable-next-line / @typescript-eslint/no-empty-object-type -- Lit typed event map augmentation
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Lit typed event map augmentation
   interface HTMLElementEventMap extends OperatorPlacementEventMap {}
 }

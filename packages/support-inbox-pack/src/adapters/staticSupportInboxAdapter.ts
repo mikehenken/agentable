@@ -63,24 +63,25 @@ function loadPersistedMessages(persistenceKey: string): SupportMessage[] {
 
 function savePersistedMessages(
   persistenceKey: string,
-  messages: readonly SupportMessage[]): void {
+  messages: readonly SupportMessage[],
+): void {
   if (typeof globalThis.localStorage === 'undefined') {
     return;
   }
   try {
     globalThis.localStorage.setItem(storageKey(persistenceKey), JSON.stringify(messages));
   } catch {
-     // Quota or privacy mode — in-memory layer still holds mutations for the session.
+    // Quota or privacy mode — in-memory layer still holds mutations for the session.
   }
 }
 
 function withLatency<T>(latencyMs: number, run: () => T | Promise<T>): Promise<T> {
   if (latencyMs <= 0) {
-    return Promise.resolve(run);
+    return Promise.resolve(run());
   }
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Promise.resolve(run).then(resolve).catch(reject);
+      Promise.resolve(run()).then(resolve).catch(reject);
     }, latencyMs);
   });
 }
@@ -93,13 +94,16 @@ function matchesSearch(ticket: SupportTicket, search: string): boolean {
     ticket.customerEmail,
     ticket.preview,
     ticket.assignee ?? '',
-  ].join(' ').toLowerCase();
+  ]
+    .join(' ')
+    .toLowerCase();
   return haystack.includes(needle);
 }
 
 function filterTickets(
   tickets: readonly SupportTicket[],
-  params: Record<string, string>): SupportTicket[] {
+  params: Record<string, string>,
+): SupportTicket[] {
   let result = [...tickets];
   const status = params.status;
   const priority = params.priority;
@@ -121,7 +125,8 @@ function filterTickets(
 
 function filterMacros(
   macros: SupportDataset['macros'],
-  params: Record<string, string>): SupportDataset['macros'] {
+  params: Record<string, string>,
+): SupportDataset['macros'] {
   let result = [...macros];
   const category = params.category;
   const search = params.search;
@@ -135,14 +140,16 @@ function filterMacros(
       (macro) =>
         macro.title.toLowerCase().includes(needle) ||
         macro.body.toLowerCase().includes(needle) ||
-        macro.category.toLowerCase().includes(needle));
+        macro.category.toLowerCase().includes(needle),
+    );
   }
   return result;
 }
 
 async function resolveDatasetInput(
   input: StaticSupportInboxDatasetInput,
-  fetchFn: typeof fetch): Promise<SupportDataset> {
+  fetchFn: typeof fetch,
+): Promise<SupportDataset> {
   if ('url' in input) {
     const response = await fetchFn(input.url);
     if (!response.ok) {
@@ -157,33 +164,37 @@ async function resolveDatasetInput(
 /** Load inline dataset or fetch + validate URL-backed fixture once. */
 export async function resolveSupportDatasetInput(
   input: StaticSupportInboxDatasetInput,
-  fetchFn: typeof fetch = fetch): Promise<SupportDataset> {
+  fetchFn: typeof fetch = fetch,
+): Promise<SupportDataset> {
   return resolveDatasetInput(input, fetchFn);
 }
 
 /**
- * Mock-first support inbox DataAdapter.
+ * Mock-first support inbox DataAdapter (P10-T5).
  * Serves fixture data in-memory with optional localStorage-backed replies.
  */
 export function createStaticSupportInboxAdapter(
   datasetInput: StaticSupportInboxDatasetInput,
-  options: StaticSupportInboxAdapterOptions = {}): DataAdapter {
+  options: StaticSupportInboxAdapterOptions = {},
+): DataAdapter {
   const latencyMs = options.latencyMs ?? 0;
   const persistenceKey = options.persistenceKey ?? 'default';
   const fetchFn = options.fetchFn ?? fetch;
 
   let datasetPromise: Promise<SupportDataset> | null = null;
   let resolvedDataset: SupportDataset | null =
-    'url' in datasetInput ? null: parseSupportDataset(datasetInput);
+    'url' in datasetInput ? null : parseSupportDataset(datasetInput);
 
   const subscribers: Array<{ source: string; onChange: () => void; active: boolean }> = [];
 
-  let messages: SupportMessage[] = [...(resolvedDataset?.messages ?? []),...loadPersistedMessages(persistenceKey),
+  let messages: SupportMessage[] = [
+    ...(resolvedDataset?.messages ?? []),
+    ...loadPersistedMessages(persistenceKey),
   ];
 
   let tickets: SupportTicket[] = [...(resolvedDataset?.tickets ?? [])];
 
-  const ensureDataset = async(): Promise<SupportDataset> => {
+  const ensureDataset = async (): Promise<SupportDataset> => {
     if (resolvedDataset) {
       return resolvedDataset;
     }
@@ -211,7 +222,7 @@ export function createStaticSupportInboxAdapter(
   };
 
   const queryImpl = async (ref: SourceRef, params: Record<string, string>): Promise<unknown> => {
-    const dataset = await ensureDataset;
+    const dataset = await ensureDataset();
     switch (ref.source) {
       case 'support.tickets':
         return filterTickets(tickets, params);
@@ -228,7 +239,7 @@ export function createStaticSupportInboxAdapter(
         return messages.filter((message) => message.ticketId === ticketId);
       }
       case 'support.macros':
-        return filterMacros(dataset().macros, params);
+        return filterMacros(dataset.macros, params);
       default:
         throw Object.assign(new Error(`Unknown support source "${ref.source}"`), {
           code: 'not_found' as const,
@@ -238,7 +249,8 @@ export function createStaticSupportInboxAdapter(
 
   const mutateImpl = async (
     action: DeclaredAction,
-    payload: unknown): Promise<MutationResult> => {
+    payload: unknown,
+  ): Promise<MutationResult> => {
     if (action.source !== 'support.reply') {
       return {
         ok: false,
@@ -288,11 +300,14 @@ export function createStaticSupportInboxAdapter(
     messages = [...messages, message];
     tickets = tickets.map((ticket) =>
       ticket.id === ticketId
-        ? {...ticket,
-            status: ticket.status === 'resolved' ? 'resolved': 'pending',
+        ? {
+            ...ticket,
+            status: ticket.status === 'resolved' ? 'resolved' : 'pending',
             preview: messageBody ?? ticket.preview,
             updatedAt: sentAt,
-          }: ticket);
+          }
+        : ticket,
+    );
 
     savePersistedMessages(persistenceKey, messages);
     notify('support.messages');

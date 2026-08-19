@@ -1,5 +1,5 @@
 /**
- * Host action `export_document` ( 03 section 12).
+ * Host action `export_document` (P12-T4, 03 section 12).
  */
 import type { ToolDefinition, ToolResult } from '../tools';
 import type { DocumentStore } from './documentAdapter';
@@ -10,7 +10,7 @@ import type { DocumentPayload } from './types';
 import { DOCUMENT_PANEL_ID } from './types';
 
 function readNonEmptyString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readFormat(value: unknown): DocumentExportFormat | undefined {
@@ -32,7 +32,8 @@ function bytesToBase64(bytes: Uint8Array): string {
 }
 
 export function createExportDocumentHostAction(
-  context: DocumentExportHostContext): ToolDefinition {
+  context: DocumentExportHostContext,
+): ToolDefinition {
   return {
     declaration: {
       name: EXPORT_DOCUMENT_HOST_ACTION_ID,
@@ -88,7 +89,7 @@ export function createExportDocumentHostAction(
           },
         };
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message: 'export failed';
+        const message = error instanceof Error ? error.message : 'export failed';
         return { ok: false, error: message };
       }
     },
@@ -97,11 +98,12 @@ export function createExportDocumentHostAction(
 
 /**
  * Resolve a document payload from a panel instance id via an in-memory store keyed by
- * `scope.entityId` `documentId`.
+ * `scope.entityId` / `documentId`.
  */
 export function createPanelDocumentResolver(
   lookup: (panelId: string) => { documentId: string } | null,
-  store: Pick<DocumentStore, 'get'>): (panelId: string) => DocumentPayload | null {
+  store: Pick<DocumentStore, 'get'>,
+): (panelId: string) => DocumentPayload | null {
   return (panelId: string) => {
     const binding = lookup(panelId);
     if (binding === null) {

@@ -53,7 +53,8 @@ export function writeFieldPath(root: Record<string, unknown>, path: string, next
 
 function readChild(
   container: Record<string, unknown> | unknown[],
-  segment: string): Record<string, unknown> | unknown[] | undefined {
+  segment: string,
+): Record<string, unknown> | unknown[] | undefined {
   if (Array.isArray(container)) {
     const index = Number(segment);
     if (!Number.isInteger(index) || index < 0 || index >= container.length) {
@@ -82,7 +83,8 @@ function createContainer(nextSegment: string | undefined): Record<string, unknow
 function assignChild(
   container: Record<string, unknown> | unknown[],
   segment: string,
-  value: unknown): void {
+  value: unknown,
+): void {
   if (Array.isArray(container)) {
     const index = Number(segment);
     if (!Number.isInteger(index) || index < 0) return;
@@ -113,12 +115,14 @@ export function asRecordArray(value: unknown): Record<string, unknown>[] {
   if (!Array.isArray(value)) return [];
   return value.filter(
     (entry): entry is Record<string, unknown> =>
-      typeof entry === 'object' && entry !== null && !Array.isArray(entry));
+      typeof entry === 'object' && entry !== null && !Array.isArray(entry),
+  );
 }
 
 export function mergeDraft(
   serverData: Record<string, unknown> | undefined,
-  draft: Record<string, unknown> | null): Record<string, unknown> {
+  draft: Record<string, unknown> | null,
+): Record<string, unknown> {
   if (draft !== null) return draft;
-  return serverData !== undefined ? cloneRecord(serverData): {};
+  return serverData !== undefined ? cloneRecord(serverData) : {};
 }

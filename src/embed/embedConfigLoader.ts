@@ -15,7 +15,8 @@ import {
 
 export async function fetchEmbedConfigDocument(
   configUrl: string,
-  fetchFn: EmbedFetchFn): Promise<EmbedConfigDocument> {
+  fetchFn: EmbedFetchFn,
+): Promise<EmbedConfigDocument> {
   if (!configUrl.trim()) {
     throw new Error('config-url is empty');
   }
@@ -51,7 +52,8 @@ export interface EmbedConfigSourceInput {
 
 async function resolvePanelDataFromConfigDoc(
   configDoc: EmbedConfigDocument,
-  fetchFn: EmbedFetchFn): Promise<RawPanelDataPayload | null> {
+  fetchFn: EmbedFetchFn,
+): Promise<RawPanelDataPayload | null> {
   if (configDoc.adapter) {
     return resolvePanelDataFromAdapter(configDoc.adapter, fetchFn);
   }
@@ -67,7 +69,8 @@ async function resolvePanelDataFromConfigDoc(
  * Precedence: `config-url` > anon-key tenant lookup > legacy `panel-data-url`.
  */
 export async function resolveEmbedPanelData(
-  input: EmbedConfigSourceInput): Promise<ResolvedEmbedPanelData> {
+  input: EmbedConfigSourceInput,
+): Promise<ResolvedEmbedPanelData> {
   const { configUrl, panelDataUrl, fetchFn } = input;
 
   if (configUrl.trim()) {

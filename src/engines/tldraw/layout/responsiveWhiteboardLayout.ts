@@ -1,11 +1,11 @@
 /**
  * Viewport-aware whiteboard panel sizing helpers (pure — unit-testable).
- * Used by `defaultWhiteboardPanelSize` and layout chrome (auto-arrange reset).
+ * Used by `defaultWhiteboardPanelSize` and layout chrome (auto-arrange / reset).
  */
 import { GRID_SIZE, snapToGrid } from '../../../layout/panelLayoutEngine';
 import { getWhiteboardListPanelIds } from './whiteboardLayoutConfig';
 
-/** Mobile narrow embed breakpoint (matches panelLayoutEngine MOBILE_BP spirit). */
+/** Mobile / narrow embed breakpoint (matches panelLayoutEngine MOBILE_BP spirit). */
 export const WHITEBOARD_MOBILE_BP = 640;
 /** Tablet breakpoint — nav may expand. */
 export const WHITEBOARD_TABLET_BP = 768;
@@ -20,7 +20,7 @@ export function whiteboardViewportTier(width: number): WhiteboardViewportTier {
   return 'desktop';
 }
 
-/** True when TopBar toolbar should use compact chrome (icon-only labels). */
+/** True when TopBar / toolbar should use compact chrome (icon-only labels). */
 export function shouldUseCompactWhiteboardChrome(viewportWidth: number): boolean {
   return viewportWidth < WHITEBOARD_TABLET_BP;
 }
@@ -45,17 +45,18 @@ export interface ResponsivePanelSizeInput {
   viewportWidth: number;
   viewportHeight: number;
   panelId: string;
-  /** Optional fallback when panel is not a career list chat. */
+  /** Optional fallback when panel is not a career list / chat. */
   fallback?: { w: number; h: number };
 }
 
 /**
  * Scale default panel geometry with viewport bounds.
  * Narrow (~390): chat nearly full-height strip; list panels use most of width.
- * Mid (~768) desktop (~1280): list panels ~36% width, chat ~32% strip.
+ * Mid (~768) / desktop (~1280): list panels ~36% width, chat ~32% strip.
  */
 export function computeResponsiveWhiteboardPanelSize(
-  input: ResponsivePanelSizeInput): { w: number; h: number } {
+  input: ResponsivePanelSizeInput,
+): { w: number; h: number } {
   const { viewportWidth, viewportHeight, panelId, fallback } = input;
   const inset = 24;
   const availW = Math.max(GRID_SIZE * 4, viewportWidth - inset * 2);
@@ -125,9 +126,9 @@ export function computeResponsiveWhiteboardPanelSize(
  */
 export function whiteboardNavReserveWidth(viewportWidth: number, expanded: boolean): number {
   if (viewportWidth < WHITEBOARD_MOBILE_BP) {
-    return expanded ? 180: 48;
+    return expanded ? 180 : 48;
   }
-  return expanded ? 210: 56;
+  return expanded ? 210 : 56;
 }
 
 /** Page-space padding from viewport edges into free canvas. */
@@ -157,11 +158,13 @@ export interface ComputeWhiteboardChromeInsetsOptions {
  * Expanded menu uses the full rail width; collapsed uses the icon-rail reserve.
  */
 export function computeWhiteboardChromeInsets(
-  options: ComputeWhiteboardChromeInsetsOptions): WhiteboardChromeInsets {
+  options: ComputeWhiteboardChromeInsetsOptions,
+): WhiteboardChromeInsets {
   const inset = options.viewportInset ?? WHITEBOARD_VIEWPORT_INSET;
   const showNav = options.showNavSidebar ?? true;
   const navReserve = showNav
-    ? whiteboardNavReserveWidth(options.viewportWidth, options.navExpanded): 0;
+    ? whiteboardNavReserveWidth(options.viewportWidth, options.navExpanded)
+    : 0;
   return {
     left: inset + navReserve,
     top: inset,

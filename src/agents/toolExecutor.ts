@@ -1,5 +1,5 @@
 /**
- * Scoped agent tool execution: role allow-lists enforced before handlers run.
+ * Scoped agent tool execution (D45): role allow-lists enforced before handlers run.
  */
 import type { ToolDefinition, ToolResult } from '../panels/tools';
 import { getHostActions } from '../panels/tools';
@@ -29,11 +29,11 @@ export interface AgentToolExecutorOptions {
   activity?: ActivityLog;
   /** When set, only these tools are considered (e.g. panel tools on a host). */
   tools?: readonly ToolDefinition[];
-  /** Resolve instance ids to definition ids for panel scope checks. */
+  /** Resolve instance ids to definition ids for panel scope checks (D45). */
   resolvePanelDefinitionId?: (panelId: string) => string | undefined;
-  /** Host telemetry sink hook for tool latency + frozen error codes. */
+  /** Host telemetry sink hook for tool latency + frozen error codes (D55). */
   telemetryEmit?: TelemetryEmit;
-  /** Optional budget signal for costClass spend recording ( ). */
+  /** Optional budget signal for costClass spend recording (D43 / D55). */
   budget?: AgentBudgetSignal;
 }
 
@@ -41,11 +41,12 @@ export interface AgentToolExecutor {
   execute(
     toolName: string,
     args: Record<string, unknown>,
-    context: AgentToolExecutionContext): Promise<ToolResult>;
+    context: AgentToolExecutionContext,
+  ): Promise<ToolResult>;
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function resolveTool(name: string, tools?: readonly ToolDefinition[]): ToolDefinition | undefined {
@@ -69,7 +70,8 @@ function panelIdFromArgs(toolName: string, args: Record<string, unknown>): strin
 function panelScopeTarget(
   toolName: string,
   args: Record<string, unknown>,
-  resolvePanelDefinitionId?: (panelId: string) => string | undefined): string | undefined {
+  resolvePanelDefinitionId?: (panelId: string) => string | undefined,
+): string | undefined {
   const raw = panelIdFromArgs(toolName, args);
   if (raw === undefined) return undefined;
   const resolved = resolvePanelDefinitionId?.(raw);
@@ -91,7 +93,8 @@ function emitToolTelemetry(
     agentId: string;
     latencyMs: number;
     result: ToolResult;
-  }): void {
+  },
+): void {
   if (telemetryEmit === undefined) {
     return;
   }
@@ -101,21 +104,24 @@ function emitToolTelemetry(
       toolName: input.toolName,
       agentId: input.agentId,
       latencyMs: input.latencyMs,
-      outcome: errorCodes.length > 0 ? 'error': 'success',...(errorCodes.length > 0 ? { errorCodes }: {}),
-    }));
+      outcome: errorCodes.length > 0 ? 'error' : 'success',
+      ...(errorCodes.length > 0 ? { errorCodes } : {}),
+    }),
+  );
 }
 
 function recordToolSpend(
   budget: AgentBudgetSignal | undefined,
   tool: ToolDefinition,
   toolName: string,
-  agentId: string): BudgetSpendRecord | undefined {
+  agentId: string,
+): BudgetSpendRecord | undefined {
   const costClass = tool.declaration.costClass;
   if (budget === undefined || costClass === undefined) {
     return undefined;
   }
   const units =
-    costClass === 'expensive' ? EXPENSIVE_DEFAULT_UNITS: CHEAP_DEFAULT_UNITS;
+    costClass === 'expensive' ? EXPENSIVE_DEFAULT_UNITS : CHEAP_DEFAULT_UNITS;
   return budget.record({
     agentId,
     capability: toolName,
@@ -131,7 +137,8 @@ export function createAgentToolExecutor(options: AgentToolExecutorOptions): Agen
     async execute(
       toolName: string,
       args: Record<string, unknown>,
-      context: AgentToolExecutionContext): Promise<ToolResult> {
+      context: AgentToolExecutionContext,
+    ): Promise<ToolResult> {
       const startedAt = Date.now();
       const label = context.agentLabel || resolveAgentLabel(registry, context.agentId);
 
@@ -177,7 +184,8 @@ export function createAgentToolExecutor(options: AgentToolExecutorOptions): Agen
       const panelTarget = panelScopeTarget(
         toolName,
         args,
-        options.resolvePanelDefinitionId);
+        options.resolvePanelDefinitionId,
+      );
       if (panelTarget !== undefined && !registry.isPanelAllowed(context.agentId, panelTarget)) {
         activity?.append({
           actor: `agent:${context.agentId}`,
@@ -261,7 +269,7 @@ export function createAgentToolExecutor(options: AgentToolExecutorOptions): Agen
           });
           return result;
         } catch (err) {
-          const message = err instanceof Error ? err.message: String(err);
+          const message = err instanceof Error ? err.message : String(err);
           const result: ToolResult = { ok: false, error: `${toolName} threw: ${message}` };
           emitToolTelemetry(telemetryEmit, {
             toolName,
@@ -278,7 +286,7 @@ export function createAgentToolExecutor(options: AgentToolExecutorOptions): Agen
 
 /** Read the active agent context when handlers run inside `createAgentToolExecutor`. */
 export function requireAgentToolContext(): AgentToolExecutionContext {
-  const ctx = getAgentToolContext;
+  const ctx = getAgentToolContext();
   if (ctx === null) {
     throw new Error('agent tool context is required for this operation');
   }

@@ -1,10 +1,10 @@
 /**
- * Runtime bridge for digest shape slices. Binds when the tldraw
+ * Runtime bridge for digest shape slices (P8-T4). Binds when the tldraw
  * editor mounts (relocated from src/agents/ during the P11 pre-gate
- * cleanup): the agent layer must stay engine-agnostic, so the
+ * cleanup, D37): the agent layer must stay engine-agnostic, so the
  * editor-coupled collector binding lives here and the agent runtime reads
  * the live slice through `src/agents/engineBridge.ts`'s
- * `getEngineDigestShapeSlice` instead.
+ * `getEngineDigestShapeSlice()` instead.
  */
 import type { Editor } from 'tldraw';
 import { collectDigestShapeSummaries } from './digestShapeCollector';
@@ -31,27 +31,30 @@ function resolveViewport(): Rect | null {
   if (typeof boundEditor.getViewportPageBounds !== 'function') {
     return null;
   }
-  const bounds = boundEditor.getViewportPageBounds;
+  const bounds = boundEditor.getViewportPageBounds();
   return {
-    x: bounds().x,
-    y: bounds().y,
-    w: bounds().w,
-    h: bounds().h,
+    x: bounds.x,
+    y: bounds.y,
+    w: bounds.w,
+    h: bounds.h,
   };
 }
 
 /** Bind the collector to a mounted tldraw editor. Returns an unbind function. */
 export function bindDigestShapeCollector(
   editor: Editor,
-  options?: { resolveViewport?: () => Rect | null }): () => void {
+  options?: { resolveViewport?: () => Rect | null },
+): () => void {
   storeUnsubscribe?.();
   boundEditor = editor;
   viewportResolver = options?.resolveViewport ?? null;
   bumpChangeBatch();
-  storeUnsubscribe = editor.store.listen(() => {
+  storeUnsubscribe = editor.store.listen(
+    () => {
       bumpChangeBatch();
     },
-    { source: 'all', scope: 'document' });
+    { source: 'all', scope: 'document' },
+  );
   return () => {
     if (boundEditor !== editor) return;
     storeUnsubscribe?.();

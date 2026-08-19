@@ -1,6 +1,6 @@
 /**
  * Derives agent-facing panel metadata from registered definitions so the
- * six generic panel tools stay aligned with the live registry.
+ * six generic panel tools stay aligned with the live registry (D18).
  */
 import type { PanelRegistry } from './registry';
 import { resolveCatalogString } from '../i18n/resolveCatalogString';
@@ -20,7 +20,7 @@ export interface PanelActionMeta {
   source?: string;
   confirmMessage?: string;
   reversible?: boolean;
-  /** Declared compensating action for reversal. */
+  /** Declared compensating action for D53 reversal. */
   inverseActionId?: string;
 }
 
@@ -41,12 +41,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function scopeKindFromMeta(meta: PanelMeta): PanelScopeKind {
   const kinds = meta.contextKinds;
-  return kinds !== undefined && kinds.length > 0 ? 'context': 'global';
+  return kinds !== undefined && kinds.length > 0 ? 'context' : 'global';
 }
 
 function extractFieldsFromSpec(spec: PanelSpec): PanelFieldMeta[] {
@@ -81,7 +81,7 @@ function extractActionsFromSpec(spec: PanelSpec): PanelActionMeta[] {
   return Object.entries(actions).map(([id, action]) => {
     if (action.kind === 'mutate') {
       const reversible =
-        action.reversible === false || action.destructive === true ? false: true;
+        action.reversible === false || action.destructive === true ? false : true;
       return {
         id,
         kind: action.kind,
@@ -114,7 +114,8 @@ export function derivePanelAgentMeta(definition: PanelDefinition): PanelAgentMet
   };
 
   if (definition.kind === 'spec') {
-    return {...base,
+    return {
+      ...base,
       fields: extractFieldsFromSpec(definition.spec),
       actions: extractActionsFromSpec(definition.spec),
     };
@@ -129,9 +130,10 @@ export function deriveRegistryAgentMetas(registry: PanelRegistry): readonly Pane
 
 export function findPanelAgentMeta(
   registry: PanelRegistry,
-  panelId: string): PanelAgentMeta | undefined {
+  panelId: string,
+): PanelAgentMeta | undefined {
   const definition = registry.get(panelId);
-  return definition === undefined ? undefined: derivePanelAgentMeta(definition);
+  return definition === undefined ? undefined : derivePanelAgentMeta(definition);
 }
 
 export function declaredFieldPaths(meta: PanelAgentMeta): ReadonlySet<string> {

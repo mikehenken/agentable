@@ -17,7 +17,8 @@ function stableStringify(value: JsonValue | undefined): string {
  */
 export function computePayloadDiff(
   currentData: Record<string, JsonValue>,
-  payload: Record<string, JsonValue>): PayloadDiffEntry[] {
+  payload: Record<string, JsonValue>,
+): PayloadDiffEntry[] {
   const entries: PayloadDiffEntry[] = [];
 
   for (const [path, after] of Object.entries(payload)) {
@@ -47,8 +48,9 @@ export function computePayloadDiff(
 
 export function mergePayloadIntoCurrent(
   currentData: Record<string, JsonValue>,
-  payload: Record<string, JsonValue>): Record<string, JsonValue> {
-  const next: Record<string, JsonValue> = {...currentData };
+  payload: Record<string, JsonValue>,
+): Record<string, JsonValue> {
+  const next: Record<string, JsonValue> = { ...currentData };
   for (const [path, value] of Object.entries(payload)) {
     if (value === null && isRecord(currentData) && path in currentData) {
       delete next[path];

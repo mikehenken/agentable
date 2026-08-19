@@ -14,9 +14,10 @@ export function Context({
   usedTokens,
   maxTokens,
   label = 'Context',
-  className,...props
+  className,
+  ...props
 }: ContextProps): React.ReactElement {
-  const safeMax = maxTokens > 0 ? maxTokens: 1;
+  const safeMax = maxTokens > 0 ? maxTokens : 1;
   const ratio = Math.min(1, Math.max(0, usedTokens / safeMax));
   const percent = Math.round(ratio * 100);
 
@@ -24,14 +25,15 @@ export function Context({
     <div
       className={cn(
         'rounded-lg border border-[var(--vibe-border,rgb(255_255_255/0.09))] bg-[var(--vibe-composer-bg,#141414)] px-3 py-2 text-xs',
-        className)}
+        className,
+      )}
       data-testid="operator-context"
       {...props}
     >
       <div className="mb-1.5 flex items-center justify-between gap-2 text-[var(--vibe-text-muted,#9a9a9a)]">
         <span className="font-medium text-[var(--vibe-text,#ececec)]">{label}</span>
         <span>
-          {usedTokens.toLocaleString()} {safeMax.toLocaleString()} ({percent}%)
+          {usedTokens.toLocaleString()} / {safeMax.toLocaleString()} ({percent}%)
         </span>
       </div>
       <div

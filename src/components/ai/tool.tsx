@@ -24,19 +24,22 @@ export function Tool({
   error,
   args = {},
   defaultOpen = false,
-  className,...props
+  className,
+  ...props
 }: ToolProps): React.ReactElement {
   const [open, setOpen] = React.useState(defaultOpen);
   const displayName = toolName.replace(/_/g, ' ');
   const StatusIcon =
-    status === 'running' ? Loader2: status === 'failed' ? XCircle: CheckCircle2;
+    status === 'running' ? Loader2 : status === 'failed' ? XCircle : CheckCircle2;
 
   const inputText = (inputSummary ?? JSON.stringify(args, null, 2)).trim() || '(no parameters)';
   const failedError = status === 'failed' && error !== undefined && error.trim().length > 0
-    ? error.trim() : undefined;
+    ? error.trim()
+    : undefined;
   const outputText =
     status === 'running'
-      ? 'Running…': failedError ??
+      ? 'Running…'
+      : failedError ??
         ((resultSummary ?? '').trim() ||
           formatToolCallLabel(toolName, args, status !== 'failed', error));
 
@@ -44,7 +47,8 @@ export function Tool({
     <div
       className={cn(
         'overflow-hidden rounded-lg border border-[var(--vibe-border,rgb(255_255_255/0.09))] bg-[var(--vibe-composer-bg,#141414)] text-xs',
-        className)}
+        className,
+      )}
       data-testid="operator-tool"
       data-tool-name={toolName}
       data-tool-status={status}
@@ -54,7 +58,7 @@ export function Tool({
         type="button"
         className="flex w-full items-center gap-2 border-b border-[var(--vibe-border,rgb(255_255_255/0.09))] px-3 py-2 text-left hover:bg-[var(--vibe-hover-bg,rgb(255_255_255/0.06))]"
         onClick={() => setOpen((value) => !value)}
-        aria-expanded={open ? 'true': 'false'}
+        aria-expanded={open ? 'true' : 'false'}
       >
         <Wrench className="h-3.5 w-3.5 shrink-0 text-[var(--vibe-text-muted,#9a9a9a)]" aria-hidden />
         <span className="min-w-0 flex-1 truncate font-medium capitalize text-[var(--vibe-text,#ececec)]">
@@ -68,7 +72,8 @@ export function Tool({
             'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide',
             status === 'running' && 'bg-sky-500/10 text-sky-400',
             status === 'succeeded' && 'bg-emerald-500/10 text-emerald-400',
-            status === 'failed' && 'bg-red-500/10 text-red-400')}
+            status === 'failed' && 'bg-red-500/10 text-red-400',
+          )}
         >
           <StatusIcon className={cn('h-3 w-3', status === 'running' && 'animate-spin')} aria-hidden />
           {status}
@@ -76,7 +81,8 @@ export function Tool({
         <ChevronDown
           className={cn(
             'h-3.5 w-3.5 text-[var(--vibe-text-muted,#9a9a9a)] transition-transform',
-            open && 'rotate-180')}
+            open && 'rotate-180',
+          )}
           aria-hidden
         />
       </button>
@@ -95,14 +101,15 @@ export function Tool({
             <ToolOutput failed={status === 'failed'}>{outputText}</ToolOutput>
           </ToolContent>
         </>
-      ): null}
+      ) : null}
     </div>
   );
 }
 
 export function ToolContent({
   children,
-  className,...props
+  className,
+  ...props
 }: React.HTMLAttributes<HTMLDivElement>): React.ReactElement {
   return (
     <div className={cn('px-3 py-2', className)} {...props}>
@@ -113,13 +120,15 @@ export function ToolContent({
 
 export function ToolInput({
   children,
-  className,...props
+  className,
+  ...props
 }: React.HTMLAttributes<HTMLPreElement>): React.ReactElement {
   return (
     <pre
       className={cn(
         'overflow-x-auto whitespace-pre-wrap font-mono text-[11px] text-[var(--vibe-text-muted,#9a9a9a)]',
-        className)}
+        className,
+      )}
       {...props}
     >
       {children}
@@ -130,14 +139,16 @@ export function ToolInput({
 export function ToolOutput({
   children,
   failed = false,
-  className,...props
+  className,
+  ...props
 }: React.HTMLAttributes<HTMLPreElement> & { failed?: boolean }): React.ReactElement {
   return (
     <pre
       className={cn(
         'overflow-x-auto whitespace-pre-wrap text-[11px]',
-        failed ? 'text-red-300': 'text-[var(--vibe-text-muted,#9a9a9a)]',
-        className)}
+        failed ? 'text-red-300' : 'text-[var(--vibe-text-muted,#9a9a9a)]',
+        className,
+      )}
       {...props}
     >
       {children}

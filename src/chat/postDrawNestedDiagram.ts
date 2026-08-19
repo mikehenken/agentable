@@ -25,7 +25,8 @@ function extractQuotedLabels(lint: string): string[] {
 
 function findNodeByLabel(
   graph: CanvasShapeGraph,
-  label: string): CanvasShapeGraphNode | undefined {
+  label: string,
+): CanvasShapeGraphNode | undefined {
   const trimmed = label.replace(/\.\.\.$/, '');
   return graph.shapes.find((node) => {
     const text = typeof node.text === 'string' ? node.text.trim() : '';
@@ -43,7 +44,8 @@ function isPageLevelContainer(node: CanvasShapeGraphNode): boolean {
 
 function isNestedColumnSiblingOverlap(
   lint: string,
-  graph: CanvasShapeGraph | null | undefined): boolean {
+  graph: CanvasShapeGraph | null | undefined,
+): boolean {
   if (graph === null || graph === undefined || !OVERLAP_RE.test(lint)) {
     return false;
   }
@@ -51,7 +53,9 @@ function isNestedColumnSiblingOverlap(
   if (labels.length < 2) {
     return false;
   }
-  const nodes = labels.map((label) => findNodeByLabel(graph, label)).filter((node): node is CanvasShapeGraphNode => node !== undefined);
+  const nodes = labels
+    .map((label) => findNodeByLabel(graph, label))
+    .filter((node): node is CanvasShapeGraphNode => node !== undefined);
   if (nodes.length < 2) {
     return false;
   }
@@ -64,7 +68,8 @@ function isNestedColumnSiblingOverlap(
  */
 export function filterBenignNestedDiagramLints(
   lints: readonly string[],
-  graph?: CanvasShapeGraph | null): string[] {
+  graph?: CanvasShapeGraph | null,
+): string[] {
   const hasConnectors =
     graph?.shapes.some((node) => node.kind === 'arrow' || node.kind === 'freehand') ?? false;
 
@@ -92,7 +97,8 @@ export function filterBenignNestedDiagramLints(
 export function shouldCompleteNestedDiagramReview(
   layout: AgentDiagramLayoutMode | undefined,
   lintsAfterFilter: readonly string[],
-  _repairLayout: PostDrawRepairLayout): boolean {
+  _repairLayout: PostDrawRepairLayout,
+): boolean {
   if (layout !== 'nested') {
     return false;
   }

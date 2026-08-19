@@ -5,37 +5,37 @@
  * whiteboard.
  *
  * Architecture:
- * - `BaseBoxShapeUtil` gives us the box-shape primitives (resize,
- * selection, page bounds) for free.
- * - `<HTMLContainer>` is tldraw's escape hatch for rendering React inside
- * a shape's bounding box. Anything inside it lives in the host DOM
- * (NOT inside an SVG), so it gets normal CSS, normal accessibility,
- * and normal pointer events.
+ *   - `BaseBoxShapeUtil` gives us the box-shape primitives (resize,
+ *     selection, page bounds) for free.
+ *   - `<HTMLContainer>` is tldraw's escape hatch for rendering React inside
+ *     a shape's bounding box. Anything inside it lives in the host DOM
+ *     (NOT inside an SVG), so it gets normal CSS, normal accessibility,
+ *     and normal pointer events.
  *
  * Pointer-event boundary:
- * - Title bar (PanelChrome) lets pointer events through → tldraw can
- * drag the shape by its title. Buttons inside the chrome
- * stopPropagation individually so close/minimize don't trigger drags.
- * - Body wraps its children in `pointerEvents: 'all'` + a wheel/pointer
- * stopPropagation so panel inputs, scroll, and clicks work without
- * fighting tldraw's pan/zoom gesture pipeline.
+ *   - Title bar (PanelChrome) lets pointer events through → tldraw can
+ *     drag the shape by its title. Buttons inside the chrome
+ *     stopPropagation individually so close/minimize don't trigger drags.
+ *   - Body wraps its children in `pointerEvents: 'all'` + a wheel/pointer
+ *     stopPropagation so panel inputs, scroll, and clicks work without
+ *     fighting tldraw's pan/zoom gesture pipeline.
  *
  * Registry flow:
- * - The shape stores `panelId` in its props (the only piece of identity
- * it needs).
- * - `useLazyPanel(registry, panelId)` returns a `React.lazy` component
- * for the registered panel; if the id isn't registered, we fall back
- * to a placeholder so the user sees a friendly card instead of a
- * thrown error.
+ *   - The shape stores `panelId` in its props (the only piece of identity
+ *     it needs).
+ *   - `useLazyPanel(registry, panelId)` returns a `React.lazy()` component
+ *     for the registered panel; if the id isn't registered, we fall back
+ *     to a placeholder so the user sees a friendly card instead of a
+ *     thrown error.
  *
  * Panel data:
- * - `props.data` is a free-form bag passed in via
- * `openPanelInCanvas({ panelProps })`. The shape util forwards it to
- * the panel component as a prop.
- * - Chrome behaviour (title, minimize, hideChrome, fullBleed, noBorder)
- * resolves through `resolvePanelChrome`: typed options under
- * `data.chrome` are the source of truth, with the legacy reserved
- * `__*` keys still readable for documents older hosts wrote.
+ *   - `props.data` is a free-form bag passed in via
+ *     `openPanelInCanvas({ panelProps })`. The shape util forwards it to
+ *     the panel component as a prop.
+ *   - Chrome behaviour (title, minimize, hideChrome, fullBleed, noBorder)
+ *     resolves through `resolvePanelChrome`: typed options under
+ *     `data.chrome` are the source of truth, with the legacy reserved
+ *     `__*` keys still readable for documents older hosts wrote.
  */
 import { useCallback, useEffect, useRef, type ReactElement } from 'react';
 import {
@@ -97,7 +97,8 @@ function panelBodyShouldCapturePointer(target: EventTarget | null): boolean {
         '.panel-shape__drag-handle',
         '.draft-preview-panel__header',
         '.panel-chrome',
-      ].join(', '))
+      ].join(', '),
+    )
   ) {
     return false;
   }
@@ -116,7 +117,9 @@ function panelBodyShouldCapturePointer(target: EventTarget | null): boolean {
         '.draft-preview-panel__add-tab',
         '.draft-preview-panel__body',
         '.panel-shape__content',
-      ].join(', ')));
+      ].join(', '),
+    ),
+  );
 }
 
 /**
@@ -144,7 +147,8 @@ import { editableTargetShouldCaptureKey as panelBodyShouldCaptureKey } from '../
  * to `<Tldraw shapeUtils={[...]}>`.
  */
 export function createPanelShapeUtil(
-  registry: WhiteboardPanelRegistry = DEFAULT_WHITEBOARD_PANEL_REGISTRY) {
+  registry: WhiteboardPanelRegistry = DEFAULT_WHITEBOARD_PANEL_REGISTRY,
+) {
   class PanelShapeUtil extends BaseBoxShapeUtil<PanelShape> {
     static override type = 'panel' as const;
     static override props: RecordProps<PanelShape> = {
@@ -171,8 +175,8 @@ export function createPanelShapeUtil(
     }
 
     /** Whether tldraw can resize this shape. Day 1: yes - the user expects
-     * to grab corners and stretch panels. Day 3 may pin specific shapes
-     * (e.g. the voice shape) by overriding via shape data. */
+     *  to grab corners and stretch panels. Day 3 may pin specific shapes
+     *  (e.g. the voice shape) by overriding via shape data. */
     /** Wheel scroll is handled selectively via panelScrollWheel capture - never block canvas pan/zoom globally. */
     override canScroll(_shape: PanelShape): boolean {
       return false;
@@ -232,7 +236,7 @@ export function createPanelShapeUtil(
       if (typeof metaName === 'string' && metaName.trim()) {
         parts.push(metaName);
       }
-      return parts.length > 0 ? parts.join(' '): undefined;
+      return parts.length > 0 ? parts.join(' ') : undefined;
     }
   }
 
@@ -254,7 +258,8 @@ const PanelShapeIndicator = track(function PanelShapeIndicator({
 }): ReactElement {
   const editor = useEditor();
   const showOutline = useValue(
-    'panelIndicator', () => {
+    'panelIndicator',
+    () => {
       const selectedIds = editor.getSelectedShapeIds();
       if (selectedIds.includes(shape.id)) return true;
       const onlySelected = editor.getOnlySelectedShape();
@@ -262,7 +267,8 @@ const PanelShapeIndicator = track(function PanelShapeIndicator({
       const toolId = editor.getCurrentToolId();
       return toolId === 'select' || toolId.startsWith('select.');
     },
-    [editor, shape.id]);
+    [editor, shape.id],
+  );
 
   if (!showOutline) {
     return <g />;
@@ -326,7 +332,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
       // a shadow-DOM embed is the host element, never the inner textarea).
       // Blurring the editor when a panel input takes focus detaches that
       // listener, so typing "d", space, etc. types text instead of switching
-      // the canvas tool. `editor.blur` only blurs the canvas container, not
+      // the canvas tool. `editor.blur()` only blurs the canvas container, not
       // the focused input, so typing and the input's own Enter-to-submit keep
       // working. tldraw refocuses the canvas on the next pointer interaction.
       if (panelBodyShouldCaptureKey(e.target)) editor.blur();
@@ -368,21 +374,24 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
       data-testid={`panel-shape-${panelId}`}
       className={[
         'panel-shape',
-        fullBleed ? 'panel-shape--full-bleed': 'panel-shape--chrome',
-      ].filter(Boolean).join(' ')}
+        fullBleed ? 'panel-shape--full-bleed' : 'panel-shape--chrome',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       onPointerDownCapture={() => {
         activatePanelStack();
       }}
       style={{
         width: shape.props.w,
-        height: isMinimized ? TITLE_BAR_HEIGHT: shape.props.h,
+        height: isMinimized ? TITLE_BAR_HEIGHT : shape.props.h,
         display: 'flex',
         flexDirection: 'column',
         background: fullBleed
-          ? 'var(--landi-color-background, #F0F0EC)': 'var(--landi-color-surface, #FFFFFF)',
-        border: edgeToEdge ? 'none': '1px solid var(--landi-color-border, #E5E5E0)',
-        borderRadius: edgeToEdge ? 0: 12,
-        boxShadow: edgeToEdge ? 'none': 'var(--landi-shadow-md, 0 4px 12px rgba(0,0,0,0.06))',
+          ? 'var(--landi-color-background, #F0F0EC)'
+          : 'var(--landi-color-surface, #FFFFFF)',
+        border: edgeToEdge ? 'none' : '1px solid var(--landi-color-border, #E5E5E0)',
+        borderRadius: edgeToEdge ? 0 : 12,
+        boxShadow: edgeToEdge ? 'none' : 'var(--landi-shadow-md, 0 4px 12px rgba(0,0,0,0.06))',
         overflow: 'hidden',
         // Pointer events on the container itself flow to tldraw - that's
         // how the user grabs the shape. The body div below intercepts
@@ -402,7 +411,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           />
           <PanelApprovalLayer panelId={panelId} />
         </>
-      ): (
+      ) : (
         <div
           className="panel-shape__drag-rail"
           data-panel-drag-handle="true"
@@ -418,7 +427,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
         <div
           ref={bodyRef}
           className="panel-shape__body landi-overlay-scroll"
-          data-full-bleed={fullBleed ? 'true': undefined}
+          data-full-bleed={fullBleed ? 'true' : undefined}
           data-panel-id={panelId || undefined}
           // Body wrapper. Stops pointer/wheel events so panel inputs scroll
           // & receive focus normally without fighting tldraw's pan/zoom.
@@ -440,10 +449,10 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            overflow: fullBleed ? 'hidden': 'auto',
+            overflow: fullBleed ? 'hidden' : 'auto',
             overscrollBehavior: 'contain',
             touchAction: 'pan-y',
-            background: fullBleed ? 'transparent': 'var(--landi-color-surface, #FFFFFF)',
+            background: fullBleed ? 'transparent' : 'var(--landi-color-surface, #FFFFFF)',
           }}
         >
           <div className="panel-shape__content">
@@ -462,5 +471,8 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
 
 function friendlyTitle(panelId: string): string {
   if (!panelId) return 'Panel';
-  return panelId.split(/[-_]/).map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+  return panelId
+    .split(/[-_]/)
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join(' ');
 }

@@ -1,5 +1,5 @@
 /**
- * DOCX export from the document block model. No HTML round-trip.
+ * DOCX export from the document block model (P12-T4). No HTML round-trip.
  */
 import { buildDeterministicZip } from './deterministicZip';
 import { escapeXml, runsToPlainText } from './exportText';
@@ -43,13 +43,13 @@ function runsXml(runs: readonly TextRun[]): string {
 
 function paragraphXml(text: string, style?: string): string {
   const styleXml =
-    style !== undefined ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>`: '';
+    style !== undefined ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>` : '';
   return `<w:p>${styleXml}<w:r><w:t xml:space="preserve">${xmlEscape(text)}</w:t></w:r></w:p>`;
 }
 
 function paragraphRunsXml(runs: readonly TextRun[], style?: string): string {
   const styleXml =
-    style !== undefined ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>`: '';
+    style !== undefined ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>` : '';
   return `<w:p>${styleXml}${runsXml(runs)}</w:p>`;
 }
 
@@ -63,7 +63,7 @@ function blocksToDocumentXml(blocks: readonly DocBlock[]): string {
   for (const block of blocks) {
     switch (block.type) {
       case 'heading': {
-        const style = block.level === 1 ? 'Heading1': block.level === 2 ? 'Heading2': 'Heading3';
+        const style = block.level === 1 ? 'Heading1' : block.level === 2 ? 'Heading2' : 'Heading3';
         parts.push(paragraphXml(sanitizePlainText(block.text), style));
         break;
       }
@@ -72,7 +72,8 @@ function blocksToDocumentXml(blocks: readonly DocBlock[]): string {
         break;
       case 'list': {
         block.items.forEach((itemBlocks, itemIndex) => {
-          const itemText = itemBlocks.map((nested) => {
+          const itemText = itemBlocks
+            .map((nested) => {
               if (nested.type === 'paragraph') {
                 return runsToPlainText(nested.runs);
               }
@@ -80,8 +81,10 @@ function blocksToDocumentXml(blocks: readonly DocBlock[]): string {
                 return sanitizePlainText(nested.text);
               }
               return '';
-            }).filter((segment) => segment.length > 0).join(' ');
-          const prefix = block.ordered ? `${itemIndex + 1}. `: '• ';
+            })
+            .filter((segment) => segment.length > 0)
+            .join(' ');
+          const prefix = block.ordered ? `${itemIndex + 1}. ` : '• ';
           parts.push(paragraphXml(`${prefix}${itemText}`));
         });
         break;
@@ -100,15 +103,17 @@ function blocksToDocumentXml(blocks: readonly DocBlock[]): string {
       }
       case 'image': {
         const label =
-          block.alt !== undefined ? sanitizePlainText(block.alt): block.assetId;
+          block.alt !== undefined ? sanitizePlainText(block.alt) : block.assetId;
         parts.push(paragraphXml(`[image: ${label}]`));
         break;
       }
       case 'callout':
         parts.push(
           paragraphRunsXml([
-            { text: `[${block.tone.toUpperCase()}] `, bold: true },...block.runs,
-          ]));
+            { text: `[${block.tone.toUpperCase()}] `, bold: true },
+            ...block.runs,
+          ]),
+        );
         break;
       case 'pageBreak':
         parts.push(pageBreakXml());
@@ -140,7 +145,8 @@ const DOCUMENT_RELS_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"
 
 export async function exportDocumentToDocx(
   payload: DocumentPayload,
-  options: DocumentExportOptions = {}): Promise<Uint8Array> {
+  options: DocumentExportOptions = {},
+): Promise<Uint8Array> {
   void options;
   const body = blocksToDocumentXml(payload.blocks);
   const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

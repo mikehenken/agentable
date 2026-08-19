@@ -50,7 +50,8 @@ export interface ResolveWhiteboardEmbedWiringState {
 }
 
 function mergeInjectedWiring(
-  injected: InjectedWhiteboardWiring): WhiteboardEmbedWiring {
+  injected: InjectedWhiteboardWiring,
+): WhiteboardEmbedWiring {
   return {
     host: injected.host,
     navItems: injected.navItems ?? [],
@@ -71,7 +72,8 @@ function chatOnlyWiring(): WhiteboardEmbedWiring {
 }
 
 function providerResultToWiring(
-  result: WhiteboardWiringProviderResult): WhiteboardEmbedWiring {
+  result: WhiteboardWiringProviderResult,
+): WhiteboardEmbedWiring {
   return {
     host: result.host,
     navItems: result.navItems,
@@ -83,7 +85,8 @@ function providerResultToWiring(
 
 export function resolveWhiteboardEmbedWiring(
   input: ResolveWhiteboardEmbedWiringInput,
-  previousProvider: WhiteboardWiringProviderResult | null = null): ResolveWhiteboardEmbedWiringState {
+  previousProvider: WhiteboardWiringProviderResult | null = null,
+): ResolveWhiteboardEmbedWiringState {
   previousProvider?.dispose();
 
   if (input.injected !== undefined && input.injected !== null) {

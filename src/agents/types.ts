@@ -1,8 +1,10 @@
 /**
- * Model-agnostic agent runtime types.
+ * Model-agnostic agent runtime types (D49).
  * Aliases are opaque client-safe strings; provider ids, model names, and
  * keys resolve only through a host-supplied resolver.
- *** Resolved server-side capabilities for a provider binding. */
+ */
+
+/** Resolved server-side capabilities for a provider binding. */
 export interface ModelCapabilities {
   vision: boolean;
   tools: boolean;
@@ -17,7 +19,7 @@ export interface ProviderBinding {
   caps: ModelCapabilities;
   /**
    * Ordered alias chain tried when this binding is unavailable or its caps
-   * do not satisfy the session's requirements.
+   * do not satisfy the session's requirements (D49).
    */
   fallback?: readonly string[];
   /**
@@ -34,7 +36,8 @@ export interface ModelResolveContext {
 
 export type ModelResolver = (
   alias: string,
-  ctx: ModelResolveContext) => Promise<ProviderBinding>;
+  ctx: ModelResolveContext,
+) => Promise<ProviderBinding>;
 
 export interface ResolvedModelBinding {
   /** Alias that ultimately supplied the binding (after fallback). */
@@ -76,7 +79,7 @@ export interface CreateAgentSessionOptions {
   kind?: AgentSessionKind;
   tenantId?: string;
   label?: string;
-  /** Minimum capabilities required for this session ( gating). */
+  /** Minimum capabilities required for this session (D49 gating). */
   requiredCaps?: Partial<ModelCapabilities>;
 }
 

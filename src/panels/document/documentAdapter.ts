@@ -1,6 +1,6 @@
 /**
- * In-memory `workspace.documents` adapter. Host persistence via
- * `createPersistedDocumentStore`.
+ * In-memory `workspace.documents` adapter (P12-T2). Host persistence via
+ * `createPersistedDocumentStore` (P12-T3, D54).
  */
 import type { PanelScope } from '../types';
 import type {
@@ -21,9 +21,10 @@ export interface DocumentStore {
 }
 
 export function createInMemoryDocumentStore(
-  seed: Record<string, DocumentPayload> = {}): DocumentStore {
+  seed: Record<string, DocumentPayload> = {},
+): DocumentStore {
   const documents = new Map<string, DocumentPayload>(Object.entries(seed));
-  const listeners = new Map<string, Set<() => void>>;
+  const listeners = new Map<string, Set<() => void>>();
 
   const notify = (documentId: string): void => {
     const set = listeners.get(documentId);
@@ -118,7 +119,7 @@ export function createDocumentDataAdapter(store: DocumentStore): DataAdapter {
           error: { code: 'validation', message: 'Invalid document payload' },
         });
       }
-      store.set(documentId, {...parsed, documentId, version: (parsed.version ?? 0) + 1 });
+      store.set(documentId, { ...parsed, documentId, version: (parsed.version ?? 0) + 1 });
       return Promise.resolve({ ok: true, data: parsed });
     },
 

@@ -35,7 +35,10 @@ function parseJsonPointer(path: string): string[] {
   if (path === '/') {
     throw new Error('JSON Patch path "/" is not supported for spec envelopes');
   }
-  return path.slice(1).split('/').map(unescapePointerToken);
+  return path
+    .slice(1)
+    .split('/')
+    .map(unescapePointerToken);
 }
 
 function cloneJsonValue<T>(value: T): T {
@@ -44,7 +47,8 @@ function cloneJsonValue<T>(value: T): T {
 
 function getParent(
   root: Record<string, JsonValue> | JsonValue[],
-  tokens: string[]): { parent: Record<string, JsonValue> | JsonValue[]; key: string } | null {
+  tokens: string[],
+): { parent: Record<string, JsonValue> | JsonValue[]; key: string } | null {
   if (tokens.length === 0) return null;
 
   let current: JsonValue = root;
@@ -80,12 +84,13 @@ function getParent(
 
 function applyOnePatch(
   document: Record<string, JsonValue>,
-  operation: JsonPatchOperation): ApplyJsonPatchResult<Record<string, JsonValue>> {
+  operation: JsonPatchOperation,
+): ApplyJsonPatchResult<Record<string, JsonValue>> {
   let tokens: string[];
   try {
     tokens = parseJsonPointer(operation.path);
   } catch (error) {
-    const message = error instanceof Error ? error.message: String(error);
+    const message = error instanceof Error ? error.message : String(error);
     return { ok: false, message };
   }
 
@@ -172,7 +177,8 @@ function applyOnePatch(
  */
 export function applyJsonPatch<T extends Record<string, JsonValue>>(
   document: T,
-  operations: readonly JsonPatchOperation[]): ApplyJsonPatchResult<T> {
+  operations: readonly JsonPatchOperation[],
+): ApplyJsonPatchResult<T> {
   const working = cloneJsonValue(document);
   for (const operation of operations) {
     const result = applyOnePatch(working, operation);

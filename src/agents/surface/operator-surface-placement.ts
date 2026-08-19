@@ -1,12 +1,12 @@
 /**
  * `<agentable-operator-surface-placement>` — four host placements for the
- * canvas-wide operator surface (§13).
+ * canvas-wide operator surface (P13-T4, D51 §13).
  *
  * Mounts `<agentable-operator-surface>` and emits typed placement events on
- * connect and user interaction. All instances join the shared page session.
+ * connect and user interaction. All instances join the shared page session (D44).
  *
  * Floating placement supports preset anchors, free drag (header handle), and
- * localStorage persistence for gallery hosts.
+ * localStorage persistence for gallery hosts (P13-T7 iteration-4).
  */
 import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -66,11 +66,11 @@ function readFloatingCoordinates(): { x: number | null; y: number | null } {
   }
   const xRaw = window.localStorage.getItem(OPERATOR_FLOATING_X_KEY);
   const yRaw = window.localStorage.getItem(OPERATOR_FLOATING_Y_KEY);
-  const x = xRaw !== null ? Number.parseFloat(xRaw): Number.NaN;
-  const y = yRaw !== null ? Number.parseFloat(yRaw): Number.NaN;
+  const x = xRaw !== null ? Number.parseFloat(xRaw) : Number.NaN;
+  const y = yRaw !== null ? Number.parseFloat(yRaw) : Number.NaN;
   return {
-    x: Number.isFinite(x) ? x: null,
-    y: Number.isFinite(y) ? y: null,
+    x: Number.isFinite(x) ? x : null,
+    y: Number.isFinite(y) ? y : null,
   };
 }
 
@@ -96,7 +96,7 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
   @property({ attribute: 'placement-id', reflect: true })
   declare placementId: string;
 
-  /** Required when `placement="slot"` — registers this host with page slots. */
+  /** Required when `placement="slot"` — registers this host with page slots (D44). */
   @property({ attribute: 'slot-name', reflect: true })
   declare slotName: string;
 
@@ -104,10 +104,10 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
   @property({ attribute: 'default-mode', reflect: true })
   declare defaultMode: string;
 
-  @state private declare _floatingPreset: OperatorFloatingPreset;
-  @state private declare _floatingX: number | null;
-  @state private declare _floatingY: number | null;
-  @state private declare _dragging: boolean;
+  @state() private declare _floatingPreset: OperatorFloatingPreset;
+  @state() private declare _floatingX: number | null;
+  @state() private declare _floatingY: number | null;
+  @state() private declare _dragging: boolean;
 
   private _pageSessionParticipantId = '';
   private _slotUnregister: (() => void) | null = null;
@@ -130,17 +130,22 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
     this._dragging = false;
   }
 
-  static styles = css`:host {
+  static styles = css`
+    :host {
       box-sizing: border-box;
       --operator-placement-border: var(--vibe-border, rgb(255 255 255 / 0.09));
       --operator-placement-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
-    }.placement-root {
+    }
+
+    .placement-root {
       display: flex;
       flex-direction: column;
       min-height: 0;
       height: 100%;
       width: 100%;
-    }:host([placement='dock-inside']) {
+    }
+
+    :host([placement='dock-inside']) {
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -150,7 +155,9 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
       border-radius: var(--operator-radius-md, 8px);
       border: 1px solid var(--operator-placement-border);
       background: var(--vibe-surface, #1a1a1a);
-    }:host([placement='dock-outside']) {
+    }
+
+    :host([placement='dock-outside']) {
       display: flex;
       flex-direction: column;
       min-height: 0;
@@ -158,12 +165,16 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
       width: min(100%, 420px);
       border-left: 1px solid var(--operator-placement-border);
       background: var(--vibe-surface, #1a1a1a);
-    }:host([placement='slot']) {
+    }
+
+    :host([placement='slot']) {
       display: block;
       width: 100%;
       height: 100%;
       min-height: 240px;
-    }:host([placement='floating']) {
+    }
+
+    :host([placement='floating']) {
       position: fixed;
       width: min(420px, calc(100vw - 48px));
       min-height: min(480px, calc(100vh - 48px));
@@ -176,12 +187,18 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
       background: var(--vibe-surface, #1a1a1a);
       box-shadow: var(--operator-placement-shadow);
       overflow: hidden;
-    }:host([placement='floating']).placement-root {
+    }
+
+    :host([placement='floating']) .placement-root {
       min-height: 0;
       flex: 1;
-    }:host([placement='floating']) agentable-operator-surface {
+    }
+
+    :host([placement='floating']) agentable-operator-surface {
       min-height: 280px;
-    }.floating-drag-handle {
+    }
+
+    .floating-drag-handle {
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -197,9 +214,13 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
       cursor: grab;
       user-select: none;
       touch-action: none;
-    }:host([data-dragging='true']).floating-drag-handle {
+    }
+
+    :host([data-dragging='true']) .floating-drag-handle {
       cursor: grabbing;
-    }.floating-drag-grip {
+    }
+
+    .floating-drag-grip {
       color: var(--vibe-text-faint, #6f6f6f);
       letter-spacing: 0.12em;
     }
@@ -251,7 +272,8 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
   protected willUpdate(changed: PropertyValues<this>): void {
     if (changed.has('placement') && !isOperatorSurfacePlacementKind(this.placement)) {
       console.warn(
-        `[operator-surface-placement] invalid placement "${this.placement}"; falling back to dock-inside`);
+        `[operator-surface-placement] invalid placement "${this.placement}"; falling back to dock-inside`,
+      );
       this.placement = 'dock-inside';
     }
     if (changed.has('placement') && this.placement === 'floating') {
@@ -302,7 +324,7 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
     if (typeof window === 'undefined') {
       return;
     }
-    window.localStorage.setItem(OPERATOR_FLOATING_STORAGE_KEY, visible ? '1': '0');
+    window.localStorage.setItem(OPERATOR_FLOATING_STORAGE_KEY, visible ? '1' : '0');
   }
 
   /** Read floating visibility from localStorage. */
@@ -428,14 +450,16 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
     const detail: OperatorPlacementMountedDetail = {
       placement: this.placement,
       placementId: this.placementId,
-      pageSessionId,...(this.slotName.trim() ? { slotName: this.slotName.trim() }: {}),
+      pageSessionId,
+      ...(this.slotName.trim() ? { slotName: this.slotName.trim() } : {}),
     };
     this.dispatchEvent(
       new CustomEvent<OperatorPlacementMountedDetail>('landi:operator-placement-mounted', {
         bubbles: true,
         composed: true,
         detail,
-      }));
+      }),
+    );
     this._mountedEventDispatched = true;
   }
 
@@ -460,20 +484,23 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
   };
 
   private _dispatchInteractionEvent(
-    interactionKind: OperatorPlacementInteractedDetail['interactionKind']): void {
+    interactionKind: OperatorPlacementInteractedDetail['interactionKind'],
+  ): void {
     const pageSessionId = ensurePageSession().sessionId;
     const detail: OperatorPlacementInteractedDetail = {
       placement: this.placement,
       placementId: this.placementId,
       pageSessionId,
-      interactionKind,...(this.slotName.trim() ? { slotName: this.slotName.trim() }: {}),
+      interactionKind,
+      ...(this.slotName.trim() ? { slotName: this.slotName.trim() } : {}),
     };
     this.dispatchEvent(
       new CustomEvent<OperatorPlacementInteractedDetail>('landi:operator-placement-interacted', {
         bubbles: true,
         composed: true,
         detail,
-      }));
+      }),
+    );
   }
 
   render(): TemplateResult {
@@ -493,7 +520,8 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
                 <span class="floating-drag-grip" aria-hidden="true">⋮⋮</span>
                 <span>Floating operator</span>
               </div>
-            `: null}
+            `
+          : null}
         <agentable-operator-surface
           part="operator-surface"
           default-mode=${this.defaultMode || nothing}

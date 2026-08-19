@@ -3,7 +3,7 @@
  *
  * Narrowly scoped like `voiceKernel`: Lit widget bundles subscribe without
  * pulling React or the full agent runtime. The canvas host publishes status
- * transitions from `AgentRegistry` (03 §3.2 ).
+ * transitions from `AgentRegistry` (03 §3.2 / D45).
  */
 
 import type { AgentSessionStatus } from '../agents/types';
@@ -45,7 +45,7 @@ declare global {
 }
 
 function createAgentStatusController(): AgentStatusController {
-  const listeners = new Set<(snapshot: AgentStatusSnapshot) => void>;
+  const listeners = new Set<(snapshot: AgentStatusSnapshot) => void>();
   const rows = new Map<string, AgentStatusEntry>();
   let frozenSnapshot: AgentStatusSnapshot = { agents: [] };
 
@@ -62,7 +62,7 @@ function createAgentStatusController(): AgentStatusController {
   }
 
   const controller: AgentStatusController = {
-    get agents (){
+    get agents() {
       return frozenSnapshot.agents;
     },
     getSnapshot(): AgentStatusSnapshot {
@@ -81,7 +81,7 @@ function createAgentStatusController(): AgentStatusController {
     },
     _publish(entry) {
       if (!entry.agentId.trim()) return;
-      rows.set(entry.agentId, {...entry });
+      rows.set(entry.agentId, { ...entry });
       notify();
     },
     _remove(agentId) {
@@ -93,7 +93,7 @@ function createAgentStatusController(): AgentStatusController {
       rows.clear();
       for (const entry of entries) {
         if (entry.agentId.trim()) {
-          rows.set(entry.agentId, {...entry });
+          rows.set(entry.agentId, { ...entry });
         }
       }
       notify();
@@ -112,7 +112,8 @@ export function installAgentStatusKernel(): AgentStatusKernel {
   if (existing) {
     if (existing.version !== KERNEL_VERSION) {
       console.warn(
-        `[agentStatusKernel] version mismatch: existing=${existing.version} new=${KERNEL_VERSION}; using existing`);
+        `[agentStatusKernel] version mismatch: existing=${existing.version} new=${KERNEL_VERSION}; using existing`,
+      );
     }
     return existing;
   }
@@ -143,7 +144,8 @@ export function __resetAgentStatusKernelForTests__(): void {
 /** Pick the row an unattributed pill should display. */
 export function resolvePrimaryAgentStatus(
   agents: readonly AgentStatusEntry[],
-  preferredAgentId?: string): AgentStatusEntry | undefined {
+  preferredAgentId?: string,
+): AgentStatusEntry | undefined {
   if (preferredAgentId) {
     const match = agents.find((row) => row.agentId === preferredAgentId);
     if (match) return match;

@@ -6,15 +6,15 @@
  * wrapper at the React root via `<CanvasProvider>`.
  *
  * Why context, not props-drilling:
- * The persona is consumed by `<VoiceWidget>` 4 layers down from
- * `<CanvasShell>`. Threading a `persona` prop through every panel makes
- * adding panels expensive and breaks the "panels are independent" model
- * used by `useLayoutStore`.
+ *   The persona is consumed by `<VoiceWidget>` 4 layers down from
+ *   `<CanvasShell>`. Threading a `persona` prop through every panel makes
+ *   adding panels expensive and breaks the "panels are independent" model
+ *   used by `useLayoutStore`.
  *
  * Why context, not direct import:
- * Persona system prompt are tenant-owned. Importing them directly
- * would couple the OSS canvas to a specific tenant package and prevent
- * reuse. Context keeps the canvas a pure consumer of injected config.
+ *   Persona / system prompt are tenant-owned. Importing them directly
+ *   would couple the OSS canvas to a specific tenant package and prevent
+ *   reuse. Context keeps the canvas a pure consumer of injected config.
  *
  * Default persona is intentionally generic — a publishable canvas should
  * still work out-of-the-box (with a no-op/demo persona) before a tenant
@@ -43,7 +43,7 @@ export interface CanvasStarterPrompt {
   text: string;
   /** Optional shorter label for compact composer chips. */
   label?: string;
-  /** When true, show pin affordance (widget pinned-slot parity, P9). */
+  /** When true, show pin affordance (widget / pinned-slot parity, P9). */
   pin?: boolean;
   /**
    * Optional career routing: invoke this tool before sending the chip text.
@@ -85,7 +85,7 @@ export interface CanvasPersona {
    */
   voiceGreeting?: string;
   /**
-   * — who speaks first on voice connect. `agent-first` speaks
+   * D46 — who speaks first on voice connect. `agent-first` speaks
    * `voiceGreeting` on connect; `user-first` opens in listening mode.
    * Default: `agent-first`.
    */
@@ -108,7 +108,7 @@ export interface CanvasPersona {
   /**
    * Optional scripted scenario for mock voice mode. When set, the mock
    * client uses this instead of its built-in default. Tenants supply
-   * a JSON scenario for offline demo CI playback.
+   * a JSON scenario for offline / demo / CI playback.
    */
   mockScenario?: {
     id: string;
@@ -137,7 +137,7 @@ export interface CanvasPersona {
    * Server-side text-chat proxy endpoint (e.g.
    * `https://dev.landi.build/api/ai/gemini/chat`). When set, the chat client
    * POSTs `{ model, contents, config }` to this endpoint instead of calling
-   * the Gemini API directly from the browser, so the raw API key gateway
+   * the Gemini API directly from the browser, so the raw API key / gateway
    * token never ships to the client. Tool round-trips remain client-driven.
    */
   chatProxyUrl?: string;
@@ -168,7 +168,7 @@ export interface CanvasPersona {
  *
  * `unknown[]` is intentional here: the canvas doesn't enforce the panel
  * data shape at the context boundary — each panel defines its own
- * `Job` `Application` `Path` `Resource` type and casts the array
+ * `Job` / `Application` / `Path` / `Resource` type and casts the array
  * at consumption. Tenants are responsible for matching the panel's
  * documented data shape.
  */
@@ -184,11 +184,11 @@ export interface CanvasPanelData {
 export interface CanvasTenantConfig {
   /** Tenant identifier (e.g. "acme", "default"). Surfaced in telemetry. */
   tenant: string;
-  /** Resolved authoring policy; merged from platform + tenant + runtime layers. */
+  /** Resolved authoring policy (D50); merged from platform + tenant + runtime layers. */
   canvasPolicy: ResolvedCanvasPolicy;
   /**
    * Chat empty-state welcome copy (e.g. Sandals Sandy intro). From embed
-   * `welcomeMessage` config-url. When unset, ChatPanel uses a short default.
+   * `welcomeMessage` / config-url. When unset, ChatPanel uses a short default.
    */
   welcomeMessage?: string;
   /** Voice persona — system prompt + greeting + display name. */
@@ -231,7 +231,7 @@ const CanvasContext = createContext<CanvasTenantConfig>(DEFAULT_TENANT_CONFIG);
  */
 export interface PartialCanvasTenantConfig {
   tenant?: string;
-  /** Tenant-layer canvasPolicy partial (merged through `src/config/merge.ts`). */
+  /** Tenant-layer canvasPolicy partial (merged through `src/config/merge.ts`, D54). */
   canvasPolicy?: CanvasPolicyInput;
   /** Session locale (BCP 47); used when React hosts mount without embed attributes. */
   locale?: string;
@@ -244,7 +244,7 @@ export interface PartialCanvasTenantConfig {
 
 export interface CanvasProviderProps {
   config?: PartialCanvasTenantConfig;
-  /** Optional runtime-layer overrides (e.g. canvas-wide agent switcher). */
+  /** Optional runtime-layer overrides (e.g. canvas-wide agent switcher, D51). */
   runtimeConfig?: CanvasConfigLayerInput;
   children: ReactNode;
 }
@@ -256,7 +256,7 @@ export interface CanvasProviderProps {
  * MEMOIZED: the merged value is referentially stable across re-renders unless
  * a primitive field actually changes. Without this, every parent re-render
  * (e.g. a Lit attribute change to `primary-color`) would publish a new
- * `merged` reference, causing every `useCanvasConfig` consumer to think
+ * `merged` reference, causing every `useCanvasConfig()` consumer to think
  * the persona changed — which in `useGeminiLive` would tear down a live
  * voice session and reconnect. See architect-reviewer 2026-04-25 CRITICAL.
  */
@@ -270,9 +270,9 @@ export function CanvasProvider({ config, runtimeConfig, children }: CanvasProvid
   const greetingMode = config?.persona?.greetingMode;
   const assistantName = config?.persona?.assistantName;
   const tenantTitle = config?.persona?.tenantTitle;
-   // starterPrompts is an array — depending on it directly in deps would
-   // re-trigger memo on every render unless the consumer also memoizes the
-   // array. Pin via the persona reference instead.
+  // starterPrompts is an array — depending on it directly in deps would
+  // re-trigger memo on every render unless the consumer also memoizes the
+  // array. Pin via the persona reference instead.
   const starterPrompts = config?.persona?.starterPrompts;
   const mockScenario = config?.persona?.mockScenario;
   const geminiVoiceName = config?.persona?.geminiVoiceName;
@@ -280,17 +280,17 @@ export function CanvasProvider({ config, runtimeConfig, children }: CanvasProvid
   const chatProxyUrl = config?.persona?.chatProxyUrl;
   const visual = config?.persona?.visual;
   const brandLogo = config?.persona?.brandLogo;
-   // Labels — each field optional, falls through to library default when
-   // tenant doesn't override. Keeps OSS copy generic ("Share") while
-   // letting tenants supply specific labels ("Send to recruiter") without
-   // forking.
+  // Labels — each field optional, falls through to library default when
+  // tenant doesn't override. Keeps OSS copy generic ("Share") while
+  // letting tenants supply specific labels ("Send to recruiter") without
+  // forking.
   const lShareArtifact = config?.labels?.shareArtifact;
   const lSendMessage = config?.labels?.sendMessage;
   const lEmptyArtifacts = config?.labels?.emptyArtifacts;
   const lEmptyArtifactsHint = config?.labels?.emptyArtifactsHint;
-   // Panel data — pinned by reference. Tenants pass module-scope arrays;
-   // the panel hooks read these via `useCanvasConfig.panelData.*` and
-   // fall back to library example data when undefined.
+  // Panel data — pinned by reference. Tenants pass module-scope arrays;
+  // the panel hooks read these via `useCanvasConfig().panelData.*` and
+  // fall back to library example data when undefined.
   const pdJobs = config?.panelData?.jobs;
   const pdApplications = config?.panelData?.applications;
   const pdGrowthPaths = config?.panelData?.growthPaths;
@@ -298,13 +298,15 @@ export function CanvasProvider({ config, runtimeConfig, children }: CanvasProvid
   const pdFeaturedResource = config?.panelData?.featuredResource;
   const runtimeCanvasPolicy = runtimeConfig?.canvasPolicy;
 
-  const mergedCanvasPolicy = useMemo(() =>
+  const mergedCanvasPolicy = useMemo(
+    () =>
       mergeCanvasConfig({
         platform: PLATFORM_CANVAS_CONFIG_LAYER,
-        tenant: canvasPolicyInput ? { canvasPolicy: canvasPolicyInput }: undefined,
-        runtime: runtimeCanvasPolicy ? { canvasPolicy: runtimeCanvasPolicy }: undefined,
+        tenant: canvasPolicyInput ? { canvasPolicy: canvasPolicyInput } : undefined,
+        runtime: runtimeCanvasPolicy ? { canvasPolicy: runtimeCanvasPolicy } : undefined,
       }).canvasPolicy,
-    [canvasPolicyInput, runtimeCanvasPolicy]);
+    [canvasPolicyInput, runtimeCanvasPolicy],
+  );
 
   useEffect(() => {
     bootstrapSessionLocale({ tenantLocale: locale });
@@ -317,16 +319,19 @@ export function CanvasProvider({ config, runtimeConfig, children }: CanvasProvid
         voiceGreeting,
         starterPrompts,
       },
-      { tenant });
+      { tenant },
+    );
     warnVoiceGreetingConfig(
       {
         voiceGreeting,
         greetingMode,
       },
-      { tenant });
+      { tenant },
+    );
   }, [assistantName, voiceGreeting, greetingMode, starterPrompts, tenant]);
 
-  const merged = useMemo<CanvasTenantConfig>(() => ({
+  const merged = useMemo<CanvasTenantConfig>(
+    () => ({
       tenant: tenant ?? DEFAULT_TENANT_CONFIG.tenant,
       canvasPolicy: mergedCanvasPolicy,
       welcomeMessage: welcomeMessage ?? DEFAULT_TENANT_CONFIG.welcomeMessage,
@@ -340,7 +345,9 @@ export function CanvasProvider({ config, runtimeConfig, children }: CanvasProvid
         mockScenario,
         geminiVoiceName,
         tokenEndpoint,
-        chatProxyUrl,...(visual ? { visual }: {}),...(brandLogo ? { brandLogo }: {}),
+        chatProxyUrl,
+        ...(visual ? { visual } : {}),
+        ...(brandLogo ? { brandLogo } : {}),
       },
       labels: {
         shareArtifact: lShareArtifact ?? DEFAULT_TENANT_CONFIG.labels.shareArtifact,

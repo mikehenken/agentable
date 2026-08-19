@@ -122,17 +122,17 @@ function ApplicationDetail({
                 <div className="flex flex-col items-center">
                   <span
                     className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1.5 ${
-                      stage.done ? 'bg-canvas-primary': 'bg-canvas-border'
+                      stage.done ? 'bg-canvas-primary' : 'bg-canvas-border'
                     }`}
                   />
                   {index < row.stages.length - 1 ? (
                     <span className="w-px flex-1 bg-canvas-border min-h-[24px] mt-1" />
-                  ): null}
+                  ) : null}
                 </div>
                 <div className="min-w-0 flex-1 pb-1">
                   <p
                     className={`text-[13px] font-medium ${
-                      stage.done ? 'text-canvas': 'text-canvas-muted'
+                      stage.done ? 'text-canvas' : 'text-canvas-muted'
                     }`}
                   >
                     {stage.label}
@@ -143,7 +143,7 @@ function ApplicationDetail({
                   </p>
                   {stage.note ? (
                     <p className="text-[12px] text-canvas-muted mt-1">{stage.note}</p>
-                  ): null}
+                  ) : null}
                 </div>
               </li>
             ))}
@@ -167,11 +167,15 @@ export function ApplicationsPanel({ data }: ReactPanelLoaderProps): ReactElement
   const rows = useApplicationsRows(data);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const selected = useMemo(() => rows.find((row) => row.id === selectedId) ?? null,
-    [rows, selectedId]);
+  const selected = useMemo(
+    () => rows.find((row) => row.id === selectedId) ?? null,
+    [rows, selectedId],
+  );
 
-  const activeCount = useMemo(() => rows.filter((row) => !/draft/i.test(row.status)).length,
-    [rows]);
+  const activeCount = useMemo(
+    () => rows.filter((row) => !/draft/i.test(row.status)).length,
+    [rows],
+  );
 
   const onBack = useCallback(() => setSelectedId(null), []);
 
@@ -195,7 +199,7 @@ export function ApplicationsPanel({ data }: ReactPanelLoaderProps): ReactElement
           <p className="text-[13px] text-canvas-muted text-center py-8">
             No applications yet. Browse open positions to get started.
           </p>
-        ): (
+        ) : (
           rows.map((row) => (
             <ApplicationCard key={row.id} row={row} onSelect={() => setSelectedId(row.id)} />
           ))

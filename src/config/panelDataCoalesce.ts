@@ -13,7 +13,8 @@ export type { RawPanelDataPayload, SerializablePath, SerializableResource } from
 
 /** Merge raw JSON panel-data without resolving Lucide icons. */
 export function coalescePanelDataForEmbed(
-  payload: RawPanelDataPayload | null | undefined): EmbedPanelDataSnapshot {
+  payload: RawPanelDataPayload | null | undefined,
+): EmbedPanelDataSnapshot {
   const supportCoalesced = coalesceSupportPanelDataPayload(payload) as
     | RawPanelDataPayload
     | null

@@ -181,7 +181,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
 
   const merged = useMemo(
     () => ({ ...DEFAULT_LABELS, ...labels }),
-    [labels]);
+    [labels],
+  );
   const allLabel = merged.allFilterLabel;
 
   const { panels } = useLayoutStore();
@@ -197,7 +198,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
       // eslint-disable-next-line no-console
       console.warn(
         `[ListPanel] Unknown panelId "${panelId}". Panel will never render. ` +
-          `Did you register it in the layout store?`);
+          `Did you register it in the layout store?`,
+      );
     }
     // Run only when panelId changes — not on every layout mutation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,9 +207,11 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
 
   // Uncontrolled state (used when the matching controlled prop is undefined).
   const [uncSelectedId, setUncSelectedId] = useState<ListPanelItemId | null>(
-    null);
+    null,
+  );
   const [uncSaved, setUncSaved] = useState<Set<ListPanelItemId>>(
-    () => new Set());
+    () => new Set(),
+  );
   const [uncQuery, setUncQuery] = useState('');
   const [uncFilterValues, setUncFilterValues] = useState<
     Record<string, string>
@@ -321,7 +325,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
 
   const selectedItem =
     selectedId !== null
-      ? items.find((it) => getId(it) === selectedId) ?? null: null;
+      ? items.find((it) => getId(it) === selectedId) ?? null
+      : null;
 
   const toggleSaved = (id: ListPanelItemId) => {
     const next = new Set(saved);
@@ -331,7 +336,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
   };
 
   const title = getTitle
-    ? getTitle({ count: filtered.length, selected: selectedItem }): `${merged.titlePrefix} · ${filtered.length}`;
+    ? getTitle({ count: filtered.length, selected: selectedItem })
+    : `${merged.titlePrefix} · ${filtered.length}`;
 
   // Body content — same in both chrome modes. Only the wrapper differs.
   const body = (
@@ -384,7 +390,8 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
                             onClick={() => setFilterValue(filter.id, v)}
                             className={`shrink-0 px-3 py-1 rounded-full text-[11px] font-medium transition-colors border ${
                               pressed
-                                ? 'bg-canvas-primary text-white border-canvas-primary': 'bg-canvas-surface text-canvas-muted border-canvas-border hover:border-canvas-primary/40 hover:text-canvas-primary'
+                                ? 'bg-canvas-primary text-white border-canvas-primary'
+                                : 'bg-canvas-surface text-canvas-muted border-canvas-border hover:border-canvas-primary/40 hover:text-canvas-primary'
                             }`}
                           >
                             {v}

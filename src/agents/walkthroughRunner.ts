@@ -1,5 +1,5 @@
 /**
- * Story-mode walkthrough runner: steps camera intents through the
+ * Story-mode walkthrough runner (P8-T6): steps camera intents through the
  * P6 politeness queue, emits narration, and cedes instantly on user input.
  */
 import type { CameraQueue } from './camera';
@@ -23,7 +23,7 @@ export interface WalkthroughRunOptions {
   now?: () => number;
   defaultDwellMs?: number;
   sleep?: (ms: number, isCancelled: () => boolean) => Promise<boolean>;
-  registerCancelListener?: (onCancel: () => void) => ()=> void;
+  registerCancelListener?: (onCancel: () => void) => () => void;
 }
 
 let activeCancel: (() => void) | null = null;
@@ -44,7 +44,7 @@ async function defaultSleep(ms: number, isCancelled: () => boolean): Promise<boo
     });
     elapsed += slice;
   }
-  return !isCancelled;
+  return !isCancelled();
 }
 
 export async function runWalkthrough(options: WalkthroughRunOptions): Promise<WalkthroughRunResult> {
@@ -54,7 +54,7 @@ export async function runWalkthrough(options: WalkthroughRunOptions): Promise<Wa
   const narrations: WalkthroughNarration[] = [];
   let cancelled = false;
   let cancelReason: WalkthroughCancelReason | undefined;
-  const at = now;
+  const at = now();
 
   const markCancelled = (reason: WalkthroughCancelReason): void => {
     if (cancelled) return;
@@ -67,13 +67,13 @@ export async function runWalkthrough(options: WalkthroughRunOptions): Promise<Wa
   };
 
   cancelActiveWalkthrough();
-  activeCancel = ()=> markCancelled('superseded');
+  activeCancel = () => markCancelled('superseded');
 
   const unregisterUserCancel = options.registerCancelListener?.(() => {
     markCancelled('user_input');
   });
 
-  if (!options.camera.acquireHold(options.agentId, at())) {
+  if (!options.camera.acquireHold(options.agentId, at)) {
     activeCancel = null;
     unregisterUserCancel?.();
     return {
@@ -102,7 +102,7 @@ export async function runWalkthrough(options: WalkthroughRunOptions): Promise<Wa
         break;
       }
 
-      const enqueueResult = options.camera.enqueue(options.agentId, intent, now);
+      const enqueueResult = options.camera.enqueue(options.agentId, intent, now());
       if (enqueueResult.ok && enqueueResult.applied) {
         options.applyIntent(intent);
       } else if (!enqueueResult.ok) {
@@ -122,7 +122,8 @@ export async function runWalkthrough(options: WalkthroughRunOptions): Promise<Wa
 
       const dwellMs =
         typeof step.dwellMs === 'number' && Number.isFinite(step.dwellMs) && step.dwellMs >= 0
-          ? Math.floor(step.dwellMs): defaultDwellMs;
+          ? Math.floor(step.dwellMs)
+          : defaultDwellMs;
 
       if (dwellMs > 0 && stepIndex < options.steps.length - 1) {
         const slept = await sleep(dwellMs, () => cancelled);
@@ -145,8 +146,8 @@ export async function runWalkthrough(options: WalkthroughRunOptions): Promise<Wa
     completedSteps,
     totalSteps,
     cancelled,
-    cancelReason: cancelled ? cancelReason: undefined,
+    cancelReason: cancelled ? cancelReason : undefined,
     narrations,
-    attentionBadge: cancelReason === 'hold_denied' ? true: undefined,
+    attentionBadge: cancelReason === 'hold_denied' ? true : undefined,
   };
 }

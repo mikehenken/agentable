@@ -1,5 +1,5 @@
 /**
- * Intent-aware offline draw_shapes args for operator Draw mode ( iter-21).
+ * Intent-aware offline draw_shapes args for operator Draw mode (P13-T7 iter-21).
  * Exact demo fixtures (cat, heart) for offline-only gallery paths; generic sketch
  * fallback when live chat is unavailable. No unsupported-subject refusal gate.
  */
@@ -53,7 +53,8 @@ export function resolveOperatorDrawSubjectLabel(subject: OperatorDrawSubject): s
 
 /** Multi-shape cat sketch — head, ears, body, tail, eyes (viewport-centered). */
 export function buildOperatorCatDrawShapes(
-  viewport: OperatorViewportRegion = DEFAULT_VIEWPORT): AgentDrawShapeInput[] {
+  viewport: OperatorViewportRegion = DEFAULT_VIEWPORT,
+): AgentDrawShapeInput[] {
   const { cx, cy } = viewportCenter(viewport);
   return [
     {
@@ -131,7 +132,8 @@ function buildHeartOutlinePoints(cx: number, cy: number): AgentDrawPoint[] {
 
 /** Single closed freehand heart silhouette (viewport-centered). */
 export function buildOperatorHeartDrawShapes(
-  viewport: OperatorViewportRegion = DEFAULT_VIEWPORT): AgentDrawShapeInput[] {
+  viewport: OperatorViewportRegion = DEFAULT_VIEWPORT,
+): AgentDrawShapeInput[] {
   const { cx, cy } = viewportCenter(viewport);
   return [
     {
@@ -149,7 +151,8 @@ export function buildOperatorHeartDrawShapes(
 
 /** Generic multi-shape sketch for offline draw when live chat is unavailable. */
 export function buildOperatorGenericDrawShapes(
-  viewport: OperatorViewportRegion = DEFAULT_VIEWPORT): AgentDrawShapeInput[] {
+  viewport: OperatorViewportRegion = DEFAULT_VIEWPORT,
+): AgentDrawShapeInput[] {
   const { cx, cy } = viewportCenter(viewport);
   return [
     {
@@ -183,7 +186,8 @@ export function buildOperatorGenericDrawShapes(
  */
 export function buildOperatorOfflineDrawArgs(
   userText: string,
-  viewport: OperatorViewportRegion | null): Record<string, unknown> {
+  viewport: OperatorViewportRegion | null,
+): Record<string, unknown> {
   const region = viewport ?? DEFAULT_VIEWPORT;
   const subject = isExactOperatorDemoDrawIntent(userText);
 
@@ -199,10 +203,12 @@ export function buildOperatorOfflineDrawArgs(
 
 export function isOperatorDrawIntent(userText: string): boolean {
   return /\b(draw|sketch|annotate|rectangle|circle|shape|diagram|flow|heart|box|cat)\b/i.test(
-    userText.trim());
+    userText.trim(),
+  );
 }
 
 export function isOperatorClearDrawIntent(userText: string): boolean {
   return /\b(clear|erase|remove|delete)\b.*\b(draw|sketch|annotation|drawing|shape)s?\b/i.test(
-    userText.trim());
+    userText.trim(),
+  );
 }

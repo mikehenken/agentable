@@ -1,7 +1,7 @@
 import type { SpecErrorCode } from './types';
 
 /**
- * Canonical spec validation codes emitted by `validateSpec`.
+ * Canonical spec validation codes emitted by `validateSpec` (D43).
  * Keep in sync with the `SpecErrorCode` union in `types.ts`.
  */
 export const SPEC_ERROR_CODES = [
@@ -30,32 +30,34 @@ export const SPEC_ERROR_CODES = [
   'SPEC_SANITIZE_URL_SCHEME',
 ] as const satisfies readonly SpecErrorCode[];
 
-/** Structured error codes for compose/patch tool-layer rejections. */
+/** Structured error codes for compose/patch tool-layer rejections (D43). */
 export const PANEL_TOOL_REPAIR_ERROR_CODES = [
   'VALIDATION',
   'PATCH_APPLY_FAILED',
   'RUNTIME_DISPOSED',
-  /**: undo stack empty (disposed runtime or no frames). */
+  /** P3-T9: undo stack empty (disposed runtime or no frames). */
   'STACK_EMPTY',
-  /**: compensating reversal target missing from activity ledger. */
+  /** P3-T9: compensating reversal target missing from activity ledger. */
   'ENTRY_NOT_FOUND',
 ] as const;
 
 export type PanelToolRepairErrorCode = (typeof PANEL_TOOL_REPAIR_ERROR_CODES)[number];
 
-/** Frozen rejection code when compose is gated ( vocabulary). */
+/** Frozen rejection code when compose is gated (D43 vocabulary). */
 export const COMPOSE_GATE_CLOSED_CODE = 'COMPOSE_GATE_CLOSED' as const;
 
 export type ComposeGateErrorCode = typeof COMPOSE_GATE_CLOSED_CODE;
 
-/** All structured error codes agents may see from compose/patch repair paths. */
+/** All structured error codes agents may see from compose/patch repair paths (D43). */
 export type RepairErrorCode = SpecErrorCode | ComposeGateErrorCode | PanelToolRepairErrorCode;
 
 /**
- * Frozen repair vocabulary for agent tool rejections.
+ * Frozen repair vocabulary for agent tool rejections (D43).
  * Snapshot-tested; add new codes here before emitting them from runtime paths.
  */
-export const FROZEN_REPAIR_ERROR_CODES = [...SPEC_ERROR_CODES,...PANEL_TOOL_REPAIR_ERROR_CODES,
+export const FROZEN_REPAIR_ERROR_CODES = [
+  ...SPEC_ERROR_CODES,
+  ...PANEL_TOOL_REPAIR_ERROR_CODES,
   COMPOSE_GATE_CLOSED_CODE,
 ] as const satisfies readonly RepairErrorCode[];
 

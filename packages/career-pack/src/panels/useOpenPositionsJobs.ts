@@ -22,7 +22,8 @@ function isCareerJob(value: unknown): value is CareerJob {
 }
 
 function normalizeJobRow(row: PanelJobRow): PanelJobRow {
-  return {...row,
+  return {
+    ...row,
     track: row.track ?? inferJobTrack(row.type, row.department),
   };
 }
@@ -43,7 +44,8 @@ function normalizeJobs(raw: readonly unknown[] | undefined): readonly PanelJobRo
 /** Resolve open-positions rows from panel props or adapter lifecycle. */
 export function useOpenPositionsJobs(
   data: ReactPanelLoaderProps['data'],
-  lifecycle: DataLifecycle | null): readonly PanelJobRow[] {
+  lifecycle: DataLifecycle | null,
+): readonly PanelJobRow[] {
   const propJobs = normalizeJobs(data?.jobs as readonly unknown[] | undefined);
   const [adapterJobs, setAdapterJobs] = useState<readonly PanelJobRow[]>([]);
 
@@ -62,9 +64,9 @@ export function useOpenPositionsJobs(
     }
 
     const sync = (): void => {
-      const snapshot = handle!.getSnapshot;
-      if (snapshot().status === 'success' && Array.isArray(snapshot().data)) {
-        setAdapterJobs(normalizeJobs(snapshot().data as readonly unknown[]));
+      const snapshot = handle!.getSnapshot();
+      if (snapshot.status === 'success' && Array.isArray(snapshot.data)) {
+        setAdapterJobs(normalizeJobs(snapshot.data as readonly unknown[]));
       }
     };
 
@@ -72,7 +74,7 @@ export function useOpenPositionsJobs(
     const unsubscribe = handle.subscribe(sync);
     return () => {
       unsubscribe();
-      handle!.release;
+      handle!.release();
     };
   }, [lifecycle, propJobs.length]);
 

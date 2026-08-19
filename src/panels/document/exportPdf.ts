@@ -1,5 +1,5 @@
 /**
- * PDF export from the document block model. No HTML round-trip.
+ * PDF export from the document block model (P12-T4). No HTML round-trip.
  */
 import { PDFDocument, StandardFonts, type PDFFont, type PDFPage } from 'pdf-lib';
 import { blockToPlainLines } from './exportText';
@@ -26,7 +26,8 @@ function headingFontSize(level: 1 | 2 | 3): number {
 async function ensureSpace(
   doc: PDFDocument,
   cursor: PdfCursor,
-  needed: number): Promise<PdfCursor> {
+  needed: number,
+): Promise<PdfCursor> {
   if (cursor.y - needed >= MARGIN) {
     return cursor;
   }
@@ -39,7 +40,8 @@ async function drawLines(
   cursor: PdfCursor,
   bodyFont: PDFFont,
   lines: readonly string[],
-  fontSize: number): Promise<PdfCursor> {
+  fontSize: number,
+): Promise<PdfCursor> {
   let current = cursor;
   for (const line of lines) {
     current = await ensureSpace(doc, current, LINE_HEIGHT);
@@ -54,7 +56,7 @@ async function drawLines(
       size: fontSize,
       font: bodyFont,
     });
-    current = {...current, y: current.y - LINE_HEIGHT };
+    current = { ...current, y: current.y - LINE_HEIGHT };
   }
   return current;
 }
@@ -64,7 +66,8 @@ async function drawBlock(
   cursor: PdfCursor,
   bodyFont: PDFFont,
   boldFont: PDFFont,
-  block: DocBlock): Promise<PdfCursor> {
+  block: DocBlock,
+): Promise<PdfCursor> {
   if (block.type === 'pageBreak') {
     const page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
     return { page, y: PAGE_HEIGHT - MARGIN };
@@ -81,28 +84,29 @@ async function drawBlock(
 
 export async function exportDocumentToPdf(
   payload: DocumentPayload,
-  options: DocumentExportOptions = {}): Promise<Uint8Array> {
+  options: DocumentExportOptions = {},
+): Promise<Uint8Array> {
   const fixedTimestamp = options.fixedTimestamp ?? DOCUMENT_EXPORT_EPOCH;
-  const doc = await PDFDocument.create;
-  doc().setTitle(payload.title);
-  doc().setProducer('agentable-canvas');
-  doc().setCreator('agentable-canvas');
-  doc().setCreationDate(fixedTimestamp);
-  doc().setModificationDate(fixedTimestamp);
+  const doc = await PDFDocument.create();
+  doc.setTitle(payload.title);
+  doc.setProducer('agentable-canvas');
+  doc.setCreator('agentable-canvas');
+  doc.setCreationDate(fixedTimestamp);
+  doc.setModificationDate(fixedTimestamp);
 
-  const bodyFont = await doc().embedFont(StandardFonts.Helvetica);
-  const boldFont = await doc().embedFont(StandardFonts.HelveticaBold);
+  const bodyFont = await doc.embedFont(StandardFonts.Helvetica);
+  const boldFont = await doc.embedFont(StandardFonts.HelveticaBold);
 
-  const page = doc().addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+  const page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
   let cursor: PdfCursor = { page, y: PAGE_HEIGHT - MARGIN };
 
-  cursor = await drawLines(doc(), cursor, boldFont, [payload.title], 20);
-  cursor = {...cursor, y: cursor.y - LINE_HEIGHT };
+  cursor = await drawLines(doc, cursor, boldFont, [payload.title], 20);
+  cursor = { ...cursor, y: cursor.y - LINE_HEIGHT };
 
   for (const block of payload.blocks) {
-    cursor = await drawBlock(doc(), cursor, bodyFont, boldFont, block);
-    cursor = {...cursor, y: cursor.y - 4 };
+    cursor = await drawBlock(doc, cursor, bodyFont, boldFont, block);
+    cursor = { ...cursor, y: cursor.y - 4 };
   }
 
-  return doc().save({ useObjectStreams: false });
+  return doc.save({ useObjectStreams: false });
 }

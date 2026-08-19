@@ -1,5 +1,5 @@
 /**
- * — voice greeting mode: who speaks first on connect.
+ * D46 — voice greeting mode: who speaks first on connect.
  *
  * - `agent-first`: assistant speaks `voiceGreeting` when the session opens.
  * - `user-first`: session opens in listening state; user speaks first.
@@ -18,7 +18,7 @@ export type ParseVoiceGreetingModeResult =
   | { ok: false; error: string };
 
 /**
- * Parse embed persona `greetingMode`. Empty input resolves to the default
+ * Parse embed / persona `greetingMode`. Empty input resolves to the default
  * (`agent-first`) for backward-compatible behavior.
  */
 export function parseVoiceGreetingMode(raw: unknown): ParseVoiceGreetingModeResult {
@@ -44,11 +44,12 @@ export function parseVoiceGreetingMode(raw: unknown): ParseVoiceGreetingModeResu
  */
 export function resolveConnectGreeting(
   mode: VoiceGreetingMode | undefined,
-  voiceGreeting: string | undefined): string | undefined {
+  voiceGreeting: string | undefined,
+): string | undefined {
   const effectiveMode = mode ?? DEFAULT_VOICE_GREETING_MODE;
   if (effectiveMode === 'user-first') {
     return undefined;
   }
   const trimmed = voiceGreeting?.trim() ?? '';
-  return trimmed.length > 0 ? trimmed: undefined;
+  return trimmed.length > 0 ? trimmed : undefined;
 }

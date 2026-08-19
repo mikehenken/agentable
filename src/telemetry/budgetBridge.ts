@@ -1,6 +1,6 @@
 /**
 
- * Budget spend telemetry bridge ( costClass ).
+ * Budget spend telemetry bridge (D43 costClass / D55).
 
  */
 
@@ -14,9 +14,13 @@ export function wrapBudgetWithTelemetry(
 
   budget: AgentBudgetSignal,
 
-  emit: TelemetryEmit): AgentBudgetSignal {
+  emit: TelemetryEmit,
 
-  return {...budget,
+): AgentBudgetSignal {
+
+  return {
+
+    ...budget,
 
     record(spend: Omit<BudgetSpendRecord, 'at'> & { at?: number }): BudgetSpendRecord {
 
@@ -36,7 +40,9 @@ export function wrapBudgetWithTelemetry(
 
           units: entry.units,
 
-        }));
+        }),
+
+      );
 
       return entry;
 
@@ -64,7 +70,9 @@ export function wrapBudgetWithTelemetry(
 
             errorCodes: ['BUDGET_HARD_CAP'],
 
-          }));
+          }),
+
+        );
 
       }
 

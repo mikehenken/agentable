@@ -1,5 +1,5 @@
 /**
- * Runtime bridge for engine capability flags consumed by agent tools (/).
+ * Runtime bridge for engine capability flags consumed by agent tools (D37/D41).
  *
  * Voice and chat call tools outside React; capabilities bind when the host or
  * whiteboard shell mounts an engine. When unbound, draw tools refuse safely.
@@ -42,7 +42,7 @@ export function resetEngineCapabilitiesForTests(): void {
 }
 
 /**
- * Digest shape slice the mounted engine currently provides (/).
+ * Digest shape slice the mounted engine currently provides (D37/D41, P8-T4).
  * Engine-agnostic by design: the shape is the same whichever engine is
  * mounted, only the source differs (see `bindEngineDigestShapeSlice`).
  */
@@ -56,12 +56,13 @@ let digestShapeSliceSource: (() => DigestShapeSlice | null) | null = null;
 /**
  * Bind a live digest-shape-slice accessor. The mounted engine (or its shell
  * component) calls this once it can compute shape summaries; engines
- * without a spatial drawing surface (DOM) never call it, so
- * `getEngineDigestShapeSlice` stays null and the digest simply omits
+ * without a spatial drawing surface (DOM, D48) never call it, so
+ * `getEngineDigestShapeSlice()` stays null and the digest simply omits
  * shapes rather than the agent layer importing engine-specific code.
  */
 export function bindEngineDigestShapeSlice(
-  source: () => DigestShapeSlice | null): () => void {
+  source: () => DigestShapeSlice | null,
+): () => void {
   digestShapeSliceSource = source;
   return () => {
     if (digestShapeSliceSource === source) {
@@ -71,7 +72,7 @@ export function bindEngineDigestShapeSlice(
 }
 
 export function getEngineDigestShapeSlice(): DigestShapeSlice | null {
-  return digestShapeSliceSource ? digestShapeSliceSource(): null;
+  return digestShapeSliceSource ? digestShapeSliceSource() : null;
 }
 
 export function resetEngineDigestShapeSliceForTests(): void {
@@ -87,7 +88,7 @@ const DRAW_CAPABILITY_REFUSAL_MESSAGE =
 
 /**
  * Build the structured, typed refusal for draw/see/walkthrough tools when
- * `capabilities.draw` is not declared true on the mounted engine.
+ * `capabilities.draw` is not declared true on the mounted engine (P11-T6).
  * The capability is read off the SPI's `EngineCapabilities`, never inferred
  * from an engine name or class check.
  */
@@ -103,7 +104,7 @@ export function buildDrawCapabilityRefusal(): EngineCapabilityRefusal {
 /**
  * The `ToolResult` a draw/see/walkthrough tool handler returns when the
  * engine lacks draw capability. `error` encodes the same structured
- * refusal `buildDrawCapabilityRefusal` returns (`parseEngineCapabilityRefusal`
+ * refusal `buildDrawCapabilityRefusal()` returns (`parseEngineCapabilityRefusal`
  * recovers it); the outer shape stays the existing `{ ok: false, error }`
  * tool-result contract so no caller needs a new envelope to handle this
  * refusal.
@@ -123,7 +124,8 @@ export function drawCapabilityRefusal(): ToolResult {
  * of substring-matching the `error` text.
  */
 export function parseEngineCapabilityRefusal(
-  result: ToolResult): EngineCapabilityRefusal | undefined {
+  result: ToolResult,
+): EngineCapabilityRefusal | undefined {
   if (result.ok) return undefined;
   const prefix = `${ENGINE_DRAW_UNAVAILABLE_CODE}: `;
   if (!result.error.startsWith(prefix)) return undefined;

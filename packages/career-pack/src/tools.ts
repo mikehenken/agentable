@@ -18,17 +18,18 @@ export interface CareerToolRuntime {
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function openPanelTool(
   runtime: CareerToolRuntime,
   panelId: CareerPanelId,
-  source: CareerToolName): ToolResult {
+  source: CareerToolName,
+): ToolResult {
   if (!CAREER_PANEL_IDS.includes(panelId)) {
     return { ok: false, error: `unknown career panel "${panelId}"` };
   }
@@ -42,7 +43,8 @@ function openPanelTool(
  */
 export function createCareerTools(
   runtime: CareerToolRuntime,
-  _pack?: CareerPack): readonly ToolDefinition[] {
+  _pack?: CareerPack,
+): readonly ToolDefinition[] {
   const handlers: Record<CareerToolName, (args: Record<string, unknown>) => ToolResult> = {
     open_positions: (args) => {
       runtime.setOpenPositionsIntent?.({

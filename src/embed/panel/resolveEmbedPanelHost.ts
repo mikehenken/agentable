@@ -67,12 +67,14 @@ function resolvePackKind(panelId: string): EmbedPackKind | null {
 
 function panelDefinitionsForKind(kind: EmbedPackKind): readonly PanelDefinition[] {
   return kind === 'support-inbox'
-    ? createSupportInboxPanelDefinitions(): createCareerPanelDefinitions();
+    ? createSupportInboxPanelDefinitions()
+    : createCareerPanelDefinitions();
 }
 
 function mergeDefinitionsFromConfig(
   base: readonly PanelDefinition[],
-  configDocument: EmbedConfigDocument | null): readonly PanelDefinition[] {
+  configDocument: EmbedConfigDocument | null,
+): readonly PanelDefinition[] {
   if (!configDocument?.panels?.length) {
     return base;
   }
@@ -94,7 +96,8 @@ function normalizeCareerDataset(raw: unknown): StaticCareerDatasetInput {
   }
   throw new EmbedPanelResolutionError(
     'ADAPTER_MISSING',
-    'Inline adapter data is not a valid career dataset document.');
+    'Inline adapter data is not a valid career dataset document.',
+  );
 }
 
 function normalizeSupportDataset(raw: unknown): StaticSupportInboxDatasetInput {
@@ -104,18 +107,21 @@ function normalizeSupportDataset(raw: unknown): StaticSupportInboxDatasetInput {
   }
   throw new EmbedPanelResolutionError(
     'ADAPTER_MISSING',
-    'Inline adapter data is not a valid support inbox dataset document.');
+    'Inline adapter data is not a valid support inbox dataset document.',
+  );
 }
 
 function resolveDatasetInput(
   kind: EmbedPackKind,
   panelId: string,
   configDocument: EmbedConfigDocument | null,
-  panelDataRaw: RawPanelDataPayload | null): StaticCareerDatasetInput | StaticSupportInboxDatasetInput {
+  panelDataRaw: RawPanelDataPayload | null,
+): StaticCareerDatasetInput | StaticSupportInboxDatasetInput {
   if (configDocument?.adapter?.kind === 'static') {
     if (configDocument.adapter.data !== undefined) {
       return kind === 'support-inbox'
-        ? normalizeSupportDataset(configDocument.adapter.data): normalizeCareerDataset(configDocument.adapter.data);
+        ? normalizeSupportDataset(configDocument.adapter.data)
+        : normalizeCareerDataset(configDocument.adapter.data);
     }
     if (configDocument.adapter.dataUrl?.trim()) {
       return { url: configDocument.adapter.dataUrl.trim() };
@@ -130,11 +136,13 @@ function resolveDatasetInput(
       return supportValidated.data;
     }
     return kind === 'support-inbox'
-      ? normalizeSupportDataset(panelDataRaw): normalizeCareerDataset(panelDataRaw);
+      ? normalizeSupportDataset(panelDataRaw)
+      : normalizeCareerDataset(panelDataRaw);
   }
   if (configDocument?.panelData) {
     return kind === 'support-inbox'
-      ? normalizeSupportDataset(configDocument.panelData): normalizeCareerDataset(configDocument.panelData);
+      ? normalizeSupportDataset(configDocument.panelData)
+      : normalizeCareerDataset(configDocument.panelData);
   }
   if (kind === 'support-inbox') {
     return MINIMAL_SUPPORT_DATASET;
@@ -144,14 +152,16 @@ function resolveDatasetInput(
   }
   throw new EmbedPanelResolutionError(
     'ADAPTER_MISSING',
-    'Panel embed requires adapter data via config-url adapter, panel-data-url, or inline panelData.');
+    'Panel embed requires adapter data via config-url adapter, panel-data-url, or inline panelData.',
+  );
 }
 
 function createAdapterForKind(
   kind: EmbedPackKind,
   datasetInput: StaticCareerDatasetInput | StaticSupportInboxDatasetInput,
   tenant: string,
-  fetchFn: typeof fetch): DataAdapter {
+  fetchFn: typeof fetch,
+): DataAdapter {
   if (kind === 'support-inbox') {
     return createStaticSupportInboxAdapter(datasetInput as StaticSupportInboxDatasetInput, {
       persistenceKey: tenant || 'default',
@@ -175,7 +185,8 @@ export function resolveEmbedPanelHost(input: ResolveEmbedPanelHostInput): Resolv
   if (packKind === null) {
     throw new EmbedPanelResolutionError(
       'PANEL_UNKNOWN',
-      `No pack registered for panel id "${panelId}". Known career ids: ${CAREER_PANEL_IDS.join(', ')}; support ids: ${SUPPORT_INBOX_PANEL_IDS.join(', ')}.`);
+      `No pack registered for panel id "${panelId}". Known career ids: ${CAREER_PANEL_IDS.join(', ')}; support ids: ${SUPPORT_INBOX_PANEL_IDS.join(', ')}.`,
+    );
   }
 
   const definitions = mergeDefinitionsFromConfig(panelDefinitionsForKind(packKind), input.configDocument);
@@ -186,7 +197,8 @@ export function resolveEmbedPanelHost(input: ResolveEmbedPanelHostInput): Resolv
     const known = registry.ids().join(', ') || '(none)';
     throw new EmbedPanelResolutionError(
       'PANEL_UNKNOWN',
-      `No panel registered for id "${panelId}". Known ids: ${known}.`);
+      `No panel registered for id "${panelId}". Known ids: ${known}.`,
+    );
   }
 
   const fetchFn = input.fetchFn ?? fetch.bind(globalThis);
@@ -194,14 +206,18 @@ export function resolveEmbedPanelHost(input: ResolveEmbedPanelHostInput): Resolv
     packKind,
     panelId,
     input.configDocument,
-    input.panelDataRaw);
+    input.panelDataRaw,
+  );
   const adapter = createAdapterForKind(packKind, datasetInput, input.tenant, fetchFn);
 
   const adapterSources =
     packKind === 'support-inbox'
-      ? [...SUPPORT_INBOX_SOURCE_NAMES]: definition.kind === 'spec'
-        ? [...CAREER_SOURCE_NAMES]: CAREER_PANEL_IDS.includes(panelId as (typeof CAREER_PANEL_IDS)[number])
-          ? [...CAREER_SOURCE_NAMES]: [];
+      ? [...SUPPORT_INBOX_SOURCE_NAMES]
+      : definition.kind === 'spec'
+        ? [...CAREER_SOURCE_NAMES]
+        : CAREER_PANEL_IDS.includes(panelId as (typeof CAREER_PANEL_IDS)[number])
+          ? [...CAREER_SOURCE_NAMES]
+          : [];
 
   return {
     panelId,

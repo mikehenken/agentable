@@ -1,5 +1,5 @@
 /**
- * CSS class helpers for agent fill and user dirty field markers.
+ * CSS class helpers for agent fill and user dirty field markers (D16, D17).
  * Spec field components apply these classes so users can see what an agent
  * touched versus what they edited themselves.
  */
@@ -9,13 +9,14 @@ export const USER_DIRTY_FIELD_CLASS = 'panel-field--user-dirty';
 export interface FieldMarkerState {
   agentFilled: ReadonlySet<string>;
   userDirty: ReadonlySet<string>;
-  /** Optional per-field agent attribution for chrome badges. */
+  /** Optional per-field agent attribution for chrome badges (D45). */
   fieldAttribution?: ReadonlyMap<string, { agentId: string; agentLabel: string }>;
 }
 
 export function fieldAttributionAttributes(
   fieldPath: string,
-  markers: FieldMarkerState): Record<string, string> | undefined {
+  markers: FieldMarkerState,
+): Record<string, string> | undefined {
   const entry = markers.fieldAttribution?.get(fieldPath);
   if (entry === undefined) return undefined;
   return {
@@ -27,7 +28,8 @@ export function fieldAttributionAttributes(
 
 export function fieldMarkerClassName(
   fieldPath: string,
-  markers: FieldMarkerState): string | undefined {
+  markers: FieldMarkerState,
+): string | undefined {
   if (markers.userDirty.has(fieldPath)) {
     return USER_DIRTY_FIELD_CLASS;
   }
@@ -40,7 +42,8 @@ export function fieldMarkerClassName(
 export function mergeFieldMarkerClass(
   fieldPath: string,
   markers: FieldMarkerState,
-  existingClassName?: string): string {
+  existingClassName?: string,
+): string {
   const markerClass = fieldMarkerClassName(fieldPath, markers);
   if (markerClass === undefined) {
     return existingClassName ?? '';

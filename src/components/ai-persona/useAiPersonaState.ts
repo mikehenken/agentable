@@ -17,24 +17,26 @@ export function useAiPersonaState(options: UseAiPersonaStateOptions = {}): {
   level: number;
   voiceState: ReturnType<typeof useVoiceCall>['state'];
 } {
-  const voice = useVoiceCall;
-  const state = useMemo(() =>
+  const voice = useVoiceCall();
+  const state = useMemo(
+    () =>
       mapAiPersonaState({
-        voiceState: voice().state,
+        voiceState: voice.state,
         isAwaitingReply: options.isAwaitingReply,
         preferAsleepWhenIdle: options.preferAsleepWhenIdle,
         override: options.override,
       } satisfies MapAiPersonaStateInput),
     [
-      voice().state,
+      voice.state,
       options.isAwaitingReply,
       options.preferAsleepWhenIdle,
       options.override,
-    ]);
+    ],
+  );
 
   return {
     state,
-    level: voice().level,
-    voiceState: voice().state,
+    level: voice.level,
+    voiceState: voice.state,
   };
 }

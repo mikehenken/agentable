@@ -1,13 +1,13 @@
 /**
- * `<ask-about-this-button>` — Lit widget (widgets family).
+ * `<ask-about-this-button>` — Lit widget (D44 widgets family, P9-T3).
  *
  * Contextual CTA that sends an ask-about prompt into the shared chat surface.
  *
  * Usage:
- * <script type="module" src="/embed/ask-about-this-button.js"></script>
- * <ask-about-this-button context="Sandals Royal Bahamian">
- * Ask about this resort
- * </ask-about-this-button>
+ *   <script type="module" src="/embed/ask-about-this-button.js"></script>
+ *   <ask-about-this-button context="Sandals Royal Bahamian">
+ *     Ask about this resort
+ *   </ask-about-this-button>
  */
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -55,7 +55,8 @@ export class AskAboutThisButtonElement extends LitElement {
 
   static styles = [
     widgetHostTokens,
-    css`:host {
+    css`
+      :host {
         display: inline-flex;
       }
 
@@ -91,7 +92,9 @@ export class AskAboutThisButtonElement extends LitElement {
       button:disabled {
         cursor: not-allowed;
         opacity: 0.55;
-      }.icon {
+      }
+
+      .icon {
         width: 1rem;
         height: 1rem;
         flex-shrink: 0;
@@ -135,13 +138,15 @@ export class AskAboutThisButtonElement extends LitElement {
         },
         bubbles: true,
         composed: true,
-      }));
+      }),
+    );
   };
 
   render() {
     const hasContext = this.context.trim().length > 0;
     const ariaLabel = hasContext
-      ? `Ask about ${this.context.trim()}`: 'Ask about this item';
+      ? `Ask about ${this.context.trim()}`
+      : 'Ask about this item';
 
     return html`
       <button

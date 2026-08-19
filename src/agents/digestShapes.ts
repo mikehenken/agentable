@@ -1,5 +1,5 @@
 /**
- * Digest shape slice helpers: compact summaries and revision fingerprints.
+ * Digest shape slice helpers (D41, P8-T4): compact summaries and revision fingerprints.
  */
 import type { AgentDrawShapeKind } from '../engine/agentDrawingTypes';
 import type { AttentionTier, DigestShapeSummary } from './digest';
@@ -42,6 +42,7 @@ export function buildDigestShapeSummary(input: DigestShapeRecordInput): DigestSh
 }
 
 export function cloneDigestShapeSummaries(
-  shapes: readonly DigestShapeSummary[]): DigestShapeSummary[] {
-  return shapes.map((shape) => ({...shape }));
+  shapes: readonly DigestShapeSummary[],
+): DigestShapeSummary[] {
+  return shapes.map((shape) => ({ ...shape }));
 }

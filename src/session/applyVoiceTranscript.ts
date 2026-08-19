@@ -1,12 +1,12 @@
 /**
  * 
- * Shared voice transcript merge for chat surfaces.
+ * Shared voice transcript merge for chat surfaces (D44).
  *
  * Coalesces incremental Gemini Live fragments into one bubble per role
  * within a 1.5s window — same policy as ChatPanel's window-event path.
  */
 import type { 
-  // ChatMessage
+  ChatMessage 
 } from '../chat/geminiChatClient';
 
 export interface VoiceTranscriptDetail {
@@ -17,14 +17,16 @@ export interface VoiceTranscriptDetail {
 
 export function applyVoiceTranscriptToMessages(
   prev: readonly ChatMessage[],
-  detail: VoiceTranscriptDetail): ChatMessage[] {
+  detail: VoiceTranscriptDetail,
+): ChatMessage[] {
   if (!detail.text.trim()) {
-    return [...prev
+    return [
+      ...prev
     ];
   }
   const last = prev[prev.length - 1];
   const now = Date.now();
-  const lastTime = last ? new Date(last.createdAt).getTime(): 0;
+  const lastTime = last ? new Date(last.createdAt).getTime() : 0;
   if (
     last &&
     last.source === 'voice' &&
@@ -33,12 +35,16 @@ export function applyVoiceTranscriptToMessages(
   ) {
     return prev.map((message, index) =>
       index === prev.length - 1
-        ? {...message,
+        ? {
+            ...message,
             text: `${message.text} ${detail.text}`.trim(),
             createdAt: detail.timestamp,
-          }: message);
+          }
+        : message,
+    );
   }
-  return [...prev,
+  return [
+    ...prev,
     {
       id: `voice-${detail.role}-${now.toString(36)}`,
       role: detail.role,

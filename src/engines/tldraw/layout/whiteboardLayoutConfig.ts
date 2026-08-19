@@ -49,11 +49,13 @@ function readGlobalHints(): WhiteboardLayoutHints {
 }
 
 export function configureWhiteboardLayoutHints(hints: WhiteboardLayoutHints): void {
-  const activeHints = readGlobalHints;
-  const merged: WhiteboardLayoutHints = {...activeHints,...hints,
-    listPanelIds: hints.listPanelIds ?? activeHints().listPanelIds,
-    panelArrangeOrder: hints.panelArrangeOrder ?? activeHints().panelArrangeOrder,
-    paletteEntities: hints.paletteEntities ?? activeHints().paletteEntities,
+  const activeHints = readGlobalHints();
+  const merged: WhiteboardLayoutHints = {
+    ...activeHints,
+    ...hints,
+    listPanelIds: hints.listPanelIds ?? activeHints.listPanelIds,
+    panelArrangeOrder: hints.panelArrangeOrder ?? activeHints.panelArrangeOrder,
+    paletteEntities: hints.paletteEntities ?? activeHints.paletteEntities,
   };
   (globalThis as GlobalWithHints)[GLOBAL_HINTS_KEY] = merged;
 }
@@ -74,17 +76,18 @@ export function getWhiteboardPanelArrangeOrder(): readonly string[] {
 export function getWhiteboardPaletteEntities(): readonly WhiteboardPaletteEntity[] {
   const extra = readGlobalHints().paletteEntities ?? [];
   const chatEntity = DEFAULT_PALETTE_ENTITIES[0];
-  const merged = [chatEntity,...extra.filter((entity) => entity.panelId !== 'chat')];
+  const merged = [chatEntity, ...extra.filter((entity) => entity.panelId !== 'chat')];
   return merged;
 }
 
 export function compareWhiteboardPanelArrangeOrder(
   panelIdA: string,
-  panelIdB: string): number {
-  const order = getWhiteboardPanelArrangeOrder;
-  const indexA = order().indexOf(panelIdA);
-  const indexB = order().indexOf(panelIdB);
-  const rankA = indexA >= 0 ? indexA: 50 + order.length;
-  const rankB = indexB >= 0 ? indexB: 50 + order.length;
+  panelIdB: string,
+): number {
+  const order = getWhiteboardPanelArrangeOrder();
+  const indexA = order.indexOf(panelIdA);
+  const indexB = order.indexOf(panelIdB);
+  const rankA = indexA >= 0 ? indexA : 50 + order.length;
+  const rankB = indexB >= 0 ? indexB : 50 + order.length;
   return rankA - rankB;
 }

@@ -30,7 +30,7 @@ export const SANDALS_STARTER_PROMPTS: CareerPersonaScaffold['starterPrompts'] = 
   { emoji: '🎓', text: 'Tell me about Sandals Corporate University', label: 'SCU' },
 ];
 
-/** — Spanish starter chips for sandals local integration. */
+/** D59 — Spanish starter chips for sandals local integration. */
 export const SANDALS_STARTER_PROMPTS_ES: CareerPersonaScaffold['starterPrompts'] = [
   { emoji: '💼', text: 'Muéstrame vacantes de Sandals que encajen con mi currículum', label: 'Vacantes' },
   { emoji: '🌴', text: '¿Qué isla encaja con la vida que quiero?', label: 'Elegir isla' },
@@ -56,7 +56,7 @@ export const SANDALS_PERSONA_EN: SandalsPersonaLocale = {
   starterPrompts: SANDALS_STARTER_PROMPTS,
 };
 
-/** — Spanish persona variant for sandals local integration. */
+/** D59 — Spanish persona variant for sandals local integration. */
 export const SANDALS_PERSONA_ES: SandalsPersonaLocale = {
   assistantName: 'Sandy',
   tenantTitle: 'Concierge de Carrera',
@@ -70,7 +70,7 @@ export const SANDALS_PERSONA_ES: SandalsPersonaLocale = {
 export type SandalsLocaleTag = 'en' | 'es';
 
 export function resolveSandalsPersona(locale: SandalsLocaleTag = 'en'): SandalsPersonaLocale {
-  return locale === 'es' ? SANDALS_PERSONA_ES: SANDALS_PERSONA_EN;
+  return locale === 'es' ? SANDALS_PERSONA_ES : SANDALS_PERSONA_EN;
 }
 
 export interface CreateSandalsEmbedConfigInput {
@@ -111,7 +111,8 @@ export function createSandalsEmbedConfig(input: CreateSandalsEmbedConfigInput): 
     },
   });
   const doc = toEmbedConfigDocument(hostConfig);
-  return applyCareerEmbedDefaults({...doc,
+  return applyCareerEmbedDefaults({
+    ...doc,
     locale,
     primaryColor: input.primaryColor ?? CAREER_TENANT_PRIMARY_COLORS.sandals,
     welcomeMessage: personaLocale.welcomeMessage,
@@ -122,7 +123,8 @@ export function createSandalsEmbedConfig(input: CreateSandalsEmbedConfigInput): 
     canvasZoom: 'locked',
     greetingMode: 'agent-first',
     toolbar: chatBundle.toolbarConfig,
-    persona: {...doc.persona,
+    persona: {
+      ...doc.persona,
       assistantName: personaLocale.assistantName,
       tenantTitle: personaLocale.tenantTitle,
       voiceGreeting: personaLocale.voiceGreeting,

@@ -19,7 +19,8 @@ const STARTER_HINT_PATTERN =
  */
 export function validatePersonaStarterPrompts(
   persona: Partial<CanvasPersona>,
-  context: PersonaValidationContext = {}): PersonaValidationIssue[] {
+  context: PersonaValidationContext = {},
+): PersonaValidationIssue[] {
   const prompts = persona.starterPrompts;
   if (prompts && prompts.length > 0) {
     return [];
@@ -47,7 +48,7 @@ export function validatePersonaStarterPrompts(
     return [];
   }
 
-  const tenantLabel = context.tenant?.trim() ? ` (tenant "${context.tenant}")`: '';
+  const tenantLabel = context.tenant?.trim() ? ` (tenant "${context.tenant}")` : '';
 
   return [
     {
@@ -61,7 +62,8 @@ export function validatePersonaStarterPrompts(
 /** Log persona validation warnings once per merged config (dev + embed diagnostics). */
 export function warnPersonaStarterPrompts(
   persona: Partial<CanvasPersona>,
-  context: PersonaValidationContext = {}): void {
+  context: PersonaValidationContext = {},
+): void {
   if (typeof console === 'undefined' || typeof console.warn !== 'function') {
     return;
   }

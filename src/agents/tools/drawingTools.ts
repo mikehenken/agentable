@@ -1,5 +1,5 @@
 /**
- * Agent drawing tools: draw_shapes, annotate_panel,
+ * Agent drawing tools (D41, P8-T1): draw_shapes, annotate_panel,
  * clear_agent_drawings. Capability-gated on engine.capabilities.draw.
  */
 import type {
@@ -56,11 +56,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readLayoutMode(value: unknown): AgentDiagramLayoutMode | undefined {
@@ -85,15 +85,18 @@ function readNodeKind(value: unknown): AgentDiagramNodeKind | undefined {
 
 /**
  * Model-supplied display text sometimes arrives with literal escape
- * sequences ("Liftoff\n(Apex-9...") because the model double-escaped its
+ * sequences ("Liftoff\n(Apex-9 ...") because the model double-escaped its
  * JSON. Convert the common escapes to what the model meant so labels never
  * render a visible backslash-n on the canvas. Ids are never sanitized.
  */
 export function readSketchText(value: unknown): string | undefined {
   const text = readString(value);
   if (text === undefined) return undefined;
-  const cleaned = text.replace(/\\r\\n|\\n|\\r/g, '\n').replace(/\\t/g, ' ').trim();
-  return cleaned.length > 0 ? cleaned: undefined;
+  const cleaned = text
+    .replace(/\\r\\n|\\n|\\r/g, '\n')
+    .replace(/\\t/g, ' ')
+    .trim();
+  return cleaned.length > 0 ? cleaned : undefined;
 }
 
 function readDiagramNode(value: unknown): AgentDiagramNode | undefined {
@@ -108,8 +111,8 @@ function readDiagramNode(value: unknown): AgentDiagramNode | undefined {
   if (id === undefined || label === undefined) return undefined;
   const kind = readNodeKind(value.kind);
   const parentId = readString(value.parentId);
-  const base = kind !== undefined ? { id, label, kind }: { id, label };
-  return parentId !== undefined ? {...base, parentId }: base;
+  const base = kind !== undefined ? { id, label, kind } : { id, label };
+  return parentId !== undefined ? { ...base, parentId } : base;
 }
 
 function readDiagramEdge(value: unknown): AgentDiagramEdge | undefined {
@@ -118,23 +121,29 @@ function readDiagramEdge(value: unknown): AgentDiagramEdge | undefined {
   const to = readString(value.to);
   if (from === undefined || to === undefined) return undefined;
   const label = readSketchText(value.label);
-  return label !== undefined ? { from, to, label }: { from, to };
+  return label !== undefined ? { from, to, label } : { from, to };
 }
 
 function readDiagramStructure(value: unknown): AgentDiagramStructure | undefined {
   if (!isRecord(value)) return undefined;
   if (!Array.isArray(value.nodes) || value.nodes.length === 0) return undefined;
-  const nodes = value.nodes.map((entry) => readDiagramNode(entry)).filter((entry): entry is AgentDiagramNode => entry !== undefined);
+  const nodes = value.nodes
+    .map((entry) => readDiagramNode(entry))
+    .filter((entry): entry is AgentDiagramNode => entry !== undefined);
   if (nodes.length !== value.nodes.length) return undefined;
 
   const diagram: AgentDiagramStructure = { nodes };
   if (Array.isArray(value.edges)) {
-    const edges = value.edges.map((entry) => readDiagramEdge(entry)).filter((entry): entry is NonNullable<ReturnType<typeof readDiagramEdge>> => entry !== undefined);
+    const edges = value.edges
+      .map((entry) => readDiagramEdge(entry))
+      .filter((entry): entry is NonNullable<ReturnType<typeof readDiagramEdge>> => entry !== undefined);
     if (edges.length !== value.edges.length) return undefined;
     diagram.edges = edges;
   }
   if (Array.isArray(value.order)) {
-    const order = value.order.map((entry) => (typeof entry === 'string' && entry.length > 0 ? entry: undefined)).filter((entry): entry is string => entry !== undefined);
+    const order = value.order
+      .map((entry) => (typeof entry === 'string' && entry.length > 0 ? entry : undefined))
+      .filter((entry): entry is string => entry !== undefined);
     if (order.length !== value.order.length) return undefined;
     diagram.order = order;
   }
@@ -182,7 +191,7 @@ function readProgressive(value: unknown): AgentDiagramProgressive | undefined {
   if (totalSteps !== undefined && (!Number.isInteger(totalSteps) || totalSteps < step)) {
     return undefined;
   }
-  return totalSteps !== undefined ? { step, totalSteps }: { step };
+  return totalSteps !== undefined ? { step, totalSteps } : { step };
 }
 
 function readDrawDiagramRequest(args: Record<string, unknown>): AgentDrawDiagramRequest | undefined {
@@ -289,7 +298,7 @@ function convertExcalidrawElement(element: unknown): Record<string, unknown> | u
   if (!isRecord(element)) {
     return undefined;
   }
-  const type = typeof element.type === 'string' ? element.type.toLowerCase(): '';
+  const type = typeof element.type === 'string' ? element.type.toLowerCase() : '';
   const x = readFiniteNumber(element.x) ?? 0;
   const y = readFiniteNumber(element.y) ?? 0;
   const w =
@@ -302,7 +311,7 @@ function convertExcalidrawElement(element: unknown): Record<string, unknown> | u
     0;
 
   if (type === 'rectangle' || type === 'diamond') {
-    const kind = type === 'diamond' ? 'ellipse': 'box';
+    const kind = type === 'diamond' ? 'ellipse' : 'box';
     return { kind, geometry: { kind: 'rect', x, y, w, h } };
   }
   if (type === 'ellipse' || type === 'circle') {
@@ -310,7 +319,10 @@ function convertExcalidrawElement(element: unknown): Record<string, unknown> | u
   }
   if (type === 'line' || type === 'arrow') {
     const points = Array.isArray(element.points)
-      ? element.points.map((entry) => readPoint(entry)).filter((entry): entry is { x: number; y: number } => entry !== undefined): [];
+      ? element.points
+          .map((entry) => readPoint(entry))
+          .filter((entry): entry is { x: number; y: number } => entry !== undefined)
+      : [];
     if (points.length >= 2) {
       return {
         kind: 'arrow',
@@ -327,7 +339,9 @@ function convertExcalidrawElement(element: unknown): Record<string, unknown> | u
     };
   }
   if (type === 'freedraw' && Array.isArray(element.points)) {
-    const points = element.points.map((entry) => readPoint(entry)).filter((entry): entry is { x: number; y: number } => entry !== undefined);
+    const points = element.points
+      .map((entry) => readPoint(entry))
+      .filter((entry): entry is { x: number; y: number } => entry !== undefined);
     if (points.length >= 2) {
       return { kind: 'freehand', geometry: { kind: 'points', points } };
     }
@@ -344,16 +358,16 @@ function convertExcalidrawElement(element: unknown): Record<string, unknown> | u
 }
 
 function convertTldrawRawShape(record: Record<string, unknown>): Record<string, unknown> | undefined {
-  const type = typeof record.type === 'string' ? record.type.toLowerCase(): '';
-  const props = isRecord(record.props) ? record.props: {};
+  const type = typeof record.type === 'string' ? record.type.toLowerCase() : '';
+  const props = isRecord(record.props) ? record.props : {};
   const x = readFiniteNumber(record.x) ?? readFiniteNumber(props.x) ?? 0;
   const y = readFiniteNumber(record.y) ?? readFiniteNumber(props.y) ?? 0;
   const w = readFiniteNumber(props.w) ?? readFiniteNumber(props.width) ?? 100;
   const h = readFiniteNumber(props.h) ?? readFiniteNumber(props.height) ?? 80;
 
   if (type === 'geo') {
-    const geo = typeof props.geo === 'string' ? props.geo.toLowerCase(): 'rectangle';
-    const kind = geo === 'ellipse' || geo === 'circle' ? 'ellipse': 'box';
+    const geo = typeof props.geo === 'string' ? props.geo.toLowerCase() : 'rectangle';
+    const kind = geo === 'ellipse' || geo === 'circle' ? 'ellipse' : 'box';
     return { kind, geometry: { kind: 'rect', x, y, w, h } };
   }
   if (type === 'arrow') {
@@ -395,7 +409,7 @@ function normalizeShapeEntry(entry: unknown): Record<string, unknown> | undefine
   if (kind === undefined) {
     return undefined;
   }
-  const next: Record<string, unknown> = {...entry, kind };
+  const next: Record<string, unknown> = { ...entry, kind };
   const geomKind = geometryKindForShape(kind);
   const geometry =
     readGeometry(entry.geometry, geomKind) ?? readGeometry(entry, geomKind);
@@ -415,11 +429,13 @@ export interface NormalizeDrawShapesArgsResult {
  * raw tldraw records, and kind aliases → canonical { shapes: [...] }.
  */
 export function normalizeDrawShapesArgs(args: Record<string, unknown>): NormalizeDrawShapesArgsResult {
-  let normalized: Record<string, unknown> = {...args };
+  let normalized: Record<string, unknown> = { ...args };
   normalized = normalizeDiagramPayload(normalized);
 
   if (!Array.isArray(normalized.shapes) && Array.isArray(normalized.elements)) {
-    const converted = normalized.elements.map((entry) => convertExcalidrawElement(entry)).filter((entry): entry is Record<string, unknown> => entry !== undefined);
+    const converted = normalized.elements
+      .map((entry) => convertExcalidrawElement(entry))
+      .filter((entry): entry is Record<string, unknown> => entry !== undefined);
     normalized.shapes = converted;
     delete normalized.elements;
   }
@@ -439,7 +455,9 @@ export function normalizeDrawShapesArgs(args: Record<string, unknown>): Normaliz
   }
 
   if (Array.isArray(normalized.shapes)) {
-    normalized.shapes = normalized.shapes.map((entry) => normalizeShapeEntry(entry)).filter((entry): entry is Record<string, unknown> => entry !== undefined);
+    normalized.shapes = normalized.shapes
+      .map((entry) => normalizeShapeEntry(entry))
+      .filter((entry): entry is Record<string, unknown> => entry !== undefined);
     if (normalized.shapes.length === 0) {
       delete normalized.shapes;
     }
@@ -474,7 +492,7 @@ function readAnchor(value: unknown): AgentPanelAnchor | undefined {
 }
 
 function readPoint(value: unknown): { x: number; y: number } | undefined {
-   // Models often emit freehand/arrow points as numeric tuples [x, y].
+  // Models often emit freehand/arrow points as numeric tuples [x, y].
   if (Array.isArray(value) && value.length >= 2) {
     const x = readFiniteNumber(value[0]);
     const y = readFiniteNumber(value[1]);
@@ -493,23 +511,25 @@ const GEOMETRY_KINDS: readonly string[] = ['rect', 'segment', 'points', 'text'];
 
 function readGeometry(
   value: unknown,
-  fallbackKind?: AgentDrawGeometry['kind']): AgentDrawGeometry | undefined {
+  fallbackKind?: AgentDrawGeometry['kind'],
+): AgentDrawGeometry | undefined {
   if (!isRecord(value)) return undefined;
-   // Models routinely omit the redundant geometry.kind discriminator: it is
-   // already implied by the shape's own `kind` (box/ellipse map to rect, arrow
-   // to segment, freehand to points, text to text). Use the value's own kind
-   // only when it is a real geometry-kind tag; otherwise (missing, or the
-   // shape's own kind like "ellipse" when geometry fields are hoisted onto the
-   // shape) fall back to the shape-derived kind, so one missing tag does not
-   // fail the whole draw_shapes call and leave the canvas blank.
+  // Models routinely omit the redundant geometry.kind discriminator: it is
+  // already implied by the shape's own `kind` (box/ellipse map to rect, arrow
+  // to segment, freehand to points, text to text). Use the value's own kind
+  // only when it is a real geometry-kind tag; otherwise (missing, or the
+  // shape's own kind like "ellipse" when geometry fields are hoisted onto the
+  // shape) fall back to the shape-derived kind, so one missing tag does not
+  // fail the whole draw_shapes call and leave the canvas blank.
   const kind =
     typeof value.kind === 'string' && GEOMETRY_KINDS.includes(value.kind as never)
-      ? (value.kind as AgentDrawGeometry['kind']): fallbackKind;
+      ? (value.kind as AgentDrawGeometry['kind'])
+      : fallbackKind;
   if (kind === 'rect') {
     const x = readFiniteNumber(value.x);
     const y = readFiniteNumber(value.y);
-     // Accept `width`/`height` as aliases for `w`/`h`: models commonly use the
-     // spelled-out names.
+    // Accept `width`/`height` as aliases for `w`/`h`: models commonly use the
+    // spelled-out names.
     const w = readFiniteNumber(value.w) ?? readFiniteNumber(value.width);
     const h = readFiniteNumber(value.h) ?? readFiniteNumber(value.height);
     if (x === undefined || y === undefined || w === undefined || h === undefined) {
@@ -525,7 +545,9 @@ function readGeometry(
   }
   if (kind === 'points') {
     if (!Array.isArray(value.points)) return undefined;
-    const points = value.points.map((entry) => readPoint(entry)).filter((entry): entry is { x: number; y: number } => entry !== undefined);
+    const points = value.points
+      .map((entry) => readPoint(entry))
+      .filter((entry): entry is { x: number; y: number } => entry !== undefined);
     if (points.length < 2) return undefined;
     const geometry: AgentDrawPointsGeometry = { kind: 'points', points };
     if (value.closed === true) {
@@ -539,14 +561,14 @@ function readGeometry(
     const x = readFiniteNumber(value.x);
     const y = readFiniteNumber(value.y);
     if (x === undefined || y === undefined) return undefined;
-     // Accept `w`/`width` as a max-width fallback: models often size a text box
-     // with a width rather than the schema's `maxWidth`, and honoring it keeps
-     // long labels wrapped inside their intended box instead of running off.
+    // Accept `w`/`width` as a max-width fallback: models often size a text box
+    // with a width rather than the schema's `maxWidth`, and honoring it keeps
+    // long labels wrapped inside their intended box instead of running off.
     const maxWidth =
       readFiniteNumber(value.maxWidth) ??
       readFiniteNumber(value.w) ??
       readFiniteNumber(value.width);
-    return maxWidth !== undefined ? { kind: 'text', x, y, maxWidth }: { kind: 'text', x, y };
+    return maxWidth !== undefined ? { kind: 'text', x, y, maxWidth } : { kind: 'text', x, y };
   }
   return undefined;
 }
@@ -570,7 +592,7 @@ function readDrawShape(value: unknown): AgentDrawShapeInput | AgentDrawShapeInpu
   if (!isRecord(value)) return undefined;
   const stencil = readStencil(value.stencil);
   if (stencil !== undefined) {
-     // Wireframe stencils are always positioned by a rect.
+    // Wireframe stencils are always positioned by a rect.
     const geometry = readGeometry(value.geometry, 'rect');
     if (geometry === undefined) return undefined;
     const text = readSketchText(value.text);
@@ -579,15 +601,16 @@ function readDrawShape(value: unknown): AgentDrawShapeInput | AgentDrawShapeInpu
   const kind = readDrawKind(value.kind);
   if (kind === undefined) return undefined;
   const geomKind = geometryKindForShape(kind);
-   // Prefer a nested geometry object; fall back to geometry fields hoisted
-   // directly onto the shape (x/y/w/h/width/height/points/from/to at the top
-   // level), which is another common shape of LLM output.
+  // Prefer a nested geometry object; fall back to geometry fields hoisted
+  // directly onto the shape (x/y/w/h/width/height/points/from/to at the top
+  // level), which is another common shape of LLM output.
   const geometry =
     readGeometry(value.geometry, geomKind) ?? readGeometry(value, geomKind);
   if (geometry === undefined) return undefined;
 
   const input: AgentDrawShapeInput = { kind, geometry };
-   // Capture a caller/model-assigned id so connect_shapes/group_shapes frame_shapes can reference this shape by the same id later.
+  // Capture a caller/model-assigned id so connect_shapes/group_shapes/
+  // frame_shapes can reference this shape by the same id later.
   const id = readString(value.id);
   if (id !== undefined) input.id = id;
   const text = readSketchText(value.text);
@@ -632,20 +655,20 @@ function readDrawShape(value: unknown): AgentDrawShapeInput | AgentDrawShapeInpu
 
 function withDrawGate(handler: ToolHandler): ToolHandler {
   return (args) => {
-    if (!isDrawCapabilityAvailable) {
-      return drawCapabilityRefusal;
+    if (!isDrawCapabilityAvailable()) {
+      return drawCapabilityRefusal();
     }
     return handler(args);
   };
 }
 
 function resolveActingAgentId(args: Record<string, unknown>): string {
-  const ctx = getAgentToolContext;
+  const ctx = getAgentToolContext();
   if (ctx === null) {
     throw new Error('agent tool context is required for this operation');
   }
   const override = readString(args.agentId);
-  return override ?? ctx().agentId;
+  return override ?? ctx.agentId;
 }
 
 const declarationDrawShapes: ToolDeclaration = {
@@ -659,7 +682,7 @@ const declarationDrawShapes: ToolDeclaration = {
       shapes: {
         type: 'array',
         description:
-          'Explicit shapes. Each item: { kind: box | ellipse | arrow | text | freehand, geometry, id?, text?, style? }. geometry by kind: box/ellipse take { x, y, w, h }; arrow takes { from: {x,y}, to: {x,y} }; text takes { x, y, maxWidth? }; freehand takes { points: [{x,y},...] }. text on a box, ellipse, or arrow renders as a label centered inside the shape, so never draw a separate text shape over a box. id lets later connect_shapes or group_shapes calls reference the shape. style: { color, fill: none | semi | solid, dash: draw | dashed | dotted | solid, size: s | m | l | xl }. color must be one of: black, grey, light-violet, violet, blue, light-blue, yellow, orange, green, light-green, light-red, red, white (kebab-case, never camelCase). Use size xl or l for titles, m for nodes, s for captions and arrows; vary color by role instead of drawing everything one color.',
+          'Explicit shapes. Each item: { kind: box | ellipse | arrow | text | freehand, geometry, id?, text?, style? }. geometry by kind: box/ellipse take { x, y, w, h }; arrow takes { from: {x,y}, to: {x,y} }; text takes { x, y, maxWidth? }; freehand takes { points: [{x,y}, ...] }. text on a box, ellipse, or arrow renders as a label centered inside the shape, so never draw a separate text shape over a box. id lets later connect_shapes or group_shapes calls reference the shape. style: { color, fill: none | semi | solid, dash: draw | dashed | dotted | solid, size: s | m | l | xl }. color must be one of: black, grey, light-violet, violet, blue, light-blue, yellow, orange, green, light-green, light-red, red, white (kebab-case, never camelCase). Use size xl or l for titles, m for nodes, s for captions and arrows; vary color by role instead of drawing everything one color.',
         items: { type: 'object' },
       },
       layout: {
@@ -728,7 +751,7 @@ function readClearScope(value: unknown): 'currentTurn' | 'all' | undefined {
 function readStringArray(value: unknown): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
   const out = value.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0);
-  return out.length > 0 ? out: undefined;
+  return out.length > 0 ? out : undefined;
 }
 
 const declarationClearAgentDrawings: ToolDeclaration = {
@@ -792,7 +815,7 @@ export const DRAWING_TOOLS: readonly ToolDefinition[] = [
           recordDrawShapesActivity(agentId, result);
           return drawToolSuccess({ kind: 'draw_shapes', result });
         } catch (err) {
-          const message = err instanceof Error ? err.message: String(err);
+          const message = err instanceof Error ? err.message : String(err);
           return { ok: false, error: message };
         }
       }
@@ -807,13 +830,13 @@ export const DRAWING_TOOLS: readonly ToolDefinition[] = [
       for (const entry of normalizedArgs.shapes) {
         const parsed = readDrawShape(entry);
         if (parsed === undefined) {
-           // Skip a single shape we cannot parse rather than failing the whole
-           // batch. An LLM sometimes emits one malformed entry among many;
-           // dropping just that one still renders the rest and never blanks the
-           // canvas when a clear preceded this draw.
+          // Skip a single shape we cannot parse rather than failing the whole
+          // batch. An LLM sometimes emits one malformed entry among many;
+          // dropping just that one still renders the rest and never blanks the
+          // canvas when a clear preceded this draw.
           continue;
         }
-        shapes.push(...(Array.isArray(parsed) ? parsed: [parsed]));
+        shapes.push(...(Array.isArray(parsed) ? parsed : [parsed]));
       }
       if (shapes.length === 0) {
         return {
@@ -827,7 +850,7 @@ export const DRAWING_TOOLS: readonly ToolDefinition[] = [
         recordDrawShapesActivity(agentId, result);
         return drawToolSuccess({ kind: 'draw_shapes', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),
@@ -853,7 +876,7 @@ export const DRAWING_TOOLS: readonly ToolDefinition[] = [
         recordAnnotatePanelActivity(agentId, result);
         return drawToolSuccess({ kind: 'annotate_panel', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),
@@ -870,7 +893,7 @@ export const DRAWING_TOOLS: readonly ToolDefinition[] = [
         recordClearDrawingsActivity(agentId, result);
         return drawToolSuccess({ kind: 'clear_agent_drawings', result });
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     }),

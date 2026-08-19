@@ -1,12 +1,12 @@
 /**
- * Auto-arrange free PanelShapes on the whiteboard (career Sandals embeds).
+ * Auto-arrange free PanelShapes on the whiteboard (career / Sandals embeds).
  *
  * Ports the spirit of bounded `layoutStore.autoOrganize`: chat left column,
  * remaining panels tiled to the right in rows without changing zoom.
  * Origin respects expanded vs collapsed Menu (NavSidebar) chrome insets.
  *
  * Overflow continues below the free canvas (pan) rather than clamping every
- * panel onto the same bottom-right corner (overlap "crazy placement").
+ * panel onto the same bottom-right corner (overlap / "crazy placement").
  */
 import type { Editor, TLShapeId } from 'tldraw';
 import { snapToGrid } from '../../../layout/panelLayoutEngine';
@@ -32,15 +32,15 @@ export interface AutoArrangeWhiteboardPanelsOptions
 
 function readPanelShapes(editor: Editor): WhiteboardPanelLayoutSlot[] {
   const slots: WhiteboardPanelLayoutSlot[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
     if (shape.type !== 'panel') continue;
     const props = shape.props as { panelId?: string; w?: number; h?: number };
     if (typeof props.panelId !== 'string' || props.panelId.length === 0) continue;
     slots.push({
       panelId: props.panelId,
       shapeId: shape.id,
-      w: typeof props.w === 'number' ? props.w: 360,
-      h: typeof props.h === 'number' ? props.h: 400,
+      w: typeof props.w === 'number' ? props.w : 360,
+      h: typeof props.h === 'number' ? props.h : 400,
     });
   }
   return slots;
@@ -48,7 +48,8 @@ function readPanelShapes(editor: Editor): WhiteboardPanelLayoutSlot[] {
 
 function sortWhiteboardPanelOrder(
   a: WhiteboardPanelLayoutSlot,
-  b: WhiteboardPanelLayoutSlot): number {
+  b: WhiteboardPanelLayoutSlot,
+): number {
   return compareWhiteboardPanelArrangeOrder(a.panelId, b.panelId);
 }
 
@@ -58,7 +59,8 @@ function placeSlot(
   x: number,
   y: number,
   w: number,
-  h: number): void {
+  h: number,
+): void {
   editor.updateShape({
     id: slot.shapeId,
     type: 'panel',
@@ -77,12 +79,13 @@ function placeSlot(
  */
 export function autoArrangeWhiteboardPanels(
   editor: Editor,
-  options: AutoArrangeWhiteboardPanelsOptions = {}): number {
-  const viewport = editor.getViewportPageBounds;
-  const chrome = resolveWhiteboardChromeInsets(viewport().w, options);
-  const originX = snapToGrid(viewport().x + chrome.left);
-  const originY = snapToGrid(viewport().y + chrome.top);
-  const maxRight = viewport().x + viewport().w - WHITEBOARD_VIEWPORT_INSET;
+  options: AutoArrangeWhiteboardPanelsOptions = {},
+): number {
+  const viewport = editor.getViewportPageBounds();
+  const chrome = resolveWhiteboardChromeInsets(viewport.w, options);
+  const originX = snapToGrid(viewport.x + chrome.left);
+  const originY = snapToGrid(viewport.y + chrome.top);
+  const maxRight = viewport.x + viewport.w - WHITEBOARD_VIEWPORT_INSET;
 
   const slots = readPanelShapes(editor).sort(sortWhiteboardPanelOrder);
   if (slots.length === 0) return 0;
@@ -111,14 +114,14 @@ export function autoArrangeWhiteboardPanels(
   for (const slot of others) {
     const sized = defaultWhiteboardPanelSize(editor, slot.panelId);
 
-     // Wrap to next tile row when the next panel would overflow the free right edge.
+    // Wrap to next tile row when the next panel would overflow the free right edge.
     if (cursorX > tileOriginX && cursorX + sized.w > maxRight) {
       cursorX = tileOriginX;
       cursorY = snapToGrid(cursorY + rowHeight + GAP);
       rowHeight = 0;
     }
 
-     // Wider than the tile column: place on free-canvas left below chat (never under Menu).
+    // Wider than the tile column: place on free-canvas left below chat (never under Menu).
     if (cursorX + sized.w > maxRight) {
       cursorX = originX;
       if (chat && cursorY < chatBottom) {

@@ -37,7 +37,7 @@ export interface FieldEditorProps {
 
 function fieldLabel(field: FieldDefProps, fallback: string): string {
   const raw =
-    typeof field.label === 'string' && field.label.length > 0 ? field.label: fallback;
+    typeof field.label === 'string' && field.label.length > 0 ? field.label : fallback;
   return sanitizeInertText(raw);
 }
 
@@ -74,11 +74,12 @@ function defaultValueForFieldType(type: string | undefined): unknown {
 function createRepeatableRowItem(
   nestedFields: readonly FieldDefProps[],
   rowKey: string,
-  template: Record<string, unknown> | undefined): Record<string, unknown> {
+  template: Record<string, unknown> | undefined,
+): Record<string, unknown> {
   const item: Record<string, unknown> =
-    template !== undefined ? structuredClone(template): {};
+    template !== undefined ? structuredClone(template) : {};
   if (item[rowKey] === undefined || item[rowKey] === null || item[rowKey] === '') {
-    item[rowKey] = generateRowId;
+    item[rowKey] = generateRowId();
   }
   for (const nested of nestedFields) {
     const nestedBind = nested.bind;
@@ -106,11 +107,11 @@ export function RepeatableGroupField(props: RepeatableGroupFieldProps): React.Re
     return null;
   }
 
-  const nestedFields = Array.isArray(field.fields) ? field.fields: [];
-  const rowKey = typeof field.rowKey === 'string' && field.rowKey.length > 0 ? field.rowKey: 'id';
-  const minItems = typeof field.minItems === 'number' && field.minItems >= 0 ? field.minItems: 0;
+  const nestedFields = Array.isArray(field.fields) ? field.fields : [];
+  const rowKey = typeof field.rowKey === 'string' && field.rowKey.length > 0 ? field.rowKey : 'id';
+  const minItems = typeof field.minItems === 'number' && field.minItems >= 0 ? field.minItems : 0;
   const maxItems =
-    typeof field.maxItems === 'number' && field.maxItems > 0 ? field.maxItems: Number.POSITIVE_INFINITY;
+    typeof field.maxItems === 'number' && field.maxItems > 0 ? field.maxItems : Number.POSITIVE_INFINITY;
   const defaultItem = asRecord(field.defaultItem);
 
   const rows = asRecordArray(readFieldPath(values, groupBind));
@@ -148,7 +149,8 @@ export function RepeatableGroupField(props: RepeatableGroupFieldProps): React.Re
           const rowIdentity = row[rowKey];
           const rowKeyValue =
             typeof rowIdentity === 'string' || typeof rowIdentity === 'number'
-              ? String(rowIdentity): String(rowIndex);
+              ? String(rowIdentity)
+              : String(rowIndex);
           return (
             <div
               key={rowKeyValue}
@@ -162,7 +164,8 @@ export function RepeatableGroupField(props: RepeatableGroupFieldProps): React.Re
               {nestedFields.map((nested, nestedIndex) => {
                 const nestedBind =
                   typeof nested.bind === 'string' && nested.bind.length > 0
-                    ? nested.bind: `field-${nestedIndex}`;
+                    ? nested.bind
+                    : `field-${nestedIndex}`;
                 const nestedId = `${ownerId}-${groupBind}-${rowIndex}-${nestedBind}`;
                 const nestedLabel = fieldLabel(nested, nestedBind);
                 const nestedValue = scalarToInputValue(row[nestedBind]);
@@ -186,7 +189,7 @@ export function RepeatableGroupField(props: RepeatableGroupFieldProps): React.Re
                           updateNestedField(rowIndex, nestedBind, event.target.value)
                         }
                       />
-                    ): nested.type === 'toggle' ? (
+                    ) : nested.type === 'toggle' ? (
                       <input
                         id={nestedId}
                         type="checkbox"
@@ -197,7 +200,7 @@ export function RepeatableGroupField(props: RepeatableGroupFieldProps): React.Re
                           updateNestedField(rowIndex, nestedBind, event.target.checked)
                         }
                       />
-                    ): (
+                    ) : (
                       <input
                         {...common}
                         type={inputTypeForField(nested)}
@@ -258,7 +261,7 @@ export function ScalarField(props: FieldEditorProps): React.ReactElement | null 
           {...common}
           onChange={(event) => onValueChange(fieldBind, event.target.value)}
         />
-      ): field.type === 'toggle' ? (
+      ) : field.type === 'toggle' ? (
         <input
           id={inputId}
           type="checkbox"
@@ -267,7 +270,7 @@ export function ScalarField(props: FieldEditorProps): React.ReactElement | null 
           data-testid={common['data-testid']}
           onChange={(event) => onValueChange(fieldBind, event.target.checked)}
         />
-      ): (
+      ) : (
         <input
           {...common}
           type={inputTypeForField(field)}
@@ -287,7 +290,8 @@ export function FieldEditor(props: FieldEditorProps): React.ReactElement | null 
 
 export function useFieldValueChange(
   values: Record<string, unknown>,
-  onDraftChange: (nextDraft: Record<string, unknown>) => void): (path: string, value: unknown) => void {
+  onDraftChange: (nextDraft: Record<string, unknown>) => void,
+): (path: string, value: unknown) => void {
   return useCallback(
     (path: string, value: unknown) => {
       const nextDraft = structuredClone(values);
@@ -298,5 +302,6 @@ export function useFieldValueChange(
       }
       onDraftChange(nextDraft);
     },
-    [values, onDraftChange]);
+    [values, onDraftChange],
+  );
 }

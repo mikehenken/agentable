@@ -1,9 +1,9 @@
 /**
- * Undo/reversal model: canvas-local stack undo vs compensating HITL reversal.
+ * Undo/reversal model (D53): canvas-local stack undo vs compensating HITL reversal.
  *
  * - Canvas ops (draw, arrange, layout) push onto a per-actor undo stack.
  * - Persisted mutations (`run_panel_action`) are recorded in the activity ledger
- * and refuse stack-undo; they reverse only through `reverseMutation`.
+ *   and refuse stack-undo; they reverse only through `reverseMutation`.
  * - Irreversible actions refuse both stack-undo and compensating reversal.
  */
 import type { ApprovalActor } from '../panels/approval/types';
@@ -76,7 +76,8 @@ export interface UndoReversalRuntime {
   recordPersistedMutation(input: RecordedMutationInput): ActivityEntry;
   reverseMutation(
     ledgerEntryId: string,
-    actor: ApprovalActor): Promise<ReversalResult>;
+    actor: ApprovalActor,
+  ): Promise<ReversalResult>;
   canReverse(ledgerEntryId: string): { ok: true } | { ok: false; code: ReversalErrorCode; message: string };
   getLedger(filter?: ActivityLogFilter): readonly ActivityEntry[];
 }
@@ -87,7 +88,8 @@ export interface UndoReversalRuntimeOptions {
     panelId: string,
     actionId: string,
     payload: Record<string, JsonValue> | undefined,
-    actor: ApprovalActor) => Promise<RunPanelActionResult>;
+    actor: ApprovalActor,
+  ) => Promise<RunPanelActionResult>;
 }
 
 interface StackFrame {
@@ -100,13 +102,14 @@ interface StackFrame {
 function actorFromApproval(actor: ApprovalActor): ActivityActor {
   if (actor === 'user') return 'user';
   if (actor === 'agent') return 'agent:default';
-  return actor.startsWith('agent:') ? actor: `agent:${actor}`;
+  return actor.startsWith('agent:') ? actor : `agent:${actor}`;
 }
 
 function buildInversePayload(
   beforeData: Record<string, JsonValue>,
-  appliedPayload: Record<string, JsonValue>): Record<string, JsonValue> {
-  const inverse: Record<string, JsonValue> = {...beforeData };
+  appliedPayload: Record<string, JsonValue>,
+): Record<string, JsonValue> {
+  const inverse: Record<string, JsonValue> = { ...beforeData };
   for (const key of Object.keys(appliedPayload)) {
     if (!(key in beforeData)) {
       inverse[key] = null;
@@ -116,7 +119,8 @@ function buildInversePayload(
 }
 
 function resolveInverseAction(
-  input: RecordedMutationInput): DeclaredInverseAction | undefined {
+  input: RecordedMutationInput,
+): DeclaredInverseAction | undefined {
   if (input.actionMeta.reversible === false) {
     return undefined;
   }
@@ -130,8 +134,9 @@ function resolveInverseAction(
 }
 
 export function createUndoReversalRuntime(
-  options: UndoReversalRuntimeOptions): UndoReversalRuntime {
-  const activity = options.activity ?? createActivityLog;
+  options: UndoReversalRuntimeOptions,
+): UndoReversalRuntime {
+  const activity = options.activity ?? createActivityLog();
   const undoStacks = new Map<ActivityActor, StackFrame[]>();
   const redoStacks = new Map<ActivityActor, StackFrame[]>();
 
@@ -181,12 +186,12 @@ export function createUndoReversalRuntime(
 
     stackUndo(actor: ActivityActor): StackUndoResult {
       const stack = getUndoStack(actor);
-      const frame = stack.pop;
+      const frame = stack.pop();
       if (frame === undefined) {
         return { ok: false, code: 'STACK_EMPTY', message: 'nothing to undo' };
       }
-      if (frame().actor !== actor) {
-        stack.push(frame());
+      if (frame.actor !== actor) {
+        stack.push(frame);
         return {
           ok: false,
           code: 'ACTOR_MISMATCH',
@@ -194,23 +199,23 @@ export function createUndoReversalRuntime(
         };
       }
 
-      const entry = activity.get(frame().entryId);
+      const entry = activity.get(frame.entryId);
       if (entry === undefined) {
         return { ok: false, code: 'STACK_EMPTY', message: 'ledger entry missing for stack frame' };
       }
 
       if (entry.reversal.persisted) {
-        stack.push(frame());
+        stack.push(frame);
         return {
           ok: false,
           code: 'PERSISTED_MUTATION_NOT_STACK_UNDOABLE',
           message:
-            'persisted mutations reverse only through a compensating action under HITL ',
+            'persisted mutations reverse only through a compensating action under HITL (D53)',
         };
       }
 
       if (!entry.reversal.reversible) {
-        stack.push(frame());
+        stack.push(frame);
         return {
           ok: false,
           code: 'IRREVERSIBLE',
@@ -219,7 +224,7 @@ export function createUndoReversalRuntime(
       }
 
       if (entry.reversal.reversedByEntryId !== undefined) {
-        stack.push(frame());
+        stack.push(frame);
         return {
           ok: false,
           code: 'ALREADY_REVERSED',
@@ -227,8 +232,8 @@ export function createUndoReversalRuntime(
         };
       }
 
-      frame().undo();
-      getRedoStack(actor).push(frame());
+      frame.undo();
+      getRedoStack(actor).push(frame);
 
       const undoEntry = activity.append({
         actor,
@@ -247,12 +252,12 @@ export function createUndoReversalRuntime(
 
     stackRedo(actor: ActivityActor): StackRedoResult {
       const stack = getRedoStack(actor);
-      const frame = stack.pop;
+      const frame = stack.pop();
       if (frame === undefined) {
         return { ok: false, code: 'STACK_EMPTY', message: 'nothing to redo' };
       }
-      if (frame().actor !== actor) {
-        stack.push(frame());
+      if (frame.actor !== actor) {
+        stack.push(frame);
         return {
           ok: false,
           code: 'ACTOR_MISMATCH',
@@ -260,19 +265,19 @@ export function createUndoReversalRuntime(
         };
       }
 
-      frame().redo();
-      getUndoStack(actor).push(frame());
+      frame.redo();
+      getUndoStack(actor).push(frame);
 
-      const original = activity.get(frame().entryId);
+      const original = activity.get(frame.entryId);
       const redoEntry = activity.append({
         actor,
         verb: 'redo',
-        target: original?.target ?? frame().entryId,
+        target: original?.target ?? frame.entryId,
         provenance: original?.provenance,
         reversal: {
           reversible: true,
           persisted: false,
-          reversesEntryId: frame().entryId,
+          reversesEntryId: frame.entryId,
         },
       });
       return { ok: true, entry: redoEntry };
@@ -320,7 +325,8 @@ export function createUndoReversalRuntime(
 
     async reverseMutation(
       ledgerEntryId: string,
-      actor: ApprovalActor): Promise<ReversalResult> {
+      actor: ApprovalActor,
+    ): Promise<ReversalResult> {
       const eligibility = this.canReverse(ledgerEntryId);
       if (!eligibility.ok) {
         return { ok: false, code: eligibility.code, message: eligibility.message };
@@ -333,7 +339,8 @@ export function createUndoReversalRuntime(
         inverse.panelId,
         inverse.actionId,
         inverse.payload,
-        actor);
+        actor,
+      );
 
       if (actionResult.status !== 'ok') {
         if (actionResult.status === 'rejected_by_user') {
@@ -346,7 +353,7 @@ export function createUndoReversalRuntime(
         return {
           ok: false,
           code: 'COMPENSATION_FAILED',
-          message: actionResult.status === 'error' ? actionResult.message: 'compensation did not complete',
+          message: actionResult.status === 'error' ? actionResult.message : 'compensation did not complete',
         };
       }
 

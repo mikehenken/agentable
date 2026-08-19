@@ -41,7 +41,8 @@ export function useOptionalFormRuntime(): FormRuntimeValue | null {
 
 export function createFormRuntimeValue(
   formBus: FormBus,
-  spec: NormalizedPanelSpec): FormRuntimeValue {
+  spec: NormalizedPanelSpec,
+): FormRuntimeValue {
   return {
     formBus,
     sources: spec.sources,

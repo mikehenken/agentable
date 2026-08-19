@@ -1,5 +1,5 @@
 /**
- * Voice transport resilience: bounded exponential backoff for
+ * Voice transport resilience (D56): bounded exponential backoff for
  * reconnecting Gemini Live (or mock transport) after an unexpected drop.
  *
  * The controller preserves the logical voice session id across reconnect
@@ -43,7 +43,8 @@ function createLogicalSessionId(): string {
 
 export function computeBackoffDelayMs(
   attempt: number,
-  options: VoiceReconnectOptions = {}): number {
+  options: VoiceReconnectOptions = {},
+): number {
   const initial = options.initialDelayMs ?? DEFAULT_INITIAL_DELAY_MS;
   const max = options.maxDelayMs ?? DEFAULT_MAX_DELAY_MS;
   const factor = options.backoffFactor ?? DEFAULT_BACKOFF_FACTOR;
@@ -54,7 +55,8 @@ export function computeBackoffDelayMs(
 
 export function createVoiceReconnectController(
   options: VoiceReconnectOptions = {},
-  logicalSessionId: string = createLogicalSessionId()): VoiceReconnectController {
+  logicalSessionId: string = createLogicalSessionId(),
+): VoiceReconnectController {
   const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
   let attemptCount = 0;
   let pendingTimer: ReturnType<typeof setTimeout> | null = null;

@@ -32,7 +32,8 @@ const ADD_PANEL_ITEMS: { panelId: ContextFrameToolbarPanelId; label: string }[] 
 
 function getSiteFrameScreenBounds(
   editor: ReturnType<typeof useEditor>,
-  frameId: TLShapeId): Box | undefined {
+  frameId: TLShapeId,
+): Box | undefined {
   const pageBounds = editor.getShapePageBounds(frameId);
   if (!pageBounds) return undefined;
   const topLeft = editor.pageToScreen({ x: pageBounds.x, y: pageBounds.y });
@@ -41,22 +42,24 @@ function getSiteFrameScreenBounds(
 }
 
 export const ContextFrameToolbar = track(function ContextFrameToolbar(): ReactElement | null {
-  const editor = useEditor;
+  const editor = useEditor();
 
   const siteContext = useValue(
-    'siteContextToolbar', () => {
-      if (!editor().isInAny('select.idle', 'select.pointing_shape')) return null;
-      return resolveContextFrameFromSelection(editor());
+    'siteContextToolbar',
+    () => {
+      if (!editor.isInAny('select.idle', 'select.pointing_shape')) return null;
+      return resolveContextFrameFromSelection(editor);
     },
-    [editor]);
+    [editor],
+  );
 
   const getSelectionBounds = useCallback((): Box | undefined => {
     if (!siteContext) return undefined;
-    const frameBounds = getSiteFrameScreenBounds(editor(), siteContext.frameId);
+    const frameBounds = getSiteFrameScreenBounds(editor, siteContext.frameId);
     if (frameBounds) return frameBounds;
-    const fullBounds = editor().getSelectionScreenBounds;
+    const fullBounds = editor.getSelectionScreenBounds();
     if (!fullBounds) return undefined;
-    return new Box(fullBounds().x, fullBounds().y, fullBounds().width, 0);
+    return new Box(fullBounds.x, fullBounds.y, fullBounds.width, 0);
   }, [editor, siteContext]);
 
   if (!siteContext) return null;

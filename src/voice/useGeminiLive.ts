@@ -2,19 +2,19 @@
  * React hook wrapping the Gemini Live client.
  *
  * Bridges the React canvas to the shared `window.__voiceKernel__` bus:
- * - Registers `start` / `stop` as the kernel's voice implementation, so any
- * bundle that loaded the kernel (e.g. `<voice-call-button>`) can
- * drive the call.
- * - Publishes state, audio levels, and the latest assistant transcript into
- * the kernel so subscribers re-render in lockstep.
- * - Listens for `landi:voice-start-requested` / `-end-requested` window
- * events. This is the canvas's PUBLIC command API for hosts that haven't
- * imported the kernel directly (frame boundaries, late-loaded bundles,
- * non-React hosts). `<agentable-canvas>.startVoiceCall()` /
- * `.endVoiceCall()` dispatch these same events. Equivalent to
- * `window.__voiceKernel__.voice.start()` / `.stop()` for callers that
- * have the kernel reference. Names will be neutralised
- * (`voicecall:start-requested` etc.) at OSS-publish time — see plan §C.
+ *  - Registers `start` / `stop` as the kernel's voice implementation, so any
+ *    bundle that loaded the kernel (e.g. `<voice-call-button>`) can
+ *    drive the call.
+ *  - Publishes state, audio levels, and the latest assistant transcript into
+ *    the kernel so subscribers re-render in lockstep.
+ *  - Listens for `landi:voice-start-requested` / `-end-requested` window
+ *    events. This is the canvas's PUBLIC command API for hosts that haven't
+ *    imported the kernel directly (frame boundaries, late-loaded bundles,
+ *    non-React hosts). `<agentable-canvas>.startVoiceCall()` /
+ *    `.endVoiceCall()` dispatch these same events. Equivalent to
+ *    `window.__voiceKernel__.voice.start()` / `.stop()` for callers that
+ *    have the kernel reference. Names will be neutralised
+ *    (`voicecall:start-requested` etc.) at OSS-publish time — see plan §C.
  *
  * Dispatches `landi:voice-started` / `landi:voice-ended` for parent-page
  * lifecycle observability (matches `events/landi-events.ts` types).
@@ -61,7 +61,7 @@ export interface UseGeminiLiveOptions {
   /** Optional scripted scenario for mock mode. Defaults to the built-in. */
   mockScenario?: MockVoiceScenario;
   /**
-   * Mock-only: simulate transport drop after N ms (resilience tests).
+   * Mock-only: simulate transport drop after N ms (D56 resilience tests).
    */
   mockSimulateDropAfterMs?: number;
   /**
@@ -95,7 +95,7 @@ export interface UseGeminiLiveResult {
 function dispatch(type: string, detail: Record<string, unknown> = {}): void {
   window.dispatchEvent(
     new CustomEvent(type, {
-      detail: {...detail, timestamp: new Date().toISOString() },
+      detail: { ...detail, timestamp: new Date().toISOString() },
       bubbles: true,
       composed: true,
     })
@@ -140,7 +140,8 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
   personaRef.current = options.persona;
 
   /** When voice name or system prompt changes, tear down the client so the next `start()` rebuilds with new config. */
-  const voicePersonaKey = useMemo(() =>
+  const voicePersonaKey = useMemo(
+    () =>
       `${options.persona.geminiVoiceName ?? 'Aoede'}\u0000${options.persona.systemPrompt}`,
     [options.persona.geminiVoiceName, options.persona.systemPrompt]
   );
@@ -162,7 +163,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
   /**
    * Session-lifetime cache for ephemeral tokens minted via `tokenEndpoint`.
    * The Gemini auth-token API takes ~400ms; caching across rapid
-   * stop/start cycles within the same session window avoids re-paying
+   * stop()/start() cycles within the same session window avoids re-paying
    * that latency. `expireTime` includes a 30s safety buffer so the cached
    * token isn't returned when it's about to expire mid-WebSocket-handshake.
    * Cleared on hard error / persona swap (component unmount or rebuild).
@@ -202,7 +203,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
             pageSession.setConnectionState('reconnecting');
           }
           // Clear stale errorMessage when transitioning to a non-error state
-          // so chip aria-live regions don't leak the previous failure.
+          // so chip / aria-live regions don't leak the previous failure.
           if (s !== 'error') {
             kernelRef.current.voice._publish({ state: s, errorMessage: undefined });
           } else {
@@ -251,7 +252,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
             } catch (reconnectError) {
               reconnectingRef.current = false;
               const message =
-                reconnectError instanceof Error ? reconnectError.message: String(reconnectError);
+                reconnectError instanceof Error ? reconnectError.message : String(reconnectError);
               setError(message);
               kernelRef.current.voice._publish({ state: 'error', errorMessage: message });
             }
@@ -286,17 +287,19 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
               },
               bubbles: true,
               composed: true,
-            }));
+            }),
+          );
         },
         onToolCall: (call: { name: string; args: Record<string, unknown>; ok: boolean }) => {
           // Mirror to host page; chat panel uses this to render
           // "Assistant opened Open Positions" inline messages.
           window.dispatchEvent(
             new CustomEvent('landi:voice-tool-call', {
-              detail: {...call, timestamp: new Date().toISOString() },
+              detail: { ...call, timestamp: new Date().toISOString() },
               bubbles: true,
               composed: true,
-            }));
+            }),
+          );
         },
         onBargeIn: () => {
           window.dispatchEvent(
@@ -304,7 +307,8 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
               detail: { timestamp: new Date().toISOString() },
               bubbles: true,
               composed: true,
-            }));
+            }),
+          );
         },
       };
       // Select transport: mock when forced/no-key, real Gemini Live otherwise.
@@ -332,7 +336,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
        * static env-baked key — agencies migrating from dev (env key) to
        * prod (worker mint) just set `tokenEndpoint` and the static key
        * stops being read at session start. The thunk caches across rapid
-       * stop/start within the session window to avoid re-paying the
+       * stop()/start() within the session window to avoid re-paying the
        * ~400ms Gemini token-mint latency.
        */
       const apiKeySource = tokenEndpoint
@@ -351,7 +355,8 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
             if (!response.ok) {
               const detail = await response.text().catch(() => '');
               throw new Error(
-                `[voiceKernel] token mint failed: HTTP ${response.status} ${detail.slice(0, 200)}`);
+                `[voiceKernel] token mint failed: HTTP ${response.status} ${detail.slice(0, 200)}`,
+              );
             }
             const data = (await response.json()) as { token?: string; expireTime?: string };
             if (!data.token) {

@@ -1,5 +1,5 @@
 /**
- * Read-only digest drill-down tools (03 section 3.1). All free-fire approval none.
+ * Read-only digest drill-down tools (03 section 3.1). All free-fire / approval none.
  */
 import type { ToolDefinition } from '../panels/tools';
 import type { ActivityLog } from './activity';
@@ -29,12 +29,12 @@ export interface DrillDownHost {
 }
 
 function asString(value: unknown): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function asOptionalString(value: unknown): string | undefined {
   if (value === undefined || value === null) return undefined;
-  return typeof value === 'string' ? value: undefined;
+  return typeof value === 'string' ? value : undefined;
 }
 
 /** Build the four drill-down ToolDefinitions bound to a host world model. */
@@ -58,8 +58,8 @@ export function createDrillDownTools(host: DrillDownHost): ToolDefinition[] {
       if (id === undefined) {
         return { ok: false, error: 'id is required' };
       }
-      const digest = host.getDigest;
-      const context = digest().contexts.find((entry) => entry.id === id);
+      const digest = host.getDigest();
+      const context = digest.contexts.find((entry) => entry.id === id);
       if (context === undefined) {
         return { ok: false, error: `context "${id}" not found` };
       }
@@ -86,13 +86,13 @@ export function createDrillDownTools(host: DrillDownHost): ToolDefinition[] {
       if (panelId === undefined) {
         return { ok: false, error: 'panelId is required' };
       }
-      const digest = host.getDigest;
+      const digest = host.getDigest();
       let summary: Record<string, unknown> | null = null;
       let contextId: string | undefined;
-      for (const context of digest().contexts) {
+      for (const context of digest.contexts) {
         const panel = context.panels.find((entry) => entry.id === panelId);
         if (panel !== undefined) {
-          summary = {...panel, attention: context.attention, contextId: context.id };
+          summary = { ...panel, attention: context.attention, contextId: context.id };
           contextId = context.id;
           break;
         }
@@ -133,7 +133,8 @@ export function createDrillDownTools(host: DrillDownHost): ToolDefinition[] {
       const actor = asOptionalString(args.actor);
       const limit =
         typeof args.limit === 'number' && Number.isFinite(args.limit)
-          ? Math.max(1, Math.floor(args.limit)): 50;
+          ? Math.max(1, Math.floor(args.limit))
+          : 50;
       const entries = host.activity.getEntries({
         since,
         actor,
@@ -198,6 +199,7 @@ export function createDrillDownTools(host: DrillDownHost): ToolDefinition[] {
  */
 export function createDigestGetter(
   compiler: DigestCompiler,
-  resolveInput: () => DigestCompilerInput): () => WorkspaceDigest {
-  return ()=> compiler.compile(resolveInput()).digest;
+  resolveInput: () => DigestCompilerInput,
+): () => WorkspaceDigest {
+  return () => compiler.compile(resolveInput()).digest;
 }

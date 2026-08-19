@@ -8,7 +8,7 @@ import type { CanvasHost } from '../../../panels/host';
 
 let hostRef: CanvasHost | null = null;
 let adapterSourcesRef: readonly string[] = [];
-const listeners = new Set<() => void>;
+const listeners = new Set<() => void>();
 
 function emitHostChange(): void {
   for (const listener of listeners) {
@@ -18,7 +18,8 @@ function emitHostChange(): void {
 
 export function bindWhiteboardPanelHost(
   host: CanvasHost | null,
-  adapterSources: readonly string[] = []): void {
+  adapterSources: readonly string[] = [],
+): void {
   hostRef = host;
   adapterSourcesRef = adapterSources;
   emitHostChange();
@@ -44,7 +45,9 @@ export function subscribeWhiteboardPanelHost(listener: () => void): () => void {
 export function useWhiteboardPanelHost(): CanvasHost | null {
   return useSyncExternalStore(
     subscribeWhiteboardPanelHost,
-    getWhiteboardPanelHost, () => null);
+    getWhiteboardPanelHost,
+    () => null,
+  );
 }
 
 /** @internal Test reset */

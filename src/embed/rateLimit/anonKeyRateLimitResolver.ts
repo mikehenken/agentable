@@ -1,5 +1,5 @@
 /**
- * Host-supplied anon-key rate limit resolver registry ( ).
+ * Host-supplied anon-key rate limit resolver registry (D55 / P15-T3).
  */
 import { emitEmbedRateLimitTelemetry } from '../../telemetry/embedBridge';
 import type {
@@ -16,7 +16,8 @@ import {
 let activeResolver: AnonKeyRateLimitResolver | null = null;
 
 export function registerAnonKeyRateLimitResolver(
-  resolver: AnonKeyRateLimitResolver): () => void {
+  resolver: AnonKeyRateLimitResolver,
+): () => void {
   activeResolver = resolver;
   return () => {
     if (activeResolver === resolver) {
@@ -43,7 +44,8 @@ export interface AssertAnonKeyRateAllowedInput {
  * immediately when denied — never waits on network (no silent hang).
  */
 export async function assertAnonKeyRateAllowed(
-  input: AssertAnonKeyRateAllowedInput): Promise<void> {
+  input: AssertAnonKeyRateAllowedInput,
+): Promise<void> {
   const resolver = activeResolver;
   if (!resolver) {
     return;
@@ -105,7 +107,8 @@ export function throwRateLimitedFromHttp429(input: {
 /** Parse Retry-After (seconds or HTTP-date) into milliseconds. */
 export function parseRetryAfterMs(
   header: string | null,
-  nowMs: number = Date.now()): number {
+  nowMs: number = Date.now(),
+): number {
   if (!header?.trim()) {
     return 60_000;
   }

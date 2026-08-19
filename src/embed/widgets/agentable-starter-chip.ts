@@ -1,16 +1,16 @@
 /**
- * `<agentable-starter-chip>` — Lit widget (widgets family).
+ * `<agentable-starter-chip>` — Lit widget (D44 widgets family, P9-T3).
  *
  * Standalone starter prompt chip for marketing pages. Dispatches the shared
  * chat `prompt` choreography primitive on activate.
  *
  * Usage:
- * <script type="module" src="/embed/agentable-starter-chip.js"></script>
- * <agentable-starter-chip
- * emoji="✨"
- * label="Explore roles"
- * prompt="What roles are open right now?"
- * ></agentable-starter-chip>
+ *   <script type="module" src="/embed/agentable-starter-chip.js"></script>
+ *   <agentable-starter-chip
+ *     emoji="✨"
+ *     label="Explore roles"
+ *     prompt="What roles are open right now?"
+ *   ></agentable-starter-chip>
  */
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -69,7 +69,8 @@ export class AgentableStarterChipElement extends LitElement {
   static styles = [
     widgetHostTokens,
     widgetVisuallyHidden,
-    css`:host {
+    css`
+      :host {
         display: inline-flex;
       }
 
@@ -106,10 +107,14 @@ export class AgentableStarterChipElement extends LitElement {
       button:disabled {
         cursor: not-allowed;
         opacity: 0.55;
-      }.emoji {
+      }
+
+      .emoji {
         font-size: 0.875rem;
         line-height: 1;
-      }.pin {
+      }
+
+      .pin {
         width: 11px;
         height: 11px;
         opacity: 0.55;
@@ -152,7 +157,8 @@ export class AgentableStarterChipElement extends LitElement {
         },
         bubbles: true,
         composed: true,
-      }));
+      }),
+    );
   };
 
   render() {
@@ -168,7 +174,7 @@ export class AgentableStarterChipElement extends LitElement {
         type="button"
         class=${buttonClasses}
         ?disabled=${this.disabled || label.length === 0}
-        aria-label=${label.length > 0 ? `Starter prompt: ${label}`: 'Starter prompt'}
+        aria-label=${label.length > 0 ? `Starter prompt: ${label}` : 'Starter prompt'}
         @click=${this._onClick}
       >
         <span class="emoji" part="emoji" aria-hidden="true">${this.emoji}</span>
@@ -181,7 +187,8 @@ export class AgentableStarterChipElement extends LitElement {
                   d="M16 3V4.5L14.5 6 16 7.5V9L12 13 8 9V7.5L9.5 6 8 4.5V3H16Z"
                 />
               </svg>
-            `: null}
+            `
+          : null}
         <span class="visually-hidden">${this.prompt.trim()}</span>
       </button>
     `;

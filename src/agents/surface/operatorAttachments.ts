@@ -1,5 +1,5 @@
 /**
- * Operator composer attachments — Gemini-compatible file encoding ( iter-5).
+ * Operator composer attachments — Gemini-compatible file encoding (P13-T7 iter-5).
  * Ported from landing-editor `nas-chat-attachments.ts` (adapted for agentable-canvas).
  */
 import type { AttachmentItem } from '../../components/ui-ai/attachments';
@@ -54,12 +54,13 @@ export function ensurePastedImageFileName(file: File, index: number): File {
   if (trimmedName.length > 0 && trimmedName !== 'blob') {
     return file;
   }
-  const mimeType = file.type.startsWith('image/') ? file.type: 'image/png';
+  const mimeType = file.type.startsWith('image/') ? file.type : 'image/png';
   const ext = extensionForImageMime(mimeType);
   const stamp = Date.now();
   const name =
     index === 0
-      ? `pasted-image-${stamp}.${ext}`: `pasted-image-${stamp}-${index + 1}.${ext}`;
+      ? `pasted-image-${stamp}.${ext}`
+      : `pasted-image-${stamp}-${index + 1}.${ext}`;
   return new File([file], name, { type: mimeType, lastModified: file.lastModified });
 }
 
@@ -74,11 +75,11 @@ export function extractImageFilesFromClipboard(data: DataTransfer): File[] {
       if (!item.type.startsWith('image/')) {
         continue;
       }
-      const file = item.getAsFile;
+      const file = item.getAsFile();
       if (!file) {
         continue;
       }
-      files.push(ensurePastedImageFileName(file(), files.length));
+      files.push(ensurePastedImageFileName(file, files.length));
     }
   }
 
@@ -97,8 +98,8 @@ export function extractImageFilesFromClipboard(data: DataTransfer): File[] {
 export function readFileAsDataUri(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = ()=> resolve(String(reader.result));
-    reader.onerror = ()=> reject(reader.error ?? new Error('Failed to read file'));
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error ?? new Error('Failed to read file'));
     reader.readAsDataURL(file);
   });
 }
@@ -131,14 +132,15 @@ export function pendingAttachmentToItem(pending: OperatorPendingAttachment): Att
 }
 
 export async function encodeOperatorAttachments(
-  pending: readonly OperatorPendingAttachment[]): Promise<OperatorOutboundAttachment[]> {
+  pending: readonly OperatorPendingAttachment[],
+): Promise<OperatorOutboundAttachment[]> {
   const encoded: OperatorOutboundAttachment[] = [];
   for (const item of pending) {
     const dataUri = await readFileAsDataUri(item.file);
     const base64Marker = ';base64,';
     const markerIndex = dataUri.indexOf(base64Marker);
     const data =
-      markerIndex >= 0 ? dataUri.slice(markerIndex + base64Marker.length): dataUri;
+      markerIndex >= 0 ? dataUri.slice(markerIndex + base64Marker.length) : dataUri;
     encoded.push({
       mimeType: item.mimeType,
       data,
@@ -150,6 +152,6 @@ export async function encodeOperatorAttachments(
 
 export function revokeOperatorAttachmentPreviews(pending: readonly OperatorPendingAttachment[]): void {
   for (const item of pending) {
-    // URL.revokeObjectURL(item.previewUrl);
+    URL.revokeObjectURL(item.previewUrl);
   }
 }

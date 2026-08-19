@@ -112,7 +112,7 @@ function toModelOptions(options: readonly OperatorModelOption[]): import('../../
 }
 
 function composerStatus(busy: boolean): AgentChatStatus {
-  return busy ? 'submitted': 'ready';
+  return busy ? 'submitted' : 'ready';
 }
 
 export function OperatorSurfaceShell({
@@ -128,8 +128,10 @@ export function OperatorSurfaceShell({
   const [pendingAttachments, setPendingAttachments] = useState<OperatorPendingAttachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const activeThread = useMemo(() => threads.find((thread) => thread.id === activeThreadId) ?? threads[0],
-    [activeThreadId, threads]);
+  const activeThread = useMemo(
+    () => threads.find((thread) => thread.id === activeThreadId) ?? threads[0],
+    [activeThreadId, threads],
+  );
 
   const activeThreadBusy = activeThread?.generating === true;
   const anyThreadGenerating = threads.some((thread) => thread.generating === true);
@@ -143,41 +145,50 @@ export function OperatorSurfaceShell({
       return `${last.id}:${last.text.length}`;
     }
     if (last.kind === 'reasoning') {
-      return `${last.id}:${last.streaming ? 'stream': 'done'}`;
+      return `${last.id}:${last.streaming ? 'stream' : 'done'}`;
     }
     return last.id;
   }, [activeThread?.messages]);
 
-  const pendingAttachmentItems = useMemo<AttachmentItem[]>(() => pendingAttachments.map(pendingAttachmentToItem),
-    [pendingAttachments]);
+  const pendingAttachmentItems = useMemo<AttachmentItem[]>(
+    () => pendingAttachments.map(pendingAttachmentToItem),
+    [pendingAttachments],
+  );
 
   const toolSteps = useMemo(() => {
     if (!activeThread) {
       return [];
     }
-    return activeThread.messages.filter((message) => message.kind === 'tool').map((message) => ({
+    return activeThread.messages
+      .filter((message) => message.kind === 'tool')
+      .map((message) => ({
         id: message.id,
         toolName: message.toolName,
-        status: message.ok ? ('succeeded' as const): ('failed' as const),
+        status: message.ok ? ('succeeded' as const) : ('failed' as const),
         error: message.error,
         resultSummary: formatToolCallLabel(
           message.toolName,
           message.args,
           message.ok,
-          message.error),
+          message.error,
+        ),
       }));
   }, [activeThread?.messages]);
 
-  const taskItems = useMemo(() =>
+  const taskItems = useMemo(
+    () =>
       toolSteps.map((step) => ({
         id: step.id,
         label: step.toolName.replace(/_/g, ' '),
         status:
           step.status === 'succeeded'
-            ? ('done' as const): step.status === 'failed'
-              ? ('failed' as const): ('running' as const),
+            ? ('done' as const)
+            : step.status === 'failed'
+              ? ('failed' as const)
+              : ('running' as const),
       })),
-    [toolSteps]);
+    [toolSteps],
+  );
 
   const estimatedContextTokens = useMemo(() => {
     if (!activeThread) {
@@ -201,7 +212,8 @@ export function OperatorSurfaceShell({
     (threadId: string) => {
       host.selectThread(threadId);
     },
-    [host]);
+    [host],
+  );
 
   const handleCreateThread = useCallback(() => {
     host.createThread();
@@ -216,26 +228,30 @@ export function OperatorSurfaceShell({
       const hasMessages = (thread?.messages.length ?? 0) > 0;
       if (hasMessages) {
         const confirmed = window.confirm(
-          `Close "${thread?.title ?? 'thread'}"? This conversation will be removed from this device.`);
+          `Close "${thread?.title ?? 'thread'}"? This conversation will be removed from this device.`,
+        );
         if (!confirmed) {
           return;
         }
       }
       host.closeThread(threadId);
     },
-    [host, threads]);
+    [host, threads],
+  );
 
   const handleSelectMode = useCallback(
     (nextMode: OperatorMode) => {
       host.selectMode(nextMode);
     },
-    [host]);
+    [host],
+  );
 
   const handleSelectModel = useCallback(
     (nextAlias: string) => {
       void host.selectModel(nextAlias);
     },
-    [host]);
+    [host],
+  );
 
   const handleRemoveAttachment = useCallback((id: string) => {
     setPendingAttachments((current) => {
@@ -260,7 +276,7 @@ export function OperatorSurfaceShell({
       }
     }
     if (next.length > 0) {
-      setPendingAttachments((current) => [...current,...next]);
+      setPendingAttachments((current) => [...current, ...next]);
     }
     event.target.value = '';
   }, []);
@@ -275,12 +291,15 @@ export function OperatorSurfaceShell({
         return;
       }
       event.preventDefault();
-      const next = pastedImages.map((file) => createOperatorPendingAttachment(file)).filter((entry): entry is OperatorPendingAttachment => entry !== null);
+      const next = pastedImages
+        .map((file) => createOperatorPendingAttachment(file))
+        .filter((entry): entry is OperatorPendingAttachment => entry !== null);
       if (next.length > 0) {
-        setPendingAttachments((current) => [...current,...next]);
+        setPendingAttachments((current) => [...current, ...next]);
       }
     },
-    [activeThreadBusy]);
+    [activeThreadBusy],
+  );
 
   const handleStop = useCallback(() => {
     host.setThreads(forceStopOperatorThread(activeThreadId, threads));
@@ -297,7 +316,8 @@ export function OperatorSurfaceShell({
 
     const encodedAttachments =
       pendingAttachments.length > 0
-        ? await encodeOperatorAttachments(pendingAttachments): undefined;
+        ? await encodeOperatorAttachments(pendingAttachments)
+        : undefined;
 
     try {
       const result = await submitOperatorComposerMessage({
@@ -323,7 +343,7 @@ export function OperatorSurfaceShell({
   const renderMessage = (message: OperatorMessage): ReactElement | null => {
     if (message.kind === 'reasoning') {
       const body =
-        message.text.trim().length > 0 ? message.text: REASONING_PLACEHOLDER;
+        message.text.trim().length > 0 ? message.text : REASONING_PLACEHOLDER;
       return (
         <div key={message.id} className="px-1">
           <Reasoning streaming={message.streaming === true} defaultOpen={message.streaming === true}>
@@ -338,7 +358,7 @@ export function OperatorSurfaceShell({
         <div key={message.id} className="px-1">
           <Tool
             toolName={message.toolName}
-            status={message.ok ? 'succeeded': 'failed'}
+            status={message.ok ? 'succeeded' : 'failed'}
             args={message.args}
             error={message.error}
             defaultOpen={!message.ok}
@@ -346,7 +366,8 @@ export function OperatorSurfaceShell({
               message.toolName,
               message.args,
               message.ok,
-              message.error)}
+              message.error,
+            )}
           />
         </div>
       );
@@ -361,14 +382,14 @@ export function OperatorSurfaceShell({
         })) ?? [];
 
       return (
-        <Message key={message.id} from={message.role === 'user' ? 'user': 'assistant'}>
-          <MessageContent from={message.role === 'user' ? 'user': 'assistant'}>
+        <Message key={message.id} from={message.role === 'user' ? 'user' : 'assistant'}>
+          <MessageContent from={message.role === 'user' ? 'user' : 'assistant'}>
             {attachmentItems.length > 0 ? (
               <Attachments items={attachmentItems} compact />
-            ): null}
+            ) : null}
             {message.role === 'assistant' ? (
               <Response>{message.text}</Response>
-            ): (
+            ) : (
               message.text
             )}
           </MessageContent>
@@ -378,9 +399,9 @@ export function OperatorSurfaceShell({
 
     if (isOperatorA2UIMessage(message)) {
       return (
-        <Message key={message.id} from={message.role === 'user' ? 'user': 'assistant'}>
+        <Message key={message.id} from={message.role === 'user' ? 'user' : 'assistant'}>
           <MessageContent
-            from={message.role === 'user' ? 'user': 'assistant'}
+            from={message.role === 'user' ? 'user' : 'assistant'}
             style={{ padding: 0, border: 'none', background: 'transparent' }}
           >
             <OperatorA2UITranscriptLite envelopes={message.envelopes} messageId={message.id} />
@@ -396,7 +417,8 @@ export function OperatorSurfaceShell({
     <div
       className={cn(
         'operator-surface-shell flex h-full min-h-0 flex-1 flex-col overflow-hidden',
-        shellSurfaceClass)}
+        shellSurfaceClass,
+      )}
       data-testid="operator-surface-shell"
     >
       <OperatorVoiceMount />
@@ -404,7 +426,8 @@ export function OperatorSurfaceShell({
         part="header"
         className={cn(
           'operator-header flex shrink-0 items-center gap-3 border-b px-3 py-2.5',
-          shellBorderClass)}
+          shellBorderClass,
+        )}
       >
         <Agent
           part="title"
@@ -432,7 +455,8 @@ export function OperatorSurfaceShell({
         part="thread-tabs"
         className={cn(
           'thread-tabs operator-overlay-scroll flex items-center gap-1 overflow-x-auto border-b px-2 pt-2',
-          shellBorderClass)}
+          shellBorderClass,
+        )}
         role="tablist"
         aria-label="Conversation threads"
       >
@@ -444,7 +468,8 @@ export function OperatorSurfaceShell({
               key={thread.id}
               className={cn(
                 'thread-tab-group inline-flex items-stretch rounded-t-md',
-                selected && cn('border border-b-0', shellBorderClass, shellSurfaceClass))}
+                selected && cn('border border-b-0', shellBorderClass, shellSurfaceClass),
+              )}
             >
               <button
                 part="thread-tab"
@@ -453,10 +478,12 @@ export function OperatorSurfaceShell({
                 className={cn(
                   'thread-tab inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
                   selected
-                    ? 'text-[var(--vibe-text,#ececec)]': cn('border border-transparent', shellMutedClass, 'hover:text-[var(--vibe-text,#ececec)]'))}
+                    ? 'text-[var(--vibe-text,#ececec)]'
+                    : cn('border border-transparent', shellMutedClass, 'hover:text-[var(--vibe-text,#ececec)]'),
+                )}
                 id={`operator-thread-tab-${thread.id}`}
                 data-thread-tab={thread.id}
-                aria-selected={selected ? 'true': 'false'}
+                aria-selected={selected ? 'true' : 'false'}
                 aria-controls={`operator-thread-panel-${thread.id}`}
                 onClick={() => handleSelectThread(thread.id)}
               >
@@ -465,7 +492,7 @@ export function OperatorSurfaceShell({
                     className="inline-block h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[var(--vibe-accent,#ff6b57)]"
                     aria-hidden
                   />
-                ): null}
+                ) : null}
                 <span>{thread.title}</span>
               </button>
               {threads.length > 1 ? (
@@ -475,12 +502,13 @@ export function OperatorSurfaceShell({
                   data-testid={`operator-close-thread-${thread.id}`}
                   aria-label={`Close ${thread.title}`}
                   className={cn(
-                    'thread-tab-close inline-flex w-6 items-center justify-center text-[var(--vibe-text-faint,#6f6f6f)] hover:text-[var(--vibe-text,#ececec)]')}
+                    'thread-tab-close inline-flex w-6 items-center justify-center text-[var(--vibe-text-faint,#6f6f6f)] hover:text-[var(--vibe-text,#ececec)]',
+                  )}
                   onClick={() => handleCloseThread(thread.id)}
                 >
                   <X size={12} />
                 </button>
-              ): null}
+              ) : null}
             </div>
           );
         })}
@@ -491,7 +519,8 @@ export function OperatorSurfaceShell({
             'thread-tab-new ml-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-base leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vibe-accent,#ff6b57)]',
             shellBorderClass,
             shellMutedClass,
-            'hover:bg-[var(--vibe-hover-bg,rgb(255_255_255/0.06))] hover:text-[var(--vibe-text,#ececec)]')}
+            'hover:bg-[var(--vibe-hover-bg,rgb(255_255_255/0.06))] hover:text-[var(--vibe-text,#ececec)]',
+          )}
           data-testid="operator-new-thread"
           aria-label="New conversation"
           title="New conversation"
@@ -502,7 +531,7 @@ export function OperatorSurfaceShell({
       </div>
 
       <div part="thread-panels" className="thread-panels flex min-h-0 flex-1 flex-col">
-        {(activeThread ? [activeThread]: []).map((thread) => {
+        {(activeThread ? [activeThread] : []).map((thread) => {
           const isActive = thread.id === activeThreadId;
           return (
             <section
@@ -525,7 +554,8 @@ export function OperatorSurfaceShell({
                     part="empty-transcript"
                     className={cn(
                       'empty-transcript flex h-full min-h-[180px] flex-col items-center justify-center gap-3 p-6 text-center',
-                      shellFaintClass)}
+                      shellFaintClass,
+                    )}
                   >
                     <span className="text-lg" aria-hidden>
                       ◎
@@ -548,7 +578,7 @@ export function OperatorSurfaceShell({
                       ))}
                     </Suggestions>
                   </div>
-                ): (
+                ) : (
                   <div
                     className="flex flex-col gap-3.5 px-3 pb-2 pt-3"
                     data-auto-scroll-key={chatAutoScrollKey}
@@ -558,17 +588,17 @@ export function OperatorSurfaceShell({
                         <Task title="Operator tools" tasks={taskItems} />
                         <ChainOfThought steps={toolSteps} title="Tool trace" />
                       </>
-                    ): null}
+                    ) : null}
                     {estimatedContextTokens > 0 ? (
                       <Context usedTokens={estimatedContextTokens} maxTokens={128_000} label="Session context" />
-                    ): null}
+                    ) : null}
                     {thread.messages.map((message) => renderMessage(message))}
                     {thread.generating === true && isActive ? (
                       <div className={cn('flex items-center gap-2 px-1 text-xs', shellMutedClass)}>
                         <Loader />
                         <span>Generating response…</span>
                       </div>
-                    ): null}
+                    ) : null}
                   </div>
                 )}
               </Conversation>
@@ -582,7 +612,8 @@ export function OperatorSurfaceShell({
         className={cn(
           'composer-shell shrink-0 border-t p-3',
           shellBorderClass,
-          'bg-[var(--vibe-composer-bg,#141414)]')}
+          'bg-[var(--vibe-composer-bg,#141414)]',
+        )}
       >
         {toastError ? (
           <div
@@ -592,14 +623,14 @@ export function OperatorSurfaceShell({
           >
             {toastError}
           </div>
-        ): null}
+        ) : null}
         {pendingAttachmentItems.length > 0 ? (
           <Attachments
             items={pendingAttachmentItems}
             onRemove={handleRemoveAttachment}
             compact
           />
-        ): null}
+        ) : null}
         <input
           ref={fileInputRef}
           type="file"
@@ -629,20 +660,21 @@ export function OperatorSurfaceShell({
                 'inline-flex h-8 w-8 items-center justify-center rounded-md border',
                 shellBorderClass,
                 shellMutedClass,
-                'hover:text-[var(--vibe-text,#ececec)]')}
+                'hover:text-[var(--vibe-text,#ececec)]',
+              )}
               onClick={() => fileInputRef.current?.click()}
             >
               <Paperclip size={15} />
             </button>
             <OperatorVoiceInput
-              onTranscript={(text) => setDraft((current) => (current ? `${current} ${text}`: text))}
+              onTranscript={(text) => setDraft((current) => (current ? `${current} ${text}` : text))}
             />
             <PromptInputSubmit
               status={composerStatus(activeThreadBusy)}
               disabled={
                 activeThreadBusy || (draft.trim().length === 0 && pendingAttachments.length === 0)
               }
-              onStop={activeThreadBusy ? handleStop: undefined}
+              onStop={activeThreadBusy ? handleStop : undefined}
             />
           </PromptInputToolbar>
         </PromptInput>

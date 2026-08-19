@@ -52,11 +52,15 @@ function ShapeListItem({ shapeId, depth }: ShapeListItemProps): ReactElement | n
   const editor = useEditor();
   const shape = useValue('shape', () => editor.getShape(shapeId), [editor, shapeId]);
   const childIds = useValue(
-    'childIds', () => editor.getSortedChildIdsForParent(shapeId),
-    [editor, shapeId]);
+    'childIds',
+    () => editor.getSortedChildIdsForParent(shapeId),
+    [editor, shapeId],
+  );
   const isSelected = useValue(
-    'isSelected', () => editor.getSelectedShapeIds().includes(shapeId),
-    [editor, shapeId]);
+    'isSelected',
+    () => editor.getSelectedShapeIds().includes(shapeId),
+    [editor, shapeId],
+  );
 
   if (!shape) return null;
 
@@ -84,7 +88,7 @@ function ShapeListItem({ shapeId, depth }: ShapeListItemProps): ReactElement | n
           paddingLeft: 10 + depth * 14,
           border: 'none',
           borderRadius: 6,
-          background: isSelected ? SELECTED_BG: 'transparent',
+          background: isSelected ? SELECTED_BG : 'transparent',
           color: 'var(--landi-color-text, #1A1A1A)',
           fontSize: 12,
           lineHeight: 1.35,
@@ -114,7 +118,7 @@ function ShapeListItem({ shapeId, depth }: ShapeListItemProps): ReactElement | n
               flexShrink: 0,
             }}
           />
-        ): null}
+        ) : null}
         <span
           style={{
             overflow: 'hidden',
@@ -126,7 +130,7 @@ function ShapeListItem({ shapeId, depth }: ShapeListItemProps): ReactElement | n
           {label}
         </span>
       </button>
-      {childIds.length > 0 ? <ShapeList shapeIds={childIds} depth={depth + 1} />: null}
+      {childIds.length > 0 ? <ShapeList shapeIds={childIds} depth={depth + 1} /> : null}
     </li>
   );
 }
@@ -135,11 +139,15 @@ function ShapeListItem({ shapeId, depth }: ShapeListItemProps): ReactElement | n
 export const LayersPanel = track(function LayersPanel(): ReactElement | null {
   const editor = useEditor();
   const isOpen = useValue(
-    'layersPanelOpen', () => editor.getCurrentToolId() === LAYERS_TOOL_ID,
-    [editor]);
+    'layersPanelOpen',
+    () => editor.getCurrentToolId() === LAYERS_TOOL_ID,
+    [editor],
+  );
   const rootShapeIds = useValue(
-    'rootShapeIds', () => editor.getSortedChildIdsForParent(editor.getCurrentPageId()),
-    [editor]);
+    'rootShapeIds',
+    () => editor.getSortedChildIdsForParent(editor.getCurrentPageId()),
+    [editor],
+  );
 
   if (!isOpen) return null;
 
@@ -196,7 +204,7 @@ export const LayersPanel = track(function LayersPanel(): ReactElement | null {
           >
             No shapes on this page yet.
           </p>
-        ): (
+        ) : (
           <ShapeList shapeIds={rootShapeIds} depth={0} />
         )}
       </div>

@@ -1,7 +1,7 @@
 /**
- * Frozen telemetry error vocabulary ( ).
+ * Frozen telemetry error vocabulary (D55 / P15-T2).
  *
- * Compose/patch rejections use repair codes; tool/voice/cost layers
+ * Compose/patch rejections use D43 repair codes; tool/voice/cost layers
  * extend the same snapshot-tested set so host sinks never see ad-hoc strings.
  */
 import {
@@ -10,23 +10,23 @@ import {
   type RepairErrorCode,
 } from '../panels/spec/repairVocabulary';
 
-/** Agent tool-scope and executor-layer rejections. */
+/** Agent tool-scope and executor-layer rejections (D45). */
 export const TELEMETRY_TOOL_ERROR_CODES = [
   'SCOPE_DENIED',
   'UNKNOWN_TOOL',
   'TOOL_HANDLER_ERROR',
 ] as const;
 
-/** Voice transport outcomes surfaced to telemetry. */
+/** Voice transport outcomes surfaced to telemetry (D56). */
 export const TELEMETRY_VOICE_ERROR_CODES = [
   'VOICE_CONNECT_FAILED',
   'VOICE_RECONNECT_EXHAUSTED',
 ] as const;
 
-/** Budget costClass refusal codes ( costClass). */
+/** Budget / costClass refusal codes (D43 costClass). */
 export const TELEMETRY_COST_ERROR_CODES = ['BUDGET_HARD_CAP'] as const;
 
-/** Public embed anon-key rate limit refusals ( ). */
+/** Public embed anon-key rate limit refusals (D55 / P15-T3). */
 export const TELEMETRY_EMBED_ERROR_CODES = ['RATE_LIMITED'] as const;
 
 export type TelemetryToolErrorCode = (typeof TELEMETRY_TOOL_ERROR_CODES)[number];
@@ -43,9 +43,14 @@ export type TelemetryErrorCode =
 
 /**
  * Canonical sorted frozen codes for telemetry `errorCodes` fields.
- * Snapshot-tested in.
+ * Snapshot-tested in P15-T2.
  */
-export const FROZEN_TELEMETRY_ERROR_CODES = [...FROZEN_REPAIR_ERROR_CODES,...TELEMETRY_TOOL_ERROR_CODES,...TELEMETRY_VOICE_ERROR_CODES,...TELEMETRY_COST_ERROR_CODES,...TELEMETRY_EMBED_ERROR_CODES,
+export const FROZEN_TELEMETRY_ERROR_CODES = [
+  ...FROZEN_REPAIR_ERROR_CODES,
+  ...TELEMETRY_TOOL_ERROR_CODES,
+  ...TELEMETRY_VOICE_ERROR_CODES,
+  ...TELEMETRY_COST_ERROR_CODES,
+  ...TELEMETRY_EMBED_ERROR_CODES,
 ] as const satisfies readonly TelemetryErrorCode[];
 
 const frozenSet = new Set<string>(FROZEN_TELEMETRY_ERROR_CODES);
@@ -56,7 +61,8 @@ export function isFrozenTelemetryErrorCode(code: string): code is TelemetryError
 
 /** Assert every code is frozen; drops unknown entries. */
 export function normalizeTelemetryErrorCodes(
-  codes: readonly string[]): readonly TelemetryErrorCode[] {
+  codes: readonly string[],
+): readonly TelemetryErrorCode[] {
   const normalized: TelemetryErrorCode[] = [];
   for (const code of codes) {
     if (isFrozenTelemetryErrorCode(code)) {
