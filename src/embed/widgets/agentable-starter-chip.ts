@@ -1,5 +1,5 @@
 /**
- * `<agentable-starter-chip>` — Lit widget (D44 widgets family, P9-T3).
+ * `<agentable-starter-chip>` — Lit widget (widgets family).
  *
  * Standalone starter prompt chip for marketing pages. Dispatches the shared
  * chat `prompt` choreography primitive on activate.

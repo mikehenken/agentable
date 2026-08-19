@@ -1,5 +1,5 @@
 /**
- * Agent registry (03 section 3.2, D45): session presence, heartbeats, and
+ * Agent registry (03 section 3.2): session presence, heartbeats, and
  * status transitions that feed the workspace digest.
  */
 import type { CapabilityDescriptor } from './capabilities';
@@ -13,11 +13,11 @@ export interface AgentRegistryRegisterInput {
   transport: string;
   capabilities?: readonly CapabilityDescriptor[];
   task?: string;
-  /** Allowed tool names for role-scope enforcement (D45). */
+ /** Allowed tool names for role-scope enforcement. */
   allowedTools?: readonly string[];
-  /** Allowed panel definition ids (D45). */
+ /** Allowed panel definition ids. */
   allowedPanels?: readonly string[];
-  /** Allowed page slots (D45). */
+ /** Allowed page slots. */
   allowedSlots?: readonly string[];
 }
 
@@ -45,7 +45,7 @@ export interface AgentRegistry {
   setStatus(agentId: string, status: AgentSessionStatus, task?: string): AgentRegistryEntry | undefined;
   heartbeat(agentId: string, nowMs?: number): AgentRegistryEntry | undefined;
   /**
-   * Role-scope check (D45). Empty allow-lists mean unrestricted for that axis.
+ * Role-scope check. Empty allow-lists mean unrestricted for that axis.
    */
   isToolAllowed(agentId: string, toolName: string): boolean;
   isPanelAllowed(agentId: string, panelId: string): boolean;

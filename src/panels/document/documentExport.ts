@@ -1,5 +1,5 @@
 /**
- * Document export orchestration (P12-T4): PDF/DOCX from block model, no HTML round-trip.
+ * Document export orchestration: PDF/DOCX from block model, no HTML round-trip.
  */
 import { createHash } from 'node:crypto';
 import { exportDocumentToDocx } from './exportDocx';

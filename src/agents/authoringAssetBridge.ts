@@ -1,6 +1,6 @@
 /**
 
- * Trusted asset resolution for insert_image (D50, P12-T1).
+ * Trusted asset resolution for insert_image.
 
  *
 

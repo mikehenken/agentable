@@ -1,5 +1,5 @@
 /**
- * Streaming spec session protocol (D40/D56): envelope-first ordering,
+ * Streaming spec session protocol: envelope-first ordering,
  * skeleton substitution for referenced-but-missing nodes, idempotent
  * duplicate handling, gap rejection with a resume seq, interruption
  * state, and terminal byte-identity with the one-shot validation of

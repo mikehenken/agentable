@@ -240,7 +240,7 @@ export type ChatSendProgressEvent =
 
 export interface ChatSendOptions {
   attachmentInlineData?: ReadonlyArray<{ mimeType: string; data: string }>;
-  /** Incremental turn updates for operator / chat UI (P13-T7 iter-12). */
+ /** Incremental turn updates for operator / chat UI. */
   onProgress?: (event: ChatSendProgressEvent) => void;
   /** When aborted, in-flight fetch and tool rounds stop with AbortError. */
   signal?: AbortSignal;

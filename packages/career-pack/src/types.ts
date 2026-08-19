@@ -44,7 +44,7 @@ export interface CareerPack {
   readonly personaScaffold: CareerPersonaScaffold;
 }
 
-/** Persona scaffold tenants customize via config ( mechanism 1). */
+/** Persona scaffold tenants customize via config (mechanism 1). */
 export interface CareerPersonaScaffold {
   assistantName: string;
   tenantTitle: string;

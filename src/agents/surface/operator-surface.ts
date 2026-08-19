@@ -1,9 +1,9 @@
 /**
- * `<agentable-operator-surface>` — canvas-wide operator agent UI (D51, P13-T1).
+ * `<agentable-operator-surface>` — canvas-wide operator agent UI.
  *
- * Lit host shell mounting the React OperatorSurfaceShell (P13-T7 iteration-2).
- * Ask/Build/Draw mode selector with enforced tool-scope presets (P13-T2),
- * model switcher shell, and A2UI-rich transcript blocks via the D40 adapter.
+ * Lit host shell mounting the React OperatorSurfaceShell.
+ * Ask/Build/Draw mode selector with enforced tool-scope presets,
+ * model switcher shell, and A2UI-rich transcript blocks via the adapter.
  */
 import { LitElement, css, html, unsafeCSS, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -368,7 +368,7 @@ export class AgentableOperatorSurfaceElement extends LitElement {
     return evaluateOperatorModeToolDenial(toolName);
   }
 
-  /** Test/diagnostic helper: whether D49 model rebind is active for this surface. */
+ /** Test/diagnostic helper: whether model rebind is active for this surface. */
   isOperatorModelBridgeActive(): boolean {
     return this._modelBridgeActive && isOperatorModelBridgeActive();
   }

@@ -1,5 +1,5 @@
 /**
- * Workspace world-model digest (D22, D43): attention-tiered, token-budgeted
+ * Workspace world-model digest: attention-tiered, token-budgeted
  * context compiled from canvas/session truth. Agents receive deltas by default
  * and a full digest on demand.
  */
@@ -63,7 +63,7 @@ export interface DigestActivitySummary {
   target: string;
 }
 
-/** Compact canvas mark summary for agent/user drawings (D41, P8-T4). */
+/** Compact canvas mark summary for agent/user drawings. */
 export interface DigestShapeSummary {
   id: string;
   nativeType: string;
@@ -87,7 +87,7 @@ export interface WorkspaceDigest {
   shapes: DigestShapeSummary[];
 }
 
-/** Viewport/selection inputs used to derive attention tiers (D22). */
+/** Viewport/selection inputs used to derive attention tiers. */
 export interface AttentionInput {
   contextId: string;
   selected?: boolean;
@@ -132,7 +132,7 @@ export interface DigestDelta {
   newShapes: string[];
   changedShapes: string[];
   removedShapes: string[];
-  /** Compact digest containing only changed slices (D43 default delivery). */
+ /** Compact digest containing only changed slices (default delivery). */
   patch: Partial<WorkspaceDigest>;
 }
 
@@ -145,7 +145,7 @@ export interface DigestCompilerInput {
   recentActivity?: DigestActivitySummary[] | readonly ActivityEntry[];
   /** Change-batch id; cache hits when unchanged. */
   changeBatchId?: string;
-  /** Canvas drawing summaries from the host shape collector (P8-T4). */
+ /** Canvas drawing summaries from the host shape collector. */
   shapes?: DigestShapeSummary[];
 }
 
@@ -153,7 +153,7 @@ export interface DigestCompiler {
   compile(input: DigestCompilerInput, options?: DigestBudgetOptions): DigestCompileResult;
   /** Full digest (bypasses last-turn delta path). */
   full(input: DigestCompilerInput, options?: DigestBudgetOptions): DigestCompileResult;
-  /** Delta vs the last compiled digest for `agentId` (D43). */
+ /** Delta vs the last compiled digest for `agentId`. */
   deltaFor(agentId: string, input: DigestCompilerInput, options?: DigestBudgetOptions): {
     result: DigestCompileResult;
     delta: DigestDelta;

@@ -1,5 +1,5 @@
 /**
- * Meridian Labs gallery fixture hygiene ( rule 4).
+ * Meridian Labs gallery fixture hygiene (rule 4).
  */
 import { describe, expect, it } from 'vitest';
 import {

@@ -1,6 +1,6 @@
 /**
  * The tldraw implementation of the canvas engine SPI (src/engine/types,
- * D37). A thin adapter over the existing whiteboard internals: panel
+ *). A thin adapter over the existing whiteboard internals: panel
  * shapes go through `panelShapeApi` (the single entry point agent tools
  * already use), snapshots ride the editor's native snapshot support, and
  * camera ops map onto tldraw camera options.

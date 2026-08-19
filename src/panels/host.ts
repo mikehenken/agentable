@@ -42,7 +42,7 @@ import { defaultCatalog } from './spec';
 
 /**
  * The engine contract now lives in src/engine (panel system spec section
- * 14, D37). The host consumes the lifecycle slice; these re-exports keep
+ * 14). The host consumes the lifecycle slice; these re-exports keep
  * the established public names for existing consumers, `EngineHandle`
  * here being the slice `createCanvasHost` requires rather than the full
  * SPI handle of the same name in src/engine.
@@ -54,9 +54,9 @@ export type { EngineLifecycleHandle as EngineHandle } from '../engine/types';
 export interface PanelOpenOptions {
   /** Host-defined scope the panel instance binds to. */
   scope?: PanelScope;
-  /** Named page-session slot for D44 embed placement (P9-T2). */
+ /** Named page-session slot for embed placement. */
   slot?: string;
-  /** App-shell region for DOM workspace placement (P11-T3). */
+ /** App-shell region for DOM workspace placement. */
   region?: AppShellRegionId;
   tabGroup?: number;
   order?: number;
@@ -136,15 +136,15 @@ export interface CreateCanvasHostOptions {
   /**
    * Action ids (or `definitionId:actionId` keys) that skip HITL review
    * for agent-triggered mutations. Destructive actions still require the
-   * confirm step (02 section 7, D14).
+ * confirm step (02 section 7).
    */
   autoApprove?: readonly string[];
   /**
-   * Port-order gate for agent `compose_panel` (D29). When set and closed,
+ * Port-order gate for agent `compose_panel`. When set and closed,
    * the tool is omitted from declarations and calls return COMPOSE_GATE_CLOSED.
    */
   composeGate?: ComposeGateConfig;
-  /** Host-supplied telemetry sink (D55). Also register at runtime via `host.telemetry.registerSink`. */
+ /** Host-supplied telemetry sink. Also register at runtime via `host.telemetry.registerSink`. */
   telemetrySink?: TelemetrySink;
 }
 
@@ -174,16 +174,16 @@ export interface CanvasHost {
    * The resolved catalog instance in use.
    */
   catalog: ReadonlyMap<string, CatalogEntry>;
-  /** Model-agnostic agent runtime (`registerModelResolver`, sessions, D49). */
+ /** Model-agnostic agent runtime (`registerModelResolver`, sessions). */
   agents: AgentRuntime;
-  /** Host-supplied runtime telemetry sink boundary (`emit`, D55). */
+ /** Host-supplied runtime telemetry sink boundary (`emit`). */
   telemetry: HostTelemetry;
   panels: CanvasHostPanels;
-  /** Data lifecycle + invalidate (02 section 8, P1-T5). */
+ /** Data lifecycle + invalidate (02 section 8). */
   data: CanvasHostData;
   /** HITL approval queue for panel mutations (02 section 7). */
   approvals: import('./approval/types').ApprovalController;
-  /** D53 undo/reversal ledger and stack undo for canvas-local ops. */
+ /** undo/reversal ledger and stack undo for canvas-local ops. */
   undo: UndoReversalRuntime;
   /** Resolves once the engine reports readiness, then stays resolved. */
   whenReady(): Promise<void>;

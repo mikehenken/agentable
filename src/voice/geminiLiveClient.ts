@@ -77,7 +77,7 @@ export interface VoicePersonaConfig {
    */
   voiceGreeting?: string;
   /**
-   * D46 - who speaks first on connect. Default `agent-first`.
+ * who speaks first on connect. Default `agent-first`.
    */
   greetingMode?: VoiceGreetingMode;
   /**

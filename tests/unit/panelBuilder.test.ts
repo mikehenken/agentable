@@ -1,5 +1,5 @@
 /**
- * P1-T4 unit suite for the typed builder (02 section 3). Covers the
+ * unit suite for the typed builder (02 section 3). Covers the
  * deterministic compile (stable node ids, stable ordering, pure JSON,
  * byte-identical repeat runs), the define-time guarantee set (action
  * refs, source binds, showIf key checks, static mutate rejection), and

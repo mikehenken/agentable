@@ -28,7 +28,7 @@ export const CANVAS_DRAW_TOOLS: ReadonlySet<string> = new Set([
 
 export const CANVAS_CHECK_MARKER = '[Canvas check]';
 
-/** Refusal when overlap-fix phase blocks canvas clear (P13-T7). */
+/** Refusal when overlap-fix phase blocks canvas clear. */
 export const CLEAR_FORBIDDEN_LAYOUT_FIX_ERROR =
   'Do not clear to fix overlaps. Update shapes in place using draw_shapes with existing ids, or arrange.';
 

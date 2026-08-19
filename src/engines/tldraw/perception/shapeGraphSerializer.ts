@@ -1,5 +1,5 @@
 /**
- * Deterministic shape-graph serialization from tldraw records (P8-T2).
+ * Deterministic shape-graph serialization from tldraw records.
  */
 import {
   AGENT_SHAPE_PROVENANCE_META_KEY,

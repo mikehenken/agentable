@@ -1,5 +1,5 @@
 /**
- * G4 code-execution boundary (P12-T6).
+ * G4 code-execution boundary.
  *
  * Untrusted strings from models, adapters, and host payloads must render as
  * inert plain text — never as HTML, script, or executable URLs.
@@ -100,7 +100,7 @@ export function sanitizeAssetIdForDisplay(value: string): string {
   return sanitizeInertText(value, { trim: true });
 }
 
-/** P14 / D52 gate — code preview tier stays off unless policy explicitly enables it. */
+/** P14 / gate — code preview tier stays off unless policy explicitly enables it. */
 export function isCodePreviewAllowed(policy: ResolvedCanvasPolicy): boolean {
   return policy.allowCodePreview === true;
 }

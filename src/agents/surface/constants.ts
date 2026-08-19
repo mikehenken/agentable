@@ -3,13 +3,13 @@ import type { OperatorMode, OperatorModelOption, OperatorThread } from './types'
 
 export const OPERATOR_SURFACE_TAG = 'agentable-operator-surface';
 
-/** Stable D49 agent id for the canvas-wide operator session (P13-T3). */
+/** Stable agent id for the canvas-wide operator session. */
 export const OPERATOR_AGENT_ID = 'operator';
 
 /** Human-readable label for operator attribution (activity, HITL, digest). */
 export const OPERATOR_LABEL = 'Canvas Operator';
 
-/** Registry + lease scope key for the canvas-wide operator (P13-T5). */
+/** Registry + lease scope key for the canvas-wide operator. */
 export const OPERATOR_REGISTRY_SCOPE = 'canvas:operator';
 
 /** Lease scope contested by the operator while its surface is mounted. */

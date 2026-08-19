@@ -465,7 +465,7 @@ function formatAgentRepairResult(
 }
 
 /**
- * Seven-step validation pipeline (D9). Steps 1-6 always run; step 7 marks
+ * Seven-step validation pipeline. Steps 1-6 always run; step 7 marks
  * agent repair eligibility when `options.agentRepairRound` is true.
  */
 export function validateSpec(
@@ -848,7 +848,7 @@ export function validateSpec(
     }
   }
 
-  // --- Step 6: sanitization (full envelope per D9.6) ---
+ // --- Step 6: sanitization (full envelope per.6) ---
   if (workingSpec.state !== undefined) {
     walkJsonStringsForSanitization(workingSpec.state, 'state', errors);
   }
@@ -889,7 +889,7 @@ export function validateSpec(
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
   }
 
-  // Sanitize control chars in the success path (strip per D9.6).
+ // Sanitize control chars in the success path (strip per.6).
   let sanitizedState: JsonObject | undefined;
   if (workingSpec.state !== undefined) {
     const sanitized = sanitizeJsonValue(workingSpec.state);

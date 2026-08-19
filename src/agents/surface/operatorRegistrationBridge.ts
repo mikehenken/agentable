@@ -1,5 +1,5 @@
 /**
- * Operator registration bridge (P13-T5): registers the canvas-wide operator
+ * Operator registration bridge: registers the canvas-wide operator
  * agent alongside scoped page agents without clobbering their identity, leases,
  * or HITL queues.
  *
@@ -26,7 +26,7 @@ export type OperatorRegistrationRuntime = Pick<
   'register' | 'claim' | 'registry' | 'leases' | 'activity'
 >;
 
-/** Stable acting-agent context for operator tool execution (D45). */
+/** Stable acting-agent context for operator tool execution. */
 export const OPERATOR_TOOL_CONTEXT: AgentToolExecutionContext = {
   agentId: OPERATOR_AGENT_ID,
   agentLabel: OPERATOR_LABEL,

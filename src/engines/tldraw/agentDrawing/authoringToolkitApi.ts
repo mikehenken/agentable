@@ -1,5 +1,5 @@
 /**
- * Imperative authoring toolkit driver for the tldraw whiteboard (D50, P12-T1).
+ * Imperative authoring toolkit driver for the tldraw whiteboard.
  */
 import type { Editor, TLAssetId, TLShapeId, TLShapePartial } from 'tldraw';
 import { AssetRecordType, createShapeId, toRichText } from 'tldraw';

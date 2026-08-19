@@ -1,5 +1,5 @@
 /**
- * Arabic locale pack (D42/D59). Partial — missing keys fall back to English.
+ * Arabic locale pack. Partial — missing keys fall back to English.
  */
 import type { MessageCatalog } from './en';
 

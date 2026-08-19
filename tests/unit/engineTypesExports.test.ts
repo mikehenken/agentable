@@ -1,6 +1,6 @@
 /**
  * Exported-surface snapshot for `src/engine/types.ts`, the canvas engine
- * SPI contract module (panel system spec section 14, D37).
+ * SPI contract module (panel system spec section 14).
  *
  * Same approach as panelTypesExports: the module is types-only, so its
  * runtime export object is empty and a plain `import` cannot observe

@@ -1,6 +1,6 @@
 /**
  * Derives a JSON-schema-style props description from catalog Zod schemas
- * for agent introspection (D43 describe_panel).
+ * for agent introspection (describe_panel).
  */
 import { z } from 'zod';
 import type { PropsSchemaDescription } from './types';

@@ -1,5 +1,5 @@
 /**
- * Minimal deterministic ZIP (STORE) for byte-stable DOCX export (P12-T4).
+ * Minimal deterministic ZIP (STORE) for byte-stable DOCX export.
  */
 
 const LOCAL_FILE_HEADER_SIGNATURE = 0x04034b50;

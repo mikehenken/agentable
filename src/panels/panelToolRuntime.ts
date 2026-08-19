@@ -112,9 +112,9 @@ export interface PanelSpecValidationError {
   message: string;
   nodeId?: string;
   path?: string;
-  /** Nearest-valid-alternative hint from the validator (D43). */
+ /** Nearest-valid-alternative hint from the validator. */
   hint?: string;
-  /** Structured repair suggestion surfaced to agents (D43). */
+ /** Structured repair suggestion surfaced to agents. */
   suggestedFix?: string;
 }
 
@@ -126,7 +126,7 @@ export interface ComposePanelSuccess {
 export interface ComposePanelFailure {
   ok: false;
   errors: readonly PanelSpecValidationError[];
-  /** True when the agent may attempt exactly one structured repair (D9.7). */
+ /** True when the agent may attempt exactly one structured repair (.7). */
   agentRepairEligible: boolean;
 }
 
@@ -139,7 +139,7 @@ export interface PatchPanelSuccess {
 export interface PatchPanelFailure {
   ok: false;
   errors: readonly PanelSpecValidationError[];
-  /** True when the agent may attempt exactly one structured repair (D9.7). */
+ /** True when the agent may attempt exactly one structured repair (.7). */
   agentRepairEligible: boolean;
 }
 
@@ -147,7 +147,7 @@ export type PatchPanelResult = PatchPanelSuccess | PatchPanelFailure;
 
 export interface RunPanelActionOptions {
   actor?: ApprovalActor;
-  /** When true, mutating actions always queue HITL even for user actor (D53 reversal). */
+ /** When true, mutating actions always queue HITL even for user actor (reversal). */
   forceHitl?: boolean;
 }
 
@@ -178,9 +178,9 @@ interface PanelInstanceState {
   values: Record<string, JsonValue>;
   userDirtyFields: Set<string>;
   agentFilledFields: Set<string>;
-  /** Per-field acting agent for chrome attribution (D45). */
+ /** Per-field acting agent for chrome attribution. */
   fieldAttribution: Map<string, FieldAttribution>;
-  /** Set after the first repair-eligible patch validation failure (D9.7). */
+ /** Set after the first repair-eligible patch validation failure (.7). */
   patchRepairConsumed: boolean;
 }
 
@@ -213,10 +213,10 @@ export interface PanelToolRuntime {
   markFieldUserDirty(panelId: string, fieldPath: string): void;
   getFieldMarkers(panelId: string): { agentFilled: ReadonlySet<string>; userDirty: ReadonlySet<string> };
   getFieldAttribution(panelId: string): ReadonlyMap<string, FieldAttribution>;
-  /** Map an open instance id back to its registered definition id (D45 scopes). */
+ /** Map an open instance id back to its registered definition id (scopes). */
   resolveDefinitionId(panelId: string): string | undefined;
   readonly approvalController: ApprovalController;
-  /** D53 undo/reversal: canvas stack undo + compensating mutation reversal. */
+ /** undo/reversal: canvas stack undo + compensating mutation reversal. */
   readonly undoReversal: UndoReversalRuntime;
   pushCanvasOp(actor: ApprovalActor, op: CanvasStackOp): ReturnType<UndoReversalRuntime['pushCanvasOp']>;
   stackUndo(actor: ApprovalActor): StackUndoResult;
@@ -261,7 +261,7 @@ function nextComposedPanelId(): string {
   return `composed-${composedCounter}`;
 }
 
-/** Reset composed panel id sequence for deterministic eval/tests (P10-T3). */
+/** Reset composed panel id sequence for deterministic eval/tests. */
 export function resetComposedPanelIdCounterForTests(): void {
   composedCounter = 0;
 }
@@ -400,9 +400,9 @@ function normalizeActionPayload(
 export interface PanelToolRuntimeOptions extends PanelToolApprovalOptions {
   composeGate?: ComposeGateEvaluation;
   undoReversal?: UndoReversalRuntime;
-  /** Optional devtools session for spec inspector trace (P10-T2). */
+ /** Optional devtools session for spec inspector trace. */
   devtoolsSession?: SpecDevtoolsSession;
-  /** Host telemetry sink emit hook (`host.telemetry.emit`, D55). */
+ /** Host telemetry sink emit hook (`host.telemetry.emit`). */
   telemetryEmit?: TelemetryEmit;
 }
 
@@ -933,7 +933,7 @@ export function createPanelToolRuntime(
       const initialPhase = bypassReview && action.destructive ? 'destructive_confirm' : 'review';
 
       if (initialPhase === 'review' && diff.length === 0 && Object.keys(actionPayload).length === 0) {
-        // No visible diff; still surface review for mutating agent actions (D14).
+ // No visible diff; still surface review for mutating agent actions.
       }
 
       const resolution = await approvalController.queue({

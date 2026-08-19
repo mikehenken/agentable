@@ -47,7 +47,7 @@ export interface SupportInboxPack {
   readonly personaScaffold: SupportInboxPersonaScaffold;
 }
 
-/** Persona scaffold tenants customize via config ( mechanism 1). */
+/** Persona scaffold tenants customize via config (mechanism 1). */
 export interface SupportInboxPersonaScaffold {
   assistantName: string;
   tenantTitle: string;

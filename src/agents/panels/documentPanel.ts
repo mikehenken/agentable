@@ -1,5 +1,5 @@
 /**
- * Tier 2 document panel (D50, P12-T2): portable block model + DocumentView.
+ * Tier 2 document panel: portable block model + DocumentView.
  */
 import { defineSchemaPanel } from '../../panels/builder';
 import type { PanelDefinition } from '../../panels/types';

@@ -1,17 +1,17 @@
 ---
 lrn: lrn::en:platform:agentable-canvas.feature.open-agent-canvas-gallery::doc
 related_docs:
-  - docs/features/gallery-d47.md
-  - docs/features/authoring-toolkit.md
-  - docs/features/document-block-model.md
-  - docs/features/document-export.md
-  - docs/features/canvas-policy-merge.md
-  - docs/features/code-execution-boundary.md
+ - docs/features/gallery-d47.md
+ - docs/features/authoring-toolkit.md
+ - docs/features/document-block-model.md
+ - docs/features/document-export.md
+ - docs/features/canvas-policy-merge.md
+ - docs/features/code-execution-boundary.md
 changelog:
-  - date: 2026-07-23
-    summary: Gallery embed auto-demo for document panel, PDF export, HITL save boundary ( iter-3).
-  - date: 2026-07-21
-    summary: gallery example 12 (Meridian Labs) with open-canvas e2e harness.
+ - date: 2026-07-23
+ summary: Gallery embed auto-demo for document panel, PDF export, HITL save boundary.
+ - date: 2026-07-21
+ summary: gallery example 12 (Meridian Labs) with open-canvas e2e harness.
 ---
 
 # Open agent canvas gallery example 
@@ -36,7 +36,7 @@ Gallery example **12** (`examples/12-open-agent-canvas/`) demonstrates the P12 o
 { "canvasPolicy": { "preset": "open" } }
 ```
 
-Framework default remains `guarded`; this gallery host opts in explicitly ( pattern).
+Framework default remains `guarded`; this gallery host opts in explicitly (pattern).
 
 ## Automated checks
 

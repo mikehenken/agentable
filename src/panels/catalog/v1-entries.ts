@@ -194,7 +194,7 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
         virtualizeThreshold: z.number().int().positive().optional(),
       }),
       component: DocumentView,
-      agentHint: 'Portable block-model document renderer with D53 pre-save undo and D56 virtualization',
+      agentHint: 'Portable block-model document renderer with pre-save undo and virtualization',
     },
   ],
 ]);

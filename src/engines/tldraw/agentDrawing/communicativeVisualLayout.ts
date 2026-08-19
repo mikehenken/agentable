@@ -1,5 +1,5 @@
 /**
- * Deterministic auto-layout for agent communicative visuals (D41, P8-T5).
+ * Deterministic auto-layout for agent communicative visuals.
  *
  * Pure functions: identical diagram + mode + bounds always yield the same
  * node positions. Agents supply logical structure only.
@@ -56,7 +56,7 @@ export const NESTED_TOP_LEVEL_GAP = 96;
 const TWO_PI = Math.PI * 2;
 
 /**
- * Label-fitted node sizing (P8-T5 follow-up).
+ * Label-fitted node sizing (follow-up).
  *
  * Every layout mode used to place every node at the same fixed
  * `DIAGRAM_NODE_WIDTH` x `DIAGRAM_NODE_HEIGHT` box regardless of label

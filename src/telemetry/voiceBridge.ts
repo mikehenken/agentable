@@ -1,5 +1,5 @@
 /**
- * Voice kernel → host.telemetry bridge (D55 / P15-T2).
+ * Voice kernel → host.telemetry bridge.
  */
 import { ensureVoiceKernel, type VoiceState } from '../shared/voiceKernel';
 import { buildVoiceTelemetryEvent, type TelemetryEmit } from './emit';

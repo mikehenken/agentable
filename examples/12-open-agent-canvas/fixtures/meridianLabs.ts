@@ -1,5 +1,5 @@
 /**
- * Fictional Meridian Labs fixtures ( rule 4).
+ * Fictional Meridian Labs fixtures (rule 4).
  * Data-only — no src/ imports (gallery import guard).
  */
 

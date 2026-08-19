@@ -9,7 +9,7 @@ const DEFAULT_STARTER_PROMPTS: SupportInboxPersonaScaffold['starterPrompts'] = [
   { emoji: '💬', text: 'What canned responses can I use?', label: 'Macros' },
 ];
 
-/** Persona scaffold for support tenants ( tenant config). */
+/** Persona scaffold for support tenants (tenant config). */
 export function createSupportInboxPersonaScaffold(
   overrides: Partial<SupportInboxPersonaScaffold> = {}): SupportInboxPersonaScaffold {
   return {

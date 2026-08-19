@@ -1,5 +1,5 @@
 /**
- * Auto-fix LLM diagram payloads before strict parsing (P13-T7).
+ * Auto-fix LLM diagram payloads before strict parsing.
  */
 import type {
   AgentDiagramEdge,

@@ -1,12 +1,12 @@
 /**
  * `<agentable-operator-surface-placement>` — four host placements for the
- * canvas-wide operator surface (P13-T4, D51 §13).
+ * canvas-wide operator surface (§13).
  *
  * Mounts `<agentable-operator-surface>` and emits typed placement events on
- * connect and user interaction. All instances join the shared page session (D44).
+ * connect and user interaction. All instances join the shared page session.
  *
  * Floating placement supports preset anchors, free drag (header handle), and
- * localStorage persistence for gallery hosts (P13-T7 iteration-4).
+ * localStorage persistence for gallery hosts.
  */
 import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -96,7 +96,7 @@ export class AgentableOperatorSurfacePlacementElement extends LitElement {
   @property({ attribute: 'placement-id', reflect: true })
   declare placementId: string;
 
-  /** Required when `placement="slot"` — registers this host with page slots (D44). */
+ /** Required when `placement="slot"` — registers this host with page slots. */
   @property({ attribute: 'slot-name', reflect: true })
   declare slotName: string;
 

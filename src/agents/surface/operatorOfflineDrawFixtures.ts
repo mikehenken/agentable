@@ -1,5 +1,5 @@
 /**
- * Intent-aware offline draw_shapes args for operator Draw mode (P13-T7 iter-21).
+ * Intent-aware offline draw_shapes args for operator Draw mode.
  * Exact demo fixtures (cat, heart) for offline-only gallery paths; generic sketch
  * fallback when live chat is unavailable. No unsupported-subject refusal gate.
  */

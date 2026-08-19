@@ -1,5 +1,5 @@
 /**
- * Fictional Archipelago Resorts demo fixtures ( rule 4).
+ * Fictional Archipelago Resorts demo fixtures (rule 4).
  * No real clients, employers, or competitor brand names.
  */
 import { CHART_COLORS, type ChartCatalogEntryName } from '@agentable/catalog-charts';

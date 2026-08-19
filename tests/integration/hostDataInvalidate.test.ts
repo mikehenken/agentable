@@ -1,5 +1,5 @@
 /**
- * P1-T5: `host.data.invalidate` fans out refetches across every mounted
+ *: `host.data.invalidate` fans out refetches across every mounted
  * consumer of a source and emits an AG-UI state patch on the existing
  * `landi:ag-ui-state-patch` bus (no parallel protocol).
  */

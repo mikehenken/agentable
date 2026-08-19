@@ -1,7 +1,7 @@
 /**
  * Engine SPI barrel. The contract lives singular in src/engine/;
  * implementations live under the engine directory (src/whiteboard/ at
- * P0, src/engines/ after the P4 rename wave) per D37.
+ * P0, src/engines/ after the P4 rename wave) per.
  */
 export type {
   CameraState,

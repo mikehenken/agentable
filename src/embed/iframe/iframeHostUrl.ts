@@ -1,5 +1,5 @@
 /**
- * Build and parse canonical agentable iframe host URLs (P9-T4 oEmbed + iframe).
+ * Build and parse canonical agentable iframe host URLs (oEmbed + iframe).
  */
 import {
   IFRAME_EMBED_DEFAULT_HEIGHT,

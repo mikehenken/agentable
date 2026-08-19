@@ -1,5 +1,5 @@
 /**
- * P15-T4 redaction guarantee (D55): strip PII and credential-shaped values
+ * redaction guarantee: strip PII and credential-shaped values
  * from telemetry payloads before host sink dispatch.
  */
 import type { TelemetryEvent } from './types';

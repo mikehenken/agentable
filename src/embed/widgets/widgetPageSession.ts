@@ -1,5 +1,5 @@
 /**
- * Shared page-session join/leave for D44 widget embeds (P9-T3).
+ * Shared page-session join/leave for widget embeds.
  */
 import { ensurePageSession } from '../../session/pageSession';
 

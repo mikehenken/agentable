@@ -1,5 +1,5 @@
 /**
- * Pre-save document block undo/redo stack (D53, P12-T2).
+ * Pre-save document block undo/redo stack.
  * Persisted document writes reverse only through HITL compensating actions.
  */
 import { applyBlockOp } from './blockOps';

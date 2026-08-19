@@ -1,6 +1,6 @@
 /**
  * Sandboxed iframe host bootstrap — mounts `<agentable-panel>` and wires the
- * postMessage bridge for script-stripping CMS hosts (P9-T4).
+ * postMessage bridge for script-stripping CMS hosts.
  */
 import '../agentable-panel';
 import { ensurePageSession } from '../../session/pageSession';
@@ -76,7 +76,7 @@ export function bootstrapIframeHostPage(doc: Document = document): () => void {
   if (params.surface !== 'panel') {
     const alert = doc.createElement('div');
     alert.setAttribute('role', 'alert');
-    alert.textContent = `Iframe host surface "${params.surface}" is not supported in P9-T4.`;
+    alert.textContent = `Iframe host surface "${params.surface}" is not supported.`;
     doc.body.appendChild(alert);
     return () => undefined;
   }

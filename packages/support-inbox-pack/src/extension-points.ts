@@ -13,7 +13,7 @@ import type { PanelDefinition } from '../../../src/panels/types';
 import type { ToolDefinition } from '../../../src/panels/tools';
 import type { SupportInboxNavItem, SupportInboxPackOptions } from './types';
 
-/** Published extension-point inputs ( mechanism 2). */
+/** Published extension-point inputs (mechanism 2). */
 export interface SupportInboxPackExtensions {
   /** Additional panels appended after pack defaults (unless overridden). */
   panels?: readonly PanelDefinition[];

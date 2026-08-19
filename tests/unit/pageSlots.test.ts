@@ -1,5 +1,5 @@
 /**
- * Page slot registry unit coverage ( section 15).
+ * Page slot registry unit coverage (section 15).
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import {

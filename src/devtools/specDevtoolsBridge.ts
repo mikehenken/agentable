@@ -1,5 +1,5 @@
 /**
- * Bridge panel tool runtime events into the spec devtools session (P10-T2).
+ * Bridge panel tool runtime events into the spec devtools session.
  */
 import type { PanelSpec } from '../panels/types';
 import type { SpecIssue } from '../panels/spec/types';

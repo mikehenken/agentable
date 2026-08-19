@@ -1,6 +1,6 @@
 /**
  * Tool contract types, host-action registration, and the panel tools
- * (six acting + read-only describe_panel; D17, D18, D43). Hosts contribute domain tools through
+ * (six acting + read-only describe_panel). Hosts contribute domain tools through
  * `createCanvasHost({ hostActions })`; panel tools register automatically
  * from the host's panel registry for the host's lifetime.
  *
@@ -32,7 +32,7 @@ export type ToolCostClass = 'cheap' | 'expensive';
 export interface ToolDeclaration {
   name: string;
   description: string;
-  /** Orchestrator budget hint mirroring MCP manifest costClass (D43). */
+ /** Orchestrator budget hint mirroring MCP manifest costClass. */
   costClass?: ToolCostClass;
   parameters: {
     type: 'object';
@@ -59,7 +59,7 @@ export interface ToolDefinition {
   handler: ToolHandler;
 }
 
-/** Stable names for the six acting panel tools (D18). */
+/** Stable names for the six acting panel tools. */
 export const PANEL_ACTING_TOOL_NAMES = [
   'list_panels',
   'open_panel',
@@ -69,7 +69,7 @@ export const PANEL_ACTING_TOOL_NAMES = [
   'run_panel_action',
 ] as const;
 
-/** Read-only introspection tool (D43); not part of the acting mutation set. */
+/** Read-only introspection tool; not part of the acting mutation set. */
 export const PANEL_INTROSPECTION_TOOL_NAMES = ['describe_panel'] as const;
 
 /** All panel tools registered for agent function calling. */
@@ -82,7 +82,7 @@ export type PanelActingToolName = (typeof PANEL_ACTING_TOOL_NAMES)[number];
 export type PanelIntrospectionToolName = (typeof PANEL_INTROSPECTION_TOOL_NAMES)[number];
 export type PanelToolName = (typeof PANEL_TOOL_NAMES)[number];
 
-/** Static costClass assignments for panel tool declarations (D43). */
+/** Static costClass assignments for panel tool declarations. */
 export const PANEL_TOOL_COST_CLASS: Record<PanelToolName, ToolCostClass> = {
   list_panels: 'cheap',
   describe_panel: 'cheap',

@@ -1,5 +1,5 @@
 /**
- * Host-supplied model resolver registry and fallback resolution (D49).
+ * Host-supplied model resolver registry and fallback resolution.
  */
 import type {
   CapabilityNote,

@@ -1,5 +1,5 @@
 /**
- * Post-draw visibility verification for operator draw_shapes (P13-T7 iter-11).
+ * Post-draw visibility verification for operator draw_shapes.
  * Strict verification aligned with galleryScriptedDemo — no store-only or DOM fallbacks.
  */
 import type { AgentDrawShapesResult } from '../../engine/agentDrawingTypes';

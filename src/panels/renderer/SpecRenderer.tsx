@@ -58,7 +58,7 @@ export interface SpecRendererProps {
   onHostAction?: (action: string, payload?: Record<string, unknown>) => void;
   onOpenPanel?: (panelId: string, scopeFrom?: string) => void;
   onPrompt?: (prompt: string) => void;
-  /** Agent fill / user dirty markers for bound field nodes (D16, D17). */
+ /** Agent fill / user dirty markers for bound field nodes. */
   fieldMarkers?: FieldMarkerState;
 }
 
@@ -304,7 +304,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
   if (!visible) return null;
 
   if (node.type === STREAMING_SKELETON_TYPE) {
-    // D40 streaming hydration: this node was referenced by an arrived
+ // streaming hydration: this node was referenced by an arrived
     // parent but has not streamed in yet. Paint a skeleton in its slot;
     // the real node replaces it in place when its chunk lands.
     return (
@@ -436,7 +436,7 @@ export function SpecRenderer(props: SpecRendererProps): React.ReactElement {
           }
         : undefined;
 
-  // D42 layout contract: the renderer root carries the resolved locale's
+ // layout contract: the renderer root carries the resolved locale's
   // text direction, so the CSS logical properties used by chrome and
   // catalog styles flow RTL/LTR without per-component fixes.
   return (

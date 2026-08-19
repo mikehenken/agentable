@@ -1,5 +1,5 @@
 /**
- * Professional dark gallery header for example 13 (P13-T7 iter-7).
+ * Professional dark gallery header for example 13.
  */
 import { useCallback, useEffect, useState, type ReactElement } from 'react';
 import { ChevronDown } from 'lucide-react';

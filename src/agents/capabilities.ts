@@ -1,5 +1,5 @@
 /**
- * Capability model for agent sessions (D20, D21) and tool gating (D49).
+ * Capability model for agent sessions and tool gating.
  */
 import type { EngineCapabilities } from '../engine/types';
 import { ENGINE_DRAW_UNAVAILABLE_CODE } from '../engine/agentDrawingTypes';
@@ -36,7 +36,7 @@ export interface GatedToolOffer {
   note?: CapabilityNote;
 }
 
-/** Capability-dependent tools and their requirements (D49). */
+/** Capability-dependent tools and their requirements. */
 export const TOOL_CAPABILITY_REQUIREMENTS: Readonly<
   Record<string, ToolCapabilityRequirement>
 > = {
@@ -45,7 +45,7 @@ export const TOOL_CAPABILITY_REQUIREMENTS: Readonly<
   compose_panel: { minContextTokens: 8_000, tools: true },
 };
 
-/** Vision tools degrade to structured read alternatives (D49). */
+/** Vision tools degrade to structured read alternatives. */
 export const TOOL_CAPABILITY_DEGRADATION: Readonly<
   Record<string, { fallbackTool: string; message: string }>
 > = {
@@ -76,7 +76,7 @@ const DRAWING_UI_TOOLS = new Set<string>([
   ...AUTHORING_TOOLKIT_TOOL_NAMES,
 ]);
 
-/** Tools that require engine.capabilities.draw (D41, D50). */
+/** Tools that require engine.capabilities.draw. */
 export const ENGINE_DRAW_REQUIRED_TOOLS: ReadonlySet<string> = new Set([
   ...DRAWING_TOOL_NAMES,
   ...AUTHORING_TOOLKIT_TOOL_NAMES,
@@ -118,7 +118,7 @@ function bindingMeetsRequirement(
   return true;
 }
 
-/** Derive session capabilities from the tool registry (D21). */
+/** Derive session capabilities from the tool registry. */
 export function deriveCapabilities(
   session: AgentSession,
   tools: readonly ToolDefinition[],
@@ -135,7 +135,7 @@ export function deriveCapabilities(
   });
 }
 
-/** Gate tools for a resolved provider binding (D49). */
+/** Gate tools for a resolved provider binding. */
 export function gateToolsForCapabilities(
   tools: readonly ToolDefinition[],
   binding: ProviderBinding,
@@ -198,7 +198,7 @@ export function gateToolsForCapabilities(
   return offers;
 }
 
-/** Session-level transport notes for non-streaming bindings (D49). */
+/** Session-level transport notes for non-streaming bindings. */
 export function transportNotesForBinding(
   binding: ProviderBinding,
 ): CapabilityNote[] {
@@ -219,7 +219,7 @@ export interface EngineGatedToolOffer {
   note?: CapabilityNote;
 }
 
-/** Gate draw tools when the mounted engine lacks capabilities.draw (D41). */
+/** Gate draw tools when the mounted engine lacks capabilities.draw. */
 export function gateToolsForEngineCapabilities(
   tools: readonly ToolDefinition[],
   capabilities: EngineCapabilities | null,

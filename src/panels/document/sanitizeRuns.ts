@@ -1,6 +1,6 @@
 /**
- * G4 / D50: document text runs are sanitized before render — no inline HTML/JS.
- * Delegates to the shared code-execution boundary (P12-T6).
+ * G4 /: document text runs are sanitized before render — no inline HTML/JS.
+ * Delegates to the shared code-execution boundary.
  */
 import type { TextRun } from './types';
 import { sanitizeInertText, sanitizePlainText as boundarySanitizePlainText } from '../../security/codeExecutionBoundary';

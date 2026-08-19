@@ -1,6 +1,6 @@
 /**
  * Canvas mode parsing (embed attributes + config) and camera clamping for
- * bounded/fixed modes (panel system spec section 9, D27/D44).
+ * bounded/fixed modes (panel system spec section 9).
  */
 import type { CameraState, CanvasMode } from '../../engine/types';
 

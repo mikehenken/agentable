@@ -1,5 +1,5 @@
 /**
- * Shared page session (D44): window-scoped singleton so every surface on a
+ * Shared page session: window-scoped singleton so every surface on a
  * host page — multiple `<agentable-canvas>` embeds, `<voice-call-button>`,
  * named slots — joins one agent context.
  *
@@ -42,7 +42,7 @@ export interface PageSession {
 
 const SESSION_VERSION = '0.1.0';
 const GLOBAL_KEY = '__agentablePageSession__';
-/** Bounded buffer while no chat surface has joined (D44). */
+/** Bounded buffer while no chat surface has joined. */
 const MAX_BUFFERED_TRANSCRIPTS = 64;
 
 declare global {

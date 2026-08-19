@@ -1,5 +1,5 @@
 /**
- * Lightweight whiteboard readiness probes for gallery embeds (P13-T7 iter-13).
+ * Lightweight whiteboard readiness probes for gallery embeds.
  * No meridian/document imports — safe for gallery-13-chrome bundle.
  */
 import { isDrawCapabilityAvailable } from '../agents/engineBridge';

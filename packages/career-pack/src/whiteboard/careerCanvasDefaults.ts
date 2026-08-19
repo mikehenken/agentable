@@ -1,5 +1,5 @@
 /**
- * Career whiteboard canvas + toolbar defaults (Moss / Sandals / STUDY-015).
+ * Career whiteboard canvas + toolbar defaults (Moss / Sandals).
  *
  * Hosts may override via embed config (`canvasZoom`, `toolbar`) or React
  * `WhiteboardShell` props (`mode`, `toolbarConfig`).

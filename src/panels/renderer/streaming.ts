@@ -1,5 +1,5 @@
 /**
- * Streaming spec hydration (D40) with interrupted-stream resume (D56).
+ * Streaming spec hydration with interrupted-stream resume.
  *
  * A producer (agent transport, host bridge) feeds an IR spec as an
  * ordered chunk stream: one envelope chunk (everything except nodes),

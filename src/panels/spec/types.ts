@@ -9,7 +9,7 @@ import type {
 } from '../types';
 import { UNKNOWN_NODE_RAW_KEY } from './constants';
 
-/** Frozen validation error codes (D43 repair vocabulary foundation). */
+/** Frozen validation error codes (repair vocabulary foundation). */
 export type SpecErrorCode =
   | 'SPEC_ENVELOPE_INVALID'
   | 'SPEC_VERSION_UNKNOWN'
@@ -41,7 +41,7 @@ export interface SpecIssue {
   severity: 'error' | 'warning';
   nodeId?: string;
   path?: string;
-  /** Nearest valid alternative for agent repair rounds (D43). */
+ /** Nearest valid alternative for agent repair rounds. */
   hint?: string;
 }
 
@@ -61,11 +61,11 @@ export interface SpecValidationContext {
 }
 
 export interface ValidateSpecOptions {
-  /** When true, step 7 formats errors for a single agent repair round (D9.7). */
+ /** When true, step 7 formats errors for a single agent repair round (.7). */
   agentRepairRound?: boolean;
 }
 
-/** Node after validation; unknown types retain preserved raw JSON (D11). */
+/** Node after validation; unknown types retain preserved raw JSON. */
 export interface NormalizedSpecNode extends SpecNode {
   [UNKNOWN_NODE_RAW_KEY]?: JsonObject;
 }
@@ -86,7 +86,7 @@ export interface ValidateSpecFailure {
   ok: false;
   errors: SpecIssue[];
   warnings: SpecIssue[];
-  /** True when the caller may attempt one structured repair round (D9.7). */
+ /** True when the caller may attempt one structured repair round (.7). */
   agentRepairEligible?: boolean;
 }
 

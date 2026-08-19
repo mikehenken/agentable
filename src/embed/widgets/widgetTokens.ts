@@ -1,6 +1,6 @@
 import { css } from 'lit';
 
-/** Shared brand tokens for Lit widget embeds (P9-T3). */
+/** Shared brand tokens for Lit widget embeds. */
 export const widgetHostTokens = css`
   :host {
     --landi-widget-color-primary: var(--landi-color-primary, #0d7377);

@@ -1,5 +1,5 @@
 /**
- * Imperative agent drawing driver for the tldraw whiteboard (D41, P8-T1).
+ * Imperative agent drawing driver for the tldraw whiteboard.
  *
  * Called from agent tools (non-React). Uses the same editor binding as
  * panelShapeApi. Every created mark carries meta.agentableAgent provenance.

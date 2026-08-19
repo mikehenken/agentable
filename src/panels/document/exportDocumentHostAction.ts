@@ -1,5 +1,5 @@
 /**
- * Host action `export_document` (P12-T4, 03 section 12).
+ * Host action `export_document` (03 section 12).
  */
 import type { ToolDefinition, ToolResult } from '../tools';
 import type { DocumentStore } from './documentAdapter';

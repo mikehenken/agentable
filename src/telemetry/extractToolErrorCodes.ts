@@ -1,5 +1,5 @@
 /**
- * Map agent tool results to frozen telemetry error codes (P15-T2).
+ * Map agent tool results to frozen telemetry error codes.
  */
 import type { ToolResult } from '../panels/tools';
 import { SCOPE_DENIED_CODE } from '../agents/toolExecutor';

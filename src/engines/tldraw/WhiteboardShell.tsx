@@ -180,7 +180,7 @@ export interface WhiteboardShellProps {
   openChatOnMount?: boolean;
   /**
    * When true, purge chat PanelShape on mount and block chat panel recreation
-   * (P13-T7 example 13 — operator rail is the sole chat surface).
+ * (example 13 — operator rail is the sole chat surface).
    */
   suppressCanvasChat?: boolean;
   /**

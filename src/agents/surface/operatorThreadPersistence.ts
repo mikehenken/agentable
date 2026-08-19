@@ -1,5 +1,5 @@
 /**
- * Operator thread tab persistence — localStorage per tenant (NAS parity, P13-T7 iter-5).
+ * Operator thread tab persistence — localStorage per tenant (NAS parity).
  */
 import { DEFAULT_OPERATOR_THREADS } from './constants';
 import type { OperatorMessage, OperatorThread } from './types';

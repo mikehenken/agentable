@@ -308,7 +308,7 @@ export function mountCanvasWideAgentChrome(
 
 
 
-/** Await tldraw re-bind after resizable chrome mount (gallery-13 P13-T7 iter-13). */
+/** Await tldraw re-bind after resizable chrome mount (gallery-13). */
 
 export async function awaitGalleryChromeWhiteboardReady(
 

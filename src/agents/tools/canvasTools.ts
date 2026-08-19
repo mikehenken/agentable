@@ -222,7 +222,7 @@ function resolveActiveTools(): readonly ToolDefinition[] {
   return filterCoreToolsForCareerRouting(merged);
 }
 
-/** Tools offered to models and voice/chat clients (D41 engine draw gate). */
+/** Tools offered to models and voice/chat clients (engine draw gate). */
 function resolveOfferedTools(): readonly ToolDefinition[] {
   const offers = gateToolsForEngineCapabilities(
     resolveActiveTools(),

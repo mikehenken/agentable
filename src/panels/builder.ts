@@ -6,7 +6,7 @@
  * pure JSON output, so specs diff cleanly in git. The builder is sugar
  * only; it expresses nothing the IR cannot (one-way compile, no eval),
  * and builder output flows through the exact same `validateSpec`
- * pipeline as agent-emitted IR (D1).
+ * pipeline as agent-emitted IR.
  *
  * Define-time guarantees (thrown as `PanelBuilderError` when a host
  * boots with a bad config, plus compile-time typing where TypeScript
@@ -58,7 +58,7 @@ export type FieldPathsOf<TSource extends string> =
       ? Extract<keyof PayloadOf<TSource>, string>
       : string;
 
-/** FieldDef kinds allowed in v1 (02 section 4; no markdown/image per D10). */
+/** FieldDef kinds allowed in v1 (02 section 4; no markdown/image per). */
 export type FieldKind =
   | 'text'
   | 'textarea'
@@ -82,7 +82,7 @@ export interface FieldConfig<TPath extends string = string> {
   readonly placeholder?: string;
 }
 
-/** The only conditional the spec language supports (D8). */
+/** The only conditional the spec language supports. */
 export interface ShowIfConfig {
   readonly $eq: readonly [JsonValue, JsonValue];
 }

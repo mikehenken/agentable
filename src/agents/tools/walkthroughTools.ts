@@ -1,5 +1,5 @@
 /**
- * Story-mode walkthrough tool (P8-T6): present_walkthrough queues camera
+ * Story-mode walkthrough tool: present_walkthrough queues camera
  * moves through the P6 politeness queue and emits per-step narration.
  */
 import { emitAgUiStatePatch } from '../../protocol/ag-ui';

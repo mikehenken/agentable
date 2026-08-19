@@ -33,7 +33,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const GOLDEN_PATH = join(__dirname, '../fixtures/wireframe-golden-shape-graph.json');
 
 /** Draw-capable engine capabilities: matches the tldraw whiteboard engine these
- * perception tools assume ( adds a separate capability-refusal suite for
+ * perception tools assume (adds a separate capability-refusal suite for
  * engines that declare draw: false). */
 function drawCapableEngine(): EngineCapabilities {
   return {

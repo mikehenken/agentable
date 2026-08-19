@@ -1,5 +1,5 @@
 /**
- * Story-mode walkthrough runner (P8-T6): steps camera intents through the
+ * Story-mode walkthrough runner: steps camera intents through the
  * P6 politeness queue, emits narration, and cedes instantly on user input.
  */
 import type { CameraQueue } from './camera';

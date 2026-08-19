@@ -1,5 +1,5 @@
 /**
- * CSS class helpers for agent fill and user dirty field markers (D16, D17).
+ * CSS class helpers for agent fill and user dirty field markers.
  * Spec field components apply these classes so users can see what an agent
  * touched versus what they edited themselves.
  */
@@ -9,7 +9,7 @@ export const USER_DIRTY_FIELD_CLASS = 'panel-field--user-dirty';
 export interface FieldMarkerState {
   agentFilled: ReadonlySet<string>;
   userDirty: ReadonlySet<string>;
-  /** Optional per-field agent attribution for chrome badges (D45). */
+ /** Optional per-field agent attribution for chrome badges. */
   fieldAttribution?: ReadonlyMap<string, { agentId: string; agentLabel: string }>;
 }
 

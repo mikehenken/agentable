@@ -1,5 +1,5 @@
 /**
- * Open agent canvas authoring toolkit contracts (D50, P12-T1).
+ * Open agent canvas authoring toolkit contracts.
  * Types-only: safe for agents, tools, and tests without importing tldraw.
  */
 

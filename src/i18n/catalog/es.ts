@@ -1,11 +1,11 @@
 /**
- * Spanish locale pack (D59). Ships with the career pack in P4; partial —
+ * Spanish locale pack. Ships with the career pack in P4; partial —
  * missing keys fall back to English via the locale fallback chain.
  */
 import type { MessageCatalog } from './en';
 
 export const es = {
-  // --- Career pack panels (D59) ---
+ // --- Career pack panels ---
   'career.panels.openPositions.title': 'Posiciones abiertas',
   'career.panels.openPositions.subtitle': 'Vacantes actuales',
   'career.panels.applications.title': 'Mis solicitudes',

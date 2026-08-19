@@ -85,7 +85,7 @@ export interface CanvasPersona {
    */
   voiceGreeting?: string;
   /**
-   * D46 — who speaks first on voice connect. `agent-first` speaks
+ * who speaks first on voice connect. `agent-first` speaks
    * `voiceGreeting` on connect; `user-first` opens in listening mode.
    * Default: `agent-first`.
    */
@@ -184,7 +184,7 @@ export interface CanvasPanelData {
 export interface CanvasTenantConfig {
   /** Tenant identifier (e.g. "acme", "default"). Surfaced in telemetry. */
   tenant: string;
-  /** Resolved authoring policy (D50); merged from platform + tenant + runtime layers. */
+ /** Resolved authoring policy; merged from platform + tenant + runtime layers. */
   canvasPolicy: ResolvedCanvasPolicy;
   /**
    * Chat empty-state welcome copy (e.g. Sandals Sandy intro). From embed
@@ -231,7 +231,7 @@ const CanvasContext = createContext<CanvasTenantConfig>(DEFAULT_TENANT_CONFIG);
  */
 export interface PartialCanvasTenantConfig {
   tenant?: string;
-  /** Tenant-layer canvasPolicy partial (merged through `src/config/merge.ts`, D54). */
+ /** Tenant-layer canvasPolicy partial (merged through `src/config/merge.ts`). */
   canvasPolicy?: CanvasPolicyInput;
   /** Session locale (BCP 47); used when React hosts mount without embed attributes. */
   locale?: string;
@@ -244,7 +244,7 @@ export interface PartialCanvasTenantConfig {
 
 export interface CanvasProviderProps {
   config?: PartialCanvasTenantConfig;
-  /** Optional runtime-layer overrides (e.g. canvas-wide agent switcher, D51). */
+ /** Optional runtime-layer overrides (e.g. canvas-wide agent switcher). */
   runtimeConfig?: CanvasConfigLayerInput;
   children: ReactNode;
 }

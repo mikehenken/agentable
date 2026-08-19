@@ -1,5 +1,5 @@
 /**
- * Resolve voice persona for operator-surface Gemini Live mount (P13-T7 iter-6).
+ * Resolve voice persona for operator-surface Gemini Live mount.
  * Operator shell sits outside CanvasProvider — read whiteboard embed attributes.
  */
 import { resolveWhiteboardChatCredentials } from '../../chat/whiteboardChatCredentials';

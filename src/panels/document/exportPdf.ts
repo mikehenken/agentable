@@ -1,5 +1,5 @@
 /**
- * PDF export from the document block model (P12-T4). No HTML round-trip.
+ * PDF export from the document block model. No HTML round-trip.
  */
 import { PDFDocument, StandardFonts, type PDFFont, type PDFPage } from 'pdf-lib';
 import { blockToPlainLines } from './exportText';

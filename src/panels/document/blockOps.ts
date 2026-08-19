@@ -1,5 +1,5 @@
 /**
- * Structured block operations for the document primitive (D50, P12-T2).
+ * Structured block operations for the document primitive.
  * Agents edit through insert/replace/move/remove — never markup.
  */
 import type { BlockOp, DocBlock, DocBlockInput } from './types';

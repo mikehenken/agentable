@@ -1,5 +1,5 @@
 /**
- * WorkspaceLayoutRecord migrations (D48, P11-T2).
+ * WorkspaceLayoutRecord migrations.
  *
  * v1 (legacy DOM): region encoded in `position.x` (0 main, 1 sidebar),
  * tab index in `position.y`.

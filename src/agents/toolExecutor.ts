@@ -1,5 +1,5 @@
 /**
- * Scoped agent tool execution (D45): role allow-lists enforced before handlers run.
+ * Scoped agent tool execution: role allow-lists enforced before handlers run.
  */
 import type { ToolDefinition, ToolResult } from '../panels/tools';
 import { getHostActions } from '../panels/tools';
@@ -29,11 +29,11 @@ export interface AgentToolExecutorOptions {
   activity?: ActivityLog;
   /** When set, only these tools are considered (e.g. panel tools on a host). */
   tools?: readonly ToolDefinition[];
-  /** Resolve instance ids to definition ids for panel scope checks (D45). */
+ /** Resolve instance ids to definition ids for panel scope checks. */
   resolvePanelDefinitionId?: (panelId: string) => string | undefined;
-  /** Host telemetry sink hook for tool latency + frozen error codes (D55). */
+ /** Host telemetry sink hook for tool latency + frozen error codes. */
   telemetryEmit?: TelemetryEmit;
-  /** Optional budget signal for costClass spend recording (D43 / D55). */
+ /** Optional budget signal for costClass spend recording. */
   budget?: AgentBudgetSignal;
 }
 

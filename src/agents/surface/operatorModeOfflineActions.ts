@@ -1,5 +1,5 @@
 /**
- * Mode-aware deterministic operator actions for gallery / offline paths (P13-T7 iter-11).
+ * Mode-aware deterministic operator actions for gallery / offline paths.
  * Draw routes through executeTool → operatorCanvasToolsProxy → runGalleryScriptedTool.
  */
 import { MERIDIAN_DOCUMENT_ID } from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';

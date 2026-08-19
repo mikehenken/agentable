@@ -2,7 +2,7 @@
  * Public scripted-demo surface for gallery pages (P8 northstar draw + see).
  * Uses the same agent tools and fixtures as the Playwright harness — no LLM.
  *
- * Operator-mode scope (P13-T2): gallery steps invoke tool `.handler()` directly
+ * Operator-mode scope: gallery steps invoke tool `.handler()` directly
  * for deterministic offline demos. That path intentionally bypasses
  * `canvasTools.executeTool` and operator-mode enforcement; production chat/voice
  * agents must use `executeTool` / `createAgentToolExecutor` instead.
@@ -437,7 +437,7 @@ export type GalleryDemoPhase =
   | 'hitl'
   | 'complete';
 
-/** Dwell long enough for Playwright / manual screenshot capture (STUDY-018 iter-4). */
+/** Dwell long enough for Playwright / manual screenshot capture. */
 export const MERIDIAN_GALLERY_DEMO_DWELL_MS = 2_500;
 export const MERIDIAN_GALLERY_HITL_DWELL_MS = 2_500;
 

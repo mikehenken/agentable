@@ -1,5 +1,5 @@
 /**
- * `Intl` formatting helpers bound to the resolved session locale (D42).
+ * `Intl` formatting helpers bound to the resolved session locale.
  * Dates, numbers, currencies, and relative times in catalog components
  * MUST render through these (or through ICU `{arg, number|date|time}`
  * catalog placeholders, which use the same `Intl` machinery) - never

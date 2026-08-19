@@ -1,5 +1,5 @@
 /**
- * Agent session factory (D49). Sessions bind to opaque model aliases and
+ * Agent session factory. Sessions bind to opaque model aliases and
  * resolve provider metadata through the host resolver at the runtime boundary.
  */
 import { transportNotesForBinding } from './capabilities';

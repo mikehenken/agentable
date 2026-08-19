@@ -1,6 +1,6 @@
 /**
  * Server-side enforcement: structural diagram intents must use diagram+layout,
- * not hand-placed shapes arrays (P13-T7).
+ * not hand-placed shapes arrays.
  */
 import { isStructuralDiagramIntent } from '../../chat/canvasDrawQualityInstructions';
 import { getDrawUserMessage } from '../../chat/drawIntentContext';

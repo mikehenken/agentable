@@ -1,6 +1,6 @@
 /**
  * Lazy panel loader registry types and prefetch helpers (framework-neutral).
- * Career demo loaders were removed in P7-T2; hosts register panels via
+ * Career demo loaders were removed in; hosts register panels via
  * createCanvasHost or WhiteboardShell panels prop.
  */
 import type { ComponentType } from 'react';

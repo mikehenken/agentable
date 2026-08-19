@@ -1,5 +1,5 @@
 /**
- * Host-supplied anon-key rate limit resolver registry (D55 / P15-T3).
+ * Host-supplied anon-key rate limit resolver registry.
  */
 import { emitEmbedRateLimitTelemetry } from '../../telemetry/embedBridge';
 import type {

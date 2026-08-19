@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /**
- * Base layout tokens for the canvas-wide operator surface (D51).
+ * Base layout tokens for the canvas-wide operator surface.
  * Color tokens live in `operatorSurfaceDarkTheme` and MUST be applied after
  * `index.css` in the Lit static styles array so light `:host` defaults do not win.
  */
@@ -51,7 +51,7 @@ export const operatorSurfaceBaseStyles = css`
 /**
  * Dark gallery / Atlas vibe palette for operator shadow DOM.
  * Applied AFTER inlined `index.css` so shadcn + Landi light `:host` tokens
- * cannot override the operator surface (P13-T7 theme fix).
+ * cannot override the operator surface (theme fix).
  */
 export const operatorSurfaceDarkTheme = css`
   :host {

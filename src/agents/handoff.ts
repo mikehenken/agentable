@@ -1,5 +1,5 @@
 /**
- * A2A-shaped handoff records (D23): written to the activity log and surfaced
+ * A2A-shaped handoff records: written to the activity log and surfaced
  * to the target session. Not the full A2A protocol.
  */
 import type { ActivityLog, ActivityProvenance } from './activity';

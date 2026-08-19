@@ -1,5 +1,5 @@
 /**
- * Shared draw persistence checks (P13-T7 iter-11).
+ * Shared draw persistence checks.
  * Mirrors galleryScriptedDemo.verifyDrawShapesPersisted without importing the gallery bundle.
  */
 import { getEditor, inspectBoundEditorStore } from '../../engines/tldraw/shapes/panelShapeApi';

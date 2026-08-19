@@ -30,7 +30,7 @@ export const SANDALS_STARTER_PROMPTS: CareerPersonaScaffold['starterPrompts'] = 
   { emoji: '🎓', text: 'Tell me about Sandals Corporate University', label: 'SCU' },
 ];
 
-/** D59 — Spanish starter chips for sandals local integration. */
+/** Spanish starter chips for sandals local integration. */
 export const SANDALS_STARTER_PROMPTS_ES: CareerPersonaScaffold['starterPrompts'] = [
   { emoji: '💼', text: 'Muéstrame vacantes de Sandals que encajen con mi currículum', label: 'Vacantes' },
   { emoji: '🌴', text: '¿Qué isla encaja con la vida que quiero?', label: 'Elegir isla' },
@@ -56,7 +56,7 @@ export const SANDALS_PERSONA_EN: SandalsPersonaLocale = {
   starterPrompts: SANDALS_STARTER_PROMPTS,
 };
 
-/** D59 — Spanish persona variant for sandals local integration. */
+/** Spanish persona variant for sandals local integration. */
 export const SANDALS_PERSONA_ES: SandalsPersonaLocale = {
   assistantName: 'Sandy',
   tenantTitle: 'Concierge de Carrera',

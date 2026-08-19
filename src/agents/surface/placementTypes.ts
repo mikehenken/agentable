@@ -1,7 +1,7 @@
 /**
- * Operator surface placement kinds and typed events (P13-T4, D51 §13).
+ * Operator surface placement kinds and typed events (§13).
  *
- * Four host placements share one page session (D44) while each wrapper
+ * Four host placements share one page session while each wrapper
  * mounts `<agentable-operator-surface>` and emits consistent lifecycle events.
  */
 

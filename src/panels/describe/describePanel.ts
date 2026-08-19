@@ -1,5 +1,5 @@
 /**
- * Read-only panel and catalog introspection for describe_panel (D43).
+ * Read-only panel and catalog introspection for describe_panel.
  */
 import type { PanelRegistry } from '../registry';
 import { derivePanelAgentMeta } from '../registryMetadata';

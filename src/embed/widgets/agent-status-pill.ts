@@ -1,5 +1,5 @@
 /**
- * `<agent-status-pill>` — Lit widget (D44 widgets family, P9-T3).
+ * `<agent-status-pill>` — Lit widget (widgets family).
  *
  * Read-only agent status badge subscribing to `window.__agentStatusKernel__`.
  * Host runtimes publish registry rows; marketing pages embed the pill without

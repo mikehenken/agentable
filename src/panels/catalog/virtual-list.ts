@@ -1,5 +1,5 @@
 /**
- * `<agentable-virtual-list>` (D56): the windowed list surface behind the
+ * `<agentable-virtual-list>`: the windowed list surface behind the
  * catalog `list` entry. Above the declared threshold it renders only the
  * rows near the scroll viewport between two sizing spacers, so the DOM
  * node count stays bounded no matter how many items are bound; at or
@@ -9,7 +9,7 @@
  *
  * House web-components rule: shadow DOM, `part` hooks for host styling,
  * no hardcoded user-facing strings (rows render bound data only; chrome
- * strings stay in the D42 catalog).
+ * strings stay in the catalog).
  */
 import { LitElement, css, html, nothing, type TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';

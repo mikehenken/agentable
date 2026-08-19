@@ -1,5 +1,5 @@
 /**
- * Operator composer mic — spawns Gemini Live voice agent session (P13-T7 iter-6).
+ * Operator composer mic — spawns Gemini Live voice agent session.
  * Web Speech dictation remains available via long-press / secondary affordance.
  */
 import { useCallback, useEffect, useRef, useState, type MouseEvent, type ReactElement } from 'react';

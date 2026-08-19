@@ -476,7 +476,7 @@ export class AgentableWhiteboardElement extends LitElement {
 
   /**
    * Run a scripted tool stamped with the canvas-wide operator agent context.
-   * Keeps draw/read paths on the bound whiteboard editor (P13-T7 iter-9).
+ * Keeps draw/read paths on the bound whiteboard editor.
    */
   async runOperatorScriptedTool(
     toolName: GalleryScriptedToolName,
@@ -504,7 +504,7 @@ export class AgentableWhiteboardElement extends LitElement {
   }
 
   /**
-   * Meridian Labs gallery demo — connected wireframe funnel + stencils (P12-T7).
+ * Meridian Labs gallery demo — connected wireframe funnel + stencils.
    * Steps: wireframe | full (both run the full onboarding wireframe set).
    */
   async runMeridianDemo(step: MeridianDemoStep): Promise<{

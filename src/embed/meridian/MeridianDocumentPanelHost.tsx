@@ -1,5 +1,5 @@
 /**
- * Whiteboard body for the Meridian document spec panel (P12-T7 gallery).
+ * Whiteboard body for the Meridian document spec panel (gallery).
  */
 import { useMemo, type ReactElement } from 'react';
 import { createDocumentPanelDefinition } from '../../agents/panels/documentPanel';

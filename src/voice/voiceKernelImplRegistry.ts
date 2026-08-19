@@ -1,7 +1,7 @@
 /**
  * Reference-counted voice kernel impl registration — multiple `useGeminiLive`
  * mounts (dock + floating operator) must not clear the transport when one
- * surface remounts after gallery chrome reparenting (P13-T7 iter-7).
+ * surface remounts after gallery chrome reparenting.
  */
 import { ensureVoiceKernel, type VoiceKernelImpl } from '../shared/voiceKernel';
 

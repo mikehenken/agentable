@@ -69,7 +69,7 @@ export interface CanvasPersona {
    */
   voiceGreeting?: string;
   /**
-   * D46 — who speaks first on voice connect. `agent-first` speaks
+ * who speaks first on voice connect. `agent-first` speaks
    * `voiceGreeting` on connect; `user-first` opens in listening mode.
    * Default: `agent-first`.
    */

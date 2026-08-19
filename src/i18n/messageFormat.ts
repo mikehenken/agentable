@@ -1,5 +1,5 @@
 /**
- * ICU MessageFormat engine for the framework locale layer (D42).
+ * ICU MessageFormat engine for the framework locale layer.
  *
  * Implements the ICU subset the catalogs need with zero dependencies:
  *

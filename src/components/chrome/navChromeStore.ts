@@ -15,5 +15,5 @@ export const useNavChromeStore = create<NavChromeState>((set) => ({
   setNavSidebarExpanded: (expanded) => set({ navSidebarExpanded: expanded }),
 }));
 
-/** @deprecated P7-T2 alias — whiteboard code migrated off layoutStore. */
+/** @deprecated alias — whiteboard code migrated off layoutStore. */
 export const useLayoutStore = useNavChromeStore;

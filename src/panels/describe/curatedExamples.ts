@@ -1,5 +1,5 @@
 /**
- * Curated example specs for describe_panel introspection (D43).
+ * Curated example specs for describe_panel introspection.
  * Every entry is validated in CI via curatedExamplesValidate.test.ts.
  */
 import type { SpecValidationContext } from '../spec/types';

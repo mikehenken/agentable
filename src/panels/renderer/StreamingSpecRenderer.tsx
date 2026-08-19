@@ -1,5 +1,5 @@
 /**
- * React binding for a streaming spec session (D40). Subscribes to the
+ * React binding for a streaming spec session. Subscribes to the
  * session with `useSyncExternalStore` and renders the current partial
  * (or final) spec through the one block renderer, so streamed and
  * one-shot feeds share every rendering code path. Before the envelope

@@ -1,5 +1,5 @@
 /**
- * Meridian Labs gallery canvas host (P12-T7 / STUDY-018).
+ * Meridian Labs gallery canvas host.
  * Wires document panel + export_document host action for embed demos.
  */
 import { createDocumentPanelDefinition } from '../../agents/panels/documentPanel';

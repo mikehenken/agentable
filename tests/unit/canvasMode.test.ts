@@ -1,5 +1,5 @@
 /**
- * Canvas mode parsing + camera clamp proofs ( automated_check: mode camera clamps).
+ * Canvas mode parsing + camera clamp proofs (automated_check: mode camera clamps).
  */
 import { describe, it, expect, vi } from 'vitest';
 import {

@@ -1,6 +1,6 @@
 /**
  * Derives agent-facing panel metadata from registered definitions so the
- * six generic panel tools stay aligned with the live registry (D18).
+ * six generic panel tools stay aligned with the live registry.
  */
 import type { PanelRegistry } from './registry';
 import { resolveCatalogString } from '../i18n/resolveCatalogString';
@@ -20,7 +20,7 @@ export interface PanelActionMeta {
   source?: string;
   confirmMessage?: string;
   reversible?: boolean;
-  /** Declared compensating action for D53 reversal. */
+ /** Declared compensating action for reversal. */
   inverseActionId?: string;
 }
 

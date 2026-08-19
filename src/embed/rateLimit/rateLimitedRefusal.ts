@@ -1,5 +1,5 @@
 /**
- * Structured `rate_limited` refusal shape (D55 / web-components rule 5.3).
+ * Structured `rate_limited` refusal shape (web-components rule 5.3).
  */
 import type { AnonKeyRateLimitDenied } from './types';
 

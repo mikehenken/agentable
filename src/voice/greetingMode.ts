@@ -1,5 +1,5 @@
 /**
- * D46 — voice greeting mode: who speaks first on connect.
+ * voice greeting mode: who speaks first on connect.
  *
  * - `agent-first`: assistant speaks `voiceGreeting` when the session opens.
  * - `user-first`: session opens in listening state; user speaks first.

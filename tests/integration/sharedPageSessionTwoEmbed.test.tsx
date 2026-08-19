@@ -1,5 +1,5 @@
 /**
- * automated checks ( shared page session, voice resilience):
+ * automated checks (shared page session, voice resilience):
  *
  * 1. Two embed participants share one page session id and transcript bus.
  * 2. Transcripts published from voice stream into both chat subscribers.

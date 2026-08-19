@@ -1,5 +1,5 @@
 /**
- * Subscribe a React tree to a streaming spec session (D40). Snapshot
+ * Subscribe a React tree to a streaming spec session. Snapshot
  * identity is stable between chunks, so re-renders happen exactly when
  * the session accepts a chunk or changes phase.
  */

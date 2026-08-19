@@ -1,7 +1,7 @@
 import type { SpecErrorCode } from './types';
 
 /**
- * Canonical spec validation codes emitted by `validateSpec` (D43).
+ * Canonical spec validation codes emitted by `validateSpec`.
  * Keep in sync with the `SpecErrorCode` union in `types.ts`.
  */
 export const SPEC_ERROR_CODES = [
@@ -30,29 +30,29 @@ export const SPEC_ERROR_CODES = [
   'SPEC_SANITIZE_URL_SCHEME',
 ] as const satisfies readonly SpecErrorCode[];
 
-/** Structured error codes for compose/patch tool-layer rejections (D43). */
+/** Structured error codes for compose/patch tool-layer rejections. */
 export const PANEL_TOOL_REPAIR_ERROR_CODES = [
   'VALIDATION',
   'PATCH_APPLY_FAILED',
   'RUNTIME_DISPOSED',
-  /** P3-T9: undo stack empty (disposed runtime or no frames). */
+ /**: undo stack empty (disposed runtime or no frames). */
   'STACK_EMPTY',
-  /** P3-T9: compensating reversal target missing from activity ledger. */
+ /**: compensating reversal target missing from activity ledger. */
   'ENTRY_NOT_FOUND',
 ] as const;
 
 export type PanelToolRepairErrorCode = (typeof PANEL_TOOL_REPAIR_ERROR_CODES)[number];
 
-/** Frozen rejection code when compose is gated (D43 vocabulary). */
+/** Frozen rejection code when compose is gated (vocabulary). */
 export const COMPOSE_GATE_CLOSED_CODE = 'COMPOSE_GATE_CLOSED' as const;
 
 export type ComposeGateErrorCode = typeof COMPOSE_GATE_CLOSED_CODE;
 
-/** All structured error codes agents may see from compose/patch repair paths (D43). */
+/** All structured error codes agents may see from compose/patch repair paths. */
 export type RepairErrorCode = SpecErrorCode | ComposeGateErrorCode | PanelToolRepairErrorCode;
 
 /**
- * Frozen repair vocabulary for agent tool rejections (D43).
+ * Frozen repair vocabulary for agent tool rejections.
  * Snapshot-tested; add new codes here before emitting them from runtime paths.
  */
 export const FROZEN_REPAIR_ERROR_CODES = [

@@ -1,5 +1,5 @@
 /**
- * Canvas engine SPI (panel system spec section 14, decisions D37/D39).
+ * Canvas engine SPI (panel system spec section 14, decisions).
  *
  * The contract every drawing engine implements for the panel framework:
  * mounting, lifecycle signals, panel container geometry, camera control,
@@ -131,7 +131,7 @@ export interface EngineCapabilities {
  * Engine-neutral record of one panel's placement, written on every layout
  * change alongside whatever native snapshot the engine keeps. Restoring a
  * workspace needs only these records plus panel definitions; the native
- * snapshot is an enhancement, never the sole source of truth (D37).
+ * snapshot is an enhancement, never the sole source of truth.
  */
 export interface WorkspaceLayoutRecord {
   /** Panel definition id this placement belongs to. */

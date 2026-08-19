@@ -1,5 +1,5 @@
 /**
- * `<ask-about-this-button>` — Lit widget (D44 widgets family, P9-T3).
+ * `<ask-about-this-button>` — Lit widget (widgets family).
  *
  * Contextual CTA that sends an ask-about prompt into the shared chat surface.
  *

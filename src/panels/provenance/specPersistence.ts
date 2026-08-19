@@ -1,12 +1,12 @@
 /**
- * Pin-to-persist for agent-composed panel specs (D12, D13). Ephemeral
+ * Pin-to-persist for agent-composed panel specs. Ephemeral
  * composed instances carry `__composedSpec` until the user pins; pinning
  * promotes the validated envelope to `__spec` so tldraw snapshots restore
  * it like any other panel instance.
  */
 import type { JsonObject, PanelSpec, SpecOrigin } from '../types';
 
-/** Persisted composed spec envelope on a panel shape (D13). */
+/** Persisted composed spec envelope on a panel shape. */
 export const PANEL_SPEC_DATA_KEY = '__spec';
 
 /** Ephemeral composed spec before the user pins (stripped on export). */

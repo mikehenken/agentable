@@ -1,5 +1,5 @@
 /**
- * Story-mode walkthrough types (P8-T6, D41 section 9).
+ * Story-mode walkthrough types (section 9).
  */
 import type { Rect } from '../engine/types';
 

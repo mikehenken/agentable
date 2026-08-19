@@ -1,6 +1,6 @@
 /**
  * Auto-group shapes created in a single draw_shapes call so each user request
- * produces one movable group (P13-T7 operator iteration).
+ * produces one movable group (operator iteration).
  */
 import type { TLShapeId } from 'tldraw';
 import { executeTool } from '../agents/tools/canvasTools';

@@ -1,5 +1,5 @@
 /**
- * Embed rate-limit telemetry bridge (D55 / P15-T3).
+ * Embed rate-limit telemetry bridge.
  *
  * Embeds may emit before `createCanvasHost` exists; hosts wire
  * `registerEmbedTelemetryEmit(host.telemetry.emit)` at host construction.

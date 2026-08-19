@@ -1,7 +1,7 @@
 /**
- * Frozen telemetry error vocabulary (D55 / P15-T2).
+ * Frozen telemetry error vocabulary.
  *
- * Compose/patch rejections use D43 repair codes; tool/voice/cost layers
+ * Compose/patch rejections use repair codes; tool/voice/cost layers
  * extend the same snapshot-tested set so host sinks never see ad-hoc strings.
  */
 import {
@@ -10,23 +10,23 @@ import {
   type RepairErrorCode,
 } from '../panels/spec/repairVocabulary';
 
-/** Agent tool-scope and executor-layer rejections (D45). */
+/** Agent tool-scope and executor-layer rejections. */
 export const TELEMETRY_TOOL_ERROR_CODES = [
   'SCOPE_DENIED',
   'UNKNOWN_TOOL',
   'TOOL_HANDLER_ERROR',
 ] as const;
 
-/** Voice transport outcomes surfaced to telemetry (D56). */
+/** Voice transport outcomes surfaced to telemetry. */
 export const TELEMETRY_VOICE_ERROR_CODES = [
   'VOICE_CONNECT_FAILED',
   'VOICE_RECONNECT_EXHAUSTED',
 ] as const;
 
-/** Budget / costClass refusal codes (D43 costClass). */
+/** Budget / costClass refusal codes (costClass). */
 export const TELEMETRY_COST_ERROR_CODES = ['BUDGET_HARD_CAP'] as const;
 
-/** Public embed anon-key rate limit refusals (D55 / P15-T3). */
+/** Public embed anon-key rate limit refusals. */
 export const TELEMETRY_EMBED_ERROR_CODES = ['RATE_LIMITED'] as const;
 
 export type TelemetryToolErrorCode = (typeof TELEMETRY_TOOL_ERROR_CODES)[number];
@@ -43,7 +43,7 @@ export type TelemetryErrorCode =
 
 /**
  * Canonical sorted frozen codes for telemetry `errorCodes` fields.
- * Snapshot-tested in P15-T2.
+ * Snapshot-tested in.
  */
 export const FROZEN_TELEMETRY_ERROR_CODES = [
   ...FROZEN_REPAIR_ERROR_CODES,

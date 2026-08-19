@@ -258,7 +258,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatClient, messages, useMock]);
 
-  // --- Voice transcript ingestion (D44 page session + window event) ---
+ // --- Voice transcript ingestion (page session + window event) ---
   // The agent's voice transcripts get mirrored into the chat thread so
   // the user has one unified history. Tagged `source: 'voice'` so the
   // chip styling can differentiate from typed messages.
@@ -273,7 +273,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
     };
 
     const unsubscribe = pageSession.subscribeTranscripts((entry) => {
-      // D44 voice-only mirror — operator/chat publishes must not appear here.
+ // voice-only mirror — operator/chat publishes must not appear here.
       if (entry.source !== 'voice') {
         return;
       }

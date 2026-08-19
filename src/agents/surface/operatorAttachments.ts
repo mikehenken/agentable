@@ -1,5 +1,5 @@
 /**
- * Operator composer attachments — Gemini-compatible file encoding (P13-T7 iter-5).
+ * Operator composer attachments — Gemini-compatible file encoding.
  * Ported from landing-editor `nas-chat-attachments.ts` (adapted for agentable-canvas).
  */
 import type { AttachmentItem } from '../../components/ui-ai/attachments';

@@ -1,5 +1,5 @@
 /**
- * Operator embed stub — no tldraw/panelShapeApi import (P13-T7 iter-9).
+ * Operator embed stub — no tldraw/panelShapeApi import.
  * Blurs the whiteboard host editor when the operator composer takes focus.
  */
 

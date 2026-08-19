@@ -1,6 +1,6 @@
 /**
 
- * P9-T2 auto-mount scan (D44): one script tag, zero authored JS.
+ * auto-mount scan: one script tag, zero authored JS.
 
  *
 

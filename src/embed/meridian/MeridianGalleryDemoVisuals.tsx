@@ -43,7 +43,7 @@ const panelCardStyle: React.CSSProperties = {
 };
 
 /**
- * Fixed gallery overlays for US-3/4/5 screenshot capture (STUDY-018 iter-4).
+ * Fixed gallery overlays for US-3/4/5 screenshot capture.
  * Complements canvas PanelShape rendering when tldraw HTML layers are off-screen.
  */
 export function MeridianGalleryDemoVisuals(): ReactElement | null {

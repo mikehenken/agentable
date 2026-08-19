@@ -222,14 +222,14 @@ export interface ListProps extends CatalogComponentProps {
   bind?: string;
   row?: Record<string, unknown>;
   rowKey?: string;
-  /** Per-instance override of the declared D56 windowing threshold. */
+ /** Per-instance override of the declared windowing threshold. */
   virtualizeThreshold?: number;
 }
 
 /**
  * When the bound source resolves to an array of records, rows render
  * through `<agentable-virtual-list>`, which windows above the declared
- * threshold (D56) using Lit `repeat` with stable keys. Non-array data
+ * threshold using Lit `repeat` with stable keys. Non-array data
  * keeps the legacy presentational output so existing specs and the
  * builder/raw-IR byte-parity contract are untouched.
  */

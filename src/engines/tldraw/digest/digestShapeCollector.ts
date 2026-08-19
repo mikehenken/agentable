@@ -1,5 +1,5 @@
 /**
- * Collect compact canvas drawing summaries for the workspace digest (P8-T4).
+ * Collect compact canvas drawing summaries for the workspace digest.
  */
 import type { Editor } from 'tldraw';
 import {

@@ -1,6 +1,6 @@
 /**
  * Operator composer — appends user messages and resolves assistant replies via
- * live chat bridge or deterministic offline fallback (P13-T7 iteration-7).
+ * live chat bridge or deterministic offline fallback.
  */
 import type { OperatorOutboundAttachment } from './operatorAttachments';
 import { sendOperatorMessage } from './operatorChatBridge';

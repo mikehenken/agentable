@@ -1,5 +1,5 @@
 /**
- * Single config-merge module (D54).
+ * Single config-merge module.
  * Precedence: platform → tenant → agent → embed → runtime (later wins).
  */
 import {
@@ -80,14 +80,14 @@ export function mergeCanvasPolicy(layers: CanvasConfigLayers): ResolvedCanvasPol
   return resolved;
 }
 
-/** Merge all supported canvas config slices. Extend here as new D54 keys land. */
+/** Merge all supported canvas config slices. Extend here as new keys land. */
 export function mergeCanvasConfig(layers: CanvasConfigLayers): MergedCanvasConfig {
   return {
     canvasPolicy: mergeCanvasPolicy(layers),
   };
 }
 
-/** Platform layer — framework default stays guarded (D50, D61). */
+/** Platform layer — framework default stays guarded. */
 export const PLATFORM_CANVAS_CONFIG_LAYER: CanvasConfigLayerInput = {
   canvasPolicy: { preset: 'guarded' },
 };

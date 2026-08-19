@@ -1,5 +1,5 @@
 /**
- * Host-facing agent runtime facade (`host.agents`, D22–D24, D43, D45, D49).
+ * Host-facing agent runtime facade (`host.agents`,–).
  *
  * Composes model sessions with the workspace world model: registry, activity,
  * leases, camera politeness, budget signal, digest compiler, and drill-downs.
@@ -45,11 +45,11 @@ export interface AgentRuntimeOptions {
   /** Optional live digest input resolver for drill-downs / compile helpers. */
   resolveDigestInput?: () => DigestCompilerInput;
   getPanelState?: (panelId: string) => Record<string, unknown> | null;
-  /** Scoped panel/host tools for D45 enforcement. When omitted, uses live host actions. */
+ /** Scoped panel/host tools for enforcement. When omitted, uses live host actions. */
   tools?: readonly ToolDefinition[];
-  /** Resolve open instance ids to definition ids for panel scope enforcement (D45). */
+ /** Resolve open instance ids to definition ids for panel scope enforcement. */
   resolvePanelDefinitionId?: (panelId: string) => string | undefined;
-  /** Host telemetry sink for tool latency/error and cost events (D55). */
+ /** Host telemetry sink for tool latency/error and cost events. */
   telemetryEmit?: TelemetryEmit;
 }
 
@@ -62,7 +62,7 @@ export interface AgentRuntime {
   handoff(input: HandoffInput): HandoffResult;
   /** Bound drill-down ToolDefinitions (read / free-fire). */
   createDrillDownTools(): ToolDefinition[];
-  /** Execute a registered tool with role-scope enforcement and attribution (D45). */
+ /** Execute a registered tool with role-scope enforcement and attribution. */
   executeTool(
     toolName: string,
     args: Record<string, unknown>,
@@ -169,7 +169,7 @@ export function createAgentRuntime(options: AgentRuntimeOptions = {}): AgentRunt
     claim(input: LeaseClaimInput): LeaseClaimResult {
       const result = leases.claim(input);
       if (!result.ok && result.reason === 'conflict') {
-        // Advisory soft lease: warn in activity, do not block callers (D23).
+ // Advisory soft lease: warn in activity, do not block callers.
         activity.append({
           actor: input.source,
           verb: 'lease_conflict',

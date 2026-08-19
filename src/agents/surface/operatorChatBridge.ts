@@ -1,6 +1,6 @@
 /**
  * Operator chat bridge — sends composer messages through the operator agent
- * tool context (P13-T2 scope). Does not publish into D44 page session.
+ * tool context (scope). Does not publish into page session.
  */
 import { createChatClient, type ChatMessage, type ChatSendProgressEvent, formatToolReasoningStatus } from '../../chat/geminiChatClient';
 import { formatToolCallLabel } from '../../chat/toolCallLabels';
@@ -442,7 +442,7 @@ export interface SendOperatorMessageInput {
   activeThreadId: string;
   mode: OperatorMode;
   attachments?: readonly OperatorOutboundAttachment[];
-  /** Push partial thread state during live chat (P13-T7 iter-12 streaming UX). */
+ /** Push partial thread state during live chat (streaming UX). */
   onThreadsUpdate?: (threads: OperatorThread[]) => void;
 }
 

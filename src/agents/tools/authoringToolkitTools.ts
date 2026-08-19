@@ -1,5 +1,5 @@
 /**
- * Open agent canvas authoring toolkit tools (D50, P12-T1).
+ * Open agent canvas authoring toolkit tools.
  * Capability-gated on engine.capabilities.draw; every mark is provenance-stamped.
  */
 import type { ToolDeclaration, ToolDefinition, ToolHandler } from '../../panels/tools';

@@ -1,5 +1,5 @@
 /**
- * Model-agnostic agent runtime types (D49).
+ * Model-agnostic agent runtime types.
  * Aliases are opaque client-safe strings; provider ids, model names, and
  * keys resolve only through a host-supplied resolver.
  */
@@ -19,7 +19,7 @@ export interface ProviderBinding {
   caps: ModelCapabilities;
   /**
    * Ordered alias chain tried when this binding is unavailable or its caps
-   * do not satisfy the session's requirements (D49).
+ * do not satisfy the session's requirements.
    */
   fallback?: readonly string[];
   /**
@@ -79,7 +79,7 @@ export interface CreateAgentSessionOptions {
   kind?: AgentSessionKind;
   tenantId?: string;
   label?: string;
-  /** Minimum capabilities required for this session (D49 gating). */
+ /** Minimum capabilities required for this session (gating). */
   requiredCaps?: Partial<ModelCapabilities>;
 }
 

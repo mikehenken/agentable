@@ -1,7 +1,7 @@
 /**
  * Shared embed bootstrap lifecycle — split ensureReady (one-time config load)
  * from explicit reload() (refetch). Prevents flicker when whenReady /
- * runScriptedTool fire during operator chat (P13-T7 iter-12).
+ * runScriptedTool fire during operator chat.
  */
 
 export interface EmbedBootstrapState {

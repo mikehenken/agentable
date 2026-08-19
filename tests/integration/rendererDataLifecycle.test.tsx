@@ -1,5 +1,5 @@
 /**
- * P1-T3 integration: the block renderer plus data lifecycle against the
+ * integration: the block renderer plus data lifecycle against the
  * instrumented mock adapter with real async latency and real AbortSignal
  * behavior. Specs go through `validateSpec` with the v1 default catalog
  * (plus one test viewer entry), so the whole P1 pipeline is exercised:

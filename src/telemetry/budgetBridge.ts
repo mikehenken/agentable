@@ -1,6 +1,6 @@
 /**
 
- * Budget spend telemetry bridge (D43 costClass / D55).
+ * Budget spend telemetry bridge (costClass).
 
  */
 

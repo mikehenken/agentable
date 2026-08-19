@@ -1,5 +1,5 @@
 /**
- * Mounts Gemini Live transport for operator-surface voice sessions (P13-T7 iter-6).
+ * Mounts Gemini Live transport for operator-surface voice sessions.
  * Parallel to WhiteboardVoiceMount — registers kernel impl for operator mic control.
  */
 import { useMemo, type ReactElement } from 'react';

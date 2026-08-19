@@ -1,5 +1,5 @@
 /**
- * Undo/reversal model (D53): canvas-local stack undo vs compensating HITL reversal.
+ * Undo/reversal model: canvas-local stack undo vs compensating HITL reversal.
  *
  * - Canvas ops (draw, arrange, layout) push onto a per-actor undo stack.
  * - Persisted mutations (`run_panel_action`) are recorded in the activity ledger
@@ -210,7 +210,7 @@ export function createUndoReversalRuntime(
           ok: false,
           code: 'PERSISTED_MUTATION_NOT_STACK_UNDOABLE',
           message:
-            'persisted mutations reverse only through a compensating action under HITL (D53)',
+            'persisted mutations reverse only through a compensating action under HITL',
         };
       }
 

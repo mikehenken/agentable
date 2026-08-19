@@ -1,6 +1,6 @@
 /**
- * Operator model bridge (P13-T3): syncs `<agentable-operator-surface>` model
- * selection to the D49 runtime layer via host `registerModelResolver`.
+ * Operator model bridge: syncs `<agentable-operator-surface>` model
+ * selection to the runtime layer via host `registerModelResolver`.
  *
  * Aliases stay opaque on the client; provider ids and model names resolve only
  * through the registered resolver at rebind time — never via client API keys.
@@ -31,7 +31,7 @@ export const OPERATOR_AUTO_MODEL_ALIAS = 'auto';
 export const OPERATOR_AUTO_RESOLVED_ALIAS = 'default';
 
 /**
- * Resolve UI model aliases for D49 rebind. When `model === 'auto'`, route to
+ * Resolve UI model aliases for rebind. When `model === 'auto'`, route to
  * the default/fast alias — same NAS agent-panel behavior.
  */
 export function resolveOperatorModelAlias(alias: string): string {
@@ -132,7 +132,7 @@ function buildSessionSnapshot(
   return snapshot;
 }
 
-/** Whether the operator model bridge holds an active D49 session. */
+/** Whether the operator model bridge holds an active session. */
 export function isOperatorModelBridgeActive(): boolean {
   return bridgeBound && activeSession !== null;
 }
@@ -153,7 +153,7 @@ export function getOperatorModelBinding(): ProviderBinding | null {
 }
 
 /**
- * Create (or replace) the operator D49 session when a host resolver is registered.
+ * Create (or replace) the operator session when a host resolver is registered.
  * No-ops when no resolver is present so the Lit shell can still mount offline.
  */
 export async function bindOperatorModelBridge(
@@ -201,7 +201,7 @@ export async function rebindOperatorModel(alias: string): Promise<OperatorModelR
   };
 }
 
-/** Evaluate which switcher options satisfy session capability requirements (D49). */
+/** Evaluate which switcher options satisfy session capability requirements. */
 export async function evaluateOperatorModelOptions(
   options: readonly OperatorModelOption[],
   ctx?: {

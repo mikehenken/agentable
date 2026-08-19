@@ -1,5 +1,5 @@
 /**
- * Session-scoped activity ledger (03 section 3.3, D53).
+ * Session-scoped activity ledger (03 section 3.3).
  *
  * Append-only ring buffer powering digest recency, provenance chains, and
  * the per-actor reversal ledger. Hosts may persist entries via adapter later.
@@ -13,7 +13,7 @@ export type ActivityProvenance =
   | { derivedFrom: 'user' }
   | { derivedFrom: `agent:${string}` };
 
-/** Inverse action reference for compensating reversal under HITL (D53). */
+/** Inverse action reference for compensating reversal under HITL. */
 export interface DeclaredInverseAction {
   panelId: string;
   definitionId: string;
@@ -25,7 +25,7 @@ export interface ActivityReversalMeta {
   /** Compensating action when reversible; omitted when irreversible. */
   inverse?: DeclaredInverseAction;
   reversible: boolean;
-  /** Persisted panel mutations are never stack-undoable (D53). */
+ /** Persisted panel mutations are never stack-undoable. */
   persisted: boolean;
   /** When this entry reverses another ledger row. */
   reversesEntryId?: string;

@@ -35,7 +35,7 @@ export function resolveVoiceGreetingMode(
 }
 
 /**
- * D46 config validation — greetingMode enum + agent-first empty greeting warn.
+ * config validation — greetingMode enum + agent-first empty greeting warn.
  */
 export function validateVoiceGreetingConfig(
   persona: Partial<CanvasPersona>,
@@ -79,7 +79,7 @@ export function validateVoiceGreetingConfig(
   return issues;
 }
 
-/** Signatures already warned — dedupe across _recomputeResolved calls (P13-T7 iter-12). */
+/** Signatures already warned — dedupe across _recomputeResolved calls. */
 const warnedVoiceGreetingSignatures = new Set<string>();
 
 function voiceGreetingWarnSignature(

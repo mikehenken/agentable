@@ -1,6 +1,6 @@
 /**
  * automated checks: authoring toolkit tools, engine draw capability gating,
- * wireframe stencils, and insert_image markup rejection ( G4).
+ * wireframe stencils, and insert_image markup rejection (G4).
  */
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createShapeId } from 'tldraw';

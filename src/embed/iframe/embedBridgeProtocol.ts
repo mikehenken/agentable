@@ -1,6 +1,6 @@
 /**
  * Typed postMessage bridge between a script-stripping parent host and an
- * agentable iframe surface (D44 P9-T4).
+ * agentable iframe surface.
  */
 import type { PageSessionSnapshot } from '../../session/pageSession';
 

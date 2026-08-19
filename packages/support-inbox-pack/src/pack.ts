@@ -59,7 +59,7 @@ function buildTenantDefaults(options: SupportInboxPackOptions = {}): PartialCanv
   };
 }
 
-/** Create the shared support-inbox pack ( pattern — one package, no per-client forks). */
+/** Create the shared support-inbox pack (pattern — one package, no per-client forks). */
 export function createSupportInboxPack(options: SupportInboxPackOptions = {}): SupportInboxPack {
   const panels = createSupportInboxPanelDefinitions();
   const personaScaffold = createSupportInboxPersonaScaffold(options.persona);
@@ -76,7 +76,7 @@ export function createSupportInboxPack(options: SupportInboxPackOptions = {}): S
   return Object.freeze(packShell);
 }
 
-/** Extend the shared pack via published extension points only ( AC). */
+/** Extend the shared pack via published extension points only (AC). */
 export function extendSupportInboxPack(
   base: SupportInboxPack,
   extensions: SupportInboxPackExtensions = {}): SupportInboxPack {

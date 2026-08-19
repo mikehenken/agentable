@@ -1,5 +1,5 @@
 /**
- * Operator mode tool-scope presets (D51 / 03 §13, P13-T2).
+ * Operator mode tool-scope presets (03 §13).
  *
  * Ask / Build / Draw map to enforced allow-lists checked at tool execution time.
  * Draw-mode tools still pass through existing engine draw capability gates.
@@ -95,7 +95,7 @@ export function isOperatorDrawCapableMode(mode: OperatorMode): boolean {
 }
 
 /**
- * Runtime operator-mode scope check (P13-T2).
+ * Runtime operator-mode scope check.
  * Returns true when the tool may be invoked under the given mode.
  */
 export function isToolAllowedForOperatorMode(toolName: string, mode: OperatorMode): boolean {

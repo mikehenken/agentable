@@ -3,7 +3,7 @@
  *
  * Narrowly scoped like `voiceKernel`: Lit widget bundles subscribe without
  * pulling React or the full agent runtime. The canvas host publishes status
- * transitions from `AgentRegistry` (03 §3.2 / D45).
+ * transitions from `AgentRegistry` (03 §3.2).
  */
 
 import type { AgentSessionStatus } from '../agents/types';

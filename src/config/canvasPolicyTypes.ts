@@ -1,6 +1,6 @@
 /**
- * Canvas authoring policy (D50, P12-T5).
- * `guarded` is the framework default; hosts opt into `open` explicitly (D61).
+ * Canvas authoring policy.
+ * `guarded` is the framework default; hosts opt into `open` explicitly.
  */
 
 export type CanvasPolicyPreset = 'guarded' | 'open';
@@ -17,7 +17,7 @@ export interface CanvasPolicyInput {
   region?: CanvasPolicyRegion;
   allowDelete?: boolean;
   toolset?: CanvasPolicyToolset;
-  /** Off by default; P14 code-preview tier (D52). */
+ /** Off by default; P14 code-preview tier. */
   allowCodePreview?: boolean;
 }
 
@@ -73,7 +73,7 @@ const KNOWN_CANVAS_POLICY_KEYS = new Set<string>([
   'allowCodePreview',
 ]);
 
-/** Warn on unknown canvasPolicy fields (D54 / web-components rule). */
+/** Warn on unknown canvasPolicy fields (web-components rule). */
 export function warnUnknownCanvasPolicyFields(
   input: CanvasPolicyInput | undefined,
   source: string,

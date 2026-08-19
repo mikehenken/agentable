@@ -1,5 +1,5 @@
 /**
- * Compile logical diagram structure into draw_shapes inputs (P8-T5).
+ * Compile logical diagram structure into draw_shapes inputs.
  */
 import type { Editor } from 'tldraw';
 import { createShapeId } from 'tldraw';

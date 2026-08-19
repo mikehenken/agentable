@@ -146,7 +146,7 @@ export function getEditor(): Editor | null {
   return editorRef;
 }
 
-/** Gallery/operator verification helper — inspect bound editor store (P13-T7 iter-9). */
+/** Gallery/operator verification helper — inspect bound editor store. */
 export function inspectBoundEditorStore(createdShapeIds: readonly string[] = []): {
   bound: boolean;
   pageShapeCount: number;
@@ -345,7 +345,7 @@ export function groupPanelsInCanvas(
 }
 
 /**
- * Promote an ephemeral composed spec to persisted `__spec` (D13). Returns
+ * Promote an ephemeral composed spec to persisted `__spec`. Returns
  * false when the panel is missing or has nothing ephemeral to pin.
  */
 export function pinPanelInCanvas(panelId: string): boolean {

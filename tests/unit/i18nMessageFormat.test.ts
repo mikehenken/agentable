@@ -1,5 +1,5 @@
 /**
- * ICU MessageFormat engine proofs (D42): literal text and quoting,
+ * ICU MessageFormat engine proofs: literal text and quoting,
  * simple args, number/date/time via Intl, plural (cardinal + exact +
  * `#`), selectordinal, select, nesting, malformed-message and
  * wrong-value failure modes, and full English catalog integrity (every

@@ -14,7 +14,7 @@ import {
 } from '../careerChatBundle';
 import { applyCareerEmbedDefaults } from '../whiteboard/careerCanvasDefaults';
 
-/** Moss Career Blueprint starter chips (P4-T3 / P5-T2 persona fix). */
+/** Moss Career Blueprint starter chips (persona fix). */
 export const MOSS_STARTER_PROMPTS: CareerPersonaScaffold['starterPrompts'] = [
   {
     emoji: '🏗️',
@@ -79,7 +79,7 @@ export const MOSS_PERSONA_EN: MossPersonaLocale = {
   starterPrompts: MOSS_STARTER_PROMPTS,
 };
 
-/** D59 — Spanish persona variant for moss local integration. */
+/** Spanish persona variant for moss local integration. */
 export const MOSS_PERSONA_ES: MossPersonaLocale = {
   assistantName: 'Mason',
   tenantTitle: 'Plan de Carrera Moss',

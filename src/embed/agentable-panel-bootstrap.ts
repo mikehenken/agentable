@@ -1,5 +1,5 @@
 /**
- * P9-T2 embed bootstrap: register `<agentable-panel>` and auto-scan placeholders.
+ * embed bootstrap: register `<agentable-panel>` and auto-scan placeholders.
  */
 import './agentable-panel';
 import { bootstrapAutoMountScan } from './autoMountScan';

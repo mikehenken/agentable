@@ -1,5 +1,5 @@
 /**
- * Anon-key tenant embed config lookup (D44 / P9-T6).
+ * Anon-key tenant embed config lookup.
  *
  * Fetches a public tenant config document via anon/public key — no service role
  * or provider secrets in the client bundle (G3).

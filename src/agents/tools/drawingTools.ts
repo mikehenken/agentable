@@ -1,5 +1,5 @@
 /**
- * Agent drawing tools (D41, P8-T1): draw_shapes, annotate_panel,
+ * Agent drawing tools: draw_shapes, annotate_panel,
  * clear_agent_drawings. Capability-gated on engine.capabilities.draw.
  */
 import type {

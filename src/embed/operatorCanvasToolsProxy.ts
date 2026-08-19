@@ -1,6 +1,6 @@
 /**
  * Operator embed proxy — forwards tool execution to the whiteboard host bundle
- * so the operator surface does not ship a second tldraw copy (P13-T7 iter-9).
+ * so the operator surface does not ship a second tldraw copy.
  */
 import type { ToolResult } from '../panels/tools';
 import {

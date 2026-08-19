@@ -1,5 +1,5 @@
 /**
- * Operator rail collapse state for gallery-13 chrome ↔ whiteboard top bar (P13-T7 iter-10).
+ * Operator rail collapse state for gallery-13 chrome ↔ whiteboard top bar.
  */
 export const OPERATOR_RAIL_COLLAPSE_STORAGE_KEY = 'p13-operator-rail-collapsed';
 export const OPERATOR_RAIL_SET_COLLAPSED_EVENT = 'gallery:operator-rail-set-collapsed';

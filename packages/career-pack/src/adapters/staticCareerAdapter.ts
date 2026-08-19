@@ -205,7 +205,7 @@ export async function resolveCareerDatasetInput(
 }
 
 /**
- * Mock-first career DataAdapter (D34 / P5-T1).
+ * Mock-first career DataAdapter.
  * Serves fixture data in-memory with optional localStorage-backed applications.
  */
 export function createStaticCareerAdapter(

@@ -1,5 +1,5 @@
 /**
- * Locale resolution for a workspace session (D42, 02 section 16).
+ * Locale resolution for a workspace session (02 section 16).
  *
  * Resolution order: embed `locale` attribute > tenant config `locale` >
  * `navigator.language`, falling back to English. The locale is resolved

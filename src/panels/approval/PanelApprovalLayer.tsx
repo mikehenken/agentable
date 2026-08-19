@@ -48,7 +48,7 @@ function useStablePendingSnapshot(
  * Renders the framework-owned HITL approval card inside panel chrome (02
  * section 7). Lives outside the spec body so panel content cannot imitate it.
  * Per-agent queues render independently so one agent's pending card never
- * blocks another's (D45).
+ * blocks another's.
  */
 export function PanelApprovalLayer({ panelId }: PanelApprovalLayerProps): ReactElement | null {
   const controller = getActiveApprovalController();

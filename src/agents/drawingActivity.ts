@@ -1,5 +1,5 @@
 /**
- * Activity ledger entries for agent drawing tools (P8-T4 digest recency).
+ * Activity ledger entries for agent drawing tools (digest recency).
  */
 import type { ActivityLog } from './activity';
 import type {

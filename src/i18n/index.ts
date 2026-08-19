@@ -1,5 +1,5 @@
 /**
- * Framework locale layer (D42, 02 section 16).
+ * Framework locale layer (02 section 16).
  *
  * Every user-facing string in framework chrome, catalog components, and
  * validation messages resolves through `t()` against ICU MessageFormat
@@ -90,7 +90,7 @@ let defaultInstance: I18n = createI18n({ navigatorLanguage: null });
  * Configure the session-wide default instance. Called once at session
  * bootstrap with the embed/tenant locale inputs; returns the configured
  * instance so callers can also inject the resolved locale into agent
- * system context and voice session config (D42).
+ * system context and voice session config.
  */
 export function configureI18n(options: I18nOptions = {}): I18n {
   defaultInstance = createI18n(options);

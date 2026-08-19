@@ -1,5 +1,5 @@
 /**
- * The English message catalog (D42). This file is the ONLY place a
+ * The English message catalog. This file is the ONLY place a
  * user-facing framework string may live as source text; everything the
  * renderer, catalog components, chrome, and the validator surface to
  * people resolves through these keys via `t()`.
@@ -11,7 +11,7 @@
  *
  * Values are ICU MessageFormat (see `../messageFormat.ts` for the
  * supported subset). Locale packs supply the same keys for other locales
- * (D59 ships `es` with the career pack in P4/P5).
+ * (ships `es` with the career pack in P4/P5).
  */
 
 export const en = {
@@ -36,7 +36,7 @@ export const en = {
   'renderer.error.retry': 'Retry',
   'renderer.unsupportedBlock': 'Unsupported block ({type})',
 
-  // --- Spec validation issues (D9 pipeline; surfaced in HITL chrome) ---
+ // --- Spec validation issues (pipeline; surfaced in HITL chrome) ---
   'validation.budget.size': 'Spec exceeds maximum size of {max} bytes',
   'validation.budget.size.hint': 'Reduce node count or shorten string props',
   'validation.envelope.invalid': 'Spec envelope failed structural parse',
@@ -91,7 +91,7 @@ export const en = {
   'validation.sanitize.urlScheme.hint': 'Use http or https URLs only',
   'validation.sanitize.controlChar': 'Control characters are not allowed at {path}',
 
-  // --- Panel HITL approval chrome (02 section 7, D14-D16) ---
+ // --- Panel HITL approval chrome (02 section 7,-) ---
   'approval.review.badge': 'Awaiting approval',
   'approval.review.title': 'Approve {action}',
   'approval.review.agentAttribution': 'Agent: {agent}',
@@ -109,7 +109,7 @@ export const en = {
   'approval.diff.empty': 'No field changes in this payload.',
   'approval.diff.none': '(empty)',
 
-  // --- Panel chrome: provenance + pin (02 section 7, D12/D13) ---
+ // --- Panel chrome: provenance + pin (02 section 7) ---
   'chrome.provenance.agent': 'Agent',
   'chrome.pin.persist': 'Pin panel to workspace',
   'chrome.panel.minimize': 'Minimize panel',
@@ -123,7 +123,7 @@ export const en = {
   'chrome.openCanvas.indicatorHint':
     'Agent output is auto-applied on this canvas. Host-data actions still require approval.',
 
-  // --- Career pack panels + nav (D59) ---
+ // --- Career pack panels + nav ---
   'career.panels.openPositions.title': 'Open Positions',
   'career.panels.openPositions.subtitle': 'Current openings',
   'career.panels.applications.title': 'My Applications',
@@ -141,7 +141,7 @@ export const en = {
   'career.nav.growthPaths': 'Growth Paths',
   'career.nav.careerTools': 'Career Tools',
 
-  // --- Support inbox pack panels + nav (P10-T5) ---
+ // --- Support inbox pack panels + nav ---
   'support.panels.inbox.title': 'Inbox',
   'support.panels.inbox.subtitle': 'Tickets waiting on your team',
   'support.panels.ticketDetail.title': 'Ticket Detail',
@@ -154,11 +154,11 @@ export const en = {
   'support.nav.ticketDetail': 'Ticket Detail',
   'support.nav.macros': 'Macros',
 
-  // --- Agent world-model debug panels (P6-T2) ---
+ // --- Agent world-model debug panels ---
   'agents.panels.activity.title': 'Agent Activity',
   'agents.panels.activity.subtitle': 'Session activity ledger',
 
-  // --- Panel devtools (P10-T2) ---
+ // --- Panel devtools ---
   'devtools.panels.specInspector.title': 'Spec Inspector',
   'devtools.panels.specInspector.subtitle': 'Validation, bindings, and HITL/repair history',
   'devtools.panels.specInspector.tabValidation': 'Validation',

@@ -1,7 +1,7 @@
 /**
- * Runtime bridge for digest shape slices (P8-T4). Binds when the tldraw
+ * Runtime bridge for digest shape slices. Binds when the tldraw
  * editor mounts (relocated from src/agents/ during the P11 pre-gate
- * cleanup, D37): the agent layer must stay engine-agnostic, so the
+ * cleanup): the agent layer must stay engine-agnostic, so the
  * editor-coupled collector binding lives here and the agent runtime reads
  * the live slice through `src/agents/engineBridge.ts`'s
  * `getEngineDigestShapeSlice()` instead.

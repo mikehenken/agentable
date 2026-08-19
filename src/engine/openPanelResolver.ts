@@ -1,8 +1,8 @@
 /**
- * Unified panel targeting resolver (D48, P11-T3).
+ * Unified panel targeting resolver.
  *
  * One engine-agnostic path from `open_panel` args to `EnginePanelPlacement`:
- * page-session slots (D44), app-shell regions, or canvas coordinates.
+ * page-session slots, app-shell regions, or canvas coordinates.
  */
 import type { PanelChromeOptions, PanelScope } from '../panels/types';
 import type { JsonObject } from '../panels/types';

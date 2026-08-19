@@ -1,6 +1,6 @@
 /**
 
- * Resizable canvas + operator rail chrome for example 13 (P13-T7 iter-7).
+ * Resizable canvas + operator rail chrome for example 13.
 
  */
 

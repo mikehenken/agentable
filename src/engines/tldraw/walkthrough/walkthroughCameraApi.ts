@@ -1,5 +1,5 @@
 /**
- * tldraw camera adapter for story-mode walkthrough (P8-T6).
+ * tldraw camera adapter for story-mode walkthrough.
  */
 import { createShapeId, type Editor, type TLShapeId } from 'tldraw';
 import { bindWalkthroughRuntime } from '../../../agents/walkthroughBridge';

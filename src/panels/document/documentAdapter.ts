@@ -1,6 +1,6 @@
 /**
- * In-memory `workspace.documents` adapter (P12-T2). Host persistence via
- * `createPersistedDocumentStore` (P12-T3, D54).
+ * In-memory `workspace.documents` adapter. Host persistence via
+ * `createPersistedDocumentStore`.
  */
 import type { PanelScope } from '../types';
 import type {

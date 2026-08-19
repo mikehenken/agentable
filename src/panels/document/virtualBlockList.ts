@@ -1,5 +1,5 @@
 /**
- * Block row extraction for D56 document block-list virtualization.
+ * Block row extraction for document block-list virtualization.
  */
 import type { DocBlock } from './types';
 import { sanitizePlainText } from './sanitizeRuns';

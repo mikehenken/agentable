@@ -1,5 +1,5 @@
 /**
- * Operator mode bridge (P13-T2): syncs `<agentable-operator-surface>` mode
+ * Operator mode bridge: syncs `<agentable-operator-surface>` mode
  * to the runtime tool-scope enforcement layer.
  */
 import type { ToolResult } from '../../panels/tools';
@@ -45,7 +45,7 @@ export function resetOperatorModeBridgeForTests(): void {
   activeMode = 'auto';
 }
 
-/** Build the structured denial when operator mode blocks a tool (P13-T2). */
+/** Build the structured denial when operator mode blocks a tool. */
 export function buildOperatorModeScopeDenial(toolName: string, mode: OperatorMode): ToolResult {
   return {
     ok: false,
@@ -58,7 +58,7 @@ export function buildOperatorModeScopeDenial(toolName: string, mode: OperatorMod
  * acting agent and the tool is out of scope; otherwise `null` (caller may proceed).
  *
  * enforcement applies only to `OPERATOR_AGENT_ID` so scoped page agents
- * coexist on the same D44 session without inheriting operator Ask/Build/Draw gates.
+ * coexist on the same session without inheriting operator Ask/Build/Draw gates.
  */
 export function evaluateOperatorModeToolDenial(
   toolName: string,

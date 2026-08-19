@@ -58,7 +58,7 @@ export interface MockClientOptions {
   loop?: boolean;
   /**
    * Simulate a transport drop after this many ms from `start()`. Used by
-   * D56 resilience tests — the client stops mid-session and signals
+ * resilience tests — the client stops mid-session and signals
    * `onError`; a reconnecting caller resumes from the saved turn index.
    */
   simulateDropAfterMs?: number;

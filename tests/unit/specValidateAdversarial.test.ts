@@ -1,5 +1,5 @@
 /**
- * Adversarial validation suite for the seven-step spec pipeline (D9, 02 section 5).
+ * Adversarial validation suite for the seven-step spec pipeline (02 section 5).
  * Each case targets a failure mode that must hard-reject or warn per the PRD.
  */
 import { describe, it, expect } from 'vitest';

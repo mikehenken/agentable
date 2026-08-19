@@ -1,5 +1,5 @@
 /**
- * Text direction and CSS logical-properties support (D42).
+ * Text direction and CSS logical-properties support.
  *
  * Layout in framework chrome and catalog styles uses CSS LOGICAL
  * properties (`margin-inline-start`, `padding-block`, `inset-inline-end`,
@@ -82,7 +82,7 @@ export function getTextDirection(locale: string): TextDirection {
 /**
  * Physical CSS properties that MUST NOT appear in framework chrome or
  * catalog styles, each mapped to the logical property to use instead.
- * This is the D42 guidance table; style reviews and future lint tooling
+ * This is the guidance table; style reviews and future lint tooling
  * key off it.
  */
 export const PHYSICAL_TO_LOGICAL_CSS: Readonly<Record<string, string>> = {

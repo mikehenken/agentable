@@ -1,5 +1,5 @@
 /**
- * Imperative canvas perception driver for the tldraw whiteboard (D41, P8-T2).
+ * Imperative canvas perception driver for the tldraw whiteboard.
  *
  * Called from agent tools (non-React). Uses the same editor binding as
  * panelShapeApi and agentDrawingApi.

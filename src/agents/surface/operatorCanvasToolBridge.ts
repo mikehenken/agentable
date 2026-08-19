@@ -1,7 +1,7 @@
 import { isDrawCapabilityAvailable } from '../engineBridge';
 
 /**
- * Operator canvas tool readiness (P13-T7 iteration-9).
+ * Operator canvas tool readiness.
  * Uses the whiteboard host — never imports panelShapeApi/tldraw in the operator embed.
  */
 interface WhiteboardReadyHost extends HTMLElement {

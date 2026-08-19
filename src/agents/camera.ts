@@ -1,5 +1,5 @@
 /**
- * Camera politeness queue (D23): single camera-intent queue so agents never
+ * Camera politeness queue: single camera-intent queue so agents never
  * steal the viewport. User interaction within the grace window (default 4s)
  * or another agent holding the camera causes agent ops to no-op with an
  * attention badge signal.

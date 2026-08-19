@@ -1,5 +1,5 @@
 /**
- * Named page-session slots (D44 section 15): hosts declare regions with
+ * Named page-session slots (section 15): hosts declare regions with
  * `data-agentable-slot="sidebar"`; agent `open_panel` targets them.
  */
 import type { AgentablePanelMountConfig } from '../embed/mountAgentablePanel';

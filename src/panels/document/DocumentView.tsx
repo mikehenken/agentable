@@ -1,6 +1,6 @@
 /**
- * DocumentView catalog composite (D50, P12-T2): block model renderer with
- * pre-save undo stack (D53) and block-list virtualization (D56).
+ * DocumentView catalog composite: block model renderer with
+ * pre-save undo stack and block-list virtualization.
  */
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { SpecNodeContextValue } from '../types';
@@ -34,9 +34,9 @@ export interface DocumentEditorApi {
 
 export interface DocumentViewProps extends CatalogComponentProps {
   bind?: string;
-  /** Per-instance D56 threshold override. */
+ /** Per-instance threshold override. */
   virtualizeThreshold?: number;
-  /** Optional hook for patch_panel / tests to drive the pre-save stack (D53). */
+ /** Optional hook for patch_panel / tests to drive the pre-save stack. */
   onEditorReady?: (api: DocumentEditorApi) => void;
 }
 

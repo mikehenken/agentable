@@ -1,5 +1,5 @@
 /**
- * Runtime validation for document payloads and block ops (D50).
+ * Runtime validation for document payloads and block ops.
  */
 import { z } from 'zod';
 import { validateAssetId } from '../../security/codeExecutionBoundary';

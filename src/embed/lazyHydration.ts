@@ -1,5 +1,5 @@
 /**
- * P9-T5 lazy hydration — visibility-gated panel activation (D44).
+ * lazy hydration — visibility-gated panel activation.
  *
  * Shared IntersectionObserver helpers for `<agentable-panel>` and auto-mount
  * placeholders. Uses the same root margin for prefetch-before-visible.
@@ -146,7 +146,7 @@ export const panelEmbedSkeletonStyles = css`
   }
 `;
 
-/** Lit skeleton template (part=skeleton, D44 skeleton-first). */
+/** Lit skeleton template (part=skeleton, skeleton-first). */
 export function renderPanelEmbedSkeletonTemplate(loadingLabel = 'Loading panel…'): TemplateResult {
   return html`
     <div

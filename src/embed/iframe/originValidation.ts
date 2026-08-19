@@ -1,5 +1,5 @@
 /**
- * Origin allowlist validation for the embed postMessage bridge (P9-T4).
+ * Origin allowlist validation for the embed postMessage bridge.
  */
 
 function normalizeOrigin(origin: string): string | null {

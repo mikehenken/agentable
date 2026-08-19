@@ -1,6 +1,6 @@
 /**
  * 
- * Shared voice transcript merge for chat surfaces (D44).
+ * Shared voice transcript merge for chat surfaces.
  *
  * Coalesces incremental Gemini Live fragments into one bubble per role
  * within a 1.5s window — same policy as ChatPanel's window-event path.

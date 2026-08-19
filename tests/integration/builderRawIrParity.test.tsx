@@ -1,6 +1,6 @@
 /**
- * P1-T4 automated check: a builder-authored panel and the equivalent
- * hand-written raw-IR panel render byte-identical DOM (D1: one spec IR,
+ * automated check: a builder-authored panel and the equivalent
+ * hand-written raw-IR panel render byte-identical DOM (: one spec IR,
  * two authoring surfaces, one renderer). Both specs flow through the
  * same `validateSpec` pipeline with the v1 default catalog, then render
  * through `SpecRenderer` against separate but identically-scripted mock

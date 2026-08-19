@@ -1,5 +1,5 @@
 /**
- * Operator-only gallery mode (P13-T7): suppress Atlas chat PanelShape on canvas.
+ * Operator-only gallery mode: suppress Atlas chat PanelShape on canvas.
  * Persistence can restore a chat panel even when openChatOnMount is false — purge
  * on mount and guard the store so operator rail remains the sole chat surface.
  */

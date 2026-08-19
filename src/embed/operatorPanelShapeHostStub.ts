@@ -1,5 +1,5 @@
 /**
- * Host-only panelShapeApi stub for operator embed bundles (P13-T7 iter-12).
+ * Host-only panelShapeApi stub for operator embed bundles.
  * Avoids shipping a second tldraw graph — draw/read paths use whiteboard host APIs.
  */
 

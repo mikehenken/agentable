@@ -1,5 +1,5 @@
 /**
- * Persistent open-canvas chrome indicator (D50, P12-T5).
+ * Persistent open-canvas chrome indicator.
  * Visible only when the resolved canvasPolicy preset is `open`.
  */
 import type { CSSProperties, ReactElement } from 'react';

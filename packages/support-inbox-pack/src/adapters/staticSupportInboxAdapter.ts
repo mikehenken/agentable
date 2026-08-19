@@ -170,7 +170,7 @@ export async function resolveSupportDatasetInput(
 }
 
 /**
- * Mock-first support inbox DataAdapter (P10-T5).
+ * Mock-first support inbox DataAdapter.
  * Serves fixture data in-memory with optional localStorage-backed replies.
  */
 export function createStaticSupportInboxAdapter(

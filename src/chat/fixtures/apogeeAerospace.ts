@@ -2,7 +2,7 @@
  * Fictional Apogee Aerospace fixture for the offline chat-to-draw fallback
  * shown by examples/08-agent-presents. No real companies, agencies, or
  * vehicles. Lives under src/chat (not examples/) because the fallback is
- * compiled into the embed bundle and the D47 gallery import guard forbids
+ * compiled into the embed bundle and the gallery import guard forbids
  * examples/ files importing src/ internals.
  *
  * Used by `src/chat/offlineDrawFallback.ts` when no live chat endpoint is

@@ -1,5 +1,5 @@
 /**
- * Scope leases (D23): advisory TTL claims for contested panel/source scopes.
+ * Scope leases: advisory TTL claims for contested panel/source scopes.
  * Soft in v1 — conflicts warn (activity) and return holder info; they do not block.
  */
 export interface LeaseClaimInput {

@@ -1,5 +1,5 @@
 /**
- * Session locale bootstrap (D42). Called once when the embed or React host
+ * Session locale bootstrap. Called once when the embed or React host
  * mounts so `t()`, `getI18n()`, and SpecRenderer `dir` share one resolved locale.
  */
 import { configureI18n, type I18n } from './index';

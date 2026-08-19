@@ -1,5 +1,5 @@
 /**
- * Voice transport resilience (D56): bounded exponential backoff for
+ * Voice transport resilience: bounded exponential backoff for
  * reconnecting Gemini Live (or mock transport) after an unexpected drop.
  *
  * The controller preserves the logical voice session id across reconnect

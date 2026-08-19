@@ -1,5 +1,5 @@
 /**
- * DOCX export from the document block model (P12-T4). No HTML round-trip.
+ * DOCX export from the document block model. No HTML round-trip.
  */
 import { buildDeterministicZip } from './deterministicZip';
 import { escapeXml, runsToPlainText } from './exportText';

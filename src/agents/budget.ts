@@ -1,5 +1,5 @@
 /**
- * Shared agent budget signal (D23, D43): spend counters and costClass checks
+ * Shared agent budget signal: spend counters and costClass checks
  * so job-class starts can surface a warning approval note when expensive.
  */
 import type { ToolCostClass } from '../panels/tools';

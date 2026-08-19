@@ -1,6 +1,6 @@
 /**
  * @docs/features/agentable-panel-single-element.md
- * `<agentable-panel>` — Lit custom-element wrapper for a single panel surface (D44).
+ * `<agentable-panel>` — Lit custom-element wrapper for a single panel surface.
  *
  * Panel-only embed: chrome, adapter lifecycle, HITL approval layer, no canvas.
  *
@@ -13,7 +13,7 @@
  *     <script type="module" src="/embed/agentable-panel.js"></script>
  *
  * Named page slots (section 15): `slot-name="sidebar"` maps to
- * `data-agentable-slot="sidebar"` for agent `open_panel` targeting (P9-T2).
+ * `data-agentable-slot="sidebar"` for agent `open_panel` targeting.
  *
  * Events bubble + cross the shadow boundary (`composed: true`).
  */
@@ -201,11 +201,11 @@ export class AgentablePanelElement extends LitElement {
   @property({ type: Boolean, attribute: 'hide-chrome' })
   declare hideChrome: boolean;
 
-  /** Named page-session slot id (D44). */
+ /** Named page-session slot id. */
   @property({ type: String, attribute: 'slot-name' })
   declare slotName: string;
 
-  /** Defer session join + React mount until the element intersects the viewport (P9-T5). */
+ /** Defer session join + React mount until the element intersects the viewport. */
   @property({ type: Boolean, attribute: 'lazy-hydrate' })
   declare lazyHydrate: boolean;
 

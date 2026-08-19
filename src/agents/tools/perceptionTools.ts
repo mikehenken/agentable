@@ -1,7 +1,7 @@
 /**
- * Agent canvas perception tools (D41, P8-T2): read_canvas, screenshot_canvas.
- * Model capability gating for screenshot_canvas is handled by D49 in capabilities.ts.
- * Engine capability gating (P11-T6): both tools read the tldraw shape
+ * Agent canvas perception tools: read_canvas, screenshot_canvas.
+ * Model capability gating for screenshot_canvas is handled by in capabilities.ts.
+ * Engine capability gating: both tools read the tldraw shape
  * graph, so both require engine.capabilities.draw the same way draw and
  * walkthrough tools do; an engine that declares draw: false (the DOM
  * workspace engine) refuses with the same structured capability error

@@ -1,6 +1,6 @@
 /**
  * Headless engine for `<agentable-panel>` — satisfies `createCanvasHost` without
- * mounting tldraw or any canvas surface (D44 panel-only embed).
+ * mounting tldraw or any canvas surface (panel-only embed).
  */
 import type { EngineLifecycleEvent, EngineLifecycleHandle, EnginePanelPlacement } from '../../engine/types';
 import type { JsonObject } from '../../panels/types';

@@ -1,5 +1,5 @@
 /**
- * Acting-agent context for tool execution (D45).
+ * Acting-agent context for tool execution.
  *
  * Threaded through panel tool handlers so mutations, HITL requests, and field
  * fills carry stable agent identity without polluting tool argument schemas.

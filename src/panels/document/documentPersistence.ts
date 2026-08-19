@@ -1,5 +1,5 @@
 /**
- * localStorage-backed `workspace.documents` store (P12-T3, D54).
+ * localStorage-backed `workspace.documents` store.
  * Survives reload when hosts use `createPersistedDocumentStore`.
  */
 import type { DocumentPayload } from './types';

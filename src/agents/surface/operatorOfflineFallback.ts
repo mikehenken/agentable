@@ -1,6 +1,6 @@
 /**
 
- * Deterministic offline operator chat fallback (P13-T7 iteration-7).
+ * Deterministic offline operator chat fallback.
 
  *
 

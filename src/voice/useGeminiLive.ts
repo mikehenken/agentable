@@ -61,7 +61,7 @@ export interface UseGeminiLiveOptions {
   /** Optional scripted scenario for mock mode. Defaults to the built-in. */
   mockScenario?: MockVoiceScenario;
   /**
-   * Mock-only: simulate transport drop after N ms (D56 resilience tests).
+ * Mock-only: simulate transport drop after N ms (resilience tests).
    */
   mockSimulateDropAfterMs?: number;
   /**

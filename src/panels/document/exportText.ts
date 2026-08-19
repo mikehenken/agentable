@@ -1,5 +1,5 @@
 /**
- * Plain-text extraction from document blocks for export (P12-T4).
+ * Plain-text extraction from document blocks for export.
  */
 import { sanitizePlainText, sanitizeTextRuns } from './sanitizeRuns';
 import type { DocBlock, TextRun } from './types';

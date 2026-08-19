@@ -1,5 +1,5 @@
 /**
- * Wireframe stencil expansion for draw_shapes (D50, P12-T1).
+ * Wireframe stencil expansion for draw_shapes.
  *
  * Closed-schema placeholders so connected wireframe sets read as wireframes,
  * not raw rectangles.

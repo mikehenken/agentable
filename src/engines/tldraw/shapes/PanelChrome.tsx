@@ -25,9 +25,9 @@ export interface PanelChromeProps {
    * a friendlier title via shape `data`. */
   title: string;
   minimized: boolean;
-  /** When true, render the agent provenance badge (D12). */
+ /** When true, render the agent provenance badge. */
   showProvenanceBadge?: boolean;
-  /** When true, show the pin affordance for ephemeral composed instances (D13). */
+ /** When true, show the pin affordance for ephemeral composed instances. */
   showPinButton?: boolean;
   /** When true, the composed spec is already persisted on the shape. */
   pinned?: boolean;

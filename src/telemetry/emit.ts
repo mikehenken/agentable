@@ -1,6 +1,6 @@
 /**
 
- * Internal telemetry emit helpers for panel runtime and agent hooks (D55).
+ * Internal telemetry emit helpers for panel runtime and agent hooks.
 
  */
 
