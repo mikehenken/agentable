@@ -60,7 +60,7 @@ function notifyToolCall(name, summary, ok) {
         args: { _demoSummary: summary },
         ok,
         source: 'p8-scripted-demo',
-        timestamp: new Date.toISOString,
+        timestamp: new Date.toISOString(),
       },
       bubbles: true,
       composed: true,

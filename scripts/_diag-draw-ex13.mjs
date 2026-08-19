@@ -5,7 +5,7 @@ const URL = 'http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto(URL, { waitUntil: 'networkidle' });
-await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 45_000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 45_000 });
 await page.waitForTimeout(2000);
 
 const diag = await page.evaluate(async () => {

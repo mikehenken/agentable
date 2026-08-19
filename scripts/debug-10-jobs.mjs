@@ -10,7 +10,7 @@ await page.goto('http://127.0.0.1:5199/examples/10-locale-rtl/index.html?v=debug
   timeout: 60000,
 });
 await page.waitForTimeout(5000);
-const snapshot = await page.evaluate( => {
+const snapshot = await page.evaluate(() => {
   const panel = document.querySelector('agentable-panel');
   const text = panel?.shadowRoot?.textContent ?? '';
   return {

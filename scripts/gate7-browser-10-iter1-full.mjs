@@ -153,7 +153,7 @@ try {
 
   report.metrics.mobile = await mobilePage.evaluate(collectMetrics);
 
-  report.capturedAt = new Date.toISOString;
+  report.capturedAt = new Date.toISOString();
   report.pass =
     report.metrics.desktop?.galleryReady?.ok === true &&
     report.metrics.desktop?.jobTitlesFound?.length === 2 &&

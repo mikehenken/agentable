@@ -9,8 +9,8 @@ async function main {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 45000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 45000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
   await page.waitForTimeout(2000);
 
   const before = await page.evaluate(async () => {
@@ -26,7 +26,7 @@ async function main {
   });
   console.log('before', before);
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
     surface?.createThread?.;
@@ -36,7 +36,7 @@ async function main {
 
   for (let i = 0; i < 20; i++) {
     await page.waitForTimeout(1000);
-    const snap = await page.evaluate( => {
+    const snap = await page.evaluate(() => {
       const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
       const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
       const thread = surface?.threads?.[0];

@@ -96,7 +96,7 @@ function shadowQuery {
     meridianExportResult: window.__meridianExportResult ?? null,
     meridianHitlResult: window.__meridianHitlResult ?? null,
     hasTldrawCanvas: canvases.length > 0,
-    h1: document.querySelector('h1')?.textContent?.trim ?? '',
+    h1: document.querySelector('h1')?.textContent?.trim() ?? '',
     hasStatusJson: Boolean(document.querySelector('#status')),
     docHeightRatio:
       Math.round((document.documentElement.scrollHeight window.innerHeight) * 100) 100,
@@ -170,7 +170,7 @@ async function setupPage(contextOptions) {
     timeout: 90_000,
   });
 
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const board = document.querySelector('agentable-whiteboard');
     return board instanceof HTMLElement;
   });
@@ -181,7 +181,7 @@ async function setupPage(contextOptions) {
 async function runDesktopManual {
   const { context, page } = await setupPage({ viewport: { width: 1280, height: 900 } });
 
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const wb = document.querySelector('agentable-whiteboard');
     const shadow = wb?.shadowRoot;
     return Boolean(shadow?.querySelector('canvas'));
@@ -287,7 +287,7 @@ const mobileMetrics = await runMobile;
 
 report.desktop = desktopMetrics;
 report.mobile = mobileMetrics;
-report.capturedAt = new Date.toISOString;
+report.capturedAt = new Date.toISOString();
 
 const dupTldrawConsole = report.consoleMessages.some(
   (m) =>

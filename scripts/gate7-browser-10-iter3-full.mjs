@@ -166,7 +166,7 @@ try {
 
   report.metrics.mobile = await mobilePage.evaluate(collectMetrics);
 
-  report.capturedAt = new Date.toISOString;
+  report.capturedAt = new Date.toISOString();
   const chromeStyled =
     report.metrics.desktop?.chromeBtnWidth === '22px' &&
     report.metrics.desktop?.chromeBtnHeight === '22px' &&

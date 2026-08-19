@@ -10,14 +10,14 @@ await page.waitForTimeout(2500);
 
 await page.locator('[data-locale="en"]').click;
 await page.waitForTimeout(1500);
-console.log('after en', JSON.stringify(await page.evaluate( => window.__galleryReady)));
+console.log('after en', JSON.stringify(await page.evaluate(() => window.__galleryReady)));
 
 await page.locator('[data-locale="ar"]').click;
 await page.waitForTimeout(2000);
 console.log(
   'after ar click',
   JSON.stringify(
-    await page.evaluate( => ({
+    await page.evaluate(() => ({
       panelLocale: document.getElementById('career-panel')?.getAttribute('locale'),
       docDir: document.documentElement.dir,
       panelDir:
@@ -27,7 +27,7 @@ console.log(
       ready: window.__galleryReady,
     }))));
 
-await page.evaluate( => {
+await page.evaluate(() => {
   const panel = document.getElementById('career-panel');
   panel?.setAttribute('locale', 'ar');
   panel?.setAttribute('config-url', '/examples/shared/archipelago-locale-ar-config.json');
@@ -35,6 +35,6 @@ await page.evaluate( => {
   document.documentElement.dir = 'rtl';
 });
 await page.waitForTimeout(2000);
-console.log('after manual ar', JSON.stringify(await page.evaluate( => window.__galleryReady)));
+console.log('after manual ar', JSON.stringify(await page.evaluate(() => window.__galleryReady)));
 
 await browser.close;

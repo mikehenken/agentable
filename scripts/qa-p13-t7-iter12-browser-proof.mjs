@@ -22,7 +22,7 @@ async function waitForGalleryReady(page) {
       return ready?.example === '13-canvas-wide-agent' && ready.ok === true;
     },
     { timeout: 45_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+  await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
     timeout: 45_000,
   });
 }
@@ -42,7 +42,7 @@ async function waitForComposer(page) {
 /** @param {import('playwright').Page} page */
 async function sendDrawProbe(page) {
   await page.waitForTimeout(2000);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -50,7 +50,7 @@ async function sendDrawProbe(page) {
     surface?.createThread?.;
   });
   await waitForComposer(page);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const textarea = placement?.shadowRoot
@@ -117,7 +117,7 @@ await page.waitForFunction(
       }
       return false;
     },
-    { timeout: 45_000 }).catch( => undefined);
+    { timeout: 45_000 }).catch(() => undefined);
 
 await page.waitForTimeout(800);
 await page.screenshot({ path: join(PROOF_DIR, '02-mid-streaming.png'), fullPage: false });
@@ -136,12 +136,12 @@ await page.waitForFunction(
       }
       return false;
     },
-    { timeout: 120_000 }).catch( => undefined);
+    { timeout: 120_000 }).catch(() => undefined);
 
 await page.waitForTimeout(1200);
 await page.screenshot({ path: join(PROOF_DIR, '03-after-draw-cat.png'), fullPage: false });
 
-const drawPayload = await page.evaluate( => {
+const drawPayload = await page.evaluate(() => {
   const placement = document.querySelector(
     'agentable-operator-surface-placement[placement-id="operator-main"]');
   const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -169,7 +169,7 @@ const bareTldrawErrors = consoleEvents.filter(
     e.text.includes('tldraw'));
 
 const scan = {
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
   url: URL,
   consoleEventCount: consoleEvents.length,
   bareTldrawErrors,

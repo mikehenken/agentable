@@ -1,4 +1,4 @@
-/** Fix `( =>` corrupted to missing `()` in arrow functions. */
+/** Fix `(() =>` corrupted to missing `()` in arrow functions. */
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -29,4 +29,4 @@ function walk(dir) {
   }
 }
 walk(ROOT);
-console.log(`Fixed ( => in ${n} files`);
+console.log(`Fixed (() => in ${n} files`);

@@ -9,7 +9,7 @@ await page.goto('http://127.0.0.1:5199/examples/06-react-host-deep/index.html?v=
   timeout: 60000,
 });
 await page.waitForTimeout(5000);
-const state = await page.evaluate( => {
+const state = await page.evaluate(() => {
   const panel = document.querySelector('agentable-panel');
   const list = panel?.shadowRoot?.querySelector('agentable-virtual-list');
   return {

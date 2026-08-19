@@ -24,7 +24,7 @@ async function waitForGalleryReady(page) {
       return ready?.example === '13-canvas-wide-agent' && ready.ok === true;
     },
     { timeout: 45_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+  await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
     timeout: 45_000,
   });
   await page.locator('agentable-operator-surface-placement[placement-id="operator-main"]').first.waitFor({
@@ -47,7 +47,7 @@ async function waitForOperatorComposer(page) {
 
 /** @param {import('playwright').Page} page */
 async function createOperatorThread(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -85,7 +85,7 @@ async function sendOperatorProbe(page, message, mode) {
 
 /** @param {import('playwright').Page} page */
 async function readDrawToolPayload(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -221,7 +221,7 @@ async function main {
     !payload?.shapeIdsInArgs?.includes('operator-probe');
 
   const verdict = {
-    timestamp: new Date.toISOString,
+    timestamp: new Date.toISOString(),
     probe: DRAW_PROBE,
     mode: 'draw',
     payload,

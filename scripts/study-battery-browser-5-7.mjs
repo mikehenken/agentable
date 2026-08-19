@@ -42,7 +42,7 @@ page.on('pageerror', (err) => {
 async function clickStarterChip(label) {
   const card = page.getByTestId('starter-chip-card').filter({ hasText: label });
   const compact = page.getByTestId('starter-chip').filter({ hasText: label });
-  if (await card.isVisible.catch( => false)) {
+  if (await card.isVisible.catch(() => false)) {
     await card.click;
     return;
   }
@@ -73,8 +73,8 @@ async function hasTldrawCrashBoundary {
   const crashHeading = page.getByText('Something went wrong');
   const showDetails = page.getByRole('button', { name: 'Show details' });
   return (
-    (await crashHeading.isVisible.catch( => false)) ||
-    (await showDetails.isVisible.catch( => false))
+    (await crashHeading.isVisible.catch(() => false)) ||
+    (await showDetails.isVisible.catch(() => false))
   );
 }
 
@@ -89,7 +89,7 @@ async function waitForToolCalls(prevCount, timeoutMs = 90_000) {
 }
 
 async function countCanvasShapes {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const host = document.querySelector('agentable-whiteboard');
     const root = host?.shadowRoot;
     const container = root?.querySelector('.tl-container');
@@ -100,7 +100,7 @@ async function countCanvasShapes {
 }
 
 async function toolbarOverlapCheck {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const host = document.querySelector('agentable-whiteboard');
     const root = host?.shadowRoot;
     const container = root?.querySelector('.tl-container');
@@ -127,7 +127,7 @@ try {
   await waitForChatInputEnabled(45_000);
   pushStep('chat-input-visible', true);
 
-  const beforeAvionics = await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0);
+  const beforeAvionics = await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0);
   await clickStarterChip('Avionics map');
 
   await page.waitForFunction(
@@ -138,7 +138,7 @@ try {
     null,
     { timeout: 90_000 });
 
-  const offlineVisible = await page.getByText(/Offline demo mode/i).isVisible.catch( => false);
+  const offlineVisible = await page.getByText(/Offline demo mode/i).isVisible.catch(() => false);
   report.mode = offlineVisible ? 'offline': 'live';
   await waitForToolCalls(beforeAvionics, offlineVisible ? 30_000: 180_000);
   await waitForChatInputEnabled(report.mode === 'live' ? 180_000: 60_000);
@@ -146,7 +146,7 @@ try {
   await page.screenshot({ path: path.join(SHOT_DIR, 'step3-pre-redo-avionics.png'), fullPage: false });
   pushStep('step3-prep-avionics-draw', true, { mode: report.mode });
 
-  const beforeRedo = await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0);
+  const beforeRedo = await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0);
   const chatInput = await waitForChatInputEnabled(report.mode === 'live' ? 180_000: 60_000);
   await chatInput.fill('redo it and add text', { timeout: 180_000 });
   await chatInput.press('Enter');
@@ -158,9 +158,9 @@ try {
       return (
         body.includes('Offline demo mode') ||
         calls.length > prev ||
-        body.toLowerCase.includes('drew') ||
-        body.toLowerCase.includes('sketch') ||
-        body.toLowerCase.includes('updated')
+        body.toLowerCase().includes('drew') ||
+        body.toLowerCase().includes('sketch') ||
+        body.toLowerCase().includes('updated')
       );
     },
     beforeRedo,
@@ -174,7 +174,7 @@ try {
     } catch {
        Crash check is the primary gate for step 3.
     }
-    await waitForChatInputEnabled(180_000).catch( => {});
+    await waitForChatInputEnabled(180_000).catch(() => {});
   }
 
   const crashed = await hasTldrawCrashBoundary;
@@ -182,7 +182,7 @@ try {
   pushStep('step3-redo-add-text-no-crash', !crashed, {
     mode: report.mode,
     tldrawCrash: crashed,
-    toolCallsAfter: await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0),
+    toolCallsAfter: await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0),
   }, crashed ? 'tldraw Something went wrong boundary visible': undefined);
 
   pushStep('step3-canvas-shapes-present', (await countCanvasShapes).count > 0, await countCanvasShapes);
@@ -200,7 +200,7 @@ try {
     after: afterResetShapes.count,
   });
 
-  const beforeLaunch = await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0);
+  const beforeLaunch = await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0);
   await clickStarterChip('Launch sequence');
 
   await page.waitForFunction(
@@ -212,7 +212,7 @@ try {
     { timeout: report.mode === 'live' ? 120_000: 60_000 });
 
   await waitForToolCalls(beforeLaunch, report.mode === 'live' ? 180_000: 45_000);
-  await waitForChatInputEnabled(report.mode === 'live' ? 180_000: 60_000).catch( => {});
+  await waitForChatInputEnabled(report.mode === 'live' ? 180_000: 60_000).catch(() => {});
   await page.waitForTimeout(2000);
 
   const crashedStep4 = await hasTldrawCrashBoundary;
@@ -232,7 +232,7 @@ try {
     report.consoleErrors.filter((e) => !e.includes('404') && !e.includes('config.local.json')).length === 0;
 } catch (err) {
   pushStep('battery-fatal', false, {}, err instanceof Error ? err.message: String(err));
-  await page.screenshot({ path: path.join(SHOT_DIR, 'battery-fatal.png'), fullPage: false }).catch( => {});
+  await page.screenshot({ path: path.join(SHOT_DIR, 'battery-fatal.png'), fullPage: false }).catch(() => {});
   report.pass = false;
 } finally {
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));

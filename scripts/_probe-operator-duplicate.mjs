@@ -10,7 +10,7 @@ await page.waitForFunction(
    => window.__galleryReady?.example === '13-canvas-wide-agent',
   { timeout: 45_000 });
 
-const result = await page.evaluate( => {
+const result = await page.evaluate(() => {
   const rail = document.querySelector('.operator-rail');
   const dockPlacement = document.querySelector(
     'agentable-operator-surface-placement[placement="dock-inside"]');
@@ -29,7 +29,7 @@ const result = await page.evaluate( => {
             ? [...node.children]: [node,...node.querySelectorAll('*')];
       for (const el of elements) {
         if (!(el instanceof Element)) continue;
-        if (el.tagName.toLowerCase === 'agentable-operator-surface') {
+        if (el.tagName.toLowerCase() === 'agentable-operator-surface') {
           surfaces.push(el);
         }
         if (el.shadowRoot) {

@@ -54,10 +54,10 @@ await page.screenshot({
   fullPage: false,
 });
 
-const result = await page.evaluate( => window.__p8AgentDrawDemoResult);
-const logText = await page.evaluate( => document.getElementById('p8-activity-log')?.textContent ?? '');
-const labels = await page.evaluate( => {
-  const texts = Array.from(document.querySelectorAll('.tl-shape p,.tl-shape span, svg text')).map((el) => el.textContent?.trim).filter(Boolean);
+const result = await page.evaluate(() => window.__p8AgentDrawDemoResult);
+const logText = await page.evaluate(() => document.getElementById('p8-activity-log')?.textContent ?? '');
+const labels = await page.evaluate(() => {
+  const texts = Array.from(document.querySelectorAll('.tl-shape p,.tl-shape span, svg text')).map((el) => el.textContent?.trim()).filter(Boolean);
   return texts.filter((t) =>
     ['Client brief', 'Moodboard', 'Concept sketches', 'Final delivery', 'Northstar Atelier'].includes(t));
 });

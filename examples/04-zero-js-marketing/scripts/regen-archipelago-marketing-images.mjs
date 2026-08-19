@@ -530,14 +530,14 @@ function parseArgs(argv) {
     } else if (arg === '--force') {
       opts.force = true;
     } else if (arg.startsWith('--only=')) {
-      const list = arg.slice('--only='.length).split(',').map((s) => s.trim).filter(Boolean);
+      const list = arg.slice('--only='.length).split(',').map((s) => s.trim()).filter(Boolean);
       opts.only = new Set(list);
     } else if (arg.startsWith('--model=')) {
-      opts.model = arg.slice('--model='.length).trim || DEFAULT_MODEL;
+      opts.model = arg.slice('--model='.length).trim() || DEFAULT_MODEL;
     } else if (arg.startsWith('--fallback=')) {
-      opts.fallback = arg.slice('--fallback='.length).trim || DEFAULT_FALLBACK_MODEL;
+      opts.fallback = arg.slice('--fallback='.length).trim() || DEFAULT_FALLBACK_MODEL;
     } else if (arg.startsWith('--size=')) {
-      opts.size = arg.slice('--size='.length).trim || DEFAULT_IMAGE_SIZE;
+      opts.size = arg.slice('--size='.length).trim() || DEFAULT_IMAGE_SIZE;
     } else if (arg === '--help' || arg === '-h') {
       printHelpAndExit(0);
     } else {
@@ -570,7 +570,7 @@ function parseEnvFile(filePath) {
   }
   const text = fs.readFileSync(filePath, 'utf8');
   for (const rawLine of text.split(/\r?\n/)) {
-    const line = rawLine.trim;
+    const line = rawLine.trim();
     if (!line || line.startsWith('#')) {
       continue;
     }
@@ -578,8 +578,8 @@ function parseEnvFile(filePath) {
     if (eq <= 0) {
       continue;
     }
-    const key = line.slice(0, eq).trim;
-    let value = line.slice(eq + 1).trim;
+    const key = line.slice(0, eq).trim();
+    let value = line.slice(eq + 1).trim();
     if (
       (value.startsWith('"') && value.endsWith('"')) ||
       (value.startsWith("'") && value.endsWith("'"))
@@ -603,7 +603,7 @@ function resolveApiKey {
   ];
 
   for (const name of envKeys) {
-    const value = process.env[name]?.trim;
+    const value = process.env[name]?.trim();
     if (value) {
       return { key: value, source: `env:${name}` };
     }
@@ -624,7 +624,7 @@ function resolveApiKey {
   for (const filePath of envFiles) {
     const parsed = parseEnvFile(filePath);
     for (const name of envKeys) {
-      const value = parsed[name]?.trim;
+      const value = parsed[name]?.trim();
       if (value) {
         return { key: value, source: `${filePath}:${name}` };
       }
@@ -739,7 +739,7 @@ async function generateOne(ai, asset, opts, maxAttemptsPerModel = 4) {
  */
 function writeManifest(assets, meta) {
   const payload = {
-    generatedAt: new Date.toISOString,
+    generatedAt: new Date.toISOString(),
     model: meta.model,
     fallbackModel: meta.fallback,
     imageSize: meta.size,
@@ -888,11 +888,11 @@ async function main {
         result.mimeType.includes('jpeg') || result.mimeType.includes('jpg');
       const isPng = result.mimeType.includes('png');
       const wantsJpg =
-        asset.outputFile.toLowerCase.endsWith('.jpg') ||
-        asset.outputFile.toLowerCase.endsWith('.jpeg');
-      const wantsPng = asset.outputFile.toLowerCase.endsWith('.png');
+        asset.outputFile.toLowerCase().endsWith('.jpg') ||
+        asset.outputFile.toLowerCase().endsWith('.jpeg');
+      const wantsPng = asset.outputFile.toLowerCase().endsWith('.png');
 
-      const sharp = ( => {
+      const sharp = (() => {
         try {
           return require('sharp');
         } catch {

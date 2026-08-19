@@ -34,9 +34,9 @@ async function waitForGalleryReady(page) {
 
   await page.goto(URL, { waitUntil: 'networkidle' });
 
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 60_000 });
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 60_000 });
 
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
 
     timeout: 60_000,
 
@@ -52,7 +52,7 @@ async function typedDrawInDrawMode(page, prompt) {
 
   await page.waitForTimeout(1200);
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
 
     const placement = document.querySelector(
 
@@ -82,7 +82,7 @@ async function typedDrawInDrawMode(page, prompt) {
 
     { timeout: 30_000 });
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
 
     const placement = document.querySelector(
 
@@ -160,7 +160,7 @@ await page.waitForFunction(
 
     },
 
-    { timeout: 90_000 }).catch( => undefined);
+    { timeout: 90_000 }).catch(() => undefined);
 
 await page.waitForTimeout(12000);
 
@@ -238,7 +238,7 @@ const voiceGreeting = consoleEvents.filter((e) =>
 
 const scan = {
 
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
 
   capturedBy: 'Playwright — iter-19 heart visual proof',
 

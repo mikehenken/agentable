@@ -10,7 +10,7 @@ async function main {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await page.waitForTimeout(5000);
-  const bodyText = await page.evaluate( => document.body.innerText);
+  const bodyText = await page.evaluate(() => document.body.innerText);
   const ok =
     /sandy|career concierge/i.test(bodyText) &&
     !/application error|failed to load/i.test(bodyText);

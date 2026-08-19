@@ -25,7 +25,7 @@ const TARGETS = [
 ];
 
 async function evaluateTldraw(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const v = window.__TLDRAW_LIBRARY_VERSIONS__;
     const names = (v?.versions ?? []).map((x) => x.name);
     const dupes = names.filter((n, i) => names.indexOf(n) !== i);
@@ -40,7 +40,7 @@ async function evaluateTldraw(page) {
 }
 
 async function evaluateDarkChrome(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const host = document.querySelector('agentable-whiteboard');
     const mount = host?.shadowRoot?.querySelector('.agentable-whiteboard-mount');
     const canvasRoot = mount?.querySelector('[data-testid="whiteboard-shell"],.tl-container,.tl-theme__dark');

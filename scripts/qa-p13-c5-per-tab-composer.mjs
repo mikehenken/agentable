@@ -15,14 +15,14 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle', timeout: 120_000 });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 90_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 90_000,
   });
 }
 
 async function setupAutoNewThread(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -55,7 +55,7 @@ async function submitPrompt(page, prompt) {
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
   }, prompt);
-  const clicked = await page.evaluate( => {
+  const clicked = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const submit = placement?.shadowRoot
@@ -71,7 +71,7 @@ async function submitPrompt(page, prompt) {
 }
 
 async function readComposerState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -100,7 +100,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const report = {
   criterion: 'C5_perTabComposerUnlock',
   url: URL,
-  timestamp: new Date.toISOString,
+  timestamp: new Date.toISOString(),
   pass: false,
 };
 
@@ -108,7 +108,7 @@ try {
   await waitForGalleryReady(page);
   await setupAutoNewThread(page);
 
-  const threadAId = await page.evaluate( => {
+  const threadAId = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -118,7 +118,7 @@ try {
   await submitPrompt(page, SLOW_PROMPT);
   await page.waitForTimeout(2_000);
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');

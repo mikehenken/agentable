@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Support inbox quickstart · Northwind Support</title>
-    <link rel="stylesheet" href="/embed/agentable-panel.css" />
     <style>
       body {
         margin: 0;
@@ -46,14 +45,13 @@
           panel="inbox"
           config-url="/examples/shared/northwind-support-config.json"
           primary-color="#2563EB"
-          data-skip-react-mount
         ></agentable-panel>
       </div>
     </div>
     <script type="module" src="/embed/agentable-panel.js"></script>
     <script type="module">
       window.__supportInboxQuickstart = 'support-inbox-quickstart';
-      customElements.whenDefined('agentable-panel').then( => {
+      customElements.whenDefined('agentable-panel').then(() => {
         window.__supportInboxReady = { example: 'support-inbox-quickstart', ok: true };
       });
     </script>

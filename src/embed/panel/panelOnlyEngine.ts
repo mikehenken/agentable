@@ -15,7 +15,7 @@ export class PanelOnlyEngine implements EngineLifecycleHandle {
   /** Last placement request (tests + diagnostics). */
   lastOpen: EnginePanelPlacement | null = null;
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return true;
   }
 

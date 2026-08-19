@@ -181,7 +181,7 @@ const enginePassed = engineRun.status === 0;
 
 const a11yPassed = a11yRun.status === 0;
 
-const generatedAtIso = new Date.toISOString;
+const generatedAtIso = new Date.toISOString();
 
 
 

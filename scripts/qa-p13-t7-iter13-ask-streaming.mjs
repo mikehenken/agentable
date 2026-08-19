@@ -15,8 +15,8 @@ mkdirSync(PROOF, { recursive: true });
 /** @param {import('playwright').Page} page */
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 60_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 60_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 60_000,
   });
 }
@@ -37,7 +37,7 @@ await waitForGalleryReady(page);
 await page.waitForTimeout(1500);
 await page.screenshot({ path: join(PROOF, '04-ask-mode-before-chat.png'), fullPage: false });
 
-await page.evaluate( => {
+await page.evaluate(() => {
   const placement = document.querySelector(
     'agentable-operator-surface-placement[placement-id="operator-main"]');
   const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -46,7 +46,7 @@ await page.evaluate( => {
 });
 
 await page.waitForTimeout(800);
-await page.evaluate( => {
+await page.evaluate(() => {
   const placement = document.querySelector(
     'agentable-operator-surface-placement[placement-id="operator-main"]');
   const textarea = placement?.shadowRoot
@@ -64,7 +64,7 @@ await page.keyboard.press('Enter');
 const streamingSnapshots = [];
 for (let i = 0; i < 12; i += 1) {
   await page.waitForTimeout(3_000);
-  const state = await page.evaluate( => {
+  const state = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -115,7 +115,7 @@ const firstNonUserAt = streamingSnapshots.findIndex((snapshot) =>
       message.kind !== 'user'));
 
 const scan = {
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
   url: URL,
   mode: 'ask',
   streamingSnapshots,

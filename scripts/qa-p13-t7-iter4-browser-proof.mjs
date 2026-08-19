@@ -83,8 +83,8 @@ async function main {
       tabs: bg(tabs),
       composer: bg(composer),
       prompt: bg(prompt),
-      vibeBackground: hostStyle?.getPropertyValue('--vibe-background').trim ?? null,
-      vibeComposerBg: hostStyle?.getPropertyValue('--vibe-composer-bg').trim ?? null,
+      vibeBackground: hostStyle?.getPropertyValue('--vibe-background').trim() ?? null,
+      vibeComposerBg: hostStyle?.getPropertyValue('--vibe-composer-bg').trim() ?? null,
     };
   });
 
@@ -107,7 +107,7 @@ async function main {
     const options = select ? [...select.querySelectorAll('option')]: [];
     return {
       firstOption: options[0]?.value ?? null,
-      firstLabel: options[0]?.textContent?.trim ?? null,
+      firstLabel: options[0]?.textContent?.trim() ?? null,
       optionCount: options.length,
     };
   });
@@ -134,7 +134,7 @@ async function main {
   await page.keyboard.type('d');
   await page.waitForTimeout(200);
   const textareaValue = await textarea.inputValue;
-  const drawToolState = await page.evaluate( => {
+  const drawToolState = await page.evaluate(() => {
     const walk = (node) => {
       if (!(node instanceof Element) && !(node instanceof DocumentFragment) && !(node instanceof ShadowRoot)) {
         return null;
@@ -146,7 +146,7 @@ async function main {
       for (const el of elements) {
         if (!(el instanceof Element)) continue;
         const testId = el.getAttribute('data-testid') ?? '';
-        if (testId.includes('draw') || el.getAttribute('aria-label')?.toLowerCase.includes('draw')) {
+        if (testId.includes('draw') || el.getAttribute('aria-label')?.toLowerCase().includes('draw')) {
           return {
             testId,
             ariaPressed: el.getAttribute('aria-pressed'),
@@ -195,8 +195,8 @@ async function main {
     };
     const operatorText = root ? walkText(root): '';
     return {
-      hasToast: Boolean(toast && (toast.textContent ?? '').trim.length > 0),
-      toastText: toast?.textContent?.trim ?? '',
+      hasToast: Boolean(toast && (toast.textContent ?? '').trim().length > 0),
+      toastText: toast?.textContent?.trim() ?? '',
       hasProbe: operatorText.includes(probe),
       hasGalleryDemo: /gallery demo mode/i.test(operatorText),
       endpointToast: /endpoint not configured/i.test(document.body.textContent ?? ''),
@@ -215,7 +215,7 @@ async function main {
     notes: JSON.stringify(sendState),
   });
 
-  const atlasText = await page.evaluate( => {
+  const atlasText = await page.evaluate(() => {
     const walk = (node) => {
       /** @type {string[]} */
       const parts = [];
@@ -242,7 +242,7 @@ async function main {
     notes: `atlasContainsProbe=${atlasText.includes(OPERATOR_PROBE)} atlasLen=${atlasText.length}`,
   });
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
     window.localStorage.removeItem('p13-operator-floating-visible');
     window.localStorage.removeItem('p13-operator-floating-preset');
     window.localStorage.removeItem('p13-operator-floating-x');
@@ -256,27 +256,27 @@ async function main {
   const visibleAfterToggle = await page.evaluate(
      => document.getElementById('operator-floating')?.classList.contains('floating-visible') ?? false);
 
-  await page.evaluate( => document.getElementById('floating-preset-br')?.click);
+  await page.evaluate(() => document.getElementById('floating-preset-br')?.click);
   await page.waitForTimeout(300);
-  const brBox = await page.evaluate( => {
+  const brBox = await page.evaluate(() => {
     const el = document.getElementById('operator-floating');
     if (!(el instanceof HTMLElement)) return null;
     const rect = el.getBoundingClientRect;
     return { left: Math.round(rect.left), top: Math.round(rect.top) };
   });
 
-  await page.evaluate( => document.getElementById('floating-preset-tr')?.click);
+  await page.evaluate(() => document.getElementById('floating-preset-tr')?.click);
   await page.waitForTimeout(300);
-  const trBox = await page.evaluate( => {
+  const trBox = await page.evaluate(() => {
     const el = document.getElementById('operator-floating');
     if (!(el instanceof HTMLElement)) return null;
     const rect = el.getBoundingClientRect;
     return { left: Math.round(rect.left), top: Math.round(rect.top) };
   });
 
-  await page.evaluate( => document.getElementById('floating-preset-bl')?.click);
+  await page.evaluate(() => document.getElementById('floating-preset-bl')?.click);
   await page.waitForTimeout(300);
-  const blBox = await page.evaluate( => {
+  const blBox = await page.evaluate(() => {
     const el = document.getElementById('operator-floating');
     if (!(el instanceof HTMLElement)) return null;
     const rect = el.getBoundingClientRect;
@@ -318,7 +318,7 @@ async function main {
 
   await page.reload;
   await waitForGalleryReady(page);
-  const persisted = await page.evaluate( => ({
+  const persisted = await page.evaluate(() => ({
     visible: window.localStorage.getItem('p13-operator-floating-visible'),
     preset: window.localStorage.getItem('p13-operator-floating-preset'),
     floatingVisible: document.getElementById('operator-floating')?.classList.contains('floating-visible') ?? false,

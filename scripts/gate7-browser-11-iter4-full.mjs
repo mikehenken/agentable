@@ -55,7 +55,7 @@ async function clickTab(page, tabId) {
 }
 
 async function getMetrics(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const shell = document.querySelector('agentable-app-shell');
     const mount = shell?.shadowRoot?.querySelector('.agentable-app-shell-mount');
     const text = mount?.textContent ?? '';
@@ -95,7 +95,7 @@ page.on('console', (msg) => {
 await page.goto(`${url11}?v=${cacheBust}`, { waitUntil: 'networkidle' });
 await page.evaluate((key) => window.localStorage.removeItem(key), STORAGE_KEY);
 await page.reload({ waitUntil: 'networkidle' });
-await page.waitForFunction( => window.__galleryReady?.ok === true, null, { timeout: 30000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, null, { timeout: 30000 });
 
 await capture(page, 'cursor-browser-p00-workspace-desktop.png', 'P0');
 await capturePanel(page, 'app-shell-panel-open-positions', 'cursor-browser-p01-panel-open-positions.png', 'P1');
@@ -146,7 +146,7 @@ if (handleBox) {
 }
 await capture(page, 'cursor-browser-r03-split-sidebar-narrow.png', 'R3');
 
-const sidebarWidth = await page.evaluate( => {
+const sidebarWidth = await page.evaluate(() => {
   const shell = document.querySelector('agentable-app-shell');
   const sidebar = shell?.shadowRoot?.querySelector('[data-dom-panel="sidebar"]');
   return sidebar ? Math.round(sidebar.getBoundingClientRect.width): null;
@@ -155,7 +155,7 @@ report.resizeChecks = { sidebarWidthPxAfterNarrowDrag: sidebarWidth };
 
 await page.setViewportSize({ width: 390, height: 844 });
 await page.reload({ waitUntil: 'networkidle' });
-await page.waitForFunction( => window.__galleryReady?.ok === true, null, { timeout: 30000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, null, { timeout: 30000 });
 await capture(page, 'cursor-browser-m01-mobile-initial.png', 'M0');
 
 const manifestLines = report.captures.map((c) => `${c.path}\t${c.bytes}`);

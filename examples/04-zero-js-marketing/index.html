@@ -956,7 +956,7 @@
 
       window.__refreshGalleryReady = refreshGalleryReady;
 
-      customElements.whenDefined('agentable-whiteboard').then( => {
+      customElements.whenDefined('agentable-whiteboard').then(() => {
         refreshGalleryReady;
         void seedGalleryOpenPositions;
       });

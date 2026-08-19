@@ -238,7 +238,7 @@ function evaluateLayoutMetric(metric, phase, innerWidth) {
 
 async function collectFunctionalSignals(page) {
 
-  return page.evaluate( => {
+  return page.evaluate(() => {
 
     const chatRoot =
 
@@ -358,7 +358,7 @@ const report = {
 
   pass: false,
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 };
 
@@ -390,7 +390,7 @@ await page.goto(url, { waitUntil: 'networkidle', timeout: 60_000 });
 
 await page.getByTestId('p8-run-full-demo').waitFor({ state: 'visible', timeout: 45_000 });
 
-await page.waitForFunction( => window.__galleryReady?.ok === true, null, { timeout: 45_000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, null, { timeout: 45_000 });
 
 
 
@@ -420,7 +420,7 @@ report.interactionSteps.push({
 
   functional: evaluateFunctional(await collectFunctionalSignals(page)),
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 
@@ -428,7 +428,7 @@ report.interactionSteps.push({
 
 await page.getByTestId('p8-draw-flow').click;
 
-await page.waitForFunction( => window.__p8AgentDrawDemoCanvasLegible === true, null, {
+await page.waitForFunction(() => window.__p8AgentDrawDemoCanvasLegible === true, null, {
 
   timeout: 15_000,
 
@@ -450,7 +450,7 @@ report.interactionSteps.push({
 
   functional: evaluateFunctional(await collectFunctionalSignals(page)),
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 
@@ -458,7 +458,7 @@ report.interactionSteps.push({
 
 await page.getByTestId('p8-draw-batch').click;
 
-await page.waitForFunction( => window.__p8AgentDrawDemoCanvasLegible === true, null, {
+await page.waitForFunction(() => window.__p8AgentDrawDemoCanvasLegible === true, null, {
 
   timeout: 15_000,
 
@@ -480,7 +480,7 @@ report.interactionSteps.push({
 
   functional: evaluateFunctional(await collectFunctionalSignals(page)),
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 
@@ -508,7 +508,7 @@ await page.waitForFunction(
 
   { timeout: 45_000 });
 
-await page.waitForFunction( => window.__p8AgentDrawDemoCanvasLegible === true, null, {
+await page.waitForFunction(() => window.__p8AgentDrawDemoCanvasLegible === true, null, {
 
   timeout: 15_000,
 
@@ -532,19 +532,19 @@ report.interactionSteps.push({
 
   pngPath: afterFullDemoPath,
 
-  demoResult: await page.evaluate( => window.__p8AgentDrawDemoResult),
+  demoResult: await page.evaluate(() => window.__p8AgentDrawDemoResult),
 
   layout: evaluateLayoutMetric(desktopAfterDemo, 'after-demo', 1280),
 
   functional: evaluateFunctional(await collectFunctionalSignals(page)),
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 
 
 
-await page.waitForFunction( => window.__p8AgentDrawDemoChatSettled === true, null, {
+await page.waitForFunction(() => window.__p8AgentDrawDemoChatSettled === true, null, {
 
   timeout: 10_000,
 
@@ -578,13 +578,13 @@ report.interactionSteps.push({
 
   },
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 
 
 
-const demoResult = await page.evaluate( => window.__p8AgentDrawDemoResult);
+const demoResult = await page.evaluate(() => window.__p8AgentDrawDemoResult);
 
 const summaryText = await page.getByTestId('p8-provenance-summary').textContent;
 
@@ -614,7 +614,7 @@ await mobilePage.goto(url, { waitUntil: 'networkidle', timeout: 60_000 });
 
 await mobilePage.getByTestId('p8-run-full-demo').waitFor({ state: 'visible', timeout: 45_000 });
 
-await mobilePage.waitForFunction( => window.__galleryReady?.ok === true, null, {
+await mobilePage.waitForFunction(() => window.__galleryReady?.ok === true, null, {
 
   timeout: 45_000,
 
@@ -646,7 +646,7 @@ report.interactionSteps.push({
 
   layout: evaluateLayoutMetric(mobileBeforeRun, 'before-run', 390),
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 
@@ -668,17 +668,17 @@ await mobilePage.waitForFunction(
 
   { timeout: 45_000 });
 
-await mobilePage.waitForFunction( => window.__p8AgentDrawDemoChatSettled === true, null, {
+await mobilePage.waitForFunction(() => window.__p8AgentDrawDemoChatSettled === true, null, {
 
   timeout: 15_000,
 
 });
 
-await mobilePage.waitForFunction( => window.__p8AgentDrawDemoCanvasLegible === true, null, {
+await mobilePage.waitForFunction(() => window.__p8AgentDrawDemoCanvasLegible === true, null, {
 
   timeout: 20_000,
 
-}).catch( => undefined);
+}).catch(() => undefined);
 
 await mobilePage.waitForTimeout(600);
 
@@ -690,7 +690,7 @@ const mobileAfterDemo = await collectLayoutMetric(mobilePage, 'mobile-after-full
 
 report.layoutMetrics.push(mobileAfterDemo);
 
-const mobileDemoResult = await mobilePage.evaluate( => window.__p8AgentDrawDemoResult);
+const mobileDemoResult = await mobilePage.evaluate(() => window.__p8AgentDrawDemoResult);
 
 report.interactionSteps.push({
 
@@ -706,7 +706,7 @@ report.interactionSteps.push({
 
   functional: evaluateFunctional(await collectFunctionalSignals(mobilePage)),
 
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 
 });
 

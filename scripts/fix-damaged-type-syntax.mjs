@@ -1,4 +1,4 @@
-/** Repair type/call syntax damaged by aggressive ( => fixes. */
+/** Repair type/call syntax damaged by aggressive (() => fixes. */
 import fs from 'node:fs';
 import path from 'node:path';
 

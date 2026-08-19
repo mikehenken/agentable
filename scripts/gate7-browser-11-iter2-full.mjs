@@ -44,7 +44,7 @@ function collectMetrics {
   const tabButtons = Array.from(
     mount?.querySelectorAll('[data-dom-tab]') ?? []).map((el) => ({
     id: el.getAttribute('data-dom-tab'),
-    label: el.textContent?.trim ?? '',
+    label: el.textContent?.trim() ?? '',
     active: el.getAttribute('data-active') === 'true',
   }));
   const sidebarPanel = mount?.querySelector('[data-dom-panel="sidebar"]');
@@ -66,7 +66,7 @@ function collectMetrics {
     bodyBackground: bodyBg,
     bodyHeight100: document.body.style.height !== '' || getComputedStyle(document.body).height !== 'auto',
     telemetryCollapsed: telemetry instanceof HTMLDetailsElement ? !telemetry.open: null,
-    statusVisibleAboveFold: ( => {
+    statusVisibleAboveFold: (() => {
       if (!statusEl) return false;
       const r = statusEl.getBoundingClientRect;
       return r.top < window.innerHeight && r.height > 40 && !telemetry?.open;
@@ -113,7 +113,7 @@ async function captureShell(page, filename, phase) {
 }
 
 async function getSidebarWidth(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const shell = document.querySelector('agentable-app-shell');
     const mount = shell?.shadowRoot?.querySelector('.agentable-app-shell-mount');
     const sidebar = mount?.querySelector('[data-dom-panel="sidebar"]');
@@ -154,7 +154,7 @@ try {
   await page12.waitForTimeout(800);
   const header12Buf = await page12.locator('body > header').screenshot;
   await page.goto(`${url11}?v=${cacheBust}`, { waitUntil: 'domcontentloaded', timeout: 90000 });
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true;
   }, { timeout: 45000 });
@@ -225,7 +225,7 @@ try {
 
    Tab switch regression
   await page.locator('agentable-app-shell').locator('[data-dom-tab="growth-paths"]').click;
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const shell = document.querySelector('agentable-app-shell');
     const mount = shell?.shadowRoot?.querySelector('.agentable-app-shell-mount');
     return Boolean(mount?.querySelector('[data-dom-tab="growth-paths"][data-active="true"]'));
@@ -233,7 +233,7 @@ try {
   await page.waitForTimeout(400);
   report.steps.push({ step: '', action: 'Growth Paths tab', ok: true });
 
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const raw = window.localStorage.getItem('agentable-app-shell:archipelago-resorts');
     if (!raw) return false;
     try {
@@ -244,7 +244,7 @@ try {
   }, { timeout: 10000 });
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true && ready.restored === true;
   }, { timeout: 45000 });
@@ -259,7 +259,7 @@ try {
     if (msg.type === 'error') report.consoleErrors.push(`[mobile] ${msg.text}`);
   });
   await mobilePage.goto(`${url11}?v=${cacheBust}-mobile`, { waitUntil: 'domcontentloaded', timeout: 90000 });
-  await mobilePage.waitForFunction( => {
+  await mobilePage.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true;
   }, { timeout: 45000 });
@@ -335,7 +335,7 @@ try {
   report.stylingFailReasons = stylingFail;
   report.resizeFailReasons = resizeFail;
   report.regressionFailReasons = regressionFail;
-  report.capturedAt = new Date.toISOString;
+  report.capturedAt = new Date.toISOString();
 
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
   console.log(

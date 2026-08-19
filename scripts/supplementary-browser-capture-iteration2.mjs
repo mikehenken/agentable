@@ -29,11 +29,11 @@ async function captureLitEmbed {
   await page.goto(LIT_EMBED_URL, { waitUntil: 'networkidle', timeout: 90000 });
   await page.waitForTimeout(10000);
 
-  const tldrawVersions = await page.evaluate( => {
+  const tldrawVersions = await page.evaluate(() => {
     return window.__TLDRAW_LIBRARY_VERSIONS__ ?? null;
   });
 
-  const navRailPresent = await page.evaluate( => {
+  const navRailPresent = await page.evaluate(() => {
     const host = document.querySelector('agentable-whiteboard');
     const root = host?.shadowRoot;
     if (!root) return { ok: false, reason: 'no shadow root' };
@@ -77,7 +77,7 @@ async function captureReactWhiteboard {
   await page.goto(REACT_WHITEBOARD_URL, { waitUntil: 'networkidle', timeout: 90000 });
   await page.waitForTimeout(8000);
 
-  const tldrawVersions = await page.evaluate( => window.__TLDRAW_LIBRARY_VERSIONS__ ?? null);
+  const tldrawVersions = await page.evaluate(() => window.__TLDRAW_LIBRARY_VERSIONS__ ?? null);
 
   await page.screenshot({
     path: path.join(OUT_DIR, '02-react-career-whiteboard-SUPPLEMENTARY.png'),

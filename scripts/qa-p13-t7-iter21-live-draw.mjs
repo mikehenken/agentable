@@ -23,8 +23,8 @@ mkdirSync(PROOF, { recursive: true });
 /** @param {import('playwright').Page} page */
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 60_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 60_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 60_000,
   });
 }
@@ -32,7 +32,7 @@ async function waitForGalleryReady(page) {
 /** @param {import('playwright').Page} page @param {string} prompt */
 async function typedDrawInDrawMode(page, prompt) {
   await page.waitForTimeout(800);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -55,7 +55,7 @@ async function typedDrawInDrawMode(page, prompt) {
     throw new Error('operator draw thread did not become ready');
   }
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const textarea = placement?.shadowRoot
@@ -84,7 +84,7 @@ async function waitForDrawToolMessage(page, activeThreadId) {
           (message) => message.kind === 'tool' && message.toolName === 'draw_shapes');
       },
       activeThreadId,
-      { timeout: 120_000 }).catch( => undefined);
+      { timeout: 120_000 }).catch(() => undefined);
 
    Wait for post-verify to settle on this thread only.
   await page.waitForFunction(
@@ -97,7 +97,7 @@ async function waitForDrawToolMessage(page, activeThreadId) {
         const drawTool = thread.messages?.find(
           (m) => m.kind === 'tool' && m.toolName === 'draw_shapes');
         if (drawTool === undefined) return false;
-        const assistantTexts = (thread.messages ?? []).filter((m) => m.kind === 'text' && m.role === 'assistant').map((m) => String(m.text ?? '').trim).filter((text) => text.length > 0);
+        const assistantTexts = (thread.messages ?? []).filter((m) => m.kind === 'text' && m.role === 'assistant').map((m) => String(m.text ?? '').trim()).filter((text) => text.length > 0);
         const createdIds = Array.isArray(drawTool.args?._createdShapeIds)
           ? drawTool.args._createdShapeIds: [];
         return (
@@ -108,7 +108,7 @@ async function waitForDrawToolMessage(page, activeThreadId) {
         );
       },
       activeThreadId,
-      { timeout: 90_000 }).catch( => undefined);
+      { timeout: 90_000 }).catch(() => undefined);
 
   await page.waitForTimeout(2000);
 }
@@ -165,7 +165,7 @@ const bareTldraw = consoleEvents.filter(
   (e) => e.text.includes('Failed to resolve module specifier') && e.text.includes('tldraw'));
 
 const scan = {
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
   capturedBy: 'Playwright — iter-21 live draw proof',
   iteration: 21,
   url: URL,

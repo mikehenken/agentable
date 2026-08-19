@@ -5,7 +5,7 @@ const page = await browser.newPage;
 await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html?nochrome=1', {
   waitUntil: 'domcontentloaded',
 });
-await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
   timeout: 45_000,
 });
 
@@ -25,7 +25,7 @@ const result = await page.evaluate(async () => {
     ],
   });
 
-  await new Promise((r) => requestAnimationFrame( => requestAnimationFrame( => setTimeout(r, 180))));
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 180))));
 
   window.dispatchEvent(
     new CustomEvent('agentable:fit-agent-drawing', { detail: { agentId: draw?.result?.agentId ?? 'operator' } }));

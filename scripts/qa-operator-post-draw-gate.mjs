@@ -21,15 +21,15 @@ mkdirSync(OUT_DIR, { recursive: true });
 /** @param {import('playwright').Page} page */
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle', timeout: 120_000 });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 90_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 90_000,
   });
 }
 
 /** @param {import('playwright').Page} page */
 async function sendAutoModePrompt(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -61,7 +61,7 @@ async function sendAutoModePrompt(page) {
     }
   }, PROMPT);
 
-  const clicked = await page.evaluate( => {
+  const clicked = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const submit = placement?.shadowRoot
@@ -103,7 +103,7 @@ async function waitForTurnComplete(page) {
 
 /** @param {import('playwright').Page} page */
 async function readTranscriptProof(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -124,7 +124,7 @@ async function readTranscriptProof(page) {
     const drawIndex = toolSequence.findIndex((entry) => entry.toolName === 'draw_shapes' && entry.ok);
     const groupAfterDraw = toolSequence.slice(drawIndex + 1).some((entry) => entry.toolName === 'group_shapes' && entry.ok);
     const readAfterDraw = toolSequence.slice(drawIndex + 1).some((entry) => entry.toolName === 'read_canvas' && entry.ok);
-    const readBeforeFinalAssistant = ( => {
+    const readBeforeFinalAssistant = (() => {
       if (thread === undefined) return false;
       const messages = thread.messages ?? [];
       let sawDraw = false;
@@ -145,7 +145,7 @@ async function readTranscriptProof(page) {
       return false;
     });
 
-    const clearDuringFixPhase = ( => {
+    const clearDuringFixPhase = (() => {
       if (thread === undefined) return false;
       const messages = thread.messages ?? [];
       let sawLayoutLintRead = false;
@@ -233,7 +233,7 @@ try {
       screenshotOk: proof.screenshotOk,
       screenshotRequired: false,
     },
-    timestamp: new Date.toISOString,
+    timestamp: new Date.toISOString(),
   };
 
   writeFileSync(join(OUT_DIR, 'browser-proof.json'), JSON.stringify(report, null, 2));

@@ -15,14 +15,14 @@ mkdirSync(dirname(OUT_MD), { recursive: true });
 
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle', timeout: 120_000 });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 90_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 90_000,
   });
 }
 
 async function setupAutoNewThread(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -52,7 +52,7 @@ async function submitPrompt(page, prompt) {
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
   }, prompt);
-  const clicked = await page.evaluate( => {
+  const clicked = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const submit = placement?.shadowRoot
@@ -68,7 +68,7 @@ async function submitPrompt(page, prompt) {
 }
 
 async function readOperatorState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -143,7 +143,7 @@ page.setDefaultTimeout(TURN_TIMEOUT_MS);
 const report = {
   prompt: PROMPT,
   url: URL,
-  timestamp: new Date.toISOString,
+  timestamp: new Date.toISOString(),
   assertions: {},
   finalState: null,
   overallPass: false,

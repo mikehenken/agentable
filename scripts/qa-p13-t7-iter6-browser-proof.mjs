@@ -48,7 +48,7 @@ function walkText(node) {
  * @param {import('playwright').Page} page
  */
 async function operatorShadowText(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     const walk = (node) => {
@@ -76,7 +76,7 @@ async function operatorShadowText(page) {
  * @param {import('playwright').Page} page
  */
 async function scanCanvasAndOperatorErrors(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const walk = (node) => {
       if (!(node instanceof Element) && !(node instanceof DocumentFragment) && !(node instanceof ShadowRoot)) {
         return '';
@@ -257,7 +257,7 @@ async function main {
   await page.locator('.operator-rail [data-testid="operator-speech-input"]').click;
   await page.waitForTimeout(1200);
 
-  const voiceCheck = await page.evaluate( => {
+  const voiceCheck = await page.evaluate(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     const mic = root?.querySelector('[data-testid="operator-speech-input"]');

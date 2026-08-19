@@ -27,7 +27,7 @@ async function clickByText(page, text, exact = true) {
 
 /** @param {import('@playwright/test').Page} page */
 async function bodyText(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const parts = [document.body?.innerText ?? ''];
     for (const host of document.querySelectorAll('agentable-whiteboard, agentable-canvas')) {
       const sr = host.shadowRoot;
@@ -48,7 +48,7 @@ async function capture(page, slug, extra = {}) {
   await page.screenshot({ path, fullPage: false });
   const dump = {
     slug,
-    capturedAt: new Date.toISOString,
+    capturedAt: new Date.toISOString(),
     textSample: text.slice(0, 2400),...extra,
   };
   writeFileSync(join(OUT, `${slug}.json`), JSON.stringify(dump, null, 2));
@@ -80,14 +80,14 @@ async function waitForPanel(page, testId) {
 
 /** @param {import('@playwright/test').Page} page */
 async function injectToolCallBlock(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     window.dispatchEvent(
       new CustomEvent('landi:tool-call', {
         detail: {
           name: 'open_positions',
           args: { location: 'Jamaica', track: 'Professionals' },
           ok: true,
-          timestamp: new Date.toISOString,
+          timestamp: new Date.toISOString(),
         },
         bubbles: true,
         composed: true,
@@ -183,7 +183,7 @@ async function runSurface(prefix, url) {
     }));
 
    Journey via dock-menu toolbar (dispatch custom action)
-  await page.evaluate( => {
+  await page.evaluate(() => {
     window.dispatchEvent(
       new CustomEvent('landi-whiteboard-custom-action:dock-menu', {
         detail: { id: 'dock-menu' },
@@ -194,7 +194,7 @@ async function runSurface(prefix, url) {
   results.push(await capture(page, `${prefix}-12-journey`, { url }));
 
    Recent activity via toolbar event
-  await page.evaluate( => {
+  await page.evaluate(() => {
     window.dispatchEvent(
       new CustomEvent('landi-whiteboard-custom-action:recent-activity', {
         detail: { id: 'recent-activity' },
@@ -223,7 +223,7 @@ try {
   await runSurface('lit', LIT_URL);
 } catch (err) {
   const message = err instanceof Error ? err.message: String(err);
-  results.push({ error: message, capturedAt: new Date.toISOString });
+  results.push({ error: message, capturedAt: new Date.toISOString() });
   console.error('PROOF FAIL:', message);
 }
 

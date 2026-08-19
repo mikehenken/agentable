@@ -122,7 +122,7 @@ await page.goto(`${baseUrl}?v=iter4-self-verify`, {
   timeout: 90_000,
 });
 
-await page.waitForFunction( => {
+await page.waitForFunction(() => {
   const board = document.querySelector('agentable-whiteboard');
   const shadow = board?.shadowRoot;
   return Boolean(shadow?.querySelector('canvas'));
@@ -181,7 +181,7 @@ report.usVerdict = {
   us5: Boolean(hitlMetrics?.hitlCardVisible || hitl?.ok === true),
 };
 
-report.capturedAt = new Date.toISOString;
+report.capturedAt = new Date.toISOString();
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 await context.close;
 await browser.close;

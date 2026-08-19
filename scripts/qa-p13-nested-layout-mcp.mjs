@@ -17,19 +17,19 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 function sha256(filePath) {
   const buf = readFileSync(filePath);
-  return createHash('sha256').update(buf).digest('hex').toUpperCase;
+  return createHash('sha256').update(buf).digest('hex').toUpperCase();
 }
 
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle', timeout: 120_000 });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 90_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 90_000,
   });
 }
 
 async function setupAutoNewThread(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -59,7 +59,7 @@ async function submitPrompt(page, prompt) {
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
   }, prompt);
-  const clicked = await page.evaluate( => {
+  const clicked = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const submit = placement?.shadowRoot
@@ -75,7 +75,7 @@ async function submitPrompt(page, prompt) {
 }
 
 async function readOperatorState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -127,7 +127,7 @@ async function readOperatorState(page) {
       postDrawArrangeFlow,
       arrangeCalls: arrangeCalls.map((e) => ({ layout: e.args?.layout, ok: e.ok })),
       hasReasoningVisible: reasoningMessages.some(
-        (m) => typeof m.text === 'string' && m.text.trim.length > 0),
+        (m) => typeof m.text === 'string' && m.text.trim().length > 0),
       reasoningTextHead: reasoningMessages.map((m) => (typeof m.text === 'string' ? m.text.slice(0, 200): '')).join(' | '),
       assistantText: messages.filter((m) => m.kind === 'text' && m.role === 'assistant').map((m) => m.text ?? '').join('\n'),
       composerTextareaDisabled,
@@ -202,9 +202,9 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 page.setDefaultTimeout(TURN_TIMEOUT_MS);
 page.on('console', (msg) =>
-  consoleEvents.push({ type: msg.type, text: msg.text, ts: new Date.toISOString }));
+  consoleEvents.push({ type: msg.type, text: msg.text, ts: new Date.toISOString() }));
 page.on('pageerror', (err) =>
-  consoleEvents.push({ type: 'pageerror', text: err.message, ts: new Date.toISOString }));
+  consoleEvents.push({ type: 'pageerror', text: err.message, ts: new Date.toISOString() }));
 
 const report = {
   prompt: PROMPT,
@@ -212,7 +212,7 @@ const report = {
   source: 'playwright-supplementary-mcp-blocked',
   reportVersion: 'nested-v2',
   cursorIdeBrowserBlocked: true,
-  timestamp: new Date.toISOString,
+  timestamp: new Date.toISOString(),
   nestedCriteria: {},
   pngs: [],
 };
@@ -253,7 +253,7 @@ try {
   await submitPrompt(page, 'draw a detailed multi-region vpc architecture with many subnets');
   await page.waitForTimeout(5_000);
   const stopBefore = await readOperatorState(page);
-  const stopClicked = await page.evaluate( => {
+  const stopClicked = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const stop = placement?.shadowRoot
@@ -278,7 +278,7 @@ try {
 
    Per-tab busy: start gen on thread A, switch to thread B
   await setupAutoNewThread(page);
-  const threadAId = await page.evaluate( => {
+  const threadAId = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -286,7 +286,7 @@ try {
   });
   await submitPrompt(page, PROMPT);
   await page.waitForTimeout(3_000);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');

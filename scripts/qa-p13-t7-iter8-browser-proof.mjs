@@ -32,7 +32,7 @@ const OPERATOR_FAILURE_PATTERN =
  * @param {import('playwright').Page} page
  */
 async function operatorShadowText(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
@@ -61,7 +61,7 @@ async function operatorShadowText(page) {
  * @param {import('playwright').Page} page
  */
 async function scanOperatorToolCards(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
@@ -77,7 +77,7 @@ async function scanOperatorToolCards(page) {
  * @param {import('playwright').Page} page
  */
 async function scanCanvasAndOperatorErrors(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const walk = (node) => {
       if (!(node instanceof Element) && !(node instanceof DocumentFragment) && !(node instanceof ShadowRoot)) {
         return '';
@@ -140,7 +140,7 @@ async function scanCanvasAndOperatorErrors(page) {
  * @param {import('playwright').Page} page
  */
 async function readOperatorDrawEvidence(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -225,7 +225,7 @@ async function waitForOperatorComposer(page) {
  * @param {import('playwright').Page} page
  */
 async function createOperatorThread(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -264,7 +264,7 @@ async function sendOperatorProbe(page, message, mode, options = {}) {
   await textarea.fill('');
   await textarea.pressSequentially(message, { delay: 5 });
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
@@ -326,7 +326,7 @@ async function waitForOperatorToolCard(page, toolNameMatch, timeoutMs) {
       const tools = root ? [...root.querySelectorAll('[data-testid="operator-tool"]')]: [];
       return tools.some((el) => matcher(el.getAttribute('data-tool-name') ?? ''));
     },
-    toolNameMatch.toString,
+    toolNameMatch.toString(),
     { timeout: timeoutMs });
 }
 
@@ -351,7 +351,7 @@ async function main {
 
   await waitForGalleryReady(page);
 
-  const headerUiCheck = await page.evaluate( => {
+  const headerUiCheck = await page.evaluate(() => {
     const header = document.querySelector('[data-testid="gallery-demo-header"]');
     const switcher = document.querySelector('[data-testid="gallery-demo-switcher"]');
     const style = header instanceof HTMLElement ? getComputedStyle(header): null;
@@ -375,7 +375,7 @@ async function main {
     notes: JSON.stringify(headerUiCheck),
   });
 
-  const seamUiCheck = await page.evaluate( => {
+  const seamUiCheck = await page.evaluate(() => {
     const handle = document.querySelector('[data-slot="resizable-handle"]');
     const grip = handle?.querySelector('svg, [class*="Grip"]');
     const style = handle instanceof HTMLElement ? getComputedStyle(handle): null;
@@ -524,7 +524,7 @@ async function main {
     }),
   });
 
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
@@ -561,7 +561,7 @@ async function main {
     { timeout: 8000 });
   await page.waitForTimeout(300);
 
-  const voiceCheck = await page.evaluate( => {
+  const voiceCheck = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;

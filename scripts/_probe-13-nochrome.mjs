@@ -6,7 +6,7 @@ const page = await browser.newPage;
 for (const suffix of ['', '?nochrome=1']) {
   const url = `http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html${suffix}`;
   await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
   await page.waitForTimeout(2000);
 
   const result = await page.evaluate(async (label) => {

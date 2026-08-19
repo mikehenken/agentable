@@ -11,7 +11,7 @@ const url = 'http://127.0.0.1:5199/examples/11-app-shell/index.html?v=iter3-resi
 const STORAGE_KEY = 'agentable-app-shell:archipelago-resorts';
 
 async function getMetrics(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const shell = document.querySelector('agentable-app-shell');
     const mount = shell?.shadowRoot?.querySelector('.agentable-app-shell-mount');
     const sidebar = mount?.querySelector('[data-dom-panel="sidebar"]');
@@ -21,7 +21,7 @@ async function getMetrics(page) {
     return {
       sidebarWidthPx: w,
       sidebarWidthPercent: w != null && vw ? Math.round((w vw) * 1000) 10: null,
-      sidebarSplit: ( => {
+      sidebarSplit: (() => {
         try {
           const raw = window.localStorage.getItem('agentable-app-shell:archipelago-resorts');
           return raw ? JSON.parse(raw).sidebarSplit: null;
@@ -54,7 +54,7 @@ async function loadFresh(page) {
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
   await page.evaluate((key) => window.localStorage.removeItem(key), STORAGE_KEY);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true;
   }, { timeout: 45000 });
@@ -100,7 +100,7 @@ try {
     path: path.join(shotDir, 'cursor-browser-r04-split-sidebar-wide.png'),
   });
 
-  const scroll = await page.evaluate( => {
+  const scroll = await page.evaluate(() => {
     const shell = document.querySelector('agentable-app-shell');
     const mount = shell?.shadowRoot?.querySelector('.agentable-app-shell-mount');
     const el = mount?.querySelector('.dom-region-layout--split');

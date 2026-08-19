@@ -15,8 +15,8 @@ mkdirSync(PROOF, { recursive: true });
 /** @param {import('playwright').Page} page */
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 45_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 45_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
     timeout: 45_000,
   });
 }
@@ -31,7 +31,7 @@ async function sendDrawProbe(page) {
       return Boolean(root?.querySelector('textarea'));
     },
     { timeout: 30_000 });
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -39,7 +39,7 @@ async function sendDrawProbe(page) {
     surface?.createThread?.;
   });
   await page.waitForTimeout(800);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const textarea = placement?.shadowRoot
@@ -70,7 +70,7 @@ await page.waitForTimeout(1500);
 
 const preWhiteboard = await page.evaluate(async () => {
   const wb = document.querySelector('agentable-whiteboard');
-  const whenReady = await wb?.whenReady?.(15_000).catch( => false);
+  const whenReady = await wb?.whenReady?.(15_000).catch(() => false);
   const read = await wb?.runScriptedTool?.('read_canvas', {}).catch((error) => ({
     ok: false,
     error: error instanceof Error ? error.message: String(error),
@@ -89,7 +89,7 @@ await sendDrawProbe(page);
 const streamingSnapshots = [];
 for (let i = 0; i < 18; i += 1) {
   await page.waitForTimeout(5_000);
-  const state = await page.evaluate( => {
+  const state = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -144,7 +144,7 @@ const pageErrors = consoleEvents.filter(
   (event) => event.type === 'pageerror' || event.type === 'error');
 
 const scan = {
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
   url: URL,
   qaAgent: 'qa-expert',
   preWhiteboard,

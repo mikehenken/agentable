@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage;
 await page.goto('http://127.0.0.1:5199/examples/08-agent-presents/index.html', { waitUntil: 'networkidle' });
-await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 45000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 45000 });
 await page.waitForTimeout(2000);
 
 const result = await page.evaluate(async () => {

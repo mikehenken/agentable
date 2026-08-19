@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>02 — Job board inline · Archipelago Resorts</title>
-    <link rel="stylesheet" href="/embed/agentable-panel.css" />
     <style>
       body {
         margin: 0;
@@ -46,14 +45,13 @@
           panel="open-positions"
           config-url="/examples/shared/archipelago-panel-config.json"
           primary-color="#0E7490"
-          data-skip-react-mount
         ></agentable-panel>
       </div>
     </div>
     <script type="module" src="/embed/agentable-panel.js"></script>
     <script type="module">
       window.__galleryExample = '02-job-board-inline';
-      customElements.whenDefined('agentable-panel').then( => {
+      customElements.whenDefined('agentable-panel').then(() => {
         window.__galleryReady = { example: '02-job-board-inline', ok: true };
       });
     </script>

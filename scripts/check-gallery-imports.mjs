@@ -45,7 +45,7 @@ for (const file of walk(examplesRoot)) {
   const lines = content.split('\n');
   lines.forEach((line, index) => {
     if (forbiddenPatterns.some((pattern) => pattern.test(line))) {
-      violations.push({ file: rel, line: index + 1, text: line.trim });
+      violations.push({ file: rel, line: index + 1, text: line.trim() });
     }
   });
 }

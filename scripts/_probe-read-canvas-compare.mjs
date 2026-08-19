@@ -9,7 +9,7 @@ async function probe(url, label) {
   const result = await page.evaluate(async () => {
     const wb = document.querySelector('agentable-whiteboard');
     await wb?.whenReady?.(15000);
-    await wb?.runScriptedTool?.('clear_agent_drawings', {}).catch( => undefined);
+    await wb?.runScriptedTool?.('clear_agent_drawings', {}).catch(() => undefined);
 
     const draw = await wb?.runScriptedTool?.('draw_shapes', {
       shapes: [

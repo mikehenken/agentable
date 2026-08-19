@@ -22,7 +22,7 @@ async function waitForGalleryReady(page) {
       return ready?.example === '13-canvas-wide-agent' && ready.ok === true;
     },
     { timeout: 60_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 60_000,
   });
 }
@@ -42,7 +42,7 @@ async function waitForComposer(page) {
 /** @param {import('playwright').Page} page */
 async function sendDrawProbe(page) {
   await page.waitForTimeout(1500);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -50,7 +50,7 @@ async function sendDrawProbe(page) {
     surface?.createThread?.;
   });
   await waitForComposer(page);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const textarea = placement?.shadowRoot
@@ -128,7 +128,7 @@ await page.waitForFunction(
       }
       return false;
     },
-    { timeout: 90_000 }).catch( => undefined);
+    { timeout: 90_000 }).catch(() => undefined);
 
 await page.waitForTimeout(1500);
 await page.screenshot({ path: join(PROOF_DIR, '02-after-draw-cat-tool.png'), fullPage: false });
@@ -167,7 +167,7 @@ const bareTldrawErrors = consoleEvents.filter(
     e.text.includes('tldraw'));
 
 const scan = {
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
   url: URL,
   preChromeProbe,
   postDrawProbe,

@@ -5,7 +5,7 @@ const page = await browser.newPage;
 await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html?nochrome=1', {
   waitUntil: 'domcontentloaded',
 });
-await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
   timeout: 45_000,
 });
 
@@ -14,7 +14,7 @@ for (const delay of [0, 2000, 5000, 8000]) {
   await page2.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html?nochrome=1', {
     waitUntil: 'domcontentloaded',
   });
-  await page2.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+  await page2.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
     timeout: 45_000,
   });
   if (delay > 0) await page2.waitForTimeout(delay);

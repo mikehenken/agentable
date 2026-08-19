@@ -27,7 +27,7 @@ async function clickByText(page, text, exact = true) {
 
 /** @param {import('@playwright/test').Page} page */
 async function bodyText(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const parts = [document.body?.innerText ?? ''];
     for (const host of document.querySelectorAll('agentable-whiteboard, agentable-canvas')) {
       const sr = host.shadowRoot;
@@ -42,7 +42,7 @@ async function bodyText(page) {
 
 /** @param {import('@playwright/test').Page} page */
 async function measureChrome(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const canvas = document.querySelector('.tl-background,.tl-canvas');
     const canvasBg = canvas
       ? getComputedStyle(canvas).backgroundColor: getComputedStyle(document.body).backgroundColor;
@@ -52,7 +52,7 @@ async function measureChrome(page) {
 
     const toolbarButtons = [...document.querySelectorAll('.tlui-toolbar button, [data-testid="whiteboard-toolbar"] button')];
     const questionMarks = toolbarButtons.filter((btn) => {
-      const label = (btn.getAttribute('aria-label') ?? btn.textContent ?? '').toLowerCase;
+      const label = (btn.getAttribute('aria-label') ?? btn.textContent ?? '').toLowerCase();
       return label.includes('?') || btn.querySelector('text')?.textContent === '?';
     }).length;
 
@@ -77,7 +77,7 @@ async function measureChrome(page) {
 
 /** @param {import('@playwright/test').Page} page */
 async function triggerAutoArrange(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     window.dispatchEvent(
       new CustomEvent('landi-whiteboard-auto-arrange', { bubbles: true, composed: true }));
     return true;
@@ -92,7 +92,7 @@ async function capture(page, slug, extra = {}) {
   await page.screenshot({ path, fullPage: false });
   const dump = {
     slug,
-    capturedAt: new Date.toISOString,
+    capturedAt: new Date.toISOString(),
     textSample: text.slice(0, 1800),
     chrome,...extra,
   };
@@ -133,7 +133,7 @@ async function runSurface(prefix, url) {
   for (const [index, label] of NAV_ITEMS.entries) {
     await clickByText(page, label);
     results.push(
-      await capture(page, `${prefix}-${String(index + 1).padStart(2, '0')}-${label.toLowerCase.replace(/\s+/g, '-')}`, {
+      await capture(page, `${prefix}-${String(index + 1).padStart(2, '0')}-${label.toLowerCase().replace(/\s+/g, '-')}`, {
         url,
         navItem: label,
       }));
@@ -144,7 +144,7 @@ async function runSurface(prefix, url) {
     try {
       await clickByText(page, setting, true);
       results.push(
-        await capture(page, `${prefix}-settings-${setting.toLowerCase.replace(/\s+/g, '-')}`, {
+        await capture(page, `${prefix}-settings-${setting.toLowerCase().replace(/\s+/g, '-')}`, {
           url,
           settingsSection: setting,
         }));
@@ -166,7 +166,7 @@ writeFileSync(
   JSON.stringify(
     {
       iteration: 11,
-      capturedAt: new Date.toISOString,
+      capturedAt: new Date.toISOString(),
       reactUrl: REACT_URL,
       litUrl: LIT_URL,
       results,

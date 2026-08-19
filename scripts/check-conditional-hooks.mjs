@@ -54,7 +54,7 @@ function findViolations(body, relPath) {
 
   for (let lineNo = 0; lineNo < lines.length; lineNo += 1) {
     const line = lines[lineNo];
-    const trimmed = line.trim;
+    const trimmed = line.trim();
 
     if (depth === 0 && EARLY_RETURN_RE.test(line)) {
       sawEarlyReturnAtTop = true;

@@ -20,7 +20,7 @@ async function clickNavItem(page, label) {
   return page.evaluate((navLabel) => {
     const walk = (root) => {
       for (const el of Array.from(root.querySelectorAll('*'))) {
-        const text = (el.textContent || '').trim;
+        const text = (el.textContent || '').trim();
         if (text === navLabel) {
           (el).click?.;
           return true;
@@ -41,7 +41,7 @@ async function walkText(page, needle) {
   return page.evaluate((text) => {
     const found = [];
     const walk = (n) => {
-      if (n.nodeType === 3 && n.textContent?.includes(text)) found.push(n.textContent.trim);
+      if (n.nodeType === 3 && n.textContent?.includes(text)) found.push(n.textContent.trim());
       if (n.shadowRoot) walk(n.shadowRoot);
       for (const c of n.childNodes || []) walk(c);
     };
@@ -56,7 +56,7 @@ async function runOpenPositionsTool(page, args) {
     async ({ bridgeUrl, toolsUrl, panelApiUrl, toolArgs }) => {
       /** @type {Promise<{ ok: boolean; result?: unknown; error?: string; via?: string }>} */
       const viaModuleScript = new Promise((resolve) => {
-        const timeout = window.setTimeout( => {
+        const timeout = window.setTimeout(() => {
           resolve({ ok: false, error: 'module script timed out' });
         }, 15000);
         /** @param {CustomEvent<{ ok: boolean; result?: unknown; error?: string; via?: string }>} ev */
@@ -116,9 +116,9 @@ async function runOpenPositionsTool(page, args) {
 async function applyOpenPositionsFilterUi(page) {
   await clickNavItem(page, 'Open Positions');
   await page.waitForTimeout(1500);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const walk = (n) => {
-      if (n.nodeType === 3 && n.textContent?.trim === 'Operations') {
+      if (n.nodeType === 3 && n.textContent?.trim() === 'Operations') {
         n.parentElement?.click?.;
         return true;
       }
@@ -138,7 +138,7 @@ async function applyOpenPositionsFilterUi(page) {
 async function clickJobTitle(page, title) {
   return page.evaluate((jobTitle) => {
     const walk = (n) => {
-      if (n.nodeType === 3 && n.textContent?.trim === jobTitle) {
+      if (n.nodeType === 3 && n.textContent?.trim() === jobTitle) {
         let el = n.parentElement;
         while (el) {
           if (el.getAttribute('role') === 'button' || el.tagName === 'BUTTON' || el.onclick) {
@@ -160,7 +160,7 @@ async function clickJobTitle(page, title) {
 
 /** @param {import('@playwright/test').Page} page */
 async function capture(page, slug, url, steps) {
-  const record = { slug, url, steps: [], capturedAt: new Date.toISOString };
+  const record = { slug, url, steps: [], capturedAt: new Date.toISOString() };
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 120000 });
   await page.waitForTimeout(10000);
 

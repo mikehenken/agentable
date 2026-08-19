@@ -15,23 +15,23 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 function sha256(filePath) {
   const buf = readFileSync(filePath);
-  return createHash('sha256').update(buf).digest('hex').toUpperCase;
+  return createHash('sha256').update(buf).digest('hex').toUpperCase();
 }
 
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle', timeout: 120_000 });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 90_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, { timeout: 90_000 });
 }
 
 async function setupAutoNewThread(page) {
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
     surface?.selectMode?.('auto');
     surface?.createThread?.;
   });
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     return Boolean(root?.querySelector('textarea'));
@@ -48,7 +48,7 @@ async function submitPrompt(page, prompt) {
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
   }, prompt);
-  const clicked = await page.evaluate( => {
+  const clicked = await page.evaluate(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const submit = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot?.querySelector('[part="composer-submit"]:not([disabled])');
     if (submit instanceof HTMLElement) { submit.click; return true; }
@@ -58,7 +58,7 @@ async function submitPrompt(page, prompt) {
 }
 
 async function readOperatorState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
     const shellRoot = surface?.shadowRoot;
@@ -101,7 +101,7 @@ async function readOperatorState(page) {
       maxConsecutiveDrawFailures,
       drawFailuresBeforeSuccess,
       failedDrawErrors,
-      hasReasoningVisible: reasoningMessages.some((m) => typeof m.text === 'string' && m.text.trim.length > 0),
+      hasReasoningVisible: reasoningMessages.some((m) => typeof m.text === 'string' && m.text.trim().length > 0),
       hasStreamingReasoning: reasoningMessages.some((m) => m.streaming === true),
       reasoningTextHead: reasoningMessages.map((m) => (typeof m.text === 'string' ? m.text.slice(0, 120): '')).join(' | '),
       assistantText: messages.filter((m) => m.kind === 'text' && m.role === 'assistant').map((m) => m.text ?? '').join('\n'),
@@ -110,7 +110,7 @@ async function readOperatorState(page) {
 }
 
 async function waitForTurnComplete(page) {
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
     const thread = surface?.threads?.find((entry) => entry.id === surface.activeThreadId);
@@ -126,10 +126,10 @@ const consoleEvents = [];
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 page.setDefaultTimeout(TURN_TIMEOUT_MS);
-page.on('console', (msg) => consoleEvents.push({ type: msg.type, text: msg.text, ts: new Date.toISOString }));
-page.on('pageerror', (err) => consoleEvents.push({ type: 'pageerror', text: err.message, ts: new Date.toISOString }));
+page.on('console', (msg) => consoleEvents.push({ type: msg.type, text: msg.text, ts: new Date.toISOString() }));
+page.on('pageerror', (err) => consoleEvents.push({ type: 'pageerror', text: err.message, ts: new Date.toISOString() }));
 
-const report = { prompt: PROMPT, url: URL, source: 'playwright', timestamp: new Date.toISOString, pngs: [], streamingObservations: [] };
+const report = { prompt: PROMPT, url: URL, source: 'playwright', timestamp: new Date.toISOString(), pngs: [], streamingObservations: [] };
 
 try {
   await waitForGalleryReady(page);
@@ -161,7 +161,7 @@ try {
   await submitPrompt(page, PROMPT);
   await page.waitForTimeout(4_000);
   const stopStateBefore = await readOperatorState(page);
-  const stopClicked = await page.evaluate( => {
+  const stopClicked = await page.evaluate(() => {
     const placement = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]');
     const stop = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot?.querySelector('[part="composer-stop"]');
     if (stop instanceof HTMLElement && !stop.hasAttribute('disabled')) { stop.click; return true; }

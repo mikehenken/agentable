@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>01 — Career homepage · Archipelago Resorts</title>
-    <link rel="stylesheet" href="/embed/agentable-panel.css" />
     <style>:root {
         font-family: system-ui, sans-serif;
         color: #0f172a;
@@ -72,14 +71,13 @@
         config-url="/examples/shared/archipelago-career-config.json"
         voice-greeting-mode="agent-first"
         dark-canvas
-        data-skip-react-mount
       ></agentable-canvas>
     </main>
     <script type="module" src="/embed/voice-call-button.js"></script>
     <script type="module" src="/embed/agentable-canvas.js"></script>
     <script type="module">
       window.__galleryExample = '01-career-homepage';
-      customElements.whenDefined('agentable-canvas').then( => {
+      customElements.whenDefined('agentable-canvas').then(() => {
         window.__galleryReady = { example: '01-career-homepage', ok: true };
       });
     </script>

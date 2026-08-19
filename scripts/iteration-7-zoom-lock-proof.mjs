@@ -18,9 +18,9 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto(URL, { waitUntil: 'domcontentloaded', timeout: 120000 });
 await page.waitForTimeout(12000);
 
-const beforeZoom = await page.evaluate( => {
+const beforeZoom = await page.evaluate(() => {
   const el = document.querySelector('.tlui-zoom-menu__button');
-  return el?.textContent?.trim ?? null;
+  return el?.textContent?.trim() ?? null;
 });
 
 await page.mouse.move(720, 450);
@@ -29,12 +29,12 @@ for (let i = 0; i < 8; i++) {
   await page.waitForTimeout(150);
 }
 
-const afterZoom = await page.evaluate( => {
+const afterZoom = await page.evaluate(() => {
   const el = document.querySelector('.tlui-zoom-menu__button');
-  return el?.textContent?.trim ?? null;
+  return el?.textContent?.trim() ?? null;
 });
 
-const canvasMode = await page.evaluate( =>
+const canvasMode = await page.evaluate(() =>
   document.querySelector('[data-canvas-mode]')?.getAttribute('data-canvas-mode'));
 
 await page.screenshot({ path: join(OUT, 'zoom-lock-after-wheel.png'), fullPage: false });
@@ -45,7 +45,7 @@ const record = {
   zoomBeforeWheel: beforeZoom,
   zoomAfterWheel: afterZoom,
   zoomLocked: beforeZoom !== null && beforeZoom === afterZoom,
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
 };
 
 writeFileSync(join(OUT, 'zoom-lock-proof.json'), JSON.stringify(record, null, 2));

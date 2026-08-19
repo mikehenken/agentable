@@ -41,7 +41,7 @@ const TARGETS = [
  * @param {import('@playwright/test').Page} page
  */
 async function evaluateSurface(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const v = window.__TLDRAW_LIBRARY_VERSIONS__;
     const names = (v?.versions ?? []).map((x) => x.name);
     const dupes = names.filter((n, i) => names.indexOf(n) !== i);
@@ -63,7 +63,7 @@ async function evaluateSurface(page) {
         dupes,
         pass: v?.didWarn === false && dupes.length === 0,
       },
-      hostTag: host?.tagName?.toLowerCase ?? null,
+      hostTag: host?.tagName?.toLowerCase() ?? null,
       hasLightCanvas: host?.hasAttribute('light-canvas') ?? false,
       hasDarkCanvas: host?.hasAttribute('dark-canvas') ?? false,
       navRailPresent: navRail !== null && navRail !== undefined,
@@ -84,7 +84,7 @@ async function captureTarget(page, target) {
   await page.screenshot({ path: pngPath, fullPage: false });
   const dump = {...surface,
     slug: target.slug,
-    capturedAt: new Date.toISOString,
+    capturedAt: new Date.toISOString(),
     captureTool: 'playwright-fallback',
     label: 'SUPPLEMENTARY — cursor-ide-browser ghost-tab fallback',
   };

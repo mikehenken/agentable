@@ -26,7 +26,7 @@ async function captureUrl(url, screenshotName, consoleName) {
   await page.waitForTimeout(8000);
   await page.screenshot({ path: path.join(OUT_DIR, screenshotName), fullPage: true });
 
-  const tldrawVersions = await page.evaluate( => {
+  const tldrawVersions = await page.evaluate(() => {
     return window.__TLDRAW_LIBRARY_VERSIONS__ ?? null;
   });
 

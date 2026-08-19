@@ -29,7 +29,7 @@ const report = {
 const browser = await chromium.launch({ headless: true });
 
 async function collectMetrics(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const wb = document.querySelector('agentable-whiteboard');
     const shadow = wb?.shadowRoot ?? null;
     const canvases = shadow
@@ -50,7 +50,7 @@ async function collectMetrics(page) {
     const stencilLabels = ['Meridian nav', 'Hero card', 'Email capture', 'Start trial'].filter(
       (label) => textInShadow.includes(label));
     const statusEl = document.querySelector('#status');
-    const h1 = document.querySelector('h1')?.textContent?.trim ?? '';
+    const h1 = document.querySelector('h1')?.textContent?.trim() ?? '';
     const canvasBandRatio = rect ? Math.round((rect.height window.innerHeight) * 100) 100: 0;
 
     return {

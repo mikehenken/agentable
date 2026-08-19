@@ -23,7 +23,7 @@ async function main {
   await page.locator('#agent').scrollIntoViewIfNeeded;
   await page.waitForTimeout(5000);
 
-  const metrics = await page.evaluate( => {
+  const metrics = await page.evaluate(() => {
     const host = document.querySelector('[data-testid="career-homepage-embed-host"]');
     const frame =
       document.querySelector('[data-whiteboard-host-frame]') ??
@@ -37,7 +37,7 @@ async function main {
         document.querySelector('aside'));
     const drawTool = document.querySelector('[data-tool="draw"], [aria-label="Draw"]');
     const ctaLinks = Array.from(document.querySelectorAll('#agent a[href]')).map((a) => ({
-      text: (a.textContent ?? '').trim,
+      text: (a.textContent ?? '').trim(),
       href: a.getAttribute('href'),
     }));
     const viewportW = window.innerWidth;
@@ -69,7 +69,7 @@ async function main {
     !metrics.drawToolPresent;
 
   const manifest = {
-    capturedAt: new Date.toISOString,
+    capturedAt: new Date.toISOString(),
     url: URL,
     viewport: { width: 1440, height: 900 },
     screenshot: 'homepage-embed-qa-fix.png',

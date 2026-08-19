@@ -6,7 +6,7 @@ await page.route('**/gallery-demo.mjs', (route) => route.abort);
 await page.goto('http://127.0.0.1:5199/examples/12-open-agent-canvas/index.html?v=probe-iter4', {
   waitUntil: 'domcontentloaded',
 });
-await page.waitForFunction( => {
+await page.waitForFunction(() => {
   const board = document.querySelector('agentable-whiteboard');
   return Boolean(board?.shadowRoot?.querySelector('canvas'));
 });
@@ -19,7 +19,7 @@ const promise = page.evaluate(async () => {
 
 for (let i = 0; i < 50; i += 1) {
   await page.waitForTimeout(200);
-  const metrics = await page.evaluate( => {
+  const metrics = await page.evaluate(() => {
     const wb = document.querySelector('agentable-whiteboard');
     const sr = wb?.shadowRoot;
     const board = wb;
@@ -32,7 +32,7 @@ for (let i = 0; i < 50; i += 1) {
           id: el.getAttribute('data-testid'),
           h: el.offsetHeight,
           w: el.offsetWidth,
-          sample: (el.textContent ?? '').trim.slice(0, 80),
+          sample: (el.textContent ?? '').trim().slice(0, 80),
         })): [];
     const panelShapes = sr
       ? [...sr.querySelectorAll('[data-testid^="panel-shape-"]')].map((el) =>

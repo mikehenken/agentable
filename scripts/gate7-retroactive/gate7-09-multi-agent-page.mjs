@@ -22,7 +22,7 @@ const report = {
   steps: [],
   consoleErrors: [],
   pass: false,
-  timestampUtc: new Date.toISOString,
+  timestampUtc: new Date.toISOString(),
 };
 
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
@@ -43,8 +43,8 @@ await page.waitForFunction(
   null,
   { timeout: 45_000 });
 
-const ready = await page.evaluate( => window.__galleryReady);
-const multiResult = await page.evaluate( => window.__multiAgentE2eResult);
+const ready = await page.evaluate(() => window.__galleryReady);
+const multiResult = await page.evaluate(() => window.__multiAgentE2eResult);
 report.steps.push({ step: 'gallery-ready', ready, multiResult });
 
 await page.screenshot({ path: path.join(shotDir, '01-initial-load.png'), fullPage: true });

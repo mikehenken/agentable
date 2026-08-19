@@ -154,7 +154,7 @@ async function scrollFullPage(page) {
 }
 
 async function openFirstJobDetail(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const panel = document.querySelector('agentable-panel');
     const root = panel?.shadowRoot;
     if (!root) {
@@ -166,14 +166,14 @@ async function openFirstJobDetail(page) {
     if (!card) {
       return { ok: false, reason: 'no job card' };
     }
-    const title = card.querySelector('h3')?.textContent?.trim ?? '';
+    const title = card.querySelector('h3')?.textContent?.trim() ?? '';
     card.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
     return { ok: true, title, cardTestId: card.getAttribute('data-testid') };
   });
 }
 
 async function readDetailState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const panel = document.querySelector('agentable-panel');
     const root = panel?.shadowRoot;
     if (!root) {
@@ -186,13 +186,13 @@ async function readDetailState(page) {
       detailOpen: Boolean(detail),
       detailTestId: detail?.getAttribute('data-testid') ?? null,
       backButtonPresent: Boolean(backBtn),
-      detailTitle: detail?.querySelector('h2')?.textContent?.trim ?? null,
+      detailTitle: detail?.querySelector('h2')?.textContent?.trim() ?? null,
     };
   });
 }
 
 async function clickBackFromDetail(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const panel = document.querySelector('agentable-panel');
     const root = panel?.shadowRoot;
     if (!root) {
@@ -209,7 +209,7 @@ async function clickBackFromDetail(page) {
 }
 
 async function readListState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const panel = document.querySelector('agentable-panel');
     const root = panel?.shadowRoot;
     if (!root) {
@@ -338,7 +338,7 @@ try {
 
   report.pass = Object.values(report.criteria).every(Boolean) && report.captures.length >= 7;
 
-  report.capturedAt = new Date.toISOString;
+  report.capturedAt = new Date.toISOString();
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
   const manifestLines = report.captures.map((c) => `${c.path}\t${c.bytes}`);

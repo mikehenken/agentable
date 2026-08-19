@@ -5,7 +5,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html', {
   waitUntil: 'networkidle',
 });
-await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 60_000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 60_000 });
 
 const diag = await page.evaluate(async () => {
   const wb = document.querySelector('agentable-whiteboard');

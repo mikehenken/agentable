@@ -15,7 +15,7 @@ await page.waitForFunction(
    => window.__galleryReady?.example === '13-canvas-wide-agent',
   { timeout: 45_000 });
 
-const metrics = await page.evaluate( => {
+const metrics = await page.evaluate(() => {
   const rail = document.querySelector('.operator-rail');
   const dockPlacement = document.querySelector(
     'agentable-operator-surface-placement[placement="dock-inside"]');

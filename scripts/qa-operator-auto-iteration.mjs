@@ -13,7 +13,7 @@ const OUT_DIR =
     '../../landi-labs/studies/Orchestration/agentable-panels/logs/p13-canvas-wide-agentoperator-auto-iteration/outputs/browser-proof');
 
 async function getOperatorSurface(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -22,7 +22,7 @@ async function getOperatorSurface(page) {
 }
 
 async function readShellState(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -48,7 +48,7 @@ async function readShellState(page) {
 }
 
 async function createSecondThread(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -88,7 +88,7 @@ async function typeInComposer(page, text) {
 }
 
 async function clickSubmit(page) {
-  const clicked = await page.evaluate( => {
+  const clicked = await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -114,7 +114,7 @@ await mkdir(OUT_DIR, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto(URL, { waitUntil: 'networkidle', timeout: 120_000 });
-await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 90_000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 90_000 });
 
 const results = {};
 
@@ -176,7 +176,7 @@ results.sc4_postDrawReview = {
 };
 
 const summary = {
-  timestamp: new Date.toISOString,
+  timestamp: new Date.toISOString(),
   url: URL,
   results,
   allPass: Object.values(results).every((r) => r.pass === true),

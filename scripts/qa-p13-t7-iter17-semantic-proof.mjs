@@ -16,8 +16,8 @@ mkdirSync(PROOF, { recursive: true });
 /** @param {import('playwright').Page} page */
 async function waitForGalleryReady(page) {
   await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 60_000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.whiteboardReady === true, {
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 60_000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.whiteboardReady === true, {
     timeout: 60_000,
   });
 }
@@ -25,7 +25,7 @@ async function waitForGalleryReady(page) {
 /** @param {import('playwright').Page} page @param {string} prompt */
 async function typedDrawInDrawMode(page, prompt) {
   await page.waitForTimeout(1200);
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -40,7 +40,7 @@ async function typedDrawInDrawMode(page, prompt) {
       return Boolean(root?.querySelector('textarea'));
     },
     { timeout: 30_000 });
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const placement = document.querySelector(
       'agentable-operator-surface-placement[placement-id="operator-main"]');
     const textarea = placement?.shadowRoot
@@ -80,7 +80,7 @@ await page.waitForFunction(
       }
       return false;
     },
-    { timeout: 90_000 }).catch( => undefined);
+    { timeout: 90_000 }).catch(() => undefined);
 await page.waitForTimeout(12000);
 await page.screenshot({ path: join(PROOF, '01-draw-heart-visible.png'), fullPage: false });
 
@@ -138,7 +138,7 @@ const voiceGreeting = consoleEvents.filter((e) =>
   e.text.includes('greetingMode is "agent-first" but voiceGreeting is empty'));
 
 const scan = {
-  capturedAt: new Date.toISOString,
+  capturedAt: new Date.toISOString(),
   capturedBy: 'Playwright supplementary — parent MCP preferred for governance SC5 semantic',
   url: URL,
   heartProbe,

@@ -87,7 +87,7 @@ try {
   page.on('pageerror', (err) => report.consoleErrors.push(err.message));
 
   await page.goto(`${baseUrl}?v=${cacheBust}`, { waitUntil: 'domcontentloaded', timeout: 90000 });
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true;
   }, { timeout: 45000 });
@@ -100,7 +100,7 @@ try {
   await capture(page, 'cursor-browser-03-status-json.png', 'S2');
 
   await page.locator('agentable-app-shell').locator('[data-dom-tab="growth-paths"]').click;
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const shell = document.querySelector('agentable-app-shell');
     const mount = shell?.shadowRoot?.querySelector('.agentable-app-shell-mount');
     return Boolean(mount?.querySelector('[data-dom-tab="growth-paths"][data-active="true"]'));
@@ -123,7 +123,7 @@ try {
   }
   await captureShell(page, 'cursor-browser-05-after-split-resize.png', 'S4');
 
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const raw = window.localStorage.getItem('agentable-app-shell:archipelago-resorts');
     if (!raw) return false;
     try {
@@ -134,7 +134,7 @@ try {
   }, { timeout: 10000 });
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true && ready.restored === true;
   }, { timeout: 45000 });
@@ -147,7 +147,7 @@ try {
   const mobilePage = await mobileContext.newPage;
   mobilePage.on('console', (msg) => { if (msg.type === 'error') report.consoleErrors.push(`[mobile] ${msg.text}`); });
   await mobilePage.goto(`${baseUrl}?v=${cacheBust}-mobile`, { waitUntil: 'domcontentloaded', timeout: 90000 });
-  await mobilePage.waitForFunction( => {
+  await mobilePage.waitForFunction(() => {
     const ready = window.__galleryReady;
     return ready?.example === '11-app-shell' && ready.ok === true;
   }, { timeout: 45000 });
@@ -186,7 +186,7 @@ try {
 
   report.verdict = failReasons.length === 0 ? 'PASS': 'FAIL';
   report.failReasons = failReasons;
-  report.capturedAt = new Date.toISOString;
+  report.capturedAt = new Date.toISOString();
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
   console.log(JSON.stringify({ verdict: report.verdict, captures: report.captures.length, failReasons }, null, 2));
 } finally {

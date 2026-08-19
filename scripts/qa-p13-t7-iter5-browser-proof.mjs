@@ -45,7 +45,7 @@ function walkText(node) {
  * @param {import('playwright').Page} page
  */
 async function operatorShadowRoot(page) {
-  return page.evaluateHandle( => {
+  return page.evaluateHandle(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     return placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot ?? null;
   });
@@ -109,7 +109,7 @@ async function main {
 
   await waitForGalleryReady(page);
 
-  const canvasChatCheck = await page.evaluate( => {
+  const canvasChatCheck = await page.evaluate(() => {
     const whiteboard = document.querySelector('agentable-whiteboard');
     const chatDisabled = whiteboard?.getAttribute('open-chat-on-mount') === 'false';
     const chatPanel = document.querySelector('[data-testid="landi-chat-panel"]');
@@ -131,7 +131,7 @@ async function main {
     notes: JSON.stringify(canvasChatCheck),
   });
 
-  const nasUiCheck = await page.evaluate( => {
+  const nasUiCheck = await page.evaluate(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     return {
@@ -157,7 +157,7 @@ async function main {
   const textarea = page.locator('.operator-rail textarea').first;
   await textarea.fill(OPERATOR_PROBE);
   await page.locator('.operator-rail [part="composer-submit"]').first.click;
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     return Boolean(root?.querySelector('[part="composer-submit"]'));
@@ -199,14 +199,14 @@ async function main {
   await page.waitForTimeout(500);
   await textarea.fill('Persistence thread B');
   await page.locator('.operator-rail [part="composer-submit"]').first.click;
-  await page.waitForFunction( => {
+  await page.waitForFunction(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     return Boolean(root?.querySelector('[part="composer-submit"]'));
   }, { timeout: 15_000 });
   await page.waitForTimeout(400);
 
-  const threadIds = await page.evaluate( => {
+  const threadIds = await page.evaluate(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     return [...(root?.querySelectorAll('[data-thread-tab]') ?? [])].map((el) => el.getAttribute('data-thread-tab'));
@@ -226,7 +226,7 @@ async function main {
   }
 
   const closeTabShot = savePng('operator-close-tab', await page.screenshot({ fullPage: false }));
-  const afterCloseCount = await page.evaluate( => {
+  const afterCloseCount = await page.evaluate(() => {
     const placement = document.querySelector('.operator-rail agentable-operator-surface-placement');
     const root = placement?.shadowRoot?.querySelector('agentable-operator-surface')?.shadowRoot;
     return root?.querySelectorAll('[data-thread-tab]').length ?? 0;

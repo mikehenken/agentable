@@ -14,15 +14,15 @@ const FIXTURES_DIR = path.join(ROOT, 'packages/career-pack/src/fixtures');
 const MOSS_SOURCE = path.join(ROOT, '../moss/data/moss-panel-data.json');
 
 function slugify(value) {
-  return value.toLowerCase.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 }
 
 function parseRoleEnds(title) {
   const parts = title.split(/\s*[→\-–—>]\s*/);
   if (parts.length >= 2) {
     return {
-      fromRole: parts[0]?.trim ?? title,
-      toRole: parts[parts.length - 1]?.trim ?? title,
+      fromRole: parts[0]?.trim() ?? title,
+      toRole: parts[parts.length - 1]?.trim() ?? title,
     };
   }
   return { fromRole: title, toRole: title };
@@ -46,13 +46,13 @@ function convertMoss(doc) {
       remote: /remote|hybrid/i.test(job.location),
       compensation: job.payRange,
       description:
-        (job.description ?? '').trim ||
+        (job.description ?? '').trim() ||
         `${job.department} role at ${job.location}. Source: moss.com posting.`,
       tags,
       postedAt: postedFallback,
       source: 'fixture',
       sourceId: `moss-job-${job.id}`,
-      applyUrl: (job.applicationUrl ?? '').trim || 'https://moss.com/why-moss/careers/',
+      applyUrl: (job.applicationUrl ?? '').trim() || 'https://moss.com/why-moss/careers/',
     };
   });
 
@@ -235,11 +235,11 @@ function convertSandals(input) {
     applyUrl: 'https://careers.sandals.com/',
   }));
 
-  const jobIdByTitle = new Map(jobs.map((job) => [job.title.toLowerCase, job.id]));
+  const jobIdByTitle = new Map(jobs.map((job) => [job.title.toLowerCase(), job.id]));
 
   const applications = input.applications.map((app) => ({
     id: app.id,
-    jobId: jobIdByTitle.get(app.role.toLowerCase) ?? jobs[0]?.id ?? 'unknown',
+    jobId: jobIdByTitle.get(app.role.toLowerCase()) ?? jobs[0]?.id ?? 'unknown',
     candidate: { name: 'Candidate', email: 'candidate@example.com' },
     status: app.status,
     submittedAt: '2026-03-12T00:00:00.000Z',

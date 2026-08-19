@@ -5,7 +5,7 @@ const page = await browser.newPage;
 await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html', {
   waitUntil: 'networkidle',
 });
-await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, {
   timeout: 45_000,
 });
 

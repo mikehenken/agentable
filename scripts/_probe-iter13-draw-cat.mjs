@@ -5,10 +5,10 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html', {
   waitUntil: 'networkidle',
 });
-await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 60_000 });
+await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 60_000 });
 await page.waitForTimeout(1500);
 
-await page.evaluate( => {
+await page.evaluate(() => {
   const placement = document.querySelector(
     'agentable-operator-surface-placement[placement-id="operator-main"]');
   const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');
@@ -27,7 +27,7 @@ await page.waitForFunction(
   },
   { timeout: 30_000 });
 
-await page.evaluate( => {
+await page.evaluate(() => {
   const textarea = document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]')
     ?.shadowRoot?.querySelector('agentable-operator-surface')
     ?.shadowRoot?.querySelector('textarea');
@@ -41,7 +41,7 @@ await page.evaluate( => {
   }
 });
 
-await page.evaluate( => {
+await page.evaluate(() => {
   document.querySelector('agentable-operator-surface-placement[placement-id="operator-main"]')
     ?.shadowRoot?.querySelector('agentable-operator-surface')
     ?.shadowRoot?.querySelector('[part="composer-submit"]')

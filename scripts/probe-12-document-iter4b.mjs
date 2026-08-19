@@ -27,7 +27,7 @@ await page.route('**/gallery-demo.mjs', (route) => route.abort);
 await page.goto('http://127.0.0.1:5199/examples/12-open-agent-canvas/index.html?v=probe2', {
   waitUntil: 'domcontentloaded',
 });
-await page.waitForFunction( => document.querySelector('agentable-whiteboard')?.shadowRoot?.querySelector('canvas'));
+await page.waitForFunction(() => document.querySelector('agentable-whiteboard')?.shadowRoot?.querySelector('canvas'));
 
 await page.evaluate(async () => {
   const board = document.querySelector('agentable-whiteboard');
@@ -36,7 +36,7 @@ await page.evaluate(async () => {
   await board.runMeridianDemo('document');
 });
 
-const dump = await page.evaluate( => {
+const dump = await page.evaluate(() => {
   const wb = document.querySelector('agentable-whiteboard');
   const sr = wb?.shadowRoot;
   const all = [];
@@ -44,7 +44,7 @@ const dump = await page.evaluate( => {
     if (!(node instanceof Element)) return;
     const tid = node.getAttribute('data-testid');
     if (tid) {
-      all.push({ tid, h: node.offsetHeight, w: node.offsetWidth, text: (node.textContent ?? '').trim.slice(0, 100) });
+      all.push({ tid, h: node.offsetHeight, w: node.offsetWidth, text: (node.textContent ?? '').trim().slice(0, 100) });
     }
     if (node.shadowRoot) walk(node.shadowRoot);
     for (const child of node.children) walk(child);

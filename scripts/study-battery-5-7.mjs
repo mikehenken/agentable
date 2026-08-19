@@ -17,13 +17,13 @@ const BASE_URL = 'http://127.0.0.1:5199/examples/08-agent-presents/index.html';
 async function hasCrashBoundary(page) {
   const showDetails = page.getByRole('button', { name: 'Show details' });
   const somethingWrong = page.getByText(/Something went wrong/i);
-  const showVisible = await showDetails.isVisible.catch( => false);
-  const wrongVisible = await somethingWrong.isVisible.catch( => false);
+  const showVisible = await showDetails.isVisible.catch(() => false);
+  const wrongVisible = await somethingWrong.isVisible.catch(() => false);
   return showVisible || wrongVisible;
 }
 
 async function shapeCount(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const host = document.querySelector('agentable-whiteboard');
     const root = host?.shadowRoot;
     const container = root?.querySelector('.tl-container');
@@ -61,7 +61,7 @@ async function waitForChatReady(page) {
 async function clickStarterChip(page, label) {
   const card = page.getByTestId('starter-chip-card').filter({ hasText: label });
   const compact = page.getByTestId('starter-chip').filter({ hasText: label });
-  if (await card.isVisible.catch( => false)) {
+  if (await card.isVisible.catch(() => false)) {
     await card.click;
     return;
   }
@@ -80,13 +80,13 @@ async function waitForDraw(page, beforeCount, timeoutMs = 25_000) {
 }
 
 async function detectChatMode(page) {
-  const offlineVisible = await page.getByText(/Offline demo mode/i).isVisible.catch( => false);
+  const offlineVisible = await page.getByText(/Offline demo mode/i).isVisible.catch(() => false);
   return offlineVisible ? 'offline': 'live';
 }
 
 /** Label-based toolbar overlap check (matches e2e _battery-.spec.ts tolerance). */
 async function evaluateToolbarClearance(page) {
-  return page.evaluate( => {
+  return page.evaluate(() => {
     const host = document.querySelector('agentable-whiteboard');
     const root = host?.shadowRoot;
     const canvas =
@@ -108,7 +108,7 @@ async function evaluateToolbarClearance(page) {
     const toolbarRect = toolbar.getBoundingClientRect;
     const labelNodes = Array.from(
       canvas.querySelectorAll('p, [data-testid="tl-text-content"],.tl-text-label')).filter((el) => {
-      const t = (el.textContent ?? '').trim;
+      const t = (el.textContent ?? '').trim();
       return t.length > 1 && !t.includes('Ask Nova');
     });
     if (labelNodes.length === 0) {
@@ -129,7 +129,7 @@ async function evaluateToolbarClearance(page) {
         const px = Math.abs(gap);
         if (px > worstOverlap) {
           worstOverlap = px;
-          worstLabel = (el.textContent ?? '').trim;
+          worstLabel = (el.textContent ?? '').trim();
         }
       }
     }
@@ -159,7 +159,7 @@ async function main {
     const step3Notes = [];
     let step3Pass = true;
 
-    const beforeChip = await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0);
+    const beforeChip = await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0);
     await clickStarterChip(page, 'Avionics map');
     await page.waitForFunction(
          => {
@@ -167,13 +167,13 @@ async function main {
           return body.includes('Offline demo mode') || (window.__agentPresentsToolCalls?.length ?? 0) > 0;
         },
         null,
-        { timeout: 90_000 }).catch( => {});
+        { timeout: 90_000 }).catch(() => {});
     const chatMode = await detectChatMode(page);
     await waitForDraw(page, beforeChip, chatMode === 'live' ? 180_000: 25_000);
     await page.waitForTimeout(800);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'step3-01-after-avionics-chip.png') });
 
-    const beforeRedo = await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0);
+    const beforeRedo = await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0);
     const chatInput = page.getByPlaceholder(/Ask Nova anything/);
     await page.waitForFunction(
        => {
@@ -192,7 +192,7 @@ async function main {
           return body.includes('Offline demo mode') || (window.__agentPresentsToolCalls?.length ?? 0) > 0;
         },
         null,
-        { timeout: chatMode === 'live' ? 180_000: 45_000 }).catch( => {});
+        { timeout: chatMode === 'live' ? 180_000: 45_000 }).catch(() => {});
     await waitForDraw(page, beforeRedo, chatMode === 'live' ? 180_000: 25_000);
     await page.waitForTimeout(800);
 
@@ -230,7 +230,7 @@ async function main {
     }
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'step4-01-after-reset.png') });
 
-    const beforeLaunch = await page.evaluate( => window.__agentPresentsToolCalls?.length ?? 0);
+    const beforeLaunch = await page.evaluate(() => window.__agentPresentsToolCalls?.length ?? 0);
     await clickStarterChip(page, 'Launch sequence');
     await page.waitForFunction(
          => {
@@ -238,7 +238,7 @@ async function main {
           return body.includes('Offline demo mode') || (window.__agentPresentsToolCalls?.length ?? 0) > 0;
         },
         null,
-        { timeout: chatMode === 'live' ? 180_000: 60_000 }).catch( => {});
+        { timeout: chatMode === 'live' ? 180_000: 60_000 }).catch(() => {});
     await waitForDraw(page, beforeLaunch, chatMode === 'live' ? 180_000: 25_000);
     await page.waitForTimeout(1500);
 
@@ -249,7 +249,7 @@ async function main {
       step4Notes.push('No crash after Launch sequence chip');
     }
 
-    await page.keyboard.press('Shift+1').catch( => {});
+    await page.keyboard.press('Shift+1').catch(() => {});
     await page.waitForTimeout(800);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'step4-02-launch-sequence-fit.png') });
 
@@ -261,7 +261,7 @@ async function main {
       return calls.slice(before).some((c) => c.name === 'draw_shapes' && c.ok);
     }, beforeLaunch);
 
-    const toolbarClearance = await page.evaluate( => {
+    const toolbarClearance = await page.evaluate(() => {
       const host = document.querySelector('agentable-whiteboard');
       const root = host?.shadowRoot;
       const container = root?.querySelector('.tl-container');
@@ -314,7 +314,7 @@ async function main {
     }
 
     results.push({ step: '4', pass: step4Pass, notes: step4Notes });
-    await writeFile(RESULTS_PATH, JSON.stringify({ timestamp: new Date.toISOString, results }, null, 2));
+    await writeFile(RESULTS_PATH, JSON.stringify({ timestamp: new Date.toISOString(), results }, null, 2));
   } finally {
     await browser.close;
   }

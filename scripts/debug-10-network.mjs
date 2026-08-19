@@ -14,7 +14,7 @@ await page.waitForTimeout(8000);
 console.log('failed', failed);
 console.log(
   'jobs',
-  await page.evaluate( => {
+  await page.evaluate(() => {
     const text = document.querySelector('agentable-panel')?.shadowRoot?.textContent ?? '';
     return { hasJobs: text.includes('Guest Experience Lead'), len: text.length };
   }));

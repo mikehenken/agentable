@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>03 — Multi-surface dashboard · Archipelago Resorts</title>
-    <link rel="stylesheet" href="/embed/agentable-panel.css" />
     <style>
       body {
         margin: 0;
@@ -64,13 +63,11 @@
           data-agentable-panel="open-positions"
           data-config-url="/examples/shared/archipelago-panel-config.json"
           data-primary-color="#0E7490"
-          data-skip-react-mount
         ></div>
         <div
           data-agentable-panel="growth-paths"
           data-config-url="/examples/shared/archipelago-panel-config.json"
           data-primary-color="#0E7490"
-          data-skip-react-mount
         ></div>
       </section>
       <aside class="sidebar">
@@ -87,7 +84,7 @@
       Promise.all([
         customElements.whenDefined('agentable-panel'),
         customElements.whenDefined('agent-status-pill'),
-      ]).then( => {
+      ]).then(() => {
         const mounted = document.querySelectorAll('[data-agentable-mounted]').length;
         window.__galleryReady = {
           example: '03-multi-surface-dashboard',

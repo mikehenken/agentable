@@ -264,13 +264,13 @@
 
         panel.setAttribute('locale', nextLocale);
         refreshTelemetry;
-        requestAnimationFrame( => refreshTelemetry);
+        requestAnimationFrame(() => refreshTelemetry);
         setTimeout(refreshTelemetry, 400);
         setTimeout(refreshTelemetry, 1200);
       }
 
       localeButtons.forEach((btn) => {
-        btn.addEventListener('click', => {
+        btn.addEventListener('click', () => {
           const next = btn.getAttribute('data-locale');
           if (next && next !== panel.getAttribute('locale')) {
             applyLocale(next);
@@ -278,9 +278,9 @@
         });
       });
 
-      customElements.whenDefined('agentable-panel').then( => {
-        panel?.addEventListener('agentable:panel-ready', => refreshTelemetry);
-        const observer = new MutationObserver( => refreshTelemetry);
+      customElements.whenDefined('agentable-panel').then(() => {
+        panel?.addEventListener('agentable:panel-ready', () => refreshTelemetry);
+        const observer = new MutationObserver(() => refreshTelemetry);
         if (panel?.shadowRoot) {
           observer.observe(panel.shadowRoot, {
             attributes: true,
@@ -293,7 +293,7 @@
           attributeFilter: ['locale', 'data-theme'],
         });
         refreshTelemetry;
-        requestAnimationFrame( => refreshTelemetry);
+        requestAnimationFrame(() => refreshTelemetry);
         setTimeout(refreshTelemetry, 800);
         setTimeout(refreshTelemetry, 2000);
       });

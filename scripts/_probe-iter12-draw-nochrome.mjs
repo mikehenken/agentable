@@ -5,9 +5,9 @@ const page = await browser.newPage;
 await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html?nochrome=1', {
   waitUntil: 'domcontentloaded',
 });
-await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, { timeout: 45_000 });
+await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, { timeout: 45_000 });
 
-await page.evaluate( => {
+await page.evaluate(() => {
   const placement = document.querySelector(
     'agentable-operator-surface-placement[placement-id="operator-main"]');
   const surface = placement?.shadowRoot?.querySelector('agentable-operator-surface');

@@ -6,8 +6,8 @@ async function main {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction( => window.__galleryReady?.ok === true, { timeout: 45000 });
-  await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
+  await page.waitForFunction(() => window.__galleryReady?.ok === true, { timeout: 45000 });
+  await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
   await page.waitForTimeout(1500);
 
   const diag = await page.evaluate(async () => {

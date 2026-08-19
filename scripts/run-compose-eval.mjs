@@ -47,7 +47,7 @@ process.stdout.write(combined);
 
 if (writeLog) {
   fs.mkdirSync(logDir, { recursive: true });
-  const stamp = new Date.toISOString.replace(/[:.]/g, '-');
+  const stamp = new Date.toISOString().replace(/[:.]/g, '-');
   fs.writeFileSync(path.join(logDir, `test-run-${stamp}.log`), combined, 'utf8');
   fs.writeFileSync(path.join(logDir, 'test-run.log'), combined, 'utf8');
 }

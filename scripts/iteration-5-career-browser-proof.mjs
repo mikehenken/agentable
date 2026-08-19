@@ -27,7 +27,7 @@ async function clickNavItem(page, label) {
   return page.evaluate((navLabel) => {
     const walk = (root) => {
       for (const el of Array.from(root.querySelectorAll('*'))) {
-        const text = (el.textContent || '').trim;
+        const text = (el.textContent || '').trim();
         if (text === navLabel) {
           el.click?.;
           return true;
@@ -75,7 +75,7 @@ async function capture(page, outDir, slug, url, waitMs, navLabel) {
     url,
     navLabel,
     metrics,
-    capturedAt: new Date.toISOString,
+    capturedAt: new Date.toISOString(),
   };
   writeFileSync(join(outDir, `${slug}.json`), JSON.stringify(dump, null, 2));
   return dump;
@@ -119,7 +119,7 @@ for (const [slug, url, waitMs, nav] of afterCaptures) {
       await page.keyboard.press('Control+-');
       await page.keyboard.press('Control+-');
       await page.waitForTimeout(1500);
-      const chatMetrics = await page.evaluate( => {
+      const chatMetrics = await page.evaluate(() => {
         const shapes = document.querySelectorAll('[data-panel-id="chat"], [data-testid="chat-panel"]');
         return {
           zoomedOut: true,
@@ -128,7 +128,7 @@ for (const [slug, url, waitMs, nav] of afterCaptures) {
         };
       });
       await page.screenshot({ path: join(AFTER, `${slug}.png`), fullPage: false });
-      const dump = { slug, url, metrics: chatMetrics, capturedAt: new Date.toISOString };
+      const dump = { slug, url, metrics: chatMetrics, capturedAt: new Date.toISOString() };
       writeFileSync(join(AFTER, `${slug}.json`), JSON.stringify(dump, null, 2));
       results.after.push(dump);
     } else {

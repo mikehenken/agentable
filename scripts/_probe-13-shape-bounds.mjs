@@ -6,7 +6,7 @@ await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html?
   waitUntil: 'networkidle',
   timeout: 60000,
 });
-await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
+await page.waitForFunction(() => window.__operatorGalleryResult?.ok === true, { timeout: 45000 });
 await page.waitForTimeout(2000);
 
 const result = await page.evaluate(async () => {
@@ -26,7 +26,7 @@ const result = await page.evaluate(async () => {
     ],
   });
 
-  const editorInfo = await page.evaluate( => null);
+  const editorInfo = await page.evaluate(() => null);
 
    Access tldraw via canvas container internals
   const canvasEl = document.querySelector('.tl-canvas');
