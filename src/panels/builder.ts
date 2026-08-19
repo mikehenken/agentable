@@ -293,6 +293,7 @@ const CANONICAL_IDS: Record<string, string> = {
   'filter-chips': 'chips',
   'custom-slot': 'slot',
   tabs: 'tabs',
+  'document-view': 'document',
 };
 
 /** Block kind to catalog node type. */
@@ -307,6 +308,7 @@ const NODE_TYPES: Record<string, string> = {
   'filter-chips': 'filter-chips',
   'custom-slot': 'custom-slot',
   tabs: 'tabs',
+  'document-view': 'document-view',
 };
 
 /**
@@ -489,6 +491,11 @@ function compileBlockProps(ctx: CompileContext, blockId: string, block: RuntimeB
       return {
         name: block.name as string,...(block.props !== undefined ? { props: cloneJsonObject(block.props) }: {}),
       };
+    }
+    case 'document-view': {
+      const bind = block.bind as string;
+      checkBind(ctx, blockId, bind);
+      return { bind };
     }
     default:
       fail('BUILDER_BLOCK_UNKNOWN', `Unknown block kind "${block.block}"`);

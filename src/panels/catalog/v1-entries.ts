@@ -177,6 +177,17 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
       agentHint: 'Mounts a host-registered catalog component by name',
     },
   ],
+  [
+    'document-view',
+    {
+      name: 'document-view',
+      props: z.object({
+        bind: z.string(),
+      }),
+      component: Components.DocumentView,
+      agentHint: 'Multi-block document editor bound to a document source',
+    },
+  ],
 ]);
 
 // Default catalog export usable by hosts / validateSpec (Gap 7)

@@ -41,7 +41,7 @@ export function SpeechInput({
   const supported = Boolean(getSpeechRecognitionCtor);
 
   const stopListening = useCallback(() => {
-    recognitionRef.current?.stop;
+    recognitionRef.current?.stop();
     setListening(false);
   }, []);
 

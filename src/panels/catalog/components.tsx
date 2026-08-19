@@ -182,3 +182,10 @@ export interface CustomSlotProps extends CatalogComponentProps {
 export const CustomSlot = (props: CustomSlotProps): React.ReactElement => (
   <div data-testid="custom-slot">{renderState(props.context?.state, props.name)}</div>
 );
+
+/**
+ * Document block. Re-exported from `../document` so the v1 catalog can
+ * resolve `document-view` without the document module depending on the
+ * catalog entry table (which would close an import cycle).
+ */
+export { DocumentView } from '../document/DocumentView';

@@ -191,7 +191,7 @@ export function renderPlaceholderEmbedSkeleton(host: HTMLElement, loadingLabel =
 }
 
 export function clearPlaceholderEmbedSkeleton(host: HTMLElement): void {
-  host.querySelector(`.${PANEL_EMBED_SKELETON_CLASS}`)?.remove;
+  host.querySelector(`.${PANEL_EMBED_SKELETON_CLASS}`)?.remove();
 }
 
 const PLACEHOLDER_SKELETON_STYLE_ID = 'agentable-panel-embed-skeleton-styles';

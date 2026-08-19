@@ -46,7 +46,7 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
 
   useEffect(() => {
     if (showSearch) {
-      inputRef.current?.focus;
+      inputRef.current?.focus();
       inputRef.current?.select;
     }
   }, [showSearch]);

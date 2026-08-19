@@ -195,7 +195,7 @@ export function PanelEmbedShell(props: PanelEmbedShellProps): ReactElement {
       cancelled = true;
       engineRef.current = null;
       setHost((current) => {
-        current?.dispose;
+        current?.dispose();
         return null;
       });
     };

@@ -84,7 +84,7 @@ function providerResultToWiring(
 export function resolveWhiteboardEmbedWiring(
   input: ResolveWhiteboardEmbedWiringInput,
   previousProvider: WhiteboardWiringProviderResult | null = null): ResolveWhiteboardEmbedWiringState {
-  previousProvider?.dispose;
+  previousProvider?.dispose();
 
   if (input.injected !== undefined && input.injected !== null) {
     const hasPanels = input.injected.panels !== undefined;

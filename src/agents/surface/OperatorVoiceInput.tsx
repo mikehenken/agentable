@@ -52,7 +52,7 @@ export function OperatorVoiceInput({
     voice().state === 'connecting' || voice().state === 'listening' || voice().state === 'speaking';
 
   const stopDictation = useCallback(() => {
-    recognitionRef.current?.stop;
+    recognitionRef.current?.stop();
     setDictating(false);
   }, []);
 
