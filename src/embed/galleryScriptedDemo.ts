@@ -2,10 +2,10 @@
  * Public scripted-demo surface for gallery pages (P8 northstar draw + see).
  * Uses the same agent tools and fixtures as the Playwright harness — no LLM.
  *
- * Operator-mode scope: gallery steps invoke tool `.handler` directly
+ * Operator-mode scope (P13-T2): gallery steps invoke tool `.handler()` directly
  * for deterministic offline demos. That path intentionally bypasses
  * `canvasTools.executeTool` and operator-mode enforcement; production chat/voice
- * agents must use `executeTool` `createAgentToolExecutor` instead.
+ * agents must use `executeTool` / `createAgentToolExecutor` instead.
  */
 import { withAgentToolContextAsync, getAgentToolContext, type AgentToolExecutionContext } from '../agents/agentContext';
 import { withDrawUserMessageAsync } from '../chat/drawIntentContext';
@@ -174,7 +174,7 @@ async function waitForLayoutSettle(): Promise<void> {
 }
 
 function resolveGalleryScriptedAgentContext(): AgentToolExecutionContext {
-  const active = getAgentToolContext;
+  const active = getAgentToolContext();
   if (active !== null) {
     return active;
   }
@@ -196,9 +196,9 @@ function readDrawShapesCreatedIds(result: { result?: unknown }): string[] {
 }
 
 export function countPageShapes(): number {
-  const editor = getEditor;
+  const editor = getEditor();
   if (editor === null) return 0;
-  return editor().getCurrentPageShapeIds().size;
+  return editor.getCurrentPageShapeIds().size;
 }
 
 export function verifyDrawShapesPersisted(
@@ -209,7 +209,7 @@ export function verifyDrawShapesPersisted(
   shapesAfterDraw: number;
 } {
   const store = inspectBoundEditorStore(createdShapeIds);
-  const shapesAfterDraw = countPageShapes;
+  const shapesAfterDraw = countPageShapes();
   const countIncreased = shapesAfterDraw > shapesBeforeDraw;
   const idsOnCurrentPage =
     store.bound &&
@@ -234,7 +234,7 @@ export async function runGalleryScriptedTool(
       return { ok: false, toolName, error: `${toolName} tool unavailable` };
     }
     const agentContext = resolveGalleryScriptedAgentContext;
-    const result = await withAgentToolContextAsync(agentContext(), () =>
+    const result = await withAgentToolContextAsync(agentContext, () =>
       perceptionTool.handler(args));
     if (!result.ok) {
       return { ok: false, toolName, error: String(result.error ?? `${toolName} failed`) };
@@ -245,7 +245,7 @@ export async function runGalleryScriptedTool(
   const authoringTool = findAuthoringTool(toolName);
   if (authoringTool !== undefined) {
     const agentContext = resolveGalleryScriptedAgentContext;
-    const result = await withAgentToolContextAsync(agentContext(), () =>
+    const result = await withAgentToolContextAsync(agentContext, () =>
       authoringTool.handler(args));
     if (!result.ok) {
       return { ok: false, toolName, error: String(result.error ?? `${toolName} failed`) };
@@ -259,9 +259,9 @@ export async function runGalleryScriptedTool(
   }
 
   const agentContext = resolveGalleryScriptedAgentContext;
-  const shapesBeforeDraw = toolName === 'draw_shapes' ? countPageShapes(): 0;
+  const shapesBeforeDraw = toolName === 'draw_shapes' ? countPageShapes() : 0;
   const runDraw = (): Promise<{ ok: boolean; error?: string; result?: unknown }> =>
-    withAgentToolContextAsync(agentContext(), () => drawTool.handler(args));
+    withAgentToolContextAsync(agentContext, () => drawTool.handler(args));
   const result = await (options.drawIntentUserText !== undefined
     ? withDrawUserMessageAsync(options.drawIntentUserText, runDraw): runDraw);
   if (!result.ok) {
@@ -286,15 +286,15 @@ export async function runGalleryScriptedTool(
     }
 
     await waitForLayoutSettle();
-     // Camera fit is dispatched by operator/chat callers after verification.
-     // Fitting inside this host wrapper raced persistence hydration on gallery-13.
+    // Camera fit is dispatched by operator/chat callers after verification.
+    // Fitting inside this host wrapper raced persistence hydration on gallery-13.
     return {
       ok: true,
       toolName,
       result: {...(typeof result.result === 'object' && result.result !== null ? result.result: {}),
         _store: immediate.store,
         _shapesBeforeDraw: shapesBeforeDraw,
-        _shapesAfterDraw: countPageShapes,
+        _shapesAfterDraw: countPageShapes(),
         _verifyPageCount: immediate.shapesAfterDraw,
       },
     };
@@ -355,7 +355,7 @@ export async function runNorthstarGalleryStep(
     return { ok: summary.ok, summary, steps };
   }
 
-   // full scripted demo
+  // full scripted demo
   const ready = await waitForGalleryWhiteboardReady();
   if (!ready) {
     steps.push({ ok: false, toolName: 'full', error: 'Whiteboard not ready' });
@@ -437,7 +437,7 @@ export type GalleryDemoPhase =
   | 'hitl'
   | 'complete';
 
-/** Dwell long enough for Playwright manual screenshot capture ( iter-4). */
+/** Dwell long enough for Playwright / manual screenshot capture (STUDY-018 iter-4). */
 export const MERIDIAN_GALLERY_DEMO_DWELL_MS = 2_500;
 export const MERIDIAN_GALLERY_HITL_DWELL_MS = 2_500;
 
@@ -453,12 +453,12 @@ async function dwellGalleryDemo(ms: number = MERIDIAN_GALLERY_DEMO_DWELL_MS): Pr
 }
 
 async function revealMeridianDocumentPanel(options: { dwellMs?: number } = {}): Promise<void> {
-  const editor = getEditor;
+  const editor = getEditor();
   if (editor === null) return;
 
   bringPanelToFrontInCanvas(DOCUMENT_PANEL_ID);
-  const viewport = getFreeCanvasViewportConfig(editor());
-  repositionPanelBesideChatIfOverlapping(editor(), DOCUMENT_PANEL_ID, viewport, true);
+  const viewport = getFreeCanvasViewportConfig(editor);
+  repositionPanelBesideChatIfOverlapping(editor, DOCUMENT_PANEL_ID, viewport, true);
   focusPanelInCanvas(DOCUMENT_PANEL_ID, false);
   await waitForLayoutSettle();
 
@@ -554,7 +554,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
     return entry.ok;
   };
 
-  const ready = await waitForGalleryWhiteboardReady;
+  const ready = await waitForGalleryWhiteboardReady();
   if (!ready) {
     steps.push({ ok: false, toolName: 'wireframe', error: 'Whiteboard not ready' });
     return { ok: false, steps };
@@ -582,7 +582,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
     ok: flowResult.ok === true,
     toolName: 'draw_shapes',
     result: flowResult.result,
-    error: flowResult.ok ? undefined: String(flowResult.error ?? 'flow draw failed'),
+    error: flowResult.ok ? undefined : String(flowResult.error ?? 'flow draw failed'),
   });
 
   if (flowOk) {
@@ -592,13 +592,13 @@ async function runMeridianWireframeGalleryStep(): Promise<{
 
   const stencilShapes = MERIDIAN_WIREFRAME_STENCILS.flatMap((entry) =>
     expandWireframeStencil(entry.stencil, entry.geometry, entry.label));
-  const stencilBefore = countPageShapes;
+  const stencilBefore = countPageShapes();
   let stencilOk = false;
   try {
     drawAgentShapes(MERIDIAN_AGENT.agentId, stencilShapes);
-    stencilOk = countPageShapes > stencilBefore;
+    stencilOk = countPageShapes() > stencilBefore;
   } catch (err) {
-    const message = err instanceof Error ? err.message: String(err);
+    const message = err instanceof Error ? err.message : String(err);
     push({ ok: false, toolName: 'draw_shapes', error: message });
   }
 
@@ -614,7 +614,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
     push({ ok: false, toolName: 'draw_shapes', error: 'stencil batch did not add shapes' });
   }
 
-  const editor = getEditor;
+  const editor = getEditor();
   const geoShapeIds =
     editor === null
       ? []: editor().getCurrentPageShapes().filter((shape) => shape.type === 'geo').slice(0, 2).map((shape) => shape.id);
@@ -631,7 +631,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
       ok: connectResult.ok === true,
       toolName: 'connect_shapes',
       result: connectResult.result,
-      error: connectResult.ok ? undefined: String(connectResult.error ?? 'connect failed'),
+      error: connectResult.ok ? undefined : String(connectResult.error ?? 'connect failed'),
     });
   } else {
     push({
@@ -644,7 +644,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
   dispatchFitAgentDrawing(MERIDIAN_AGENT.agentId);
   await waitForLayoutSettle();
 
-  const totalShapes = countPageShapes;
+  const totalShapes = countPageShapes();
   const flowBoxCount = MERIDIAN_WIREFRAME_FLOW.diagram.nodes.length;
   const summary: MeridianDemoSummary = {
     ok: flowOk && stencilOk && totalShapes >= flowBoxCount + 2,
@@ -663,7 +663,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
 
 export async function runMeridianDocumentGalleryStep(
   bundle?: MeridianGalleryHostBundle): Promise<MeridianDocumentDemoResult> {
-  const resolvedBundle = bundle ?? getMeridianGalleryHostBundle;
+  const resolvedBundle = bundle ?? getMeridianGalleryHostBundle();
   if (resolvedBundle === null) {
     const failure: MeridianDocumentDemoResult = {
       ok: false,
@@ -704,12 +704,12 @@ export async function runMeridianDocumentGalleryStep(
 
   resolvedBundle.bindPanelDocument(panelId);
 
-  const panelSize = resolveDocumentPanelSize;
+  const panelSize = resolveDocumentPanelSize();
   openPanelInCanvas(DOCUMENT_PANEL_ID, {
     focus: true,
     preserveZoom: false,
     assignToSiteGroup: false,
-    size: panelSize(),
+    size: panelSize,
     panelProps: { scope },
     chrome: { title: MERIDIAN_PRODUCT_BRIEF_TITLE },
   });
@@ -735,7 +735,7 @@ export async function runMeridianDocumentGalleryStep(
 export async function runMeridianExportGalleryStep(
   panelId: string,
   bundle?: MeridianGalleryHostBundle): Promise<MeridianExportDemoResult> {
-  const resolvedBundle = bundle ?? getMeridianGalleryHostBundle;
+  const resolvedBundle = bundle ?? getMeridianGalleryHostBundle();
   if (resolvedBundle === null) {
     const failure: MeridianExportDemoResult = { ok: false, format: 'pdf' };
     if (typeof window !== 'undefined') {
@@ -781,7 +781,7 @@ export async function runMeridianHitlGalleryStep(
   panelId: string,
   builtDocument: DocumentPayload,
   bundle?: MeridianGalleryHostBundle): Promise<MeridianHitlDemoResult> {
-  const resolvedBundle = bundle ?? getMeridianGalleryHostBundle;
+  const resolvedBundle = bundle ?? getMeridianGalleryHostBundle();
   if (resolvedBundle === null) {
     const failure: MeridianHitlDemoResult = {
       ok: false,
@@ -895,11 +895,11 @@ export async function runMeridianGalleryStep(
     const builtDocument = buildMeridianDocumentPayload();
     const document =
       window.__meridianDocumentResult ??
-      (await runMeridianDocumentGalleryStep(bundle()));
+      (await runMeridianDocumentGalleryStep(bundle));
     const panelId = document.panelId;
 
     if (step === 'export') {
-      const exportResult = await runMeridianExportGalleryStep(panelId, bundle());
+      const exportResult = await runMeridianExportGalleryStep(panelId, bundle);
       return {
         ok: exportResult.ok,
         steps: [{ ok: exportResult.ok, toolName: 'export_document', result: exportResult }],
@@ -907,7 +907,7 @@ export async function runMeridianGalleryStep(
       };
     }
 
-    const hitl = await runMeridianHitlGalleryStep(panelId, builtDocument, bundle());
+    const hitl = await runMeridianHitlGalleryStep(panelId, builtDocument, bundle);
     return {
       ok: hitl.ok,
       steps: [{ ok: hitl.ok, toolName: 'run_panel_action', result: hitl }],
@@ -915,7 +915,7 @@ export async function runMeridianGalleryStep(
     };
   }
 
-  const wireframe = await runMeridianWireframeGalleryStep;
+  const wireframe = await runMeridianWireframeGalleryStep();
   if (step === 'wireframe') {
     return wireframe;
   }
@@ -931,23 +931,23 @@ export async function runMeridianGalleryStep(
   }
 
   const document = await runMeridianDocumentGalleryStep(bundle());
-  const exportResult = await runMeridianExportGalleryStep(document.panelId, bundle());
+  const exportResult = await runMeridianExportGalleryStep(document.panelId, bundle);
   const builtDocument = buildMeridianDocumentPayload();
-  const hitl = await runMeridianHitlGalleryStep(document.panelId, builtDocument, bundle());
+  const hitl = await runMeridianHitlGalleryStep(document.panelId, builtDocument, bundle);
 
   setGalleryDemoPhase('complete');
 
   const ok =
-    wireframe().ok &&
+    wireframe.ok &&
     document.ok &&
     exportResult.ok &&
     hitl.ok &&
-    wireframe().steps.every((entry) => entry.ok);
+    wireframe.steps.every((entry) => entry.ok);
 
   return {
     ok,
-    summary: wireframe().summary,
-    steps: wireframe().steps,
+    summary: wireframe.summary,
+    steps: wireframe.steps,
     document,
     export: exportResult,
     hitl,

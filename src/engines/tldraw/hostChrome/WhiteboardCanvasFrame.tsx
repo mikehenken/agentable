@@ -25,7 +25,7 @@ export function WhiteboardCanvasFrame({
   children,
   shellBackground = 'var(--landi-color-background, #F0F0EC)',
 }: WhiteboardCanvasFrameProps): ReactElement {
-  const { isCanvasExpanded, exitCanvasExpand } = useWhiteboardHostChromeRequired;
+  const { isCanvasExpanded, exitCanvasExpand } = useWhiteboardHostChromeRequired();
 
   useEffect(() => {
     if (!isCanvasExpanded) {
@@ -37,7 +37,7 @@ export function WhiteboardCanvasFrame({
       }
     };
     document.addEventListener('keydown', onKeyDown);
-    return ()=> document.removeEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [exitCanvasExpand, isCanvasExpanded]);
 
   useEffect(() => {
@@ -83,10 +83,10 @@ export function WhiteboardCanvasFrame({
             backdropFilter: 'blur(2px)',
           }}
         />
-      ): null}
+      ) : null}
       <motion.div
         data-testid="whiteboard-canvas-frame"
-        data-expanded={isCanvasExpanded ? 'true': 'false'}
+        data-expanded={isCanvasExpanded ? 'true' : 'false'}
         layout
         initial={false}
         animate={
@@ -110,7 +110,7 @@ export function WhiteboardCanvasFrame({
                 height: '100%',
                 flex: 1,
                 minHeight: 0,
-                borderRadius: chrome.frameBorder ? chrome.frameBorderRadius: 0,
+                borderRadius: chrome.frameBorder ? chrome.frameBorderRadius : 0,
                 zIndex: 1,
               }
         }

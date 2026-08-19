@@ -72,7 +72,7 @@ export function computeBesideChatPlacement(
   }
 
   const obstacles: LayoutRect[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
     if (shape.type !== 'panel') continue;
     const bounds = editor.getShapePageBounds(shape.id);
     if (!bounds) continue;
@@ -111,7 +111,7 @@ export function repositionPanelBesideChatIfOverlapping(
   }
 
   const obstacles: LayoutRect[] = [];
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
     if (shape.type !== 'panel' || shape.id === shapeId) continue;
     const bounds = editor.getShapePageBounds(shape.id);
     if (!bounds) continue;

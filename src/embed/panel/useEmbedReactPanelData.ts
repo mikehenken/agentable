@@ -27,13 +27,13 @@ function readArray(value: unknown): readonly unknown[] | undefined {
 export function useEmbedReactPanelData(
   panelId: string,
   panelData: Record<string, unknown> | undefined): Record<string, unknown> {
-  const ctx = useOptionalPanelEmbedHost;
+  const ctx = useOptionalPanelEmbedHost();
   const host = ctx?.().host ?? useWhiteboardPanelHost;
   const lifecycle = host?.data.lifecycle ?? null;
-  const { panelData: tenantPanelData } = useCanvasConfig;
+  const { panelData: tenantPanelData } = useCanvasConfig();
 
   const mergedPanelData = useMemo(() => {
-    const base = {...(panelData ?? {}) };
+    const base = { ...(panelData ?? {}) };
     for (const key of CAREER_PANEL_DATA_KEYS) {
       const shapeValue = base[key];
       const tenantValue = tenantPanelData?.[key];
@@ -51,8 +51,9 @@ export function useEmbedReactPanelData(
   }, [panelData, tenantPanelData]);
 
   const openPositionsJobs = useOpenPositionsJobs(
-    panelId === 'open-positions' ? mergedPanelData: undefined,
-    panelId === 'open-positions' ? lifecycle: null);
+    panelId === 'open-positions' ? mergedPanelData : undefined,
+    panelId === 'open-positions' ? lifecycle : null,
+  );
 
   return useMemo(() => {
     if (panelId === 'open-positions') {

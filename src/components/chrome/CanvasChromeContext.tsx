@@ -73,10 +73,10 @@ export function useCanvasChrome(): CanvasChromeContextValue {
     typeof process !== 'undefined' &&
     process.env?.NODE_ENV !== 'production'
   ) {
-     // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
     console.warn(
-      '[CanvasChrome] useCanvasChrome called outside <CanvasShell>. ' +
-        // 'Falling back to default career-themed registry — likely a misuse. ' +
+      '[CanvasChrome] useCanvasChrome() called outside <CanvasShell>. ' +
+        'Falling back to default career-themed registry — likely a misuse. ' +
         'Wrap your tree in <CanvasShell panels={...} navItems={...}>.');
   }
   return value;

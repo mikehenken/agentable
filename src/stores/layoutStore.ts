@@ -127,8 +127,8 @@ export const useLayoutStore = create<LayoutState>((set) => ({
       const TOPBAR_H = 56;     // top bar + gap
       const BOTTOMBAR_H = 72;  // bottom bar + breathing room
       const SIDEBAR_X = 240;   // clears the collapsed nav sidebar
-      const VW = window.innerWidth;
-      const VH = window.innerHeight;
+  const VW = window.innerWidth;
+  const VH = window.innerHeight;
       const MAX_W = Math.max(360, VW - SIDEBAR_X - 24);
       const MAX_H = Math.max(320, VH - TOPBAR_H - BOTTOMBAR_H);
 

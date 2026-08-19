@@ -4,16 +4,16 @@
  * Parallel to `<agentable-canvas>` (CanvasShell / DraggablePanel substrate).
  * Use this tag when the host page needs PanelShape panels on a tldraw canvas.
  *
- * <agentable-whiteboard
- * tenant="sandals"
- * config-url="/config/sandals-career.json"
- * canvas-mode="bounded"
- * canvas-bounds="1200x800"
- * voice-enabled
- * snap-grid
- * toolbar-config='{"tools":["select","draw","hand","layers","voice","auto-arrange","reset"],"layoutActionPlacement":"both"}'
- * ></agentable-whiteboard>
- * <script type="module" src="/embed/agentable-whiteboard.js"></script>
+ *     <agentable-whiteboard
+ *       tenant="sandals"
+ *       config-url="/config/sandals-career.json"
+ *       canvas-mode="bounded"
+ *       canvas-bounds="1200x800"
+ *       voice-enabled
+ *       snap-grid
+ *       toolbar-config='{"tools":["select","draw","hand","layers","voice","auto-arrange","reset"],"layoutActionPlacement":"both"}'
+ *     ></agentable-whiteboard>
+ *     <script type="module" src="/embed/agentable-whiteboard.js"></script>
  *
  * Config loading, merge order, and brand tokens match the canvas embed contract.
  * Toolbar: attribute `toolbar-config` (JSON) wins over config-url `toolbar` /
@@ -236,7 +236,7 @@ export class AgentableWhiteboardElement extends LitElement {
 
   /**
    * Opt into vibe-dark whiteboard chrome. When omitted, defaults to light.
-   * Set `light-canvas` to force light; set `dark-canvas` for gallery operator demos.
+   * Set `light-canvas` to force light; set `dark-canvas` for gallery / operator demos.
    */
   @property({ type: Boolean, attribute: 'dark-canvas' })
   declare darkCanvas: boolean;
@@ -476,7 +476,7 @@ export class AgentableWhiteboardElement extends LitElement {
 
   /**
    * Run a scripted tool stamped with the canvas-wide operator agent context.
-   * Keeps draw/read paths on the bound whiteboard editor.
+   * Keeps draw/read paths on the bound whiteboard editor (P13-T7 iter-9).
    */
   async runOperatorScriptedTool(
     toolName: GalleryScriptedToolName,
@@ -504,7 +504,7 @@ export class AgentableWhiteboardElement extends LitElement {
   }
 
   /**
-   * Meridian Labs gallery demo — connected wireframe funnel + stencils.
+   * Meridian Labs gallery demo — connected wireframe funnel + stencils (P12-T7).
    * Steps: wireframe | full (both run the full onboarding wireframe set).
    */
   async runMeridianDemo(step: MeridianDemoStep): Promise<{
@@ -538,21 +538,21 @@ export class AgentableWhiteboardElement extends LitElement {
   }
 
   private _attributeSnapshot(): EmbedAttributeSnapshot {
-    // Empty string = "attribute not set" so config-url CSS can win.
+    // Empty string = "attribute not set" so config-url / CSS can win.
     // Lit constructors always assign built-in defaults; treating those as
     // explicit attributes would permanently shadow sandals-career.json
     // primaryColor / welcomeMessage (and other persona fields).
     return {
-      tenant: this.hasAttribute('tenant') ? this.tenant: '',
-      primaryColor: this.hasAttribute('primary-color') ? this.primaryColor: '',
+      tenant: this.hasAttribute('tenant') ? this.tenant : '',
+      primaryColor: this.hasAttribute('primary-color') ? this.primaryColor : '',
       welcomeMessage: this.hasAttribute('welcome-message')
         ? this.welcomeMessage: '',
-      apiEndpoint: this.hasAttribute('api-endpoint') ? this.apiEndpoint: '',
+      apiEndpoint: this.hasAttribute('api-endpoint') ? this.apiEndpoint : '',
       voiceEnabled: this.voiceEnabled,
       voiceEnabledSet: this.hasAttribute('voice-enabled'),
       snapGrid: this.snapGrid,
       snapGridSet: this.hasAttribute('snap-grid'),
-      systemPrompt: this.hasAttribute('system-prompt') ? this.systemPrompt: '',
+      systemPrompt: this.hasAttribute('system-prompt') ? this.systemPrompt : '',
       voiceGreeting: this.hasAttribute('voice-greeting')
         ? this.voiceGreeting: '',
       greetingMode: this.hasAttribute('voice-greeting-mode')
@@ -564,14 +564,14 @@ export class AgentableWhiteboardElement extends LitElement {
       fullpageOnEngageSet:
         this.hasAttribute('fullpage-on-engage') ||
         this.hasAttribute('fullscreen-on-engage'),
-      canvasMode: this.hasAttribute('canvas-mode') ? this.canvasMode: '',
-      canvasBounds: this.hasAttribute('canvas-bounds') ? this.canvasBounds: '',
+      canvasMode: this.hasAttribute('canvas-mode') ? this.canvasMode : '',
+      canvasBounds: this.hasAttribute('canvas-bounds') ? this.canvasBounds : '',
       canvasBehavior: this.hasAttribute('canvas-behavior')
         ? this.canvasBehavior: '',
-      canvasZoom: this.hasAttribute('canvas-zoom') ? this.canvasZoom: '',
+      canvasZoom: this.hasAttribute('canvas-zoom') ? this.canvasZoom : '',
       hostHeaderHeight: this.hasAttribute('host-header-height')
         ? this.hostHeaderHeight: '',
-      locale: this.hasAttribute('locale') ? this.locale: '',
+      locale: this.hasAttribute('locale') ? this.locale : '',
       toolbarConfigJson: this.toolbarConfig,
     };
   }
@@ -619,7 +619,7 @@ export class AgentableWhiteboardElement extends LitElement {
       const source =
         this.configUrl ||
         this.panelDataUrl ||
-        (this.anonKey ? `anon-key:${this.anonKey.slice(0, 8)}…`: 'unknown');
+        (this.anonKey ? `anon-key:${this.anonKey.slice(0, 8)}…` : 'unknown');
       console.error(
         `[agentable-whiteboard] Failed to load embed config from "${source}":`,
         error);
@@ -698,7 +698,7 @@ export class AgentableWhiteboardElement extends LitElement {
       toolbarConfig: resolved.toolbarConfig ?? null,
       locale: resolved.locale,
       meridian: tenant === 'meridian-labs',
-      panelDataKeys: this._panelDataRaw ? Object.keys(this._panelDataRaw).sort(): [],
+      panelDataKeys: this._panelDataRaw ? Object.keys(this._panelDataRaw).sort() : [],
       configPanels: this._configDocument?.panels ?? null,
     });
   }
@@ -762,7 +762,7 @@ export class AgentableWhiteboardElement extends LitElement {
 
     this._applyHostChrome(resolved);
     const meridianBundle = this._ensureMeridianHostBundle();
-    const packWiring = meridianBundle === null ? this._resolveWhiteboardWiring(resolved): null;
+    const packWiring = meridianBundle === null ? this._resolveWhiteboardWiring(resolved) : null;
 
     const whiteboardProps: WhiteboardShellProps = {
       config: resolved.tenantConfig,

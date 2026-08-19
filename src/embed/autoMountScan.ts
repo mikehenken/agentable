@@ -1,6 +1,6 @@
 /**
 
- * auto-mount scan: one script tag, zero authored JS.
+ * P9-T2 auto-mount scan (D44): one script tag, zero authored JS.
 
  *
 
@@ -79,7 +79,7 @@ export interface AutoMountScanOptions {
 
 
 
-const lazyMountHandles = new WeakMap<HTMLElement, () => void>;
+const lazyMountHandles = new WeakMap<HTMLElement, () => void>();
 
 
 
@@ -165,7 +165,7 @@ function mountPanelPlaceholder(element: HTMLElement): 'mounted' | 'deferred' | '
 
       }
 
-      finalizePanelMount(element, {...config, lazyHydrate: false });
+      finalizePanelMount(element, { ...config, lazyHydrate: false });
 
       lazyMountHandles.delete(element);
 
@@ -201,7 +201,7 @@ function registerSlotPlaceholder(element: HTMLElement): boolean {
 
 
 
-  const registry = ensurePageSlotRegistry;
+  const registry = ensurePageSlotRegistry();
 
   const prior = element.dataset.agentableSlotRegistered;
 
@@ -213,7 +213,7 @@ function registerSlotPlaceholder(element: HTMLElement): boolean {
 
 
 
-  registry().register(slotId, element);
+  registry.register(slotId, element);
 
   element.dataset.agentableSlotRegistered = slotId;
 
@@ -306,7 +306,7 @@ export function startAutoMountObserver(root: ParentNode = document.documentEleme
 
   if (typeof MutationObserver === 'undefined') {
 
-    return ()=> undefined;
+    return () => undefined;
 
   }
 
@@ -383,13 +383,13 @@ export function bootstrapAutoMountScan(options: AutoMountScanOptions = {}): () =
 
   if (options.observe === false) {
 
-    return ()=> undefined;
+    return () => undefined;
 
   }
 
 
 
-  const observeRoot = root instanceof Document ? root.documentElement: root;
+  const observeRoot = root instanceof Document ? root.documentElement : root;
 
   return startAutoMountObserver(observeRoot);
 

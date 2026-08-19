@@ -79,27 +79,27 @@ function WhiteboardReactPanelContent(props: {
 }
 
 function WhiteboardSpecPanelContent(props: {
-  definition(): Extract<PanelDefinition, { kind: 'spec' }>;
+  definition: Extract<PanelDefinition, { kind: 'spec' }>;
 }): ReactElement {
-  const ctx = useOptionalPanelEmbedHost;
-  const host = ctx?.().host ?? useWhiteboardPanelHost;
-  const contextSources = usePanelEmbedAdapterSources;
+  const ctx = useOptionalPanelEmbedHost();
+  const host = ctx?.host ?? useWhiteboardPanelHost();
+  const contextSources = usePanelEmbedAdapterSources();
   const adapterSources =
-    contextSources.length > 0 ? contextSources: getWhiteboardPanelAdapterSources;
+    contextSources.length > 0 ? contextSources : getWhiteboardPanelAdapterSources();
   const lifecycle = host?.data.lifecycle ?? null;
 
   const normalized = useMemo((): NormalizedPanelSpec | null => {
     if (host === null) {
       return null;
     }
-    const validation = validateSpec(props.definition().spec, {
+    const validation = validateSpec(props.definition.spec, {
       catalog: defaultCatalog,
       adapterSources: new Set(adapterSources),
       hostActions: new Set(),
-      panelRegistry: new Set(host.panels.ids),
+      panelRegistry: new Set(host.panels.ids()),
     });
-    return validation.ok ? validation.spec: null;
-  }, [adapterSources, host, props.definition().spec]);
+    return validation.ok ? validation.spec : null;
+  }, [adapterSources, host, props.definition.spec]);
 
   if (lifecycle === null || normalized === null) {
     return (
@@ -127,8 +127,8 @@ export function WhiteboardPanelShapeContent({
   registry,
   composedSpec,
 }: WhiteboardPanelShapeContentProps): ReactElement {
-  const ctx = useOptionalPanelEmbedHost;
-  const host = ctx?.().host ?? useWhiteboardPanelHost;
+  const ctx = useOptionalPanelEmbedHost();
+  const host = ctx?.host ?? useWhiteboardPanelHost();
   const Lazy = useLazyPanel(registry, panelId);
   const hostDefinition = host?.panels.get(panelId);
 

@@ -140,7 +140,7 @@ function CanvasShellInner({ panels }: { panels: PanelRegistry }) {
     [panBy]);
 
   const endPan = useCallback(() => {
-    isPanning.current = false;
+      isPanning.current = false;
   }, []);
 
   const handleDoubleClick = useCallback(() => {
@@ -151,29 +151,29 @@ function CanvasShellInner({ panels }: { panels: PanelRegistry }) {
     <div
       className="h-full w-full overflow-hidden relative select-none agentable-canvas-root"
       style={{
-        backgroundColor: 'var(--landi-color-workspace-bg, #F5F5F2)',
-        backgroundImage:
-          'radial-gradient(circle, var(--landi-color-workspace-dot, #D0D0CC) 1px, transparent 1px)',
-        backgroundSize: '20px 20px',
+          backgroundColor: 'var(--landi-color-workspace-bg, #F5F5F2)',
+          backgroundImage:
+            'radial-gradient(circle, var(--landi-color-workspace-dot, #D0D0CC) 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
         overscrollBehavior: 'none',
       }}
     >
       <div
-        className="absolute inset-0"
+          className="absolute inset-0"
         style={{
-          transform: `translate(${pan.x}px, ${pan.y}px)`,
+              transform: `translate(${pan.x}px, ${pan.y}px)`,
           overscrollBehavior: 'none',
         }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endPan}
-        onPointerCancel={endPan}
-        onLostPointerCapture={endPan}
-        onDoubleClick={handleDoubleClick}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={endPan}
+            onPointerCancel={endPan}
+            onLostPointerCapture={endPan}
+            onDoubleClick={handleDoubleClick}
       >
-        <ChatPanel />
-        <ArtifactsPanel />
-        <VoiceWidget />
+            <ChatPanel />
+            <ArtifactsPanel />
+            <VoiceWidget />
         {/*
           Lazy panels — Suspense fallback is null because each panel
           returns null when its layout state is hidden. ChunkErrorBoundary
@@ -181,22 +181,22 @@ function CanvasShellInner({ panels }: { panels: PanelRegistry }) {
           stale chunk hash post-deploy).
         */}
         <ChunkErrorBoundary>
-          <Suspense fallback={null}>
-            {lazyPanels.map(({ id, Lazy }) => (
-              <Lazy key={id} />
+              <Suspense fallback={null}>
+                {lazyPanels.map(({ id, Lazy }) => (
+                  <Lazy key={id} />
             ))}
-          </Suspense>
+              </Suspense>
         </ChunkErrorBoundary>
       </div>
 
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ zIndex: 100 }}
+          className="absolute inset-0 pointer-events-none"
+          style={{ zIndex: 100 }}
       >
-        <TopBar />
-        <FloatingToolbar />
-        <NavSidebar />
-        <BottomBar />
+          <TopBar />
+          <FloatingToolbar />
+          <NavSidebar />
+          <BottomBar />
       </div>
     </div>
   );

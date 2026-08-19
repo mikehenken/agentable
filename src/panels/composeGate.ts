@@ -1,5 +1,5 @@
 /**
- * Config-driven gate for agent `compose_panel`.
+ * Config-driven gate for agent `compose_panel` (D29, P3-T5).
  *
  * Hosts opt in via `createCanvasHost({ composeGate })`. When closed, the tool
  * is omitted from agent declarations and runtime calls return a structured

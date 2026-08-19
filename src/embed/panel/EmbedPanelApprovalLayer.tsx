@@ -15,7 +15,7 @@ export interface EmbedPanelApprovalLayerProps {
 export function EmbedPanelApprovalLayer({
   panelId,
 }: EmbedPanelApprovalLayerProps): ReactElement | null {
-  const controller = getActiveApprovalController;
+  const controller = getActiveApprovalController();
   const [pending, setPending] = useState<readonly PendingApprovalRequest[]>(() =>
     controller?.().getPendingForPanel(panelId) ?? []);
 
@@ -25,10 +25,10 @@ export function EmbedPanelApprovalLayer({
     }
 
     const sync = (): void => {
-      setPending(controller().getPendingForPanel(panelId));
+      setPending(controller.getPendingForPanel(panelId));
     };
 
-    return controller().subscribe(sync);
+    return controller.subscribe(sync);
   }, [controller, panelId]);
 
   if (controller === null || pending.length === 0) {
@@ -42,22 +42,22 @@ export function EmbedPanelApprovalLayer({
           key={request.id}
           request={request}
           onApprove={(requestId) => {
-            const entry = controller().getPendingForPanel(panelId).find((item) => item.id === requestId);
+            const entry = controller.getPendingForPanel(panelId).find((item) => item.id === requestId);
             if (entry === undefined) return;
             if (entry.destructive) {
-              controller().advancePhase(requestId);
+              controller.advancePhase(requestId);
               return;
             }
-            controller().resolve(requestId, 'approved');
+            controller.resolve(requestId, 'approved');
           }}
           onReject={(requestId) => {
-            controller().resolve(requestId, 'rejected_by_user');
+            controller.resolve(requestId, 'rejected_by_user');
           }}
           onConfirmDestructive={(requestId) => {
-            controller().resolve(requestId, 'approved');
+            controller.resolve(requestId, 'approved');
           }}
           onCancelDestructive={(requestId) => {
-            controller().resolve(requestId, 'rejected_by_user');
+            controller.resolve(requestId, 'rejected_by_user');
           }}
         />
       ))}

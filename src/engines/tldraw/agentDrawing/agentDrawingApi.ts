@@ -1,5 +1,5 @@
 /**
- * Imperative agent drawing driver for the tldraw whiteboard.
+ * Imperative agent drawing driver for the tldraw whiteboard (D41, P8-T1).
  *
  * Called from agent tools (non-React). Uses the same editor binding as
  * panelShapeApi. Every created mark carries meta.agentableAgent provenance.
@@ -53,7 +53,7 @@ function panelShapeId(panelId: string): TLShapeId {
 function readAgentId(meta: unknown): string | undefined {
   if (!meta || typeof meta !== 'object') return undefined;
   const value = (meta as Record<string, unknown>)[AGENT_SHAPE_PROVENANCE_META_KEY];
-  return typeof value === 'string' && value.length > 0 ? value: undefined;
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
 function isFiniteNumber(value: unknown): value is number {
@@ -208,13 +208,13 @@ function fitGeoLabel(
   const longestWord = text.trim().split(/\s+/).reduce((max, word) => Math.max(max, word.length), 1);
   // An ellipse inscribes its label in roughly 70% of its bounding width,
   // so the same word needs a wider ellipse than box ("Inertia l Nav").
-  const widthFactor = geo === 'ellipse' ? 1.4: 1;
+  const widthFactor = geo === 'ellipse' ? 1.4 : 1;
   const widthNeeded = (size: 's' | 'm' | 'l' | 'xl'): number =>
     longestWord * LABEL_CHAR_WIDTH[size] * widthFactor + LABEL_HORIZONTAL_PADDING;
 
   let size: 's' | 'm' | 'l' | 'xl' = style?.size ?? 'm';
   if (widthNeeded(size) > rect.w && size !== 's') {
-    size = size === 'xl' ? 'l': size === 'l' ? 'm': 's';
+    size = size === 'xl' ? 'l' : size === 'l' ? 'm' : 's';
   }
   if (widthNeeded(size) <= rect.w) {
     return { rect, size };
@@ -264,7 +264,7 @@ function textShapeProps(
 function provenanceMeta(
   agentId: string,
   extra?: Readonly<Record<string, string>>): Record<string, string> {
-  return {...extra, [AGENT_SHAPE_PROVENANCE_META_KEY]: agentId };
+  return { ...extra, [AGENT_SHAPE_PROVENANCE_META_KEY]: agentId };
 }
 
 function isShapeOnCurrentPage(editor: Editor, shapeId: TLShapeId): boolean {
@@ -352,7 +352,7 @@ function createArrowShape(
       start: { x: segment.from.x - minX, y: segment.from.y - minY },
       end: { x: segment.to.x - minX, y: segment.to.y - minY },...baseStyle(style),...labelProps(text),
       // Skip edges arc over the nodes between their endpoints.
-      ...(bend !== undefined && bend !== 0 ? { bend }: {}),
+      ...(bend !== undefined && bend !== 0 ? { bend } : {}),
     },
   });
   return id;
@@ -404,7 +404,7 @@ function createShapeForInput(editor: Editor, agentId: string, input: AgentDrawSh
         agentId,
         'rectangle',
         fitted.rect,
-        fitted.size !== undefined ? {...input.style, size: fitted.size }: input.style,
+        fitted.size !== undefined ? { ...input.style, size: fitted.size } : input.style,
         input.text,
         extraMeta,
         explicitId);
@@ -417,7 +417,7 @@ function createShapeForInput(editor: Editor, agentId: string, input: AgentDrawSh
         agentId,
         'ellipse',
         fitted.rect,
-        fitted.size !== undefined ? {...input.style, size: fitted.size }: input.style,
+        fitted.size !== undefined ? { ...input.style, size: fitted.size } : input.style,
         input.text,
         extraMeta,
         explicitId);
@@ -576,7 +576,7 @@ export function drawAgentShapes(
     throw new Error('canvas editor not bound');
   }
   if (shapes.length === 0) {
-    return { createdShapeIds: [], agentId,...meta };
+    return { createdShapeIds: [], agentId, ...meta };
   }
 
   // Style tokens first: one invalid enum ("lightBlue") reaching tldraw's
@@ -584,7 +584,7 @@ export function drawAgentShapes(
   // the model meant before anything estimates sizes or touches the editor.
   shapes = shapes.map((input) => {
     const sanitized = sanitizeDrawStyle(input.style);
-    return sanitized === input.style ? input: {...input, style: sanitized };
+    return sanitized === input.style ? input : { ...input, style: sanitized };
   });
 
   // Placement hygiene: a new multi-shape composition never
@@ -630,7 +630,7 @@ export function drawAgentShapes(
     }
     try {
       const explicitId = input.id !== undefined ? toShapeId(input.id): undefined;
-      const existing = explicitId !== undefined ? editor.getShape(explicitId): undefined;
+      const existing = explicitId !== undefined ? editor.getShape(explicitId) : undefined;
       if (existing !== undefined && explicitId !== undefined) {
         if (!isShapeOnCurrentPage(editor, explicitId)) {
           // IndexedDB can retain ids from prior sessions on another page; updating

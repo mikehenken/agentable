@@ -65,7 +65,7 @@ function buildTenantDefaults(options: CareerPackOptions = {}): PartialCanvasTena
 }
 
 /**
- * Create the shared career pack ( — one package, no per-client forks).
+ * Create the shared career pack (D58 — one package, no per-client forks).
  */
 export function createCareerPack(options: CareerPackOptions = {}): CareerPack {
   const panels = createCareerPanelDefinitions();
@@ -84,7 +84,7 @@ export function createCareerPack(options: CareerPackOptions = {}): CareerPack {
 }
 
 /**
- * Extend the shared pack via published extension points only ( AC).
+ * Extend the shared pack via published extension points only (D58 AC).
  * Does not mutate the base pack instance.
  */
 export function extendCareerPack(

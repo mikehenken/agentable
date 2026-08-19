@@ -45,8 +45,8 @@ interface VoiceTranscriptEvent {
  * Letter-initial fallback when `persona.visual` is not configured for chat.
  */
 function LetterAvatar({ size = 'sm', initial }: { size?: 'sm' | 'lg'; initial: string }): ReactElement {
-  const dim = size === 'lg' ? 60: 30;
-  const font = size === 'lg' ? 24: 13;
+  const dim = size === 'lg' ? 60 : 30;
+  const font = size === 'lg' ? 24 : 13;
   return (
     <div
       style={{
@@ -90,7 +90,7 @@ function ChatPersonaAvatar({
 }: ChatPersonaAvatarProps): ReactElement {
   const { state, level } = useAiPersonaState({ isAwaitingReply });
   if (!showVisual) {
-    return <LetterAvatar size={size === 'lg' ? 'lg': 'sm'} initial={initial} />;
+    return <LetterAvatar size={size === 'lg' ? 'lg' : 'sm'} initial={initial} />;
   }
   return (
     <AiPersona
@@ -100,7 +100,7 @@ function ChatPersonaAvatar({
       level={level}
       initial={initial}
       label={assistantName}
-      data-testid={size === 'lg' ? 'ai-persona-chat-hero': 'ai-persona-chat-avatar'}
+      data-testid={size === 'lg' ? 'ai-persona-chat-hero' : 'ai-persona-chat-avatar'}
     />
   );
 }
@@ -123,7 +123,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       type="button"
-      title={copied ? 'Copied': 'Copy message'}
+      title={copied ? 'Copied' : 'Copy message'}
       aria-label="Copy message"
       onClick={() => {
         void navigator.clipboard?.writeText(text).then(() => {
@@ -139,11 +139,11 @@ function CopyButton({ text }: { text: string }) {
         borderRadius: 6,
         border: 0,
         background: 'transparent',
-        color: copied ? 'var(--vibe-accent, #ff6b57)': 'var(--vibe-text-muted, #8a8a8a)',
+        color: copied ? 'var(--vibe-accent, #ff6b57)' : 'var(--vibe-text-muted, #8a8a8a)',
         cursor: 'pointer',
       }}
     >
-      {copied ? <Check size={13} />: <Copy size={13} />}
+      {copied ? <Check size={13} /> : <Copy size={13} />}
     </button>
   );
 }
@@ -203,8 +203,8 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
   // Committed example configs (config.example.json) ship placeholder
   // endpoint strings so no real URL is ever committed. Treat those as
   // "not configured" rather than attempting to fetch a literal placeholder.
-  const tokenEndpoint = isConfiguredEndpoint(tokenEndpointRaw) ? tokenEndpointRaw: '';
-  const chatProxyUrl = isConfiguredEndpoint(chatProxyUrlRaw) ? chatProxyUrlRaw: '';
+  const tokenEndpoint = isConfiguredEndpoint(tokenEndpointRaw) ? tokenEndpointRaw : '';
+  const chatProxyUrl = isConfiguredEndpoint(chatProxyUrlRaw) ? chatProxyUrlRaw : '';
   const isProd = (import.meta.env.MODE ?? import.meta.env.NODE_ENV) === 'production';
   const useMock =
     (import.meta.env.VITE_LANDI_MOCK ?? '') === '1' ||
@@ -244,7 +244,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
     }
   }, [messages.length, isAwaitingReply]);
 
-  // Handback prompt-action choreography - insert prompt and scroll to reply.
+  // Handback / prompt-action choreography - insert prompt and scroll to reply.
   useEffect(() => {
     const onChatPrompt = (e: Event) => {
       const detail = (e as CustomEvent<ChatPromptDetail>).detail;
@@ -258,7 +258,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatClient, messages, useMock]);
 
-  // --- Voice transcript ingestion (page session + window event) ---
+  // --- Voice transcript ingestion (D44 page session + window event) ---
   // The agent's voice transcripts get mirrored into the chat thread so
   // the user has one unified history. Tagged `source: 'voice'` so the
   // chip styling can differentiate from typed messages.
@@ -273,7 +273,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
     };
 
     const unsubscribe = pageSession.subscribeTranscripts((entry) => {
-      // voice-only mirror — operator/chat publishes must not appear here.
+      // D44 voice-only mirror — operator/chat publishes must not appear here.
       if (entry.source !== 'voice') {
         return;
       }
@@ -338,7 +338,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
     };
   }, []);
 
-  // Scripted demo transcript lines — no LLM, no Thinking spinner.
+  // Scripted demo transcript lines (P8) — no LLM, no Thinking spinner.
   useEffect(() => {
     const onInject = (e: Event) => {
       const detail = (e as CustomEvent<ChatTranscriptInjectDetail>).detail;
@@ -349,7 +349,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
           id: `inj-${Date.now().toString(36)}`,
           role: detail.role,
           text: detail.text.trim(),
-          source: detail.source ?? (detail.toolCall ? 'tool': 'text'),
+          source: detail.source ?? (detail.toolCall ? 'tool' : 'text'),
           toolCall: detail.toolCall,
           createdAt: detail.createdAt ?? new Date().toISOString(),
         },
@@ -394,7 +394,7 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
       // still visibly works end to end. Non-drawing hosts (most gallery
       // examples use the legacy CanvasShell substrate) fall back to the
       // previous plain-text notice - `runOfflineDrawFallback` returns that
-      // itself when `isDrawCapabilityAvailable` is false.
+      // itself when `isDrawCapabilityAvailable()` is false.
       setIsAwaitingReply(true);
       try {
         const fallback = await runOfflineDrawFallback();
@@ -503,10 +503,10 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
         style={{
           flex: 1,
           overflowY: 'auto',
-          padding: isEmpty ? 0: '16px',
+          padding: isEmpty ? 0 : '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: isEmpty ? 0: 14,
+          gap: isEmpty ? 0 : 14,
         }}
       >
       {isEmpty ? (
@@ -592,14 +592,14 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
                         fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)',
                         background: ok
                           ? 'color-mix(in srgb, var(--vibe-accent) 8%, var(--vibe-surface))': 'rgba(244,63,94,0.08)',
-                        border: `1px solid ${ok ? 'color-mix(in srgb, var(--vibe-accent) 35%, var(--vibe-border))': 'rgba(244,63,94,0.35)'}`,
-                        color: ok ? 'var(--vibe-text)': '#fb7185',
+                        border: `1px solid ${ok ? 'color-mix(in srgb, var(--vibe-accent) 35%, var(--vibe-border))' : 'rgba(244,63,94,0.35)'}`,
+                        color: ok ? 'var(--vibe-text)' : '#fb7185',
                         boxShadow: '0 1px 2px rgba(15,23,42,0.04)',
                       }}
                       data-testid="chat-tool-call-block"
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                        {ok ? <Wrench size={13} style={{ color: 'var(--vibe-accent)' }} />: <AlertTriangle size={13} />}
+                        {ok ? <Wrench size={13} style={{ color: 'var(--vibe-accent)' }} /> : <AlertTriangle size={13} />}
                         <code style={{ fontSize: 12, fontWeight: 600, color: 'var(--vibe-accent)' }}>{signature}</code>
                       </div>
                       <span style={{ fontSize: 12, color: 'var(--vibe-text-muted)' }}>{msg.text}</span>
@@ -764,8 +764,8 @@ export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {
                 borderRadius: 9,
                 border: 0,
                 color: '#fff',
-                cursor: canSend ? 'pointer': 'not-allowed',
-                opacity: canSend ? 1: 0.4,
+                cursor: canSend ? 'pointer' : 'not-allowed',
+                opacity: canSend ? 1 : 0.4,
                 transition: 'opacity .15s ease',
                 background: canSend
                   ? 'linear-gradient(135deg, var(--vibe-accent) 0%, var(--vibe-accent-2) 100%)': 'var(--vibe-disabled-bg)',
@@ -817,8 +817,8 @@ function IconButton({
         borderRadius: 8,
         border: 0,
         cursor: 'pointer',
-        background: hover ? 'var(--vibe-hover-bg)': 'transparent',
-        color: hover ? (accentOnHover ? 'var(--vibe-accent, #ff6b57)': 'var(--vibe-text, #1A1A1A)'): 'var(--vibe-text-muted, #9CA3AF)',
+        background: hover ? 'var(--vibe-hover-bg)' : 'transparent',
+        color: hover ? (accentOnHover ? 'var(--vibe-accent, #ff6b57)' : 'var(--vibe-text, #1A1A1A)') : 'var(--vibe-text-muted, #9CA3AF)',
         transition: 'all .14s ease',
       }}
     >

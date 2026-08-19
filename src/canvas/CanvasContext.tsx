@@ -20,12 +20,23 @@
  * still work out-of-the-box (with a no-op/demo persona) before a tenant
  * supplies one.
  */
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
+import { warnPersonaStarterPrompts, warnVoiceGreetingConfig } from '../choreography';
+import { bootstrapSessionLocale } from '../i18n/bootstrapSessionLocale';
+import {
+  DEFAULT_VOICE_GREETING_MODE,
+  type VoiceGreetingMode,
+} from '../voice/greetingMode';
 
 /** Single starter-prompt chip rendered in the empty-state ChatPanel. */
 export interface CanvasStarterPrompt {
   emoji: string;
+  /** Prompt text sent to chat when the chip is activated. */
   text: string;
+  /** Optional shorter label for compact composer chips. */
+  label?: string;
+  /** When true, show pin affordance (widget / pinned-slot parity, P9). */
+  pin?: boolean;
 }
 
 /**
@@ -57,6 +68,12 @@ export interface CanvasPersona {
    * Optional opening line spoken on call start. Falsy = model decides.
    */
   voiceGreeting?: string;
+  /**
+   * D46 — who speaks first on voice connect. `agent-first` speaks
+   * `voiceGreeting` on connect; `user-first` opens in listening mode.
+   * Default: `agent-first`.
+   */
+  greetingMode?: VoiceGreetingMode;
   /**
    * Display name surfaced in UI labels (e.g. "{name} is speaking").
    * Default "Assistant"; tenants supply a persona name via config.
@@ -149,6 +166,7 @@ const DEFAULT_TENANT_CONFIG: CanvasTenantConfig = {
     systemPrompt:
       'You are a friendly, helpful assistant. Keep responses short and conversational since this is a voice call.',
     voiceGreeting: undefined,
+    greetingMode: DEFAULT_VOICE_GREETING_MODE,
     assistantName: 'Assistant',
     tenantTitle: 'AI Assistant',
     starterPrompts: [],
@@ -172,6 +190,8 @@ const CanvasContext = createContext<CanvasTenantConfig>(DEFAULT_TENANT_CONFIG);
  */
 export interface PartialCanvasTenantConfig {
   tenant?: string;
+  /** Session locale (BCP 47); used when React hosts mount without embed attributes. */
+  locale?: string;
   persona?: Partial<CanvasPersona>;
   labels?: Partial<CanvasLabels>;
   panelData?: CanvasPanelData;
@@ -195,8 +215,10 @@ export interface CanvasProviderProps {
  */
 export function CanvasProvider({ config, children }: CanvasProviderProps) {
   const tenant = config?.tenant;
+  const locale = config?.locale;
   const systemPrompt = config?.persona?.systemPrompt;
   const voiceGreeting = config?.persona?.voiceGreeting;
+  const greetingMode = config?.persona?.greetingMode;
   const assistantName = config?.persona?.assistantName;
   const tenantTitle = config?.persona?.tenantTitle;
   // starterPrompts is an array — depending on it directly in deps would
@@ -223,12 +245,35 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
   const pdGrowthPaths = config?.panelData?.growthPaths;
   const pdResources = config?.panelData?.resources;
   const pdFeaturedResource = config?.panelData?.featuredResource;
+  useEffect(() => {
+    bootstrapSessionLocale({ tenantLocale: locale });
+  }, [locale]);
+
+  useEffect(() => {
+    warnPersonaStarterPrompts(
+      {
+        assistantName,
+        voiceGreeting,
+        starterPrompts,
+      },
+      { tenant },
+    );
+    warnVoiceGreetingConfig(
+      {
+        voiceGreeting,
+        greetingMode,
+      },
+      { tenant },
+    );
+  }, [assistantName, voiceGreeting, greetingMode, starterPrompts, tenant]);
+
   const merged = useMemo<CanvasTenantConfig>(
     () => ({
       tenant: tenant ?? DEFAULT_TENANT_CONFIG.tenant,
       persona: {
         systemPrompt: systemPrompt ?? DEFAULT_TENANT_CONFIG.persona.systemPrompt,
         voiceGreeting: voiceGreeting ?? DEFAULT_TENANT_CONFIG.persona.voiceGreeting,
+        greetingMode: greetingMode ?? DEFAULT_TENANT_CONFIG.persona.greetingMode,
         assistantName: assistantName ?? DEFAULT_TENANT_CONFIG.persona.assistantName,
         tenantTitle: tenantTitle ?? DEFAULT_TENANT_CONFIG.persona.tenantTitle,
         starterPrompts: starterPrompts ?? DEFAULT_TENANT_CONFIG.persona.starterPrompts,
@@ -256,6 +301,7 @@ export function CanvasProvider({ config, children }: CanvasProviderProps) {
       tenant,
       systemPrompt,
       voiceGreeting,
+      greetingMode,
       assistantName,
       tenantTitle,
       starterPrompts,

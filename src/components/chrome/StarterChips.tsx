@@ -107,11 +107,11 @@ function StarterChip({ prompt, showPin, onClick }: StarterChipProps) {
         cursor: 'pointer',
         fontSize: 12.5,
         fontWeight: 500,
-        border: `1px solid ${hover ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 45%, transparent)': 'var(--vibe-border, #E5E5E5)'}`,
+        border: `1px solid ${hover ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 45%, transparent)' : 'var(--vibe-border, #E5E5E5)'}`,
         background: hover
           ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 10%, var(--vibe-surface, #F7F9F9))': 'var(--vibe-surface, #F7F9F9)',
         color: hover ? 'var(--vibe-accent, #ff6b57)': 'var(--vibe-text, #1A1A1A)',
-        transition: 'all.14s ease',
+        transition: 'all .14s ease',
       }}
     >
       <span aria-hidden style={{ fontSize: 14, lineHeight: 1 }}>
@@ -119,9 +119,9 @@ function StarterChip({ prompt, showPin, onClick }: StarterChipProps) {
       </span>
       <span>{label}</span>
       {showPin ? (
-        <Pin size={11} aria-hidden style={{ opacity: hover ? 1: 0.55 }} />
+        <Pin size={11} aria-hidden style={{ opacity: hover ? 1 : 0.55 }} />
       ): (
-        <Sparkles size={11} aria-hidden style={{ opacity: hover ? 1: 0.45 }} />
+        <Sparkles size={11} aria-hidden style={{ opacity: hover ? 1 : 0.45 }} />
       )}
     </button>
   );
@@ -153,9 +153,9 @@ function StarterCard({
         borderRadius: 12,
         cursor: 'pointer',
         textAlign: 'left',
-        background: hover ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 8%, var(--vibe-surface, #F7F9F9))': 'var(--vibe-surface, #F7F9F9)',
-        border: `1px solid ${hover ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 45%, transparent)': 'var(--vibe-border, #E5E5E5)'}`,
-        transition: 'all.15s ease',
+        background: hover ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 8%, var(--vibe-surface, #F7F9F9))' : 'var(--vibe-surface, #F7F9F9)',
+        border: `1px solid ${hover ? 'color-mix(in srgb, var(--vibe-accent, #ff6b57) 45%, transparent)' : 'var(--vibe-border, #E5E5E5)'}`,
+        transition: 'all .15s ease',
       }}
     >
       <span style={{ fontSize: 20, lineHeight: 1 }}>{prompt.emoji}</span>
@@ -169,7 +169,7 @@ function StarterCard({
       >
         {label}
       </span>
-      <Sparkles size={14} style={{ color: hover ? 'var(--vibe-accent, #ff6b57)': 'var(--vibe-text-muted, #9CA3AF)' }} />
+      <Sparkles size={14} style={{ color: hover ? 'var(--vibe-accent, #ff6b57)' : 'var(--vibe-text-muted, #9CA3AF)' }} />
     </button>
   );
 }

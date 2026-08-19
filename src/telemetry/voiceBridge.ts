@@ -1,5 +1,5 @@
 /**
- * Voice kernel → host.telemetry bridge ( ).
+ * Voice kernel → host.telemetry bridge (D55 / P15-T2).
  */
 import { ensureVoiceKernel, type VoiceState } from '../shared/voiceKernel';
 import { buildVoiceTelemetryEvent, type TelemetryEmit } from './emit';
@@ -50,14 +50,14 @@ function voiceErrorCodesForState(
  * Returns an unsubscribe function.
  */
 export function bindVoiceTelemetry(emit: TelemetryEmit): () => void {
-  const kernel = ensureVoiceKernel;
-  let previousState = kernel().voice.getSnapshot().state;
-  let sessionId = nextVoiceSessionId;
+  const kernel = ensureVoiceKernel();
+  let previousState = kernel.voice.getSnapshot().state;
+  let sessionId = nextVoiceSessionId();
 
-  return kernel().voice.subscribe((snapshot) => {
+  return kernel.voice.subscribe((snapshot) => {
     const outcome = mapVoiceTransition(previousState, snapshot.state);
     if (outcome === 'connected' && previousState === 'idle') {
-      sessionId = nextVoiceSessionId;
+      sessionId = nextVoiceSessionId();
     }
     previousState = snapshot.state;
 

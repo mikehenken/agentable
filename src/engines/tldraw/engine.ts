@@ -425,7 +425,8 @@ export function createWhiteboardEngine(
       });
       bound.setCamera(
         { x: clamped.x, y: clamped.y, z: clamped.zoom },
-        opts?.animate ? { animation: { duration: 350 } }: undefined);
+        opts?.animate ? { animation: { duration: 350 } } : undefined,
+      );
     },
 
     setMode(mode: CanvasMode): void {
@@ -450,7 +451,7 @@ export function createWhiteboardEngine(
         const contextRef = data.contextRef;
         records.push({
           panelId: panel.props.panelId,
-          contextId: typeof contextRef === 'string' ? contextRef: null,
+          contextId: typeof contextRef === 'string' ? contextRef : null,
           position: { x: panel.x, y: panel.y },
           size: { w: panel.props.w, h: panel.props.h },
           pinned: isPanelPinned(data),
@@ -493,7 +494,7 @@ export function createWhiteboardEngine(
             Math.max(bounds.y, viewport.y));
         const area = bounds.w * bounds.h;
         panelVisibility[panel.props.panelId] =
-          area > 0 ? (overlapW * overlapH) / area: 0;
+          area > 0 ? (overlapW * overlapH) / area : 0;
       }
       return {
         visibleRect: { x: viewport.x, y: viewport.y, w: viewport.w, h: viewport.h },

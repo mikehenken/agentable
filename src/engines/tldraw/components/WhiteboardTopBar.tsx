@@ -1,10 +1,10 @@
 /**
  * WhiteboardTopBar — slim chrome strip at the top of the whiteboard
  * route. Hosts:
- * - Persona title ("{assistantName} · {tenantTitle}")
- * - Auto-arrange + Reset canvas (config-driven visibility)
- * - VoiceChip (always-visible voice CTA when voice tool enabled)
- * - Maximize button (toggle document fullscreen)
+ *   - Persona title ("{assistantName} · {tenantTitle}")
+ *   - Auto-arrange + Reset canvas (config-driven visibility)
+ *   - VoiceChip (always-visible voice CTA when voice tool enabled)
+ *   - Maximize button (toggle document fullscreen)
  */
 import { useCallback, useEffect, useState, type CSSProperties, type ReactElement } from 'react';
 import { LayoutGrid, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, RotateCcw } from 'lucide-react';
@@ -64,17 +64,17 @@ export function WhiteboardTopBar({
   compact = false,
   darkCanvas = false,
 }: WhiteboardTopBarProps = {}): ReactElement {
-  const { persona } = useCanvasConfig;
+  const { persona } = useCanvasConfig();
   const assistantName = persona.assistantName ?? 'Assistant';
   const tenantTitle = persona.tenantTitle ?? 'AI Assistant';
   const avatarInitial = assistantName.charAt(0).toUpperCase() || 'A';
   const brandLogo = persona.brandLogo;
   const showHeaderPersona = persona.visual?.showInHeader === true && brandLogo === undefined;
   const headerPersonaType = persona.visual?.type ?? 'halo';
-  const hostChrome = useWhiteboardHostChrome;
+  const hostChrome = useWhiteboardHostChrome();
   const isCanvasExpanded = hostChrome?.().isCanvasExpanded ?? false;
   const useCanvasExpand = hostChrome?.().chrome.fullscreenMode === 'canvas-expand';
-  const isFullscreen = useCanvasExpand ? isCanvasExpanded: useDocumentFullscreenState;
+  const isFullscreen = useCanvasExpand ? isCanvasExpanded : useDocumentFullscreenState();
   const { state: personaState, level: personaLevel } = useAiPersonaState({
     preferAsleepWhenIdle: true,
   });
@@ -101,7 +101,7 @@ export function WhiteboardTopBar({
 
   const toggleFullscreen = useCallback(() => {
     if (useCanvasExpand && hostChrome !== null) {
-      hostChrome().toggleCanvasExpand();
+      hostChrome.toggleCanvasExpand();
       return;
     }
     if (typeof document === 'undefined') return;
@@ -114,28 +114,28 @@ export function WhiteboardTopBar({
   }, [hostChrome, useCanvasExpand]);
 
   const handleAutoArrange = useCallback(() => {
-    const editor = getEditor;
+    const editor = getEditor();
     if (!editor) return;
-    autoArrangeWhiteboardPanels(editor());
+    autoArrangeWhiteboardPanels(editor);
   }, []);
 
   const handleResetCanvas = useCallback(() => {
-    const editor = getEditor;
+    const editor = getEditor();
     if (!editor) return;
-    resetWhiteboardLayout(editor(), { openChat: true, resetCamera: true });
+    resetWhiteboardLayout(editor, { openChat: true, resetCamera: true });
   }, []);
 
   return (
     <header
       data-testid="whiteboard-top-bar"
-      data-compact={compact ? 'true': 'false'}
+      data-compact={compact ? 'true' : 'false'}
       style={{
         height: 48,
         flex: '0 0 48px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: compact ? '0 8px': '0 16px',
+        padding: compact ? '0 8px' : '0 16px',
         gap: 8,
         borderBottom: `1px solid ${headerBorder}`,
         background: headerBackground,
@@ -148,7 +148,7 @@ export function WhiteboardTopBar({
           display: 'flex',
           alignItems: 'center',
           gap: 8,
-          fontSize: compact ? 12: 14,
+          fontSize: compact ? 12 : 14,
           fontWeight: 600,
           color: headerText,
           minWidth: 0,
@@ -168,7 +168,7 @@ export function WhiteboardTopBar({
               objectFit: 'contain',
             }}
           />
-        ): showHeaderPersona ? (
+        ) : showHeaderPersona ? (
           <AiPersona
             type={headerPersonaType}
             state={personaState}
@@ -200,7 +200,7 @@ export function WhiteboardTopBar({
           </span>
         )}
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {compact ? assistantName: `${assistantName} · ${tenantTitle}`}
+          {compact ? assistantName : `${assistantName} · ${tenantTitle}`}
         </span>
       </div>
 
@@ -208,9 +208,9 @@ export function WhiteboardTopBar({
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: compact ? 4: 8,
+          gap: compact ? 4 : 8,
           flexShrink: 0,
-          maxWidth: compact ? '58%': 'none',
+          maxWidth: compact ? '58%' : 'none',
           overflowX: 'auto',
         }}
       >
@@ -222,7 +222,7 @@ export function WhiteboardTopBar({
             title="Auto-arrange panels"
             aria-label="Auto-arrange panels"
             style={{...chromeButtonStyle,
-              padding: compact ? '6px': chromeButtonStyle.padding,
+              padding: compact ? '6px' : chromeButtonStyle.padding,
             }}
           >
             <LayoutGrid size={14} />
@@ -239,7 +239,7 @@ export function WhiteboardTopBar({
             title="Reset canvas"
             aria-label="Reset canvas"
             style={{...chromeButtonStyle,
-              padding: compact ? '6px': chromeButtonStyle.padding,
+              padding: compact ? '6px' : chromeButtonStyle.padding,
             }}
           >
             <RotateCcw size={14} />
@@ -253,26 +253,26 @@ export function WhiteboardTopBar({
             type="button"
             data-testid="operator-rail-expand"
             onClick={toggleOperatorRail}
-            title={operatorRailCollapsed ? 'Expand operator rail': 'Collapse operator rail'}
-            aria-label={operatorRailCollapsed ? 'Expand operator rail': 'Collapse operator rail'}
+            title={operatorRailCollapsed ? 'Expand operator rail' : 'Collapse operator rail'}
+            aria-label={operatorRailCollapsed ? 'Expand operator rail' : 'Collapse operator rail'}
             style={{...chromeButtonStyle,
-              padding: compact ? '6px': chromeButtonStyle.padding,
+              padding: compact ? '6px' : chromeButtonStyle.padding,
             }}
           >
-            {operatorRailCollapsed ? <PanelLeftOpen size={14} />: <PanelLeftClose size={14} />}
+            {operatorRailCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
             {!compact ? (
               <span style={{ fontSize: 12, fontWeight: 500 }}>
-                {operatorRailCollapsed ? 'Operator': 'Hide operator'}
+                {operatorRailCollapsed ? 'Operator' : 'Hide operator'}
               </span>
             ): null}
           </button>
         ): null}
-        {showVoice ? <VoiceChip />: null}
+        {showVoice ? <VoiceChip /> : null}
         <button
           type="button"
           onClick={toggleFullscreen}
-          aria-label={isFullscreen ? 'Exit fullscreen': 'Enter fullscreen'}
-          title={isFullscreen ? 'Exit fullscreen': 'Maximize'}
+          aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          title={isFullscreen ? 'Exit fullscreen' : 'Maximize'}
           style={{
             width: 32,
             height: 32,
@@ -288,7 +288,7 @@ export function WhiteboardTopBar({
             flexShrink: 0,
           }}
         >
-          {isFullscreen ? <Minimize2 size={14} />: <Maximize2 size={14} />}
+          {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
         </button>
       </div>
     </header>
@@ -300,9 +300,9 @@ function useDocumentFullscreenState(): boolean {
     typeof document !== 'undefined' && Boolean(document.fullscreenElement));
   useEffect(() => {
     if (typeof document === 'undefined') return undefined;
-    const sync = ()=> setIsFs(Boolean(document.fullscreenElement));
+    const sync = () => setIsFs(Boolean(document.fullscreenElement));
     document.addEventListener('fullscreenchange', sync);
-    return ()=> document.removeEventListener('fullscreenchange', sync);
+    return () => document.removeEventListener('fullscreenchange', sync);
   }, []);
   return isFs;
 }

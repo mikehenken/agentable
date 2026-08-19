@@ -1,5 +1,5 @@
 /**
- * Career whiteboard canvas + toolbar defaults (Moss Sandals ).
+ * Career whiteboard canvas + toolbar defaults (Moss / Sandals / STUDY-015).
  *
  * Hosts may override via embed config (`canvasZoom`, `toolbar`) or React
  * `WhiteboardShell` props (`mode`, `toolbarConfig`).
@@ -25,7 +25,7 @@ export const DEFAULT_CAREER_BOUNDED_MODE: CanvasMode = {
   zoom: 'locked',
 };
 
-/** Embed attribute config-url fields for career hosts. */
+/** Embed attribute / config-url fields for career hosts. */
 export const DEFAULT_CAREER_EMBED_CANVAS_ATTRS = {
   canvasMode: 'bounded',
   canvasBounds: '1200x800',

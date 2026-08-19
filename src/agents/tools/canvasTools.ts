@@ -57,7 +57,7 @@ function showPanel(id: string, source: string): ToolResult {
   openPanelInCanvas(id, { focus: true, preserveZoom: true });
   return {
     ok: true,
-    result: `Opened ${id} panel${source ? ` (via ${source})`: ''}.`,
+    result: `Opened ${id} panel${source ? ` (via ${source})` : ''}.`,
   };
 }
 
@@ -131,7 +131,7 @@ export const CANVAS_TOOLS: readonly ToolDefinition[] = [
         id: `art-${Date.now().toString(36)}`,
         name,
         content,
-        kind: typeof kind === 'string' ? kind: 'note',
+        kind: typeof kind === 'string' ? kind : 'note',
         createdAt: new Date().toISOString(),
       });
       const panelResult = showPanel('artifacts', 'tool');
@@ -162,7 +162,7 @@ export const CANVAS_TOOLS: readonly ToolDefinition[] = [
       if (typeof query !== 'string' || query.trim().length < 3) {
         return { ok: false, error: 'query must be a string of at least 3 chars' };
       }
-      const k = Math.min(10, Math.max(1, typeof topK === 'number' ? topK: 6));
+      const k = Math.min(10, Math.max(1, typeof topK === 'number' ? topK : 6));
       const endpoint = (import.meta.env.VITE_KNOWLEDGE_SEARCH_URL as string | undefined)?.trim();
       if (!endpoint) {
         return {
@@ -222,7 +222,7 @@ function resolveActiveTools(): readonly ToolDefinition[] {
   return filterCoreToolsForCareerRouting(merged);
 }
 
-/** Tools offered to models and voice/chat clients ( engine draw gate). */
+/** Tools offered to models and voice/chat clients (D41 engine draw gate). */
 function resolveOfferedTools(): readonly ToolDefinition[] {
   const offers = gateToolsForEngineCapabilities(
     resolveActiveTools(),

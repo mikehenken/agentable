@@ -92,7 +92,7 @@ interface InitialGridSlot {
 
 /**
  * Fixed initial layout on the 12-column grid (chat excluded when dockChatLeft):
- * Row 0: [Brief? 3] [Preview flex] [Files 3]
+ *   Row 0: [Brief? 3] [Preview flex] [Files 3]
  */
 function buildInitialGridSlots(options: {
   includeChat: boolean;
@@ -125,11 +125,11 @@ function buildInitialGridSlots(options: {
   }
 
   const filesSpan = getPanelGridSpan('file-manager');
-  const filesCol = includeFiles ? GRID_COLUMNS - filesSpan.colSpan: GRID_COLUMNS;
+  const filesCol = includeFiles ? GRID_COLUMNS - filesSpan.colSpan : GRID_COLUMNS;
 
   if (includePreview) {
     const previewSpan = getPanelGridSpan('web-preview');
-    const endCol = includeFiles ? filesCol: GRID_COLUMNS;
+    const endCol = includeFiles ? filesCol : GRID_COLUMNS;
     const maxAvailable = endCol - col;
     const colSpan = includeFiles
       ? maxAvailable: Math.max(previewSpan.colSpan, maxAvailable);
@@ -155,7 +155,7 @@ function placementFromGridSlot(
   slot: InitialGridSlot,
   snapGrid: boolean): ContextFramePanelPlacement {
   const rect = gridPlacementToRect(spec, origin, slot.placement, snapGrid);
-  return { panelId: slot.panelId,...rect };
+  return { panelId: slot.panelId, ...rect };
 }
 
 /**
@@ -177,8 +177,8 @@ export function computeInitialContextFrameLayout(
     snapGrid = true,
   } = options;
 
-  const originX = snapGrid ? snapToGrid(anchor.x): anchor.x;
-  const originY = snapGrid ? snapToGrid(anchor.y): anchor.y;
+  const originX = snapGrid ? snapToGrid(anchor.x) : anchor.x;
+  const originY = snapGrid ? snapToGrid(anchor.y) : anchor.y;
   const placements: ContextFramePanelPlacement[] = [];
 
   let gridOriginX = originX;
@@ -277,7 +277,7 @@ export function defaultSitePanelSize(panelId: string): { w: number; h: number } 
 }
 
 /**
- * Viewport-aware default panel size for career Sandals whiteboard embeds.
+ * Viewport-aware default panel size for career / Sandals whiteboard embeds.
  * Scales with viewport tier (mobile / tablet / desktop) via
  * `computeResponsiveWhiteboardPanelSize`.
  */
@@ -329,8 +329,8 @@ export function computePanelPlacementInContextFrame(
     GRID_COLUMNS * GRID_SIZE,
     frameBounds.w - innerPadding * 2);
   const origin = {
-    x: snapGrid ? snapToGrid(innerLeft): innerLeft,
-    y: snapGrid ? snapToGrid(innerTop): innerTop,
+    x: snapGrid ? snapToGrid(innerLeft) : innerLeft,
+    y: snapGrid ? snapToGrid(innerTop) : innerTop,
   };
 
   const spec = createGridSpec(innerWidth);

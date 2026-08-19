@@ -92,7 +92,7 @@ export function createMockVoiceClient(
 ): VoiceClient {
   const speed = options.speed ?? 1;
   const loop = options.loop ?? true;
-  // Greeting precedence: explicit scenario greeting wins (test authors
+  // Greeting precedence: explicit scenario greeting wins (test authors),
   // usually mean it), persona greeting fills in when scenario is silent.
   const baseScenario = options.scenario ?? DEFAULT_SCENARIO;
   const scenario: MockVoiceScenario = baseScenario.greeting

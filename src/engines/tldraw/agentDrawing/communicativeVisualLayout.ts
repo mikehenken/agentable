@@ -1,5 +1,5 @@
 /**
- * Deterministic auto-layout for agent communicative visuals.
+ * Deterministic auto-layout for agent communicative visuals (D41, P8-T5).
  *
  * Pure functions: identical diagram + mode + bounds always yield the same
  * node positions. Agents supply logical structure only.
@@ -37,7 +37,7 @@ export interface DiagramLayoutResult {
 }
 
 /**
- * Fallback minimum node footprint. Individual nodes size themselves to
+ * Fallback / minimum node footprint. Individual nodes size themselves to
  * their own label via `estimateNodeSize` below; these constants remain the
  * floor for very short labels and the baseline other layout math (gaps,
  * radial radius) scales from.
@@ -56,7 +56,7 @@ export const NESTED_TOP_LEVEL_GAP = 96;
 const TWO_PI = Math.PI * 2;
 
 /**
- * Label-fitted node sizing ( follow-up).
+ * Label-fitted node sizing (P8-T5 follow-up).
  *
  * Every layout mode used to place every node at the same fixed
  * `DIAGRAM_NODE_WIDTH` x `DIAGRAM_NODE_HEIGHT` box regardless of label
@@ -105,7 +105,7 @@ export const ELLIPSE_LABEL_WIDTH_FACTOR = 1.4;
 export function estimateNodeSize(
   label: string,
   kind: 'box' | 'ellipse' | 'container' = 'box'): EstimatedNodeSize {
-  const widthFactor = kind === 'ellipse' ? ELLIPSE_LABEL_WIDTH_FACTOR: 1;
+  const widthFactor = kind === 'ellipse' ? ELLIPSE_LABEL_WIDTH_FACTOR : 1;
   const length = Math.max(1, label.trim().length || 1);
   const singleLineWidth = length * NODE_CHAR_WIDTH_ESTIMATE * widthFactor + NODE_HORIZONTAL_PADDING;
   // The box must hold its longest word on one line: tldraw wraps between
@@ -333,7 +333,7 @@ function layoutTimeline(
   // A vertical column reads as one list, so every box shares the widest
   // node's width (uniform column) while each box keeps its own height (a
   // wrapped label grows its own row without stretching every other row).
-  const columnWidth = Math.max(DIAGRAM_NODE_WIDTH,...sizes.map((size) => size.w));
+  const columnWidth = Math.max(DIAGRAM_NODE_WIDTH, ...sizes.map((size) => size.w));
   const positioned: PositionedDiagramNode[] = [];
   let cursorY = 0;
   for (let index = 0; index < nodes.length; index += 1) {
@@ -382,7 +382,7 @@ function layoutRadial(
     (max, size) => Math.max(max, size.w, size.h),
     DIAGRAM_NODE_WIDTH);
   const sizeExcess = Math.max(0, maxOrbitDim - DIAGRAM_NODE_WIDTH);
-  const circumferenceFloor = orbitCount > 1 ? (maxOrbitDim * 1.4 * orbitCount) / TWO_PI: 0;
+  const circumferenceFloor = orbitCount > 1 ? (maxOrbitDim * 1.4 * orbitCount) / TWO_PI : 0;
   // A labeled spoke needs enough open run between the hub border and the
   // orbit border for its label pill; otherwise the pill lands on a box.
   // Half-diagonals, not half-widths: on a diagonal spoke a box eats into
@@ -395,7 +395,7 @@ function layoutRadial(
   const orbitHalfDiagonal =
     orbitSizes.reduce((max, size) => Math.max(max, Math.hypot(size.w, size.h)), 0) / 2;
   const labelFloor =
-    maxSpokeLabel > 0 ? centerHalfDiagonal + orbitHalfDiagonal + maxSpokeLabel + 16: 0;
+    maxSpokeLabel > 0 ? centerHalfDiagonal + orbitHalfDiagonal + maxSpokeLabel + 16 : 0;
   const radius = Math.max(
     DIAGRAM_RADIAL_RADIUS + sizeExcess * 1.2,
     circumferenceFloor,
@@ -404,7 +404,7 @@ function layoutRadial(
   for (let index = 0; index < orbitNodes.length; index += 1) {
     const node = orbitNodes[index]!;
     const size = orbitSizes[index]!;
-    const angle = orbitCount <= 1 ? -Math.PI / 2: (TWO_PI * index) / orbitCount - Math.PI / 2;
+    const angle = orbitCount <= 1 ? -Math.PI / 2 : (TWO_PI * index) / orbitCount - Math.PI / 2;
     const cx = radius * Math.cos(angle);
     const cy = radius * Math.sin(angle);
     positioned.push({
@@ -501,7 +501,7 @@ function offsetNestedNodes(
 }
 
 /**
- * Nested layered layout for VPC, cloud, and architecture diagrams.
+ * Nested / layered layout for VPC, cloud, and architecture diagrams.
  * Top-level nodes (no parentId) form horizontal columns; container nodes
  * auto-size recursively to fit vertically stacked children with NESTED_PADDING.
  */
@@ -627,8 +627,8 @@ export function rectEdgeAnchor(
     return center;
   }
   // Scale the direction vector so it just reaches the boundary.
-  const scaleX = dx !== 0 ? rect.w / 2 / Math.abs(dx): Infinity;
-  const scaleY = dy !== 0 ? rect.h / 2 / Math.abs(dy): Infinity;
+  const scaleX = dx !== 0 ? rect.w / 2 / Math.abs(dx) : Infinity;
+  const scaleY = dy !== 0 ? rect.h / 2 / Math.abs(dy) : Infinity;
   const scale = Math.min(scaleX, scaleY);
   const length = Math.hypot(dx, dy);
   const gapScale = EDGE_ANCHOR_GAP / length;
@@ -681,7 +681,7 @@ export function routeEdge(
   let bend = 0;
   if (axis !== null && intermediates.length > 0) {
     const maxPerp = intermediates.reduce(
-      (max, rect) => Math.max(max, axis === 'x' ? rect.h: rect.w),
+      (max, rect) => Math.max(max, axis === 'x' ? rect.h : rect.w),
       0);
     if (maxPerp > 0) {
       bend = -(maxPerp / 2 + SKIP_EDGE_ARC_MARGIN);

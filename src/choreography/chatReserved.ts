@@ -21,6 +21,6 @@ export function chatPanelLayoutObstacle(
     x: chat.x ?? 0,
     y: chat.y ?? 0,
     w: chat.w ?? 400,
-    h: minimized ? 44: (chat.h ?? 400),
+    h: minimized ? 44 : (chat.h ?? 400),
   };
 }

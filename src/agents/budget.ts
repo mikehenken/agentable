@@ -1,5 +1,5 @@
 /**
- * Shared agent budget signal: spend counters and costClass checks
+ * Shared agent budget signal (D23, D43): spend counters and costClass checks
  * so job-class starts can surface a warning approval note when expensive.
  */
 import type { ToolCostClass } from '../panels/tools';
@@ -25,7 +25,7 @@ export type BudgetCheckResult =
 
 export interface AgentBudgetSignal {
   readonly spent: number;
-  remaining: number;
+  remaining(): number;
   record(spend: Omit<BudgetSpendRecord, 'at'> & { at?: number }): BudgetSpendRecord;
   /**
    * Check whether a capability of the given costClass may start.
@@ -70,17 +70,17 @@ export function createAgentBudget(options?: {
         capability: spend.capability,
         costClass: spend.costClass,
         units: spend.units,
-        at: spend.at ?? now,
+        at: spend.at ?? now(),
       };
       spent += spend.units;
       records.push(entry);
-      return {...entry };
+      return { ...entry };
     },
 
     checkCostClass(costClass: ToolCostClass, units?: number): BudgetCheckResult {
       const requested =
         units ??
-        (costClass === 'expensive' ? EXPENSIVE_DEFAULT_UNITS: CHEAP_DEFAULT_UNITS);
+        (costClass === 'expensive' ? EXPENSIVE_DEFAULT_UNITS : CHEAP_DEFAULT_UNITS);
       const left = remaining();
       if (requested > left) {
         return {
@@ -101,8 +101,8 @@ export function createAgentBudget(options?: {
     },
 
     history(limit?: number): readonly BudgetSpendRecord[] {
-      const slice = limit === undefined ? records: records.slice(-limit);
-      return slice.map((entry) => ({...entry }));
+      const slice = limit === undefined ? records : records.slice(-limit);
+      return slice.map((entry) => ({ ...entry }));
     },
 
     reset(): void {

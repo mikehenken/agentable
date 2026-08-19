@@ -1,5 +1,5 @@
 /**
- * Host chrome for career marketing whiteboard embeds — frame sizing,
+ * Host chrome for career / marketing whiteboard embeds — frame sizing,
  * figure-ground border, and canvas-only expand (not document fullscreen).
  */
 

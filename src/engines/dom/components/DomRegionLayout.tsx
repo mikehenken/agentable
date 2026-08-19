@@ -132,7 +132,7 @@ export function DomRegionLayout({
   renderPanel,
   resolvePanelLabel,
 }: DomRegionLayoutProps): ReactElement {
-  const { isCompact } = useDomBreakpoint;
+  const { isCompact } = useDomBreakpoint();
   const defaultLayout = buildDefaultSplitLayout(snapshot.sidebarSplit);
 
   const handleSplitLayoutChanged = useCallback(

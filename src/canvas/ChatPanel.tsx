@@ -217,7 +217,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
             role: detail.role,
             text: detail.text,
             source: 'voice',
-            createdAt: detail.timestamp,
+          createdAt: detail.timestamp,
           },
         ];
       });
@@ -613,7 +613,7 @@ function StarterCard({ emoji, text, onClick }: { emoji: string; text: string; on
         gap: 12,
         width: '100%',
         padding: '12px 14px',
-        borderRadius: 12,
+                      borderRadius: 12,
         cursor: 'pointer',
         textAlign: 'left',
         background: hover ? 'color-mix(in srgb, var(--vibe-accent) 8%, #1a1a1a)' : '#1a1a1a',

@@ -182,7 +182,7 @@ export class AgentableCanvasElement extends LitElement {
     if (this.hasAttribute('data-skip-react-mount')) {
       return;
     }
-    this._mountReact();
+        this._mountReact();
   }
 
   updated(changed: Map<string, unknown>): void {

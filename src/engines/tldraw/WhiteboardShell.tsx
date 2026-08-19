@@ -10,16 +10,16 @@
  * Kept for career-demo backward compatibility only.
  *
  * Toolbar:
- * Prefer `toolbarConfig` (typed whitelist + order + layout actions).
- * Legacy `enableVoiceTool` / `enableLayersPanel` / `enableContextActionsTool`
- * still map into the resolved config.
+ *   Prefer `toolbarConfig` (typed whitelist + order + layout actions).
+ *   Legacy `enableVoiceTool` / `enableLayersPanel` / `enableContextActionsTool`
+ *   still map into the resolved config.
  *
  * Persistence:
- * `<Tldraw persistenceKey="...">` writes to IndexedDB automatically.
+ *   `<Tldraw persistenceKey="...">` writes to IndexedDB automatically.
  *
  * Editor binding:
- * On mount we call `bindEditor(editor)` so imperative `panelShapeApi`
- * drivers (canvasTools, voice) can spawn panels from non-React contexts.
+ *   On mount we call `bindEditor(editor)` so imperative `panelShapeApi`
+ *   drivers (canvasTools, voice) can spawn panels from non-React contexts.
  */
 import {
   useCallback,
@@ -180,7 +180,7 @@ export interface WhiteboardShellProps {
   openChatOnMount?: boolean;
   /**
    * When true, purge chat PanelShape on mount and block chat panel recreation
-   * ( example 13 — operator rail is the sole chat surface).
+   * (P13-T7 example 13 — operator rail is the sole chat surface).
    */
   suppressCanvasChat?: boolean;
   /**
@@ -422,7 +422,7 @@ function WhiteboardShellInner({
     if (!showNavSidebar) return;
     const width =
       shellRootRef.current?.clientWidth ??
-      (typeof window !== 'undefined' ? window.innerWidth: 1280);
+      (typeof window !== 'undefined' ? window.innerWidth : 1280);
     if (shouldExpandWhiteboardNav(width)) {
       useLayoutStore.getState().setNavSidebarExpanded(true);
     }
@@ -503,8 +503,8 @@ function WhiteboardShellInner({
   usePanelStacking(boundEditor);
 
   const shellClassName = [
-    darkCanvas ? 'whiteboard-shell--vibe-dark': undefined,
-    viewportChrome.compactChrome ? 'whiteboard-shell--compact': undefined,
+    darkCanvas ? 'whiteboard-shell--vibe-dark' : undefined,
+    viewportChrome.compactChrome ? 'whiteboard-shell--compact' : undefined,
   ].filter(Boolean).join(' ');
   const shellBackground = darkCanvas
     ? VIBE_CANVAS_BG: 'var(--landi-color-background, #F0F0EC)';
@@ -525,7 +525,7 @@ function WhiteboardShellInner({
         navExpanded,
         showNavSidebar,
       });
-      // focus + preserveZoom: pan chat into view without aggressive zoom - career embeds must show Sandy welcome/starters on load, not an empty
+      // focus + preserveZoom: pan chat into view without aggressive zoom - // career embeds must show Sandy welcome/starters on load, not an empty
       // viewport that would otherwise surface tldraw "Back to content".
       openPanelInCanvas('chat', {
         focus: true,
@@ -551,7 +551,7 @@ function WhiteboardShellInner({
       closeNavPanelsExcept(panelId, navPanelIds);
     }
 
-    const editor = editorRef.current;
+          const editor = editorRef.current;
     const stackMode = resolvedNavChrome.panelMode === 'stack';
     let openOptions: Parameters<typeof openPanelInCanvas>[1] = {
       focus: true,
@@ -576,7 +576,8 @@ function WhiteboardShellInner({
         sized.w,
         sized.h,
         viewport,
-        snapGrid);
+        snapGrid,
+      );
       openOptions = {...openOptions,
         position: placed,
         size: sized,
@@ -716,7 +717,7 @@ function WhiteboardShellInner({
               composed: true,
             }));
         } catch (error) {
-          const message = error instanceof Error ? error.message: String(error);
+          const message = error instanceof Error ? error.message : String(error);
           window.dispatchEvent(
             new CustomEvent('landi:tool-call', {
               detail: {
@@ -830,7 +831,7 @@ function WhiteboardShellInner({
           const viewportCorrupted = isViewportPageBoundsCorrupted(viewport);
           const margin = 24;
           const zoomNow = editor.getZoomLevel();
-          const toolbarPageNow = zoomNow > 0 ? TOOLBAR_CLEARANCE_PX / zoomNow: 0;
+          const toolbarPageNow = zoomNow > 0 ? TOOLBAR_CLEARANCE_PX / zoomNow : 0;
           const shapeScreenW = (maxX - minX) * zoomNow;
           const shapeScreenH = (maxY - minY) * zoomNow;
           const MIN_LEGIBLE_SCREEN_W = 240;
@@ -877,7 +878,7 @@ function WhiteboardShellInner({
       data-testid="whiteboard-shell"
       data-layout={layout}
       data-canvas-mode={mode.kind}
-      data-compact={viewportChrome.compactChrome ? 'true': 'false'}
+      data-compact={viewportChrome.compactChrome ? 'true' : 'false'}
       data-viewport-width={Math.round(viewportChrome.width)}
       style={{
         display: 'flex',
@@ -892,15 +893,15 @@ function WhiteboardShellInner({
       }}
     >
       <WhiteboardCanvasFrame chrome={resolvedHostChrome} shellBackground={shellBackground}>
-      {resolvedToolbar.enableVoiceTool ? <WhiteboardVoiceMount />: null}
+      {resolvedToolbar.enableVoiceTool ? <WhiteboardVoiceMount /> : null}
       {!hideTopBar ? (
         <WhiteboardTopBar
           toolbar={resolvedToolbar}
           compact={viewportChrome.compactChrome}
           darkCanvas={darkCanvas}
         />
-      ): null}
-      {isInfinitePanels ? <WhiteboardCommandPalette layout={layout} />: null}
+      ) : null}
+      {isInfinitePanels ? <WhiteboardCommandPalette layout={layout} /> : null}
 
       {isInfinitePanels ? (
         <CanvasChromeProvider
@@ -912,7 +913,7 @@ function WhiteboardShellInner({
         >
           <div
             data-testid="whiteboard-tldraw-viewport"
-            className={`whiteboard-tldraw-viewport${fullpageEngage.isEngaged ? ' whiteboard-tldraw-viewport--engaged': ''}`}
+            className={`whiteboard-tldraw-viewport${fullpageEngage.isEngaged ? ' whiteboard-tldraw-viewport--engaged' : ''}`}
             style={{
               position: 'relative',
               flex: 1,

@@ -7,16 +7,16 @@
  * modality.
  *
  * Lifecycle:
- * - WhiteboardShell mounts → calls bindEditor(editor)
- * - Tools call openPanelInCanvas(...) — shape is created/updated
- * - WhiteboardShell unmounts → calls unbindEditor
+ *   - WhiteboardShell mounts → calls bindEditor(editor)
+ *   - Tools call openPanelInCanvas(...) — shape is created/updated
+ *   - WhiteboardShell unmounts → calls unbindEditor()
  *
  * Pending-request queue:
- * The canvas chunk is lazy-loaded; tool calls can fire before the editor
- * is bound (especially the voice path, where the agent's first turn
- * might arrive within ~200ms of `voiceKernel.start` while the tldraw
- * chunk is still streaming). Requests landing in that window are queued
- * and flushed on bindEditor — the agent never silently drops a tool call.
+ *   The canvas chunk is lazy-loaded; tool calls can fire before the editor
+ *   is bound (especially the voice path, where the agent's first turn
+ *   might arrive within ~200ms of `voiceKernel.start()` while the tldraw
+ *   chunk is still streaming). Requests landing in that window are queued
+ *   and flushed on bindEditor — the agent never silently drops a tool call.
  *
  * No React imports here intentionally — this module is consumed from
  * non-React contexts (canvasTools, voiceKernel callbacks) so it must
@@ -86,7 +86,7 @@ export interface OpenPanelOptions {
   assignToSiteGroup?: boolean;
   /** Optional agency id for nesting site frames under an agency workspace frame. */
   agencyId?: string | null;
-  /** When true, re-run default placement for an existing shape (nav tool reopen). */
+  /** When true, re-run default placement for an existing shape (nav / tool reopen). */
   reposition?: boolean;
   /** Human-readable site label for the context frame heading. */
   siteLabel?: string;
@@ -146,7 +146,7 @@ export function getEditor(): Editor | null {
   return editorRef;
 }
 
-/** Gallery/operator verification helper — inspect bound editor store ( iter-9). */
+/** Gallery/operator verification helper — inspect bound editor store (P13-T7 iter-9). */
 export function inspectBoundEditorStore(createdShapeIds: readonly string[] = []): {
   bound: boolean;
   pageShapeCount: number;
@@ -251,8 +251,8 @@ export function minimizeNavPanelsExcept(
   let changed = 0;
   for (const panelId of navPanelIds) {
     if (panelId === activePanelId || panelId === 'chat') continue;
-    const id = createShapeId(`panel:${panelId}`);
-    const existing = editor.getShape(id);
+  const id = createShapeId(`panel:${panelId}`);
+  const existing = editor.getShape(id);
     if (!existing) continue;
     const minimized = (existing.props as { minimized?: boolean }).minimized === true;
     if (minimized) continue;
@@ -345,7 +345,7 @@ export function groupPanelsInCanvas(
 }
 
 /**
- * Promote an ephemeral composed spec to persisted `__spec`. Returns
+ * Promote an ephemeral composed spec to persisted `__spec` (D13). Returns
  * false when the panel is missing or has nothing ephemeral to pin.
  */
 export function pinPanelInCanvas(panelId: string): boolean {
@@ -358,7 +358,7 @@ export function pinPanelInCanvas(panelId: string): boolean {
   const ephemeral = readEphemeralComposedSpec(prev);
   if (ephemeral === null) return false;
   const pinnedPatch = buildPinnedShapePatch(ephemeral);
-  const next: Record<string, unknown> = {...prev,...pinnedPatch };
+  const next: Record<string, unknown> = { ...prev, ...pinnedPatch };
   delete next.__composedSpec;
   editor.updateShape({
     id,
@@ -399,7 +399,7 @@ export function updatePanelProps(
     id,
     type: 'panel',
     props: {...(existing.props as Record<string, unknown>),
-      data: {...prev,...patch },
+      data: { ...prev, ...patch },
     },
   });
   return true;
@@ -446,7 +446,7 @@ function ensureCareerPanelBesideChatTopRow(
   panelId: string,
   snapGrid: boolean): boolean {
   if (isCanvasGlobalPanel(panelId) || !getWhiteboardListPanelIds().has(panelId)) {
-    return false;
+      return false;
   }
 
   const chatBounds = getChatPanelBounds(editor);
@@ -494,12 +494,12 @@ function computePlacement(
   const h = options.size?.h ?? defaults.h;
 
   if (options.position && options.size) {
-    const rect = {...options.position,...options.size };
+    const rect = { ...options.position, ...options.size };
     return snapGrid ? snapRect(rect): rect;
   }
 
-   // Canvas-global panels (e.g. all-sites) always open in free canvas — never
-   // inside a site context frame via selection-based insertion.
+  // Canvas-global panels (e.g. all-sites) always open in free canvas — never
+  // inside a site context frame via selection-based insertion.
   if (isCanvasGlobalPanel(panelId) && !options.position) {
     const free = getFreeCanvasViewportConfig(editor);
     const rect = {
@@ -512,7 +512,7 @@ function computePlacement(
   }
 
   const siteContext =
-    isCanvasGlobalPanel(panelId) ? null: resolveInsertionContextFrame(editor, options.panelProps);
+    isCanvasGlobalPanel(panelId) ? null : resolveInsertionContextFrame(editor, options.panelProps);
   if (siteContext && !options.position) {
     const { x, y } = computePanelPlacementInContextFrame(editor, siteContext, { w, h }, {
       snapGrid,
@@ -568,10 +568,10 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
   if (!existing) {
     const place = computePlacement(editor, panelId, options);
     const contextRef =
-      (options.panelProps?.contextRef as string | undefined) ?? getActiveContextRef ?? undefined;
+      (options.panelProps?.contextRef as string | undefined) ?? getActiveContextRef() ?? undefined;
     const baseData = {...(options.panelProps ?? {}),...(contextRef ? { contextRef }: {}),
     };
-    const panelData = options.chrome ? withPanelChrome(baseData, options.chrome): baseData;
+    const panelData = options.chrome ? withPanelChrome(baseData, options.chrome) : baseData;
     editor.createShape({
       id,
       type: 'panel',
@@ -588,7 +588,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
     bringPanelShapeToFront(editor, id);
 
     const assignToSiteGroup =
-      isCanvasGlobalPanel(panelId) ? false: (options.assignToSiteGroup ?? true);
+      isCanvasGlobalPanel(panelId) ? false : (options.assignToSiteGroup ?? true);
     const siteId = resolveContextIdFromPanelData(panelData);
     if (assignToSiteGroup && siteId) {
       assignPanelsToSiteGroup(editor, [panelId], siteId, {
@@ -599,8 +599,8 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
     }
   } else {
     const prev = (existing.props as { data?: Record<string, unknown> }).data ?? {};
-    const patched = options.panelProps ? {...prev,...options.panelProps }: prev;
-    const mergedData = options.chrome ? withPanelChrome(patched, options.chrome): patched;
+    const patched = options.panelProps ? { ...prev, ...options.panelProps } : prev;
+    const mergedData = options.chrome ? withPanelChrome(patched, options.chrome) : patched;
     const hasForcedLayout = Boolean(options.position && options.size);
     const shouldReposition = options.reposition === true;
 
@@ -619,7 +619,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         },
       });
     } else if (options.panelProps || options.chrome) {
-       // Existing shape — apply any prop patch (e.g. selectedJobId update).
+      // Existing shape — apply any prop patch (e.g. selectedJobId update).
       editor.updateShape({
         id,
         type: 'panel',
@@ -629,16 +629,16 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         },
       });
     } else if ((existing.props as { minimized?: boolean }).minimized) {
-       // Re-expand a minimised shape so a second tool call rehydrates it.
+      // Re-expand a minimised shape so a second tool call rehydrates it.
       editor.updateShape({
         id,
         type: 'panel',
-        props: {...(existing.props as Record<string, unknown>), minimized: false },
+        props: { ...(existing.props as Record<string, unknown>), minimized: false },
       });
     }
 
     const assignToSiteGroup =
-      isCanvasGlobalPanel(panelId) ? false: (options.assignToSiteGroup ?? true);
+      isCanvasGlobalPanel(panelId) ? false : (options.assignToSiteGroup ?? true);
     const siteId = resolveContextIdFromPanelData(mergedData);
     if (assignToSiteGroup && siteId) {
       assignPanelsToSiteGroup(editor, [panelId], siteId, {
@@ -658,12 +658,14 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         editor,
         panelId,
         viewport,
-        options.snapGrid ?? DEFAULT_SNAP_GRID);
-    } else {
+      options.snapGrid ?? DEFAULT_SNAP_GRID,
+    );
+  } else {
       ensureCareerPanelBesideChatTopRow(
         editor,
         panelId,
-        options.snapGrid ?? DEFAULT_SNAP_GRID);
+      options.snapGrid ?? DEFAULT_SNAP_GRID,
+    );
     }
     focusPanelShape(editor, id, options.preserveZoom ?? true);
   }

@@ -80,7 +80,7 @@ function mergeCareerDefinitions(
   }
   const allowed = new Set(refs.map((ref) => ref.id));
   const filtered = base.filter((definition) => allowed.has(definition.id));
-  return filtered.length > 0 ? filtered: base;
+  return filtered.length > 0 ? filtered : base;
 }
 
 function resolveTenantFixtureDataset(tenant: string): CareerDataset | null {
@@ -203,9 +203,9 @@ export function createCareerWhiteboardHostBundle(
   const engine = createWhiteboardEngine({ drawingEnabled: true });
   const toolRuntime = createWhiteboardCareerToolRuntime();
   const careerTools = createCareerTools(toolRuntime);
-   // Register career tools outside `createCanvasHost` so `host.dispose` (e.g.
-   // React Strict Mode remount) does not strip prefetch/executeTool routing while
-   // the whiteboard shell is still mounted. Bundle dispose unregisters explicitly.
+  // Register career tools outside `createCanvasHost` so `host.dispose()` (e.g.
+  // React Strict Mode remount) does not strip prefetch/executeTool routing while
+  // the whiteboard shell is still mounted. Bundle dispose unregisters explicitly.
   const unregisterCareerTools = registerHostActions(careerTools);
   const host = createCanvasHost({
     engine,
@@ -218,7 +218,7 @@ export function createCareerWhiteboardHostBundle(
   const registeredIds = new Set(definitions.map((definition) => definition.id));
   const navItems = careerNavItemsToNavConfig(pack.navItems, registeredIds);
   const panelLoaders = resolveWhiteboardPanelLoaders(host, DEFAULT_WHITEBOARD_PANEL_REGISTRY);
-  const disposeToolbarActions = bindCareerToolbarCustomActions;
+  const disposeToolbarActions = bindCareerToolbarCustomActions();
 
   return {
     host,

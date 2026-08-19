@@ -21,8 +21,8 @@ export function NavSidebar({
   variant = 'whiteboard',
   navChrome: navChromeOverride,
 }: NavSidebarProps = {}) {
-  const { navSidebarExpanded, setNavSidebarExpanded } = useNavChromeStore;
-  const { navItems, panels, openPanel, navFooter, navChrome: contextNavChrome } = useCanvasChrome;
+  const { navSidebarExpanded, setNavSidebarExpanded } = useNavChromeStore();
+  const { navItems, panels, openPanel, navFooter, navChrome: contextNavChrome } = useCanvasChrome();
   const navChrome = resolveNavChrome(navChromeOverride ?? contextNavChrome);
   const [expandableHover, setExpandableHover] = useState(false);
 
@@ -36,7 +36,7 @@ export function NavSidebar({
         ? !navSidebarExpanded: useExpandableRail
           ? !expandableHover: true;
 
-  const topClass = variant === 'whiteboard' ? 'top-3': 'top-16';
+  const topClass = variant === 'whiteboard' ? 'top-3' : 'top-16';
 
   const handleItemClick = (item: NavItemConfig) => {
     if (!item.panelId || !openPanel) return;
@@ -73,12 +73,12 @@ export function NavSidebar({
         {usePopover ? (
           <button
             type="button"
-            onClick={() => setNavSidebarExpanded(true)}
-            className="w-full flex items-center justify-center py-2 text-canvas-faint hover:text-canvas hover:bg-canvas-surface-subtle transition-colors"
-            title="Expand sidebar"
-            aria-label="Expand sidebar"
+          onClick={() => setNavSidebarExpanded(true)}
+          className="w-full flex items-center justify-center py-2 text-canvas-faint hover:text-canvas hover:bg-canvas-surface-subtle transition-colors"
+          title="Expand sidebar"
+          aria-label="Expand sidebar"
           >
-            <PanelRight size={18} />
+          <PanelRight size={18} />
           </button>
         ): null}
         {usePopover ? <div className="border-t border-canvas-border my-1 mx-2" />: null}
@@ -87,17 +87,17 @@ export function NavSidebar({
             <button
               key={item.id}
               type="button"
-              title={navLabel(item)}
-              aria-label={navLabel(item)}
+            title={navLabel(item)}
+            aria-label={navLabel(item)}
               onClick={() => handleItemClick(item)}
               onPointerEnter={() => handlePrefetch(item)}
-              onFocus={() => handlePrefetch(item)}
+            onFocus={() => handlePrefetch(item)}
               className={
                 useExpandableRail
                   ? 'flex h-9 w-9 items-center justify-center rounded-xl text-canvas-faint hover:bg-canvas-primary-tint hover:text-canvas-primary transition-colors': 'w-full flex items-center justify-center py-2 text-canvas-faint hover:text-canvas-primary hover:bg-canvas-primary-tint transition-colors'
               }
             >
-              <item.icon size={18} />
+            <item.icon size={18} />
             </button>
           ))}
         </div>
@@ -128,12 +128,12 @@ export function NavSidebar({
         {usePopover ? (
           <button
             type="button"
-            onClick={() => setNavSidebarExpanded(false)}
-            className="p-1.5 rounded-lg hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas transition-colors"
-            title="Collapse sidebar"
-            aria-label="Collapse sidebar"
+          onClick={() => setNavSidebarExpanded(false)}
+          className="p-1.5 rounded-lg hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas transition-colors"
+          title="Collapse sidebar"
+          aria-label="Collapse sidebar"
           >
-            <PanelLeft size={16} />
+          <PanelLeft size={16} />
           </button>
         ): null}
       </div>
@@ -161,7 +161,7 @@ export function NavSidebar({
         </div>
       ))}
       </div>
-      {navFooter ? <div className="shrink-0 mt-auto">{navFooter}</div>: null}
+      {navFooter ? <div className="shrink-0 mt-auto">{navFooter}</div> : null}
     </div>
   );
 }
