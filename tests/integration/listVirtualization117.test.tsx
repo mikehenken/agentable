@@ -1,6 +1,6 @@
 /**
  * Automated check: a catalog list bound to the
- * 117-job moss reference fixture keeps its rendered DOM node count
+ * 117-job helios reference fixture keeps its rendered DOM node count
  * bounded. The spec flows through `validateSpec` and `SpecRenderer`
  * against the instrumented mock adapter through the full catalog pipeline;
  * `<agentable-virtual-list>` (Lit `repeat`, stable keys).
@@ -27,7 +27,7 @@ import {
 } from '../../src/panels/catalog/virtualization';
 import type { AgentableVirtualListElement } from '../../src/panels/catalog/virtual-list';
 import { createMockDataAdapter } from '../helpers/mockDataAdapter';
-import fixture from '../fixtures/moss-jobs-117.json';
+import fixture from '../fixtures/helios-jobs-117.json';
 
 interface FixtureJob {
  id: number;
@@ -37,7 +37,7 @@ interface FixtureJob {
 }
 
 const JOBS: FixtureJob[] = (fixture as { jobs: FixtureJob[] }).jobs;
-const SCOPE: PanelScope = { contextId: 'moss', entityId: 'careers' };
+const SCOPE: PanelScope = { contextId: 'helios', entityId: 'careers' };
 
 /** Rows the virtualized window may render for the default geometry. */
 const WINDOW_ROW_BOUND = maxWindowRowCount(DEFAULT_VIEWPORT_HEIGHT_PX,
@@ -120,7 +120,7 @@ function viewport(element: AgentableVirtualListElement): HTMLElement {
  return found;
 }
 
-describe(' list virtualization: 117-job moss fixture keeps DOM bounded', () => {
+describe(' list virtualization: 117-job helios fixture keeps DOM bounded', () => {
  it('loads the real reference fixture (117 jobs, unique ids)', () => {
  expect(JOBS).toHaveLength(117);
  expect(new Set(JOBS.map((job) => job.id)).size).toBe(117);

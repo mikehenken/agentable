@@ -45,7 +45,7 @@ describe('embedConfigLoader', () => {
       panelDataUrl: '',
       fetchFn,
     });
-    expect(result.configDoc?.tenant).toBe('moss-fixture');
+    expect(result.configDoc?.tenant).toBe('helios-fixture');
     expect(result.panelDataRaw?.jobs).toHaveLength(1);
     expect(fetchFn).toHaveBeenCalledWith('/fixtures/embed-config-static.json');
     expect(fetchFn).toHaveBeenCalledWith('/fixtures/panel-data-minimal.json');

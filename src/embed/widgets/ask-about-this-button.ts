@@ -5,7 +5,7 @@
  *
  * Usage:
  *   <script type="module" src="/embed/ask-about-this-button.js"></script>
- *   <ask-about-this-button context="Sandals Royal Bahamian">
+ *   <ask-about-this-button context="Archipelago Royal Bahamian">
  *     Ask about this resort
  *   </ask-about-this-button>
  */

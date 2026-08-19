@@ -1,5 +1,5 @@
 /**
- * Chat client default model - Sandals bounded embed uses generateContent via
+ * Chat client default model - Archipelago bounded embed uses generateContent via
  * createChatClient without an explicit model override.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

@@ -3,7 +3,7 @@
  * list/collection view windows above a declared item threshold. This
  * module owns that declared threshold and the pure windowing math; the
  * `agentable-virtual-list` element applies it with Lit `repeat` and
- * stable keys (the Lit performance rule). The 117-job moss fixture is
+ * stable keys (the Lit performance rule). The 117-job helios fixture is
  * the reference load; the automated check asserts the rendered DOM node
  * count stays bounded for 117 rows.
  ***

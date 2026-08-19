@@ -43,7 +43,7 @@ describe('<agentable-whiteboard>', () => {
       expect(el.voiceEnabled).to.equal(true);
     });
 
-    it('applies Sandals brand token from primary-color attribute', async () => {
+    it('applies Archipelago brand token from primary-color attribute', async () => {
       const el = await fixture<AgentableWhiteboardElement>(
         html`<agentable-whiteboard
           data-skip-react-mount

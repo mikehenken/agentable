@@ -9,8 +9,8 @@
     ".": "./src/index.ts",
     "./extension-points": "./src/extension-points.ts",
     "./fixtures/minimal": "./src/fixtures/minimal-dataset.ts",
-    "./fixtures/moss": "./src/fixtures/moss-dataset.ts",
-    "./fixtures/sandals": "./src/fixtures/sandals-dataset.ts"
+    "./fixtures/helios": "./src/fixtures/helios-dataset.ts",
+    "./fixtures/archipelago": "./src/fixtures/archipelago-dataset.ts"
   },
   "peerDependencies": {
     "agentable-canvas": ">=0.2.0"

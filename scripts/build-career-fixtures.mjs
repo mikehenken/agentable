@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build schema-validated career fixtures from moss/sandals source shapes.
+ * Build schema-validated career fixtures from helios/archipelago source shapes.
  * Run: node scripts/build-career-fixtures.mjs
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const FIXTURES_DIR = path.join(ROOT, 'packages/career-pack/src/fixtures');
 
-const MOSS_SOURCE = path.join(ROOT, '../moss/data/moss-panel-data.json');
+const HELIOS_SOURCE = path.join(ROOT, '../helios/data/helios-panel-data.json');
 
 function slugify(value) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
@@ -28,7 +28,7 @@ function parseRoleEnds(title) {
   return { fromRole: title, toRole: title };
 }
 
-function convertMoss(doc) {
+function convertHelios(doc) {
   const postedFallback = doc.scrapedAt ?? '2026-07-01T00:00:00.000Z';
   const jobs = doc.jobs.map((job) => {
     const tags = [...(job.skillMatches ?? []),...(job.locationTags ?? [])].filter(
@@ -47,12 +47,12 @@ function convertMoss(doc) {
       compensation: job.payRange,
       description:
         (job.description ?? '').trim() ||
-        `${job.department} role at ${job.location}. Source: moss.com posting.`,
+        `${job.department} role at ${job.location}. Source: helios.com posting.`,
       tags,
       postedAt: postedFallback,
       source: 'fixture',
-      sourceId: `moss-job-${job.id}`,
-      applyUrl: (job.applicationUrl ?? '').trim() || 'https://moss.com/why-moss/careers/',
+      sourceId: `helios-job-${job.id}`,
+      applyUrl: (job.applicationUrl ?? '').trim() || 'https://helios.com/why-helios/careers/',
     };
   });
 
@@ -80,8 +80,8 @@ function convertMoss(doc) {
   return { jobs, growthPaths, resources, applications: [] };
 }
 
-/** Sandals canonical demo dataset — mirrors sandals/career-canvas/data/*.ts content. */
-const SANDALS_SOURCE = {
+/** Archipelago canonical demo dataset — mirrors archipelago/career-canvas/data/*.ts content. */
+const ARCHIPELAGO_SOURCE = {
   jobs: [
     {
       id: 1,
@@ -102,7 +102,7 @@ const SANDALS_SOURCE = {
       type: 'Full-time · Salary',
       payRange: '$75,000 – $95,000',
       description:
-        'Build with Copilot, ship daily, and help every Sandals guest feel seen — before they arrive.',
+        'Build with Copilot, ship daily, and help every Archipelago guest feel seen — before they arrive.',
       skillMatches: ['React', 'TypeScript', 'AI/ML', 'Cloud'],
     },
     {
@@ -142,7 +142,7 @@ const SANDALS_SOURCE = {
     {
       id: 'path-front-office',
       title: 'Front desk → Front Office Manager',
-      tagline: 'The most-walked path at Sandals — 60% of current FOMs started here.',
+      tagline: 'The most-walked path at Archipelago — 60% of current FOMs started here.',
       match: 91,
       milestones: [
         { title: 'Front Desk Agent' },
@@ -168,7 +168,7 @@ const SANDALS_SOURCE = {
     {
       id: 'path-it',
       title: 'IT Analyst → Engineering Lead',
-      tagline: 'The newest career ladder at Sandals — and the one with the most room.',
+      tagline: 'The newest career ladder at Archipelago — and the one with the most room.',
       match: 85,
       milestones: [
         { title: 'IT Analyst' },
@@ -189,7 +189,7 @@ const SANDALS_SOURCE = {
       id: 'res-1',
       title: 'SCU onboarding guide',
       type: 'Guide',
-      description: 'The A→Z primer for every new Sandals team member entering the Corporate University program.',
+      description: 'The A→Z primer for every new Archipelago team member entering the Corporate University program.',
     },
     {
       id: 'res-2',
@@ -218,7 +218,7 @@ const SANDALS_SOURCE = {
   ],
 };
 
-function convertSandals(input) {
+function convertArchipelago(input) {
   const jobs = input.jobs.map((job) => ({
     id: String(job.id),
     slug: slugify(`${job.title}-${job.id}`),
@@ -231,8 +231,8 @@ function convertSandals(input) {
     tags: [...(job.skillMatches ?? []), job.department],
     postedAt: '2026-03-01T00:00:00.000Z',
     source: 'fixture',
-    sourceId: `sandals-job-${job.id}`,
-    applyUrl: 'https://careers.sandals.com/',
+    sourceId: `archipelago-job-${job.id}`,
+    applyUrl: 'https://careers.archipelago.com/',
   }));
 
   const jobIdByTitle = new Map(jobs.map((job) => [job.title.toLowerCase(), job.id]));
@@ -272,12 +272,12 @@ function convertSandals(input) {
 
 mkdirSync(FIXTURES_DIR, { recursive: true });
 
-const mossDoc = JSON.parse(readFileSync(MOSS_SOURCE, 'utf8'));
-const mossFixture = convertMoss(mossDoc);
-writeFileSync(path.join(FIXTURES_DIR, 'moss.json'), `${JSON.stringify(mossFixture, null, 2)}\n`);
+const heliosDoc = JSON.parse(readFileSync(HELIOS_SOURCE, 'utf8'));
+const heliosFixture = convertHelios(heliosDoc);
+writeFileSync(path.join(FIXTURES_DIR, 'helios.json'), `${JSON.stringify(heliosFixture, null, 2)}\n`);
 
-const sandalsFixture = convertSandals(SANDALS_SOURCE);
-writeFileSync(path.join(FIXTURES_DIR, 'sandals.json'), `${JSON.stringify(sandalsFixture, null, 2)}\n`);
+const archipelagoFixture = convertArchipelago(ARCHIPELAGO_SOURCE);
+writeFileSync(path.join(FIXTURES_DIR, 'archipelago.json'), `${JSON.stringify(archipelagoFixture, null, 2)}\n`);
 
 console.log(
-  `Wrote moss.json (${mossFixture.jobs.length} jobs) and sandals.json (${sandalsFixture.jobs.length} jobs) to ${FIXTURES_DIR}`);
+  `Wrote helios.json (${heliosFixture.jobs.length} jobs) and archipelago.json (${archipelagoFixture.jobs.length} jobs) to ${FIXTURES_DIR}`);

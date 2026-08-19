@@ -90,10 +90,10 @@ describe('mergeEmbedConfig', () => {
     const merged = mergeEmbedConfig(
       DEFAULTS,
       {
-        tenant: 'sandals',
+        tenant: 'archipelago',
         primaryColor: '#0077B6',
         welcomeMessage:
-          "Hi there — I'm Sandy, your Career Concierge at Sandals.",
+          "Hi there — I'm Sandy, your Career Concierge at Archipelago.",
         persona: {
           assistantName: 'Sandy',
           starterPrompts: [

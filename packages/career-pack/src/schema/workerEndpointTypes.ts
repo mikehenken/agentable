@@ -12,7 +12,7 @@ import type {
 } from './adapterSourceContract';
 
 /** Tenant ids planned for the multi-tenant ATS worker. */
-export type AtsWorkerTenantId = 'moss' | 'sandals' | (string & {});
+export type AtsWorkerTenantId = 'helios' | 'archipelago' | (string & {});
 
 /** ATS-origin job record — `source` excludes mock-only `fixture`. */
 export type AtsWorkerJobRecord = Omit<CareerJob, 'source'> & {

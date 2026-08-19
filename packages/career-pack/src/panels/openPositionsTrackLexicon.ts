@@ -1,6 +1,6 @@
 import { createLexicon } from '../../../../src/components/primitives/lexicon';
 
-/** Moss/Sandals employment track chips for Open Positions filters. */
+/** Helios/Archipelago employment track chips for Open Positions filters. */
 export const openPositionsTrackLexicon = createLexicon({
   canonical: [
     'All',

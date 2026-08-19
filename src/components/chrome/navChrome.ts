@@ -1,6 +1,6 @@
 /**
  * Nav rail chrome configuration — variant + panel open behavior.
- * Career packs supply Sandals defaults; hosts may override per tenant.
+ * Career packs supply Archipelago defaults; hosts may override per tenant.
  */
 export type NavRailVariant = 'popover' | 'rail' | 'expandable-rail';
 
@@ -26,7 +26,7 @@ export const DEFAULT_NAV_CHROME: NavChromeConfig = {
   panelMode: 'stack',
 };
 
-/** Sandals Moss career concierge — single active nav panel at a time. */
+/** Archipelago Helios career concierge — single active nav panel at a time. */
 export const DEFAULT_CAREER_NAV_CHROME: NavChromeConfig = {
   variant: 'popover',
   panelMode: 'switch',

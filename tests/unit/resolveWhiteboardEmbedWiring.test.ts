@@ -38,9 +38,9 @@ describe('resolveWhiteboardEmbedWiring (core)', () => {
 
     const { wiring } = resolveWhiteboardEmbedWiring({
       configDocument: null,
-      tenantConfig: { tenant: 'sandals' },
+      tenantConfig: { tenant: 'archipelago' },
       panelDataRaw: null,
-      tenant: 'sandals',
+      tenant: 'archipelago',
       injected: {
         navItems: [{ id: 'injected', label: 'Injected', icon: (() => null) as never, panelId: 'chat' }],
       },
@@ -55,9 +55,9 @@ describe('resolveWhiteboardEmbedWiring (core)', () => {
 
     first = resolveWhiteboardEmbedWiring({
       configDocument: null,
-      tenantConfig: { tenant: 'sandals' },
+      tenantConfig: { tenant: 'archipelago' },
       panelDataRaw: null,
-      tenant: 'sandals',
+      tenant: 'archipelago',
     });
     expect(first.activeProvider).toBeNull();
     expect(Object.keys(first.wiring.panelLoaders)).toEqual(['chat']);
@@ -75,9 +75,9 @@ describe('resolveWhiteboardEmbedWiring (core)', () => {
     const second = resolveWhiteboardEmbedWiring(
       {
         configDocument: null,
-        tenantConfig: { tenant: 'sandals' },
+        tenantConfig: { tenant: 'archipelago' },
         panelDataRaw: null,
-        tenant: 'sandals',
+        tenant: 'archipelago',
       },
       first.activeProvider);
 

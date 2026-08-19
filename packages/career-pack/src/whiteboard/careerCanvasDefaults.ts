@@ -1,5 +1,5 @@
 /**
- * Career whiteboard canvas + toolbar defaults (Moss / Sandals).
+ * Career whiteboard canvas + toolbar defaults (Helios / Archipelago).
  *
  * Hosts may override via embed config (`canvasZoom`, `toolbar`) or React
  * `WhiteboardShell` props (`mode`, `toolbarConfig`).
@@ -17,7 +17,7 @@ import {
   type NavChromeConfig,
 } from '../../../../src/components/chrome/navChrome';
 
-/** Bounded page with pan-only camera — no free zoom in/out (Moss/Sandals parity). */
+/** Bounded page with pan-only camera — no free zoom in/out (Helios/Archipelago parity). */
 export const DEFAULT_CAREER_BOUNDED_MODE: CanvasMode = {
   kind: 'bounded',
   bounds: { w: 1200, h: 800 },

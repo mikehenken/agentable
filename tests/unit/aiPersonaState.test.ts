@@ -38,7 +38,7 @@ describe('mapAiPersonaState', () => {
 });
 
 describe('parseAiPersonaVisualConfig', () => {
-  it('parses sandals career visual defaults', () => {
+  it('parses archipelago career visual defaults', () => {
     expect(
       parseAiPersonaVisualConfig({
         type: 'halo',

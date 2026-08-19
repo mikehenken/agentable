@@ -197,7 +197,7 @@ This path is not in the package `exports` map yet; the alias matches the studio 
 
 When iterating on `agentable-canvas` alongside landi-canvas-studio:
 
-1. Clone `agentable-canvas` at `../sandals/agentable-canvas`
+1. Clone `agentable-canvas` at `../agentable-canvas`
 2. In studio `.env.local`:
 
 ```bash
@@ -210,7 +210,7 @@ VITE_LOCAL_AGENTABLE=1
 npm run dev
 ```
 
-Vite logs `[vite] VITE_LOCAL_AGENTABLE=1` and aliases `agentable-canvas` to `../sandals/agentable-canvas`. Edits under the substrate repo hot-reload in the studio host.
+Vite logs `[vite] VITE_LOCAL_AGENTABLE=1` and aliases `agentable-canvas` to `../agentable-canvas`. Edits under the substrate repo hot-reload in the studio host.
 
 Do **not** change the git pin in `package.json` during local iteration. See landi-canvas-studio `docs/setup/LOCAL_DEVELOPMENT.md`.
 

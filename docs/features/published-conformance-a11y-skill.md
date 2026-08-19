@@ -85,7 +85,7 @@ When freeze lifts, wire `llms.txt` into the docs site static root and publish ge
 
 - ** (5)** — published conformance per release
 - ** (6)** — framework skill + llms.txt
-- **** — moss/sandals deployment freeze (does not block framework scaffold)
+- **** — helios/archipelago deployment freeze (does not block framework scaffold)
 - **** — agentable landing page deploy follows separate authorization
 
 ## Tests

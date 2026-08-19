@@ -329,7 +329,7 @@
   min-height: 0;
 }
 
-/* Career light canvas — dot grid + warm workspace surface (Sandals/Moss ref). */.whiteboard-tldraw-viewport.tl-background {
+/* Career light canvas — dot grid + warm workspace surface (Archipelago/Helios ref). */.whiteboard-tldraw-viewport.tl-background {
   background-color: var(--landi-color-background, #f0f0ec) !important;
 }.whiteboard-shell:not(.whiteboard-shell--vibe-dark).whiteboard-tldraw-viewport.tl-grid {
   opacity: 0.55;

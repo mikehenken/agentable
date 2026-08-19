@@ -5,7 +5,7 @@
   "imageSize": "2K",
   "dryRun": false,
   "brand": "Archipelago Resorts",
-  "note": "Fictional Caribbean hospitality brand. No Sandals/Beaches/Moss trademarks.",
+  "note": "Fictional Caribbean hospitality brand. No Archipelago/Beaches/Helios trademarks.",
   "assets": [
     {
       "id": "hero-team-collage",
@@ -207,7 +207,7 @@
     {
       "id": "team-maya",
       "source": "public/images/team-kerone.jpg",
-      "purpose": "Testimonial portrait — Maya Ortega (replaces Sandals Kerone)",
+      "purpose": "Testimonial portrait — Maya Ortega (replaces Archipelago Kerone)",
       "output": "assets/team-maya.jpg",
       "aspectRatio": "3:4",
       "kind": "photo",
@@ -222,7 +222,7 @@
     {
       "id": "team-elena",
       "source": "public/images/team-sandra.jpg",
-      "purpose": "Testimonial portrait — Elena Ruiz (replaces Sandals Sandra-Lee)",
+      "purpose": "Testimonial portrait — Elena Ruiz (replaces Archipelago Sandra-Lee)",
       "output": "assets/team-elena.jpg",
       "aspectRatio": "3:4",
       "kind": "photo",
@@ -236,7 +236,7 @@
     {
       "id": "team-marcus",
       "source": "public/images/team-andre.jpg",
-      "purpose": "Testimonial portrait — Marcus Chen (replaces Sandals Andre)",
+      "purpose": "Testimonial portrait — Marcus Chen (replaces Archipelago Andre)",
       "output": "assets/team-marcus.jpg",
       "aspectRatio": "3:4",
       "kind": "photo",
@@ -249,7 +249,7 @@
     {
       "id": "team-julian",
       "source": "public/images/team-carlton.jpg",
-      "purpose": "Testimonial portrait — Julian Brooks (replaces Sandals Carlton)",
+      "purpose": "Testimonial portrait — Julian Brooks (replaces Archipelago Carlton)",
       "output": "assets/team-julian.jpg",
       "aspectRatio": "3:4",
       "kind": "photo",
@@ -300,8 +300,8 @@
     },
     {
       "id": "brand-wordmark",
-      "source": "public/images/sandals-logo.png",
-      "purpose": "Archipelago Resorts wordmark (replaces Sandals logo)",
+      "source": "public/images/archipelago-logo.png",
+      "purpose": "Archipelago Resorts wordmark (replaces Archipelago logo)",
       "output": "assets/brand-wordmark.png",
       "aspectRatio": "21:9",
       "kind": "wordmark",

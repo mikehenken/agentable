@@ -16,12 +16,12 @@
 | `index.html` | Semantic landing sections (`#hero` … `#agent`) |
 | `styles.css` | Dark shell `#0a0a0a`, teal `#0E7490`, serif headlines, full-bleed photography |
 | `main.js` | Scroll progress, nav state, mobile menu, section observer, carousels |
-| `assets/` | Archipelago Resorts photography (Gemini-regenerated; no Sandals trademarks) |
+| `assets/` | Archipelago Resorts photography (Gemini-regenerated; no Archipelago trademarks) |
 | `scripts/regen-archipelago-marketing-images.mjs` | Gemini image regen tooling + prompt catalog |
 
 ## Image regeneration
 
-Marketing photography is regenerated as **Archipelago Resorts** (fictional) so gallery example 04 never ships Sandals/Beaches/Moss trademarks.
+Marketing photography is regenerated as **Archipelago Resorts** (fictional) so gallery example 04 never ships Archipelago/Beaches/Helios trademarks.
 
 **Model note (verified 2026-07-25):** owner-requested `gemini-3.1-pro-image-preview` **404s** on Gemini Developer API `v1beta`. The script defaults to GA **`gemini-3-pro-image`** (Nano Banana Pro) with fallback **`gemini-3.1-flash-image`**. Pass `--model=gemini-3.1-pro-image-preview` to retry when Google publishes that id.
 
@@ -86,4 +86,3 @@ npm run test:e2e -- tests/e2e/gallery.spec.ts -g "04-zero-js-marketing"
 
 ## GATE 7 artifacts
 
-`landi-labs/studies/Orchestration/agentable-panels/logs/retroactive-ui-coverage/04-zero-js-marketing`

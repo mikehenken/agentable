@@ -105,7 +105,7 @@ Attributes match `@property` declarations in `src/embed/agentable-whiteboard.ts`
 | `host-header-height` | string | `""` | Reserve space for a fixed host header |
 | `locale` | string | `en` | Session locale |
 | `config-url` | string | `""` | JSON tenant config (panels, adapter, toolbar) |
-| `panel-data-url` | string | `""` | Legacy moss panel-data JSON URL |
+| `panel-data-url` | string | `""` | Legacy helios panel-data JSON URL |
 | `toolbar-config` | JSON string | `""` | Whiteboard toolbar whitelist and order (`agentable-whiteboard` only) |
 
 ### Config merge order

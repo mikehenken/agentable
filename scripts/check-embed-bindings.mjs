@@ -36,7 +36,7 @@ async function main {
     console.error(` - x.jsx(${name}, …)`);
   }
   console.error(
-    '\nRebuild agentable-canvas embed after fixing lucide imports, then copy to moss/embed.');
+    '\nRebuild agentable-canvas embed after fixing lucide imports, then copy to helios/embed.');
   process.exit(1);
 }
 

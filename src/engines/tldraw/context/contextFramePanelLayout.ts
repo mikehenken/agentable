@@ -277,7 +277,7 @@ export function defaultSitePanelSize(panelId: string): { w: number; h: number } 
 }
 
 /**
- * Viewport-aware default panel size for career / Sandals whiteboard embeds.
+ * Viewport-aware default panel size for career / Archipelago whiteboard embeds.
  * Scales with viewport tier (mobile / tablet / desktop) via
  * `computeResponsiveWhiteboardPanelSize`.
  */

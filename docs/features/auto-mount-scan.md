@@ -20,7 +20,7 @@ Marketing hosts declare panel surfaces with data attributes; the embed script sc
 ```html
 <div
   data-agentable-panel="open-positions"
-  data-config-url="/config/sandals-career.json"
+  data-config-url="/config/archipelago-career.json"
   data-primary-color="#0077B6"
 ></div>
 

@@ -9,7 +9,7 @@ type CareerPanelModule = Record<string, ComponentType<unknown>>;
 /**
  * Vite-static panel loaders. Explicit `.tsx` glob keys are required so dynamic
  * imports resolve when career-pack is consumed through workspace aliases
- * (e.g. sandals website dev server `@fs` paths).
+ * (e.g. archipelago website dev server `@fs` paths).
  */
 const CAREER_PANEL_MODULE_LOADERS = import.meta.glob<CareerPanelModule>(
   './panels/*.tsx',

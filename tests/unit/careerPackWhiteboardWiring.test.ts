@@ -2,7 +2,7 @@
  * Career whiteboard wiring — pack-side registration.
  */
 import { describe, expect, it, afterEach } from 'vitest';
-import { CAREER_PANEL_IDS, SANDALS_CAREER_DATASET, careerDatasetToPanelData } from '@agentable/career-pack';
+import { CAREER_PANEL_IDS, ARCHIPELAGO_CAREER_DATASET, careerDatasetToPanelData } from '@agentable/career-pack';
 import {
   registerCareerWhiteboard,
   shouldRegisterCareerWhiteboardPanels,
@@ -20,21 +20,21 @@ describe('career whiteboard wiring (pack)', () => {
     resetWhiteboardWiringProviders();
   });
 
-  it('registerCareerWhiteboard returns career panels + nav for sandals tenant + panel data', () => {
-    const panelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+  it('registerCareerWhiteboard returns career panels + nav for archipelago tenant + panel data', () => {
+    const panelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     expect(
       shouldRegisterCareerWhiteboardPanels({
         configDocument: null,
-        tenantConfig: { tenant: 'sandals', panelData },
+        tenantConfig: { tenant: 'archipelago', panelData },
         panelDataRaw: null,
-        tenant: 'sandals',
+        tenant: 'archipelago',
       })).toBe(true);
 
     const result = registerCareerWhiteboard({
       configDocument: {
         panels: CAREER_PANEL_IDS.map((id) => ({ id, kind: 'react' })),
       },
-      tenantConfig: { tenant: 'sandals', panelData },
+      tenantConfig: { tenant: 'archipelago', panelData },
       panelDataRaw: null,
     });
 
@@ -60,14 +60,14 @@ describe('career whiteboard wiring (pack)', () => {
 
   it('embed provider registers career panels through core resolveWhiteboardEmbedWiring', () => {
     ensureCareerWhiteboardEmbedProviderRegistered();
-    const panelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+    const panelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     const { wiring, activeProvider } = resolveWhiteboardEmbedWiring({
       configDocument: {
         panels: [{ id: 'open-positions', kind: 'react' }],
       },
-      tenantConfig: { tenant: 'sandals', panelData },
+      tenantConfig: { tenant: 'archipelago', panelData },
       panelDataRaw: null,
-      tenant: 'sandals',
+      tenant: 'archipelago',
     });
 
     expect(activeProvider).not.toBeNull();

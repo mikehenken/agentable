@@ -1,6 +1,6 @@
 # 02 — Job board inline
 
- gallery example: one `<agentable-panel>` for **open-positions** embedded mid-page — the moss job-board shape on mock fixtures.
+ gallery example: one `<agentable-panel>` for **open-positions** embedded mid-page — the helios job-board shape on mock fixtures.
 
 ## Use case
 

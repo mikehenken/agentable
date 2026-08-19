@@ -32,7 +32,7 @@ Script-stripping CMS hosts cannot run the agentable embed script. They embed a *
 ## Iframe host URL
 
 ```
-/embed/iframe-host.html?surface=panel&panel=open-positions&config-url=/config/sandals-career.json&parent-origin=https://cms.example.com
+/embed/iframe-host.html?surface=panel&panel=open-positions&config-url=/config/archipelago-career.json&parent-origin=https://cms.example.com
 ```
 
 | Query param | Role |
@@ -53,7 +53,7 @@ Hosts that can run JS but want iframe isolation:
 <agentable-iframe-embed
   panel="open-positions"
   embed-base-url="https://embed.example.com"
-  config-url="/config/sandals-career.json"
+  config-url="/config/archipelago-career.json"
   width="640"
   height="480"
 ></agentable-iframe-embed>

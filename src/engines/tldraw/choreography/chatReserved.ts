@@ -18,7 +18,7 @@ export function getChatPanelBounds(editor: Editor): LayoutRect | null {
 
 /**
  * When opening a non-chat panel, treat the chat shape as a hard obstacle
- * even if the generic placement path would accept overlap (sandals regression).
+ * even if the generic placement path would accept overlap (archipelago regression).
  */
 export function mergeChatReservedObstacles(
   obstacles: LayoutRect[],

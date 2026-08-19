@@ -193,7 +193,7 @@ const TextSearchBar = track(function TextSearchBar(): ReactElement | null {
  * HelperButtons slot — text search only.
  *
  * Intentionally does **not** render tldraw's `DefaultHelperButtons`: that
- * slot includes "← Back to content", which is wrong for career / Sandals
+ * slot includes "← Back to content", which is wrong for career / Archipelago
  * whiteboard embeds (it appears next to the Menu rail when the camera is
  * away from shapes). Search still opens via Ctrl/Cmd+F overrides.
  */

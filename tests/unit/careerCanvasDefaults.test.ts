@@ -36,7 +36,7 @@ describe('career canvas defaults', () => {
   });
 
   it('applyCareerEmbedDefaults fills canvas + toolbar when omitted', () => {
-    const merged = applyCareerEmbedDefaults({ tenant: 'sandals' });
+    const merged = applyCareerEmbedDefaults({ tenant: 'archipelago' });
     expect(merged.canvasMode).toBe('bounded');
     expect(merged.canvasBounds).toBe('1200x800');
     expect(merged.canvasZoom).toBe('locked');
@@ -44,8 +44,8 @@ describe('career canvas defaults', () => {
   });
 
   it('toEmbedConfigDocument applies career embed defaults', () => {
-    const pack = createCareerPack({ tenant: 'moss' });
-    const doc = toEmbedConfigDocument(resolveCareerHostConfig(pack, { tenant: 'moss' }));
+    const pack = createCareerPack({ tenant: 'helios' });
+    const doc = toEmbedConfigDocument(resolveCareerHostConfig(pack, { tenant: 'helios' }));
     expect(doc.canvasZoom).toBe('locked');
     expect(doc.toolbar).toEqual(DEFAULT_CAREER_TOOLBAR_CONFIG);
   });

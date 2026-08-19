@@ -28,7 +28,7 @@ describe('validateVoiceGreetingConfig', () => {
         greetingMode: 'agent-first',
         voiceGreeting: '',
       },
-      { tenant: 'moss' });
+      { tenant: 'helios' });
     expect(issues).toHaveLength(1);
     expect(issues[0]?.code).toBe('AGENT_FIRST_EMPTY_GREETING');
     expect(issues[0]?.message).toContain('agent-first');
@@ -67,7 +67,7 @@ describe('warnVoiceGreetingConfig', () => {
         greetingMode: 'agent-first',
         voiceGreeting: '',
       },
-      { tenant: 'sandals' });
+      { tenant: 'archipelago' });
     expect(console.warn).toHaveBeenCalledWith(
       expect.stringContaining('greetingMode is "agent-first"'));
   });

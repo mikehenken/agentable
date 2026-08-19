@@ -6,11 +6,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
-  MOSS_CAREER_DATASET,
-  SANDALS_CAREER_DATASET,
+  HELIOS_CAREER_DATASET,
+  ARCHIPELAGO_CAREER_DATASET,
   MINIMAL_CAREER_DATASET,
-  convertMossPanelData,
-  convertSandalsCareerData,
+  convertHeliosPanelData,
+  convertArchipelagoCareerData,
   parseCareerDataset,
   validateCareerDataset,
 } from '@agentable/career-pack';
@@ -26,35 +26,35 @@ describe('career fixture schema validation ', () => {
     expect(result.ok).toBe(true);
   });
 
-  it('validates committed moss.json on disk', () => {
-    const raw = JSON.parse(readFileSync(path.join(FIXTURES_DIR, 'moss.json'), 'utf8'));
+  it('validates committed helios.json on disk', () => {
+    const raw = JSON.parse(readFileSync(path.join(FIXTURES_DIR, 'helios.json'), 'utf8'));
     const parsed = parseCareerDataset(raw);
     expect(parsed.jobs.length).toBe(117);
     expect(parsed.growthPaths.length).toBeGreaterThan(0);
     expect(parsed.resources.length).toBeGreaterThan(0);
   });
 
-  it('validates committed sandals.json on disk', () => {
-    const raw = JSON.parse(readFileSync(path.join(FIXTURES_DIR, 'sandals.json'), 'utf8'));
+  it('validates committed archipelago.json on disk', () => {
+    const raw = JSON.parse(readFileSync(path.join(FIXTURES_DIR, 'archipelago.json'), 'utf8'));
     const parsed = parseCareerDataset(raw);
     expect(parsed.jobs.length).toBe(5);
     expect(parsed.applications?.length).toBe(3);
   });
 
-  it('validates exported MOSS_CAREER_DATASET constant', () => {
-    expect(MOSS_CAREER_DATASET.jobs).toHaveLength(117);
-    expect(MOSS_CAREER_DATASET.jobs[0]?.source).toBe('fixture');
+  it('validates exported HELIOS_CAREER_DATASET constant', () => {
+    expect(HELIOS_CAREER_DATASET.jobs).toHaveLength(117);
+    expect(HELIOS_CAREER_DATASET.jobs[0]?.source).toBe('fixture');
   });
 
-  it('validates exported SANDALS_CAREER_DATASET constant', () => {
-    expect(SANDALS_CAREER_DATASET.jobs).toHaveLength(5);
-    expect(SANDALS_CAREER_DATASET.growthPaths).toHaveLength(3);
+  it('validates exported ARCHIPELAGO_CAREER_DATASET constant', () => {
+    expect(ARCHIPELAGO_CAREER_DATASET.jobs).toHaveLength(5);
+    expect(ARCHIPELAGO_CAREER_DATASET.growthPaths).toHaveLength(3);
   });
 
-  it('converts moss-panel-data.json shape into schema-valid dataset', () => {
-    const mossPanelDataPath = path.resolve(__dirname, '../../../moss/data/moss-panel-data.json');
-    const raw = JSON.parse(readFileSync(mossPanelDataPath, 'utf8'));
-    const converted = convertMossPanelData(raw);
+  it('converts helios-panel-data.json shape into schema-valid dataset', () => {
+    const heliosPanelDataPath = path.resolve(__dirname, '../../../helios/data/helios-panel-data.json');
+    const raw = JSON.parse(readFileSync(heliosPanelDataPath, 'utf8'));
+    const converted = convertHeliosPanelData(raw);
     const result = validateCareerDataset(converted);
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -62,29 +62,29 @@ describe('career fixture schema validation ', () => {
     }
   });
 
-  it('converts sandals legacy shapes into schema-valid dataset', () => {
-    const converted = convertSandalsCareerData({
-      jobs: SANDALS_CAREER_DATASET.jobs.map((job) => ({
+  it('converts archipelago legacy shapes into schema-valid dataset', () => {
+    const converted = convertArchipelagoCareerData({
+      jobs: ARCHIPELAGO_CAREER_DATASET.jobs.map((job) => ({
         id: Number(job.id),
         title: job.title,
         department: job.department,
         location: job.location,
         description: job.description,
       })),
-      growthPaths: SANDALS_CAREER_DATASET.growthPaths.map((path) => ({
+      growthPaths: ARCHIPELAGO_CAREER_DATASET.growthPaths.map((path) => ({
         id: path.id,
         title: `${path.fromRole} → ${path.toRole}`,
         tagline: path.summary,
         match: path.fitScore,
         milestones: (path.steps ?? []).map((title) => ({ title })),
       })),
-      applications: (SANDALS_CAREER_DATASET.applications ?? []).map((app) => ({
+      applications: (ARCHIPELAGO_CAREER_DATASET.applications ?? []).map((app) => ({
         id: app.id,
-        role: SANDALS_CAREER_DATASET.jobs.find((job) => job.id === app.jobId)?.title ?? 'Unknown',
+        role: ARCHIPELAGO_CAREER_DATASET.jobs.find((job) => job.id === app.jobId)?.title ?? 'Unknown',
         status: app.status,
         submitted: app.submittedAt,
       })),
-      resources: SANDALS_CAREER_DATASET.resources.map((resource) => ({
+      resources: ARCHIPELAGO_CAREER_DATASET.resources.map((resource) => ({
         id: resource.id,
         title: resource.title,
         type: resource.category,

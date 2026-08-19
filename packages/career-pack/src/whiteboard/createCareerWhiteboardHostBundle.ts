@@ -22,8 +22,8 @@ import { validateCareerDataset } from '../schema/careerDatasetSchema';
 import { CAREER_PANEL_IDS, CAREER_SOURCE_NAMES } from '../constants';
 import type { CareerDataset } from '../types';
 import { isCareerDatasetPanelPayload } from '../adapters/careerDatasetToPanelData';
-import { MOSS_CAREER_DATASET } from '../fixtures/moss-dataset';
-import { SANDALS_CAREER_DATASET } from '../fixtures/sandals-dataset';
+import { HELIOS_CAREER_DATASET } from '../fixtures/helios-dataset';
+import { ARCHIPELAGO_CAREER_DATASET } from '../fixtures/archipelago-dataset';
 import { createCareerPanelDefinitions } from '../panels';
 import { createCareerPack, createCareerTools, type CareerToolRuntime } from '../pack';
 import { careerNavItemsToNavConfig } from './careerNavItems';
@@ -85,11 +85,11 @@ function mergeCareerDefinitions(
 
 function resolveTenantFixtureDataset(tenant: string): CareerDataset | null {
   const normalized = tenant.trim().toLowerCase();
-  if (normalized === 'sandals') {
-    return SANDALS_CAREER_DATASET;
+  if (normalized === 'archipelago') {
+    return ARCHIPELAGO_CAREER_DATASET;
   }
-  if (normalized === 'moss') {
-    return MOSS_CAREER_DATASET;
+  if (normalized === 'helios') {
+    return HELIOS_CAREER_DATASET;
   }
   return null;
 }
@@ -168,7 +168,7 @@ function createWhiteboardCareerToolRuntime(): CareerToolRuntime {
 }
 
 /** Known career tenants when config omits an explicit panels array. */
-export const KNOWN_CAREER_TENANT_IDS: ReadonlySet<string> = new Set(['sandals', 'moss']);
+export const KNOWN_CAREER_TENANT_IDS: ReadonlySet<string> = new Set(['archipelago', 'helios']);
 
 export function shouldRegisterCareerWhiteboardPanels(
   input: CreateCareerWhiteboardHostBundleInput): boolean {

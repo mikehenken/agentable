@@ -1,7 +1,7 @@
 /**
  * Embed JSON config document (02 section 11).
  *
- * Loaded from the `config-url` attribute. Generalizes moss's lost
+ * Loaded from the `config-url` attribute. Generalizes helios's lost
  * `panel-data-url` into a structured tenant config + adapter block.
  */
 import type { PartialCanvasTenantConfig } from '../../config/CanvasContext';
@@ -15,7 +15,7 @@ export interface StaticEmbedAdapterConfig {
   kind: 'static';
   /** Inline panel-data payload (jobs, resources, growthPaths, …). */
   data?: RawPanelDataPayload;
-  /** URL to a JSON panel-data document (moss `panel-data-url` equivalent). */
+  /** URL to a JSON panel-data document (helios `panel-data-url` equivalent). */
   dataUrl?: string;
 }
 
@@ -48,7 +48,7 @@ export interface EmbedConfigDocument {
   greetingMode?: VoiceGreetingMode | string;
   tokenEndpoint?: string;
   fullpageOnEngage?: boolean;
-  /** @deprecated Moss alias — same as fullpageOnEngage. */
+  /** @deprecated Helios alias — same as fullpageOnEngage. */
   fullscreenOnEngage?: boolean;
   canvasMode?: string;
   canvasBounds?: string;

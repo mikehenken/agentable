@@ -5,7 +5,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, afterEach } from 'vitest';
 import {
   CAREER_PANEL_IDS,
-  SANDALS_CAREER_DATASET,
+  ARCHIPELAGO_CAREER_DATASET,
   careerDatasetToPanelData,
 } from '@agentable/career-pack';
 import { registerCareerWhiteboard } from '../../packages/career-pack/src/whiteboard/registerCareerWhiteboard';
@@ -19,12 +19,12 @@ describe('whiteboard panel data wiring', () => {
   });
 
   it('Open Positions receives jobs from host adapter lifecycle on PanelShape', async () => {
-    const panelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+    const panelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     const result = registerCareerWhiteboard({
       configDocument: {
         panels: CAREER_PANEL_IDS.map((id) => ({ id, kind: 'react' as const })),
       },
-      tenantConfig: { tenant: 'sandals', panelData },
+      tenantConfig: { tenant: 'archipelago', panelData },
       panelDataRaw: null,
     });
 
@@ -56,11 +56,11 @@ describe('whiteboard panel data wiring', () => {
     result.dispose();
   });
 
-  it('legacy SANDALS panelData resolves tenant fixture for adapter', () => {
-    const legacyPanelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+  it('legacy ARCHIPELAGO panelData resolves tenant fixture for adapter', () => {
+    const legacyPanelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     const result = registerCareerWhiteboard({
       configDocument: null,
-      tenantConfig: { tenant: 'sandals', panelData: legacyPanelData },
+      tenantConfig: { tenant: 'archipelago', panelData: legacyPanelData },
       panelDataRaw: null,
     });
     expect(result.host).toBeDefined();

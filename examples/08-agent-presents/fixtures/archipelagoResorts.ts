@@ -20,10 +20,10 @@ export const ARCHIPELAGO_BRAND = {
 
 /** Brands that must never appear in demo copy (copy-hygiene gate). */
 export const FORBIDDEN_DEMO_BRAND_NAMES = [
-  'Sandals',
+  'Archipelago',
   'Beaches',
-  'Moss Construction',
-  'Moss',
+  'Helios Construction',
+  'Helios',
   'Fidelity',
   'Marriott',
   'Hilton',

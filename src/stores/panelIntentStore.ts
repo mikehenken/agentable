@@ -24,7 +24,7 @@ import { create } from 'zustand';
 export interface OpenPositionsIntent {
   /** Department filter chip to apply. */
   department?: string;
-  /** Employment track filter (e.g. Moss "Professionals (Salaried)"). */
+  /** Employment track filter (e.g. Helios "Professionals (Salaried)"). */
   track?: string;
   /** Location / market filter. */
   location?: string;

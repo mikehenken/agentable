@@ -1,5 +1,5 @@
 /**
- * Unified career chat + toolbar bundle (Moss/Sandals parity).
+ * Unified career chat + toolbar bundle (Helios/Archipelago parity).
  *
  * Single injectable unit for system prompt, tool-surface policy, starter chips,
  * and whiteboard toolbar defaults. Hosts may override persona fields; weak
@@ -11,13 +11,13 @@ import {
   DEFAULT_CAREER_AGENT_JOBS_GUIDE,
   enrichCareerAgentSystemPrompt,
 } from './careerToolGrounding';
-import { MOSS_CAREER_SYSTEM_PROMPT } from './prompts/mossSystemPrompt';
-import { SANDALS_CAREER_SYSTEM_PROMPT } from './prompts/sandalsSystemPrompt';
+import { HELIOS_CAREER_SYSTEM_PROMPT } from './prompts/heliosSystemPrompt';
+import { ARCHIPELAGO_CAREER_SYSTEM_PROMPT } from './prompts/archipelagoSystemPrompt';
 import {
   DEFAULT_CAREER_TOOLBAR_CONFIG,
 } from './whiteboard/careerCanvasDefaults';
-import { MOSS_STARTER_PROMPTS } from './tenants/moss';
-import { SANDALS_STARTER_PROMPTS } from './tenants/sandals';
+import { HELIOS_STARTER_PROMPTS } from './tenants/helios';
+import { ARCHIPELAGO_STARTER_PROMPTS } from './tenants/archipelago';
 
 /** Core tools suppressed when career routing tools are registered. */
 export const CAREER_SUPPRESSED_CORE_TOOLS = [
@@ -38,7 +38,7 @@ export type CareerSuppressedCoreTool = (typeof CAREER_SUPPRESSED_CORE_TOOLS)[num
 
 export interface CareerChatBundle {
   tenant: string;
-  /** Canonical tenant system prompt (Moss Mason / Sandy full voice). */
+  /** Canonical tenant system prompt (Helios Mason / Sandy full voice). */
   systemPrompt: string;
   /** Append fixture agentJobsGuide + default routing appendix. */
   enrichSystemPrompt: (base: string, agentJobsGuide?: string) => string;
@@ -47,64 +47,64 @@ export interface CareerChatBundle {
   toolbarConfig: WhiteboardToolbarConfig;
 }
 
-const MOSS_AGENT_JOBS_GUIDE_SOURCE =
-  'sandals/moss/data/career-fixture.json#agentJobsGuide (116-role scrape 2026-07-21)';
+const HELIOS_AGENT_JOBS_GUIDE_SOURCE =
+  'archipelago/helios/data/career-fixture.json#agentJobsGuide (116-role scrape 2026-07-21)';
 
-/** Moss starter chips with deterministic tool prefetch (parity with Mason playbook). */
-export const MOSS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
+/** Helios starter chips with deterministic tool prefetch (parity with Mason playbook). */
+export const HELIOS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
   {
-    ...MOSS_STARTER_PROMPTS[0],
+    ...HELIOS_STARTER_PROMPTS[0],
     prefetchTool: { name: 'open_positions', args: { location: 'South Florida' } },
   },
   {
-    ...MOSS_STARTER_PROMPTS[1],
+    ...HELIOS_STARTER_PROMPTS[1],
     prefetchTool: { name: 'open_positions', args: { track: 'Solar Hourly' } },
   },
   {
-    ...MOSS_STARTER_PROMPTS[2],
+    ...HELIOS_STARTER_PROMPTS[2],
     prefetchTool: { name: 'open_resources', args: { search: 'internship' } },
   },
   {
-    ...MOSS_STARTER_PROMPTS[3],
+    ...HELIOS_STARTER_PROMPTS[3],
     prefetchTool: { name: 'open_positions', args: { location: 'Texas' } },
   },
 ];
 
-/** Sandals starter chips with deterministic tool prefetch. */
-export const SANDALS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
+/** Archipelago starter chips with deterministic tool prefetch. */
+export const ARCHIPELAGO_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
   {
-    ...SANDALS_STARTER_PROMPTS[0],
+    ...ARCHIPELAGO_STARTER_PROMPTS[0],
     prefetchTool: { name: 'open_positions' },
   },
   {
-    ...SANDALS_STARTER_PROMPTS[1],
+    ...ARCHIPELAGO_STARTER_PROMPTS[1],
     prefetchTool: { name: 'open_positions', args: { location: 'Jamaica' } },
   },
   {
-    ...SANDALS_STARTER_PROMPTS[2],
+    ...ARCHIPELAGO_STARTER_PROMPTS[2],
     prefetchTool: { name: 'open_growth_paths' },
   },
   {
-    ...SANDALS_STARTER_PROMPTS[3],
+    ...ARCHIPELAGO_STARTER_PROMPTS[3],
     prefetchTool: { name: 'open_resources', args: { search: 'SCU' } },
   },
 ];
 
-const MOSS_BUNDLE: CareerChatBundle = {
-  tenant: 'moss',
-  systemPrompt: MOSS_CAREER_SYSTEM_PROMPT,
+const HELIOS_BUNDLE: CareerChatBundle = {
+  tenant: 'helios',
+  systemPrompt: HELIOS_CAREER_SYSTEM_PROMPT,
   enrichSystemPrompt: enrichCareerAgentSystemPrompt,
   suppressedCoreTools: CAREER_SUPPRESSED_CORE_TOOLS,
-  starterPrompts: MOSS_STARTER_PROMPTS_WITH_TOOLS,
+  starterPrompts: HELIOS_STARTER_PROMPTS_WITH_TOOLS,
   toolbarConfig: DEFAULT_CAREER_TOOLBAR_CONFIG,
 };
 
-const SANDALS_BUNDLE: CareerChatBundle = {
-  tenant: 'sandals',
-  systemPrompt: SANDALS_CAREER_SYSTEM_PROMPT,
+const ARCHIPELAGO_BUNDLE: CareerChatBundle = {
+  tenant: 'archipelago',
+  systemPrompt: ARCHIPELAGO_CAREER_SYSTEM_PROMPT,
   enrichSystemPrompt: enrichCareerAgentSystemPrompt,
   suppressedCoreTools: CAREER_SUPPRESSED_CORE_TOOLS,
-  starterPrompts: SANDALS_STARTER_PROMPTS_WITH_TOOLS,
+  starterPrompts: ARCHIPELAGO_STARTER_PROMPTS_WITH_TOOLS,
   toolbarConfig: DEFAULT_CAREER_TOOLBAR_CONFIG,
 };
 
@@ -114,7 +114,7 @@ const GENERIC_BUNDLE: CareerChatBundle = {
     'You are a friendly career assistant. Help candidates explore open roles, applications, growth paths, and learning resources.',
   enrichSystemPrompt: enrichCareerAgentSystemPrompt,
   suppressedCoreTools: CAREER_SUPPRESSED_CORE_TOOLS,
-  starterPrompts: SANDALS_STARTER_PROMPTS_WITH_TOOLS,
+  starterPrompts: ARCHIPELAGO_STARTER_PROMPTS_WITH_TOOLS,
   toolbarConfig: DEFAULT_CAREER_TOOLBAR_CONFIG,
 };
 
@@ -127,8 +127,8 @@ export const CAREER_PROMPT_OVERRIDE_MIN_CHARS = 500;
  */
 export function resolveCareerChatBundle(tenant: string): CareerChatBundle {
   const normalized = tenant.trim().toLowerCase();
-  if (normalized === 'moss') return MOSS_BUNDLE;
-  if (normalized === 'sandals') return SANDALS_BUNDLE;
+  if (normalized === 'helios') return HELIOS_BUNDLE;
+  if (normalized === 'archipelago') return ARCHIPELAGO_BUNDLE;
   return { ...GENERIC_BUNDLE, tenant: normalized || 'career-default' };
 }
 
@@ -147,9 +147,9 @@ export function resolveCareerSystemPrompt(
   return bundle.systemPrompt;
 }
 
-/** Reference string for docs — Moss fixture agentJobsGuide lives in career-fixture.json. */
-export function mossAgentJobsGuideSourceRef(): string {
-  return MOSS_AGENT_JOBS_GUIDE_SOURCE;
+/** Reference string for docs — Helios fixture agentJobsGuide lives in career-fixture.json. */
+export function heliosAgentJobsGuideSourceRef(): string {
+  return HELIOS_AGENT_JOBS_GUIDE_SOURCE;
 }
 
 /** Default jobs routing appendix when fixture omits agentJobsGuide. */

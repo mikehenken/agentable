@@ -170,7 +170,7 @@ The token endpoint must accept `POST /` and respond:
 ```
 
 A reference Cloudflare Worker implementation lives in the companion
-[moss-demo](https://github.com/mikehenken/moss-demo) repo at
+[helios-demo](https://github.com/mikehenken/helios-demo) repo at
 `worker/src/index.js`.
 
 ---

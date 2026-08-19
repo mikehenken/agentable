@@ -18,8 +18,8 @@
       ],
       "postedAt": "2026-03-01T00:00:00.000Z",
       "source": "fixture",
-      "sourceId": "sandals-job-1",
-      "applyUrl": "https://careers.sandals.com/"
+      "sourceId": "archipelago-job-1",
+      "applyUrl": "https://careers.archipelago.com/"
     },
     {
       "id": "2",
@@ -29,7 +29,7 @@
       "track": "Full-time · Salary",
       "location": "San Pedro Sula, Honduras",
       "compensation": "$75,000 – $95,000",
-      "description": "Build with Copilot, ship daily, and help every Sandals guest feel seen — before they arrive.",
+      "description": "Build with Copilot, ship daily, and help every Archipelago guest feel seen — before they arrive.",
       "tags": [
         "React",
         "TypeScript",
@@ -39,8 +39,8 @@
       ],
       "postedAt": "2026-03-01T00:00:00.000Z",
       "source": "fixture",
-      "sourceId": "sandals-job-2",
-      "applyUrl": "https://careers.sandals.com/"
+      "sourceId": "archipelago-job-2",
+      "applyUrl": "https://careers.archipelago.com/"
     },
     {
       "id": "3",
@@ -59,8 +59,8 @@
       ],
       "postedAt": "2026-03-01T00:00:00.000Z",
       "source": "fixture",
-      "sourceId": "sandals-job-3",
-      "applyUrl": "https://careers.sandals.com/"
+      "sourceId": "archipelago-job-3",
+      "applyUrl": "https://careers.archipelago.com/"
     },
     {
       "id": "4",
@@ -79,8 +79,8 @@
       ],
       "postedAt": "2026-03-01T00:00:00.000Z",
       "source": "fixture",
-      "sourceId": "sandals-job-4",
-      "applyUrl": "https://careers.sandals.com/"
+      "sourceId": "archipelago-job-4",
+      "applyUrl": "https://careers.archipelago.com/"
     },
     {
       "id": "5",
@@ -99,8 +99,8 @@
       ],
       "postedAt": "2026-03-01T00:00:00.000Z",
       "source": "fixture",
-      "sourceId": "sandals-job-5",
-      "applyUrl": "https://careers.sandals.com/"
+      "sourceId": "archipelago-job-5",
+      "applyUrl": "https://careers.archipelago.com/"
     }
   ],
   "growthPaths": [
@@ -109,7 +109,7 @@
       "fromRole": "Front desk",
       "toRole": "Front Office Manager",
       "fitScore": 91,
-      "summary": "The most-walked path at Sandals — 60% of current FOMs started here.",
+      "summary": "The most-walked path at Archipelago — 60% of current FOMs started here.",
       "steps": [
         "Front Desk Agent",
         "Guest Services Coordinator",
@@ -137,7 +137,7 @@
       "fromRole": "IT Analyst",
       "toRole": "Engineering Lead",
       "fitScore": 85,
-      "summary": "The newest career ladder at Sandals — and the one with the most room.",
+      "summary": "The newest career ladder at Archipelago — and the one with the most room.",
       "steps": [
         "IT Analyst",
         "Software Developer",
@@ -152,7 +152,7 @@
       "id": "res-1",
       "title": "SCU onboarding guide",
       "category": "Guide",
-      "description": "The A→Z primer for every new Sandals team member entering the Corporate University program.",
+      "description": "The A→Z primer for every new Archipelago team member entering the Corporate University program.",
       "featured": false
     },
     {

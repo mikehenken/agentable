@@ -1,5 +1,5 @@
 /**
- * Auto-arrange free PanelShapes on the whiteboard (career / Sandals embeds).
+ * Auto-arrange free PanelShapes on the whiteboard (career / Archipelago embeds).
  *
  * Ports the spirit of bounded `layoutStore.autoOrganize`: chat left column,
  * remaining panels tiled to the right in rows without changing zoom.

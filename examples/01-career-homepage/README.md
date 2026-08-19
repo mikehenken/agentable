@@ -1,6 +1,6 @@
 # 01 — Career homepage
 
- gallery example: **Archipelago Resorts** career homepage with a header voice pill, agent-first greeting, and bounded canvas on engage — the sandals career shape on mock static adapters.
+ gallery example: **Archipelago Resorts** career homepage with a header voice pill, agent-first greeting, and bounded canvas on engage — the archipelago career shape on mock static adapters.
 
 ## Use case
 

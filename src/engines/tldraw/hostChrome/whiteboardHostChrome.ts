@@ -16,7 +16,7 @@ export interface WhiteboardHostChromeConfig {
   frameBorderRadius?: number;
   /**
    * Offset from viewport top when canvas-expand is active (sticky site nav).
-   * e.g. `80px` on Sandals homepage; `0` on dedicated full-viewport routes.
+   * e.g. `80px` on Archipelago homepage; `0` on dedicated full-viewport routes.
    */
   hostHeaderHeight?: string | null;
   /**

@@ -14,7 +14,7 @@ import {
   createCareerWhiteboardHostBundle,
   disposeCareerWhiteboardHostBundle,
 } from '../../packages/career-pack/src/whiteboard/createCareerWhiteboardHostBundle';
-import { careerDatasetToPanelData, SANDALS_CAREER_DATASET } from '@agentable/career-pack';
+import { careerDatasetToPanelData, ARCHIPELAGO_CAREER_DATASET } from '@agentable/career-pack';
 
 const LEGACY_CAREER_ARRANGE_ORDER: readonly string[] = [
   'chat',
@@ -42,12 +42,12 @@ describe('career whiteboard layout hints', () => {
   });
 
   it('disposeCareerWhiteboardHostBundle resets module-level layout hints (H3)', () => {
-    const panelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+    const panelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     const bundle = createCareerWhiteboardHostBundle({
       configDocument: null,
-      tenantConfig: { tenant: 'sandals', panelData },
+      tenantConfig: { tenant: 'archipelago', panelData },
       panelDataRaw: null,
-      tenant: 'sandals',
+      tenant: 'archipelago',
     });
 
     expect(getWhiteboardPanelArrangeOrder).toEqual(LEGACY_CAREER_ARRANGE_ORDER);

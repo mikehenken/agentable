@@ -92,14 +92,14 @@ describe('autoMountScan — attribute mapping', () => {
   it('maps data-* branding attributes onto mount config', () => {
     const host = document.createElement('div');
     host.setAttribute('data-agentable-panel', 'open-positions');
-    host.setAttribute('data-config-url', '/config/sandals-career.json');
+    host.setAttribute('data-config-url', '/config/archipelago-career.json');
     host.setAttribute('data-primary-color', '#0077B6');
     host.setAttribute('data-slot-name', 'sidebar');
     host.setAttribute('data-lazy-hydrate', '');
 
     expect(readMountConfigFromPlaceholder(host)).toEqual({
       panelId: 'open-positions',
-      configUrl: '/config/sandals-career.json',
+      configUrl: '/config/archipelago-career.json',
       primaryColor: '#0077B6',
       slotName: 'sidebar',
       lazyHydrate: true,

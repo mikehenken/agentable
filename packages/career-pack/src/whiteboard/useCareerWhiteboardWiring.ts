@@ -1,5 +1,5 @@
 /**
- * React hook — career whiteboard host + nav for Sandals/Moss React wrappers.
+ * React hook — career whiteboard host + nav for Archipelago/Helios React wrappers.
  *
  * Host lifetime uses a page-session singleton keyed by tenant so React Strict
  * Mode remounts do not unregister career tools while the whiteboard route is

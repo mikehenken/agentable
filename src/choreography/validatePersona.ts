@@ -15,7 +15,7 @@ const STARTER_HINT_PATTERN =
 
 /**
  * Returns validation issues for persona config (02 section 10 rule 3).
- * Moss regression: tenant persona configured but starterPrompts omitted.
+ * Helios regression: tenant persona configured but starterPrompts omitted.
  */
 export function validatePersonaStarterPrompts(
   persona: Partial<CanvasPersona>,

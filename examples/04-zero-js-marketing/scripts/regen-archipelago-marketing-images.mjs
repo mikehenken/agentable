@@ -3,7 +3,7 @@
  * Regenerate Archipelago Resorts marketing photography for gallery example 04.
  *
  * Uses Gemini image generation (`gemini-3.1-pro-image-preview` by default) via
- * `@google/genai` to replace Sandals careers-site source assets with fictional
+ * `@google/genai` to replace Archipelago careers-site source assets with fictional
  * Archipelago Resorts imagery of matching composition quality.
  *
  * Usage (from agentable-canvas repo root):
@@ -74,7 +74,7 @@ const VISUAL_SYSTEM = [
 ].join(' ');
 
 const NEGATIVE = [
-  'Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names,',
+  'Do NOT include: Archipelago, Beaches, Helios, Sandy, any real Archipelago or Beaches property names,',
   'readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions,',
   'UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces,',
   'text overlays, typography burned into the image, QR codes, or celebrity likenesses.',
@@ -85,7 +85,7 @@ const NEGATIVE = [
  *
  * @typedef {object} AssetSpec
  * @property {string} id
- * @property {string} sourcePath Sandals website relative path
+ * @property {string} sourcePath Archipelago website relative path
  * @property {string} purpose
  * @property {string} outputFile Filename under assets/
  * @property {AspectRatio} aspectRatio
@@ -357,7 +357,7 @@ const ASSETS = [
   {
     id: 'team-maya',
     sourcePath: 'public/images/team-kerone.jpg',
-    purpose: 'Testimonial portrait — Maya Ortega (replaces Sandals Kerone)',
+    purpose: 'Testimonial portrait — Maya Ortega (replaces Archipelago Kerone)',
     outputFile: 'team-maya.jpg',
     aspectRatio: '3:4',
     kind: 'photo',
@@ -375,7 +375,7 @@ const ASSETS = [
   {
     id: 'team-elena',
     sourcePath: 'public/images/team-sandra.jpg',
-    purpose: 'Testimonial portrait — Elena Ruiz (replaces Sandals Sandra-Lee)',
+    purpose: 'Testimonial portrait — Elena Ruiz (replaces Archipelago Sandra-Lee)',
     outputFile: 'team-elena.jpg',
     aspectRatio: '3:4',
     kind: 'photo',
@@ -392,7 +392,7 @@ const ASSETS = [
   {
     id: 'team-marcus',
     sourcePath: 'public/images/team-andre.jpg',
-    purpose: 'Testimonial portrait — Marcus Chen (replaces Sandals Andre)',
+    purpose: 'Testimonial portrait — Marcus Chen (replaces Archipelago Andre)',
     outputFile: 'team-marcus.jpg',
     aspectRatio: '3:4',
     kind: 'photo',
@@ -409,7 +409,7 @@ const ASSETS = [
   {
     id: 'team-julian',
     sourcePath: 'public/images/team-carlton.jpg',
-    purpose: 'Testimonial portrait — Julian Brooks (replaces Sandals Carlton)',
+    purpose: 'Testimonial portrait — Julian Brooks (replaces Archipelago Carlton)',
     outputFile: 'team-julian.jpg',
     aspectRatio: '3:4',
     kind: 'photo',
@@ -437,7 +437,7 @@ const ASSETS = [
       'Simple teal (#0E7490) circular seal with a stylized lighthouse and wave line;',
       'clean geometric shapes, professional academic look.',
       'If any letters appear, only the initials "HIH" in a modern sans-serif — no other words.',
-      'No gradients, no photorealism, no 3D, no Sandals/FIU/UWI marks.',
+      'No gradients, no photorealism, no 3D, no Archipelago/FIU/UWI marks.',
       NEGATIVE,
     ].join(' '),
   },
@@ -477,8 +477,8 @@ const ASSETS = [
   },
   {
     id: 'brand-wordmark',
-    sourcePath: 'public/images/sandals-logo.png',
-    purpose: 'Archipelago Resorts wordmark (replaces Sandals logo)',
+    sourcePath: 'public/images/archipelago-logo.png',
+    purpose: 'Archipelago Resorts wordmark (replaces Archipelago logo)',
     outputFile: 'brand-wordmark.png',
     aspectRatio: '21:9',
     kind: 'wordmark',
@@ -489,7 +489,7 @@ const ASSETS = [
       'with a small teal (#0E7490) wave accent under the word Archipelago.',
       'Wide horizontal lockup (ultrawide 21:9 framing), generous padding, no tagline,',
       'no extra icons beyond the subtle wave.',
-      'No Sandals script style, no palm-tree clichés stacked on letters.',
+      'No Archipelago script style, no palm-tree clichés stacked on letters.',
       NEGATIVE,
     ].join(' '),
   },
@@ -745,7 +745,7 @@ function writeManifest(assets, meta) {
     imageSize: meta.size,
     dryRun: meta.dryRun,
     brand: 'Archipelago Resorts',
-    note: 'Fictional Caribbean hospitality brand. No Sandals/Beaches/Moss trademarks.',
+    note: 'Fictional Caribbean hospitality brand. No Archipelago/Beaches/Helios trademarks.',
     assets: assets.map((a) => ({
       id: a.id,
       source: a.sourcePath,
@@ -775,11 +775,11 @@ function writeManifest(assets, meta) {
 }
 
 /**
- * Remove obsolete Sandals-named files once Archipelago replacements exist.
+ * Remove obsolete Archipelago-named files once Archipelago replacements exist.
  */
 function cleanupLegacyFiles {
   const legacy = [
-    'sandals-logo.png',
+    'archipelago-logo.png',
     'team-kerone.jpg',
     'team-sandra.jpg',
     'team-andre.jpg',
@@ -792,7 +792,7 @@ function cleanupLegacyFiles {
     const full = path.join(ASSETS_DIR, name);
     if (fs.existsSync(full)) {
       fs.unlinkSync(full);
-      console.log(`Removed legacy Sandals asset: ${name}`);
+      console.log(`Removed legacy Archipelago asset: ${name}`);
     }
   }
 }

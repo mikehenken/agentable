@@ -149,7 +149,7 @@ export interface CanvasPersona {
   visual?: AiPersonaVisualConfig;
   /**
    * Tenant brand mark for the whiteboard top bar (replaces letter-initial avatar).
-   * Career hosts supply e.g. Sandals `/images/sandals-logo.png`.
+   * Career hosts supply e.g. Archipelago `/images/archipelago-logo.png`.
    */
   brandLogo?: {
     url: string;
@@ -187,7 +187,7 @@ export interface CanvasTenantConfig {
  /** Resolved authoring policy; merged from platform + tenant + runtime layers. */
   canvasPolicy: ResolvedCanvasPolicy;
   /**
-   * Chat empty-state welcome copy (e.g. Sandals Sandy intro). From embed
+   * Chat empty-state welcome copy (e.g. Archipelago Sandy intro). From embed
    * `welcomeMessage` / config-url. When unset, ChatPanel uses a short default.
    */
   welcomeMessage?: string;

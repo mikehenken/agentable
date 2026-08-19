@@ -26,7 +26,7 @@ Six beliefs shape nearly every decision in the codebase. When a design question 
 document does not answer, reason from these.
 
 **The core is generic. Packs carry meaning.** Core knows about panels, canvases, tokens,
-toolbars, and registries. It does not know what a job posting is, what Sandals is, or what a
+toolbars, and registries. It does not know what a job posting is, what Archipelago is, or what a
 career concierge does. Domain content lives in packs (`packages/career-pack`,
 `packages/support-inbox-pack`). Dependencies flow from pack to core and never the reverse. This is
 the single most load-bearing rule in the project, because it is what makes the framework a
@@ -76,7 +76,7 @@ opinion: navigation content, panel definitions, chrome, data, and branding.
 **No file under `src/` may import from `packages/`.** This is enforced by
 `tests/unit/careerPackBundleBoundary.test.ts`, whose allowlist may only shrink. Adding an entry
 requires an explicit owner decision. Equally forbidden: branching core behavior on a tenant name
-(`tenant === 'sandals'`). If core needs to behave differently for a tenant, that difference is a
+(`tenant === 'archipelago'`). If core needs to behave differently for a tenant, that difference is a
 configuration field or a pack, never a string comparison.
 
 The reason is practical rather than ideological. The first client is a career concierge, and
@@ -360,7 +360,7 @@ of violation. Each one has been broken before or is one careless commit away.
 1. **No file in `src/` imports from `packages/`.** Enforced by a boundary test whose allowlist may
    only shrink. If you need domain content in core, you have found a design error, not an
    exception.
-2. **No tenant-name branching in core behavior.** `tenant === 'sandals'` in a core conditional is
+2. **No tenant-name branching in core behavior.** `tenant === 'archipelago'` in a core conditional is
    forbidden. Express the difference as configuration.
 3. **No hardcoded brand values.** No hex, no literal px spacing, no font names inside component
    bodies. Tokens only.

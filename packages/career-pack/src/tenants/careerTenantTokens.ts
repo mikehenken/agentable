@@ -1,33 +1,33 @@
 /**
- * Tenant-scoped career brand tokens (Sandals Moss gallery Archipelago).
+ * Tenant-scoped career brand tokens (Archipelago Helios gallery Archipelago).
  *
- * Marketing refs: Sandals website `#0D7377`, Moss green `#006938`,
+ * Marketing refs: Archipelago website `#0D7377`, Helios green `#006938`,
  * Archipelago gallery `#0E7490`. Hosts must not hard-code conflicting primaries
  * — read from this table or embed config `primaryColor`.
  */
 export const CAREER_TENANT_PRIMARY_COLORS = {
-  sandals: '#0D7377',
-  moss: '#006938',
+  archipelago: '#0D7377',
+  helios: '#006938',
   'archipelago-resorts': '#0E7490',
 } as const;
 
 export type CareerTenantPrimaryId = keyof typeof CAREER_TENANT_PRIMARY_COLORS;
 
-const LEGACY_SANDALS_PRIMARY = '#0077B6';
+const LEGACY_ARCHIPELAGO_PRIMARY = '#0077B6';
 
 /** Resolve canonical primary hex for a career tenant id. */
 export function resolveCareerTenantPrimaryColor(tenant: string): string {
   const normalized = tenant.trim().toLowerCase();
-  if (normalized === 'sandals') {
-    return CAREER_TENANT_PRIMARY_COLORS.sandals;
+  if (normalized === 'archipelago') {
+    return CAREER_TENANT_PRIMARY_COLORS.archipelago;
   }
-  if (normalized === 'moss') {
-    return CAREER_TENANT_PRIMARY_COLORS.moss;
+  if (normalized === 'helios') {
+    return CAREER_TENANT_PRIMARY_COLORS.helios;
   }
   if (normalized === 'archipelago-resorts') {
     return CAREER_TENANT_PRIMARY_COLORS['archipelago-resorts'];
   }
-  return CAREER_TENANT_PRIMARY_COLORS.sandals;
+  return CAREER_TENANT_PRIMARY_COLORS.archipelago;
 }
 
 /** Apply `--landi-color-primary` (+ HSL when valid hex) on a host element. */
@@ -46,13 +46,13 @@ export function applyCareerTenantBrandTokens(
 
 /** @internal Document legacy mismatch for parity audits. */
 export const CAREER_TENANT_TOKEN_NOTES = {
-  sandals: {
-    marketingRef: CAREER_TENANT_PRIMARY_COLORS.sandals,
-    legacyEmbedPrimary: LEGACY_SANDALS_PRIMARY,
+  archipelago: {
+    marketingRef: CAREER_TENANT_PRIMARY_COLORS.archipelago,
+    legacyEmbedPrimary: LEGACY_ARCHIPELAGO_PRIMARY,
     status: 'unified to marketing ref in ',
   },
-  moss: {
-    marketingRef: CAREER_TENANT_PRIMARY_COLORS.moss,
+  helios: {
+    marketingRef: CAREER_TENANT_PRIMARY_COLORS.helios,
     status: 'unchanged',
   },
   'archipelago-resorts': {

@@ -52,7 +52,7 @@ function collectHostHtmlPages(root: string): string[] {
   const examplesDir = join(root, 'examples');
   pages.push(...listHtmlFiles(examplesDir));
 
-  const websiteEmbed = join(root, '..', 'sandals', 'website', 'public', 'embed');
+  const websiteEmbed = join(root, '..', 'archipelago', 'website', 'public', 'embed');
   try {
     if (statSync(websiteEmbed).isDirectory) {
       pages.push(...listHtmlFiles(websiteEmbed));

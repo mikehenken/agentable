@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createCareerPack } from '@agentable/career-pack';
 import { careerDatasetToPanelData } from '@agentable/career-pack';
 import { OpenPositionsPanel } from '../../packages/career-pack/src/panels/OpenPositionsPanel';
-import { SANDALS_CAREER_DATASET } from '@agentable/career-pack';
+import { ARCHIPELAGO_CAREER_DATASET } from '@agentable/career-pack';
 import { Header } from '../../src/panels/catalog/components';
 import { bootstrapSessionLocale, getI18n } from '../../src/i18n';
 import type { SpecNodeContextValue } from '../../src/panels/types';
@@ -21,7 +21,7 @@ const POPULATED_CONTEXT: SpecNodeContextValue = {
   state: 'populated',
 };
 
-const SAMPLE_JOBS = careerDatasetToPanelData(SANDALS_CAREER_DATASET).jobs ?? [];
+const SAMPLE_JOBS = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET).jobs ?? [];
 
 afterEach(() => {
   bootstrapSessionLocale({});

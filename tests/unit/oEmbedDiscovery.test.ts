@@ -25,14 +25,14 @@ describe('iframe host URL helpers', () => {
     const url = buildIframeHostUrl(CONFIG.embedBaseUrl, {
       surface: 'panel',
       panel: 'open-positions',
-      configUrl: '/config/sandals-career.json',
+      configUrl: '/config/archipelago-career.json',
       parentOrigin: 'https://cms.example.com',
       bridgeId: 'bridge_abc',
     });
 
     const parsed = parseIframeHostUrl(url);
     expect(parsed?.params.panel).toBe('open-positions');
-    expect(parsed?.params.configUrl).toBe('/config/sandals-career.json');
+    expect(parsed?.params.configUrl).toBe('/config/archipelago-career.json');
     expect(parsed?.params.parentOrigin).toBe('https://cms.example.com');
     expect(parsed?.params.bridgeId).toBe('bridge_abc');
   });
@@ -61,7 +61,7 @@ describe('oEmbed discovery', () => {
     const pageUrl = buildIframeHostUrl(CONFIG.embedBaseUrl, {
       surface: 'panel',
       panel: 'open-positions',
-      configUrl: '/config/sandals-career.json',
+      configUrl: '/config/archipelago-career.json',
     });
 
     const response = handleOEmbedRequest({ url: pageUrl, maxwidth: 800 }, CONFIG);

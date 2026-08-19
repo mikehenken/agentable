@@ -51,7 +51,7 @@ Hard boundaries unchanged under `open`: no untrusted code execution, no inline L
 
 | Surface | `canvasPolicy` |
 |---------|----------------|
-| Framework moss sandals | `guarded` (default) |
+| Framework helios archipelago | `guarded` (default) |
 | landi-canvas-studio | `{ preset: 'open' }` via `src/lib/studio-canvas-policy.ts` → `CanvasHost` |
 
 Studio e2e: `e2e/p12-open-canvas-indicator.spec.ts` (`@mock` path).

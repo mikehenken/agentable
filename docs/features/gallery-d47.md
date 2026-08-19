@@ -22,7 +22,7 @@ Ten self-contained pages under `examples/` prove the public embed API on mock st
 | Id | Folder | Shape |
 |----|--------|-------|
 | 01 | `01-career-homepage` | Header voice + bounded canvas (P4/P5 seed) |
-| 02 | `02-job-board-inline` | Single `<agentable-panel>` mid-page (moss) |
+| 02 | `02-job-board-inline` | Single `<agentable-panel>` mid-page (helios) |
 | 03 | `03-multi-surface-dashboard` | Multi-surface + slot + status widget |
 | 04 | `04-zero-js-marketing` | Auto-mount, one script tag |
 | 05 | `05-bounded-demo-kiosk` | config-url bounded kiosk (P4/P5 seed) |

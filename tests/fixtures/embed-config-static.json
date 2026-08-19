@@ -1,5 +1,5 @@
 {
-  "tenant": "moss-fixture",
+  "tenant": "helios-fixture",
   "persona": {
     "systemPrompt": "You are Mason.",
     "assistantName": "Mason"

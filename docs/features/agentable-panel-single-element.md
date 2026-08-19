@@ -22,7 +22,7 @@ changelog:
 ```html
 <agentable-panel
   panel="open-positions"
-  config-url="/config/sandals-career.json"
+  config-url="/config/archipelago-career.json"
   primary-color="#0077B6"
   locale="en"
   slot-name="sidebar"
@@ -36,7 +36,7 @@ changelog:
 |-----------|------|
 | `panel` | Required registered panel id (career pack ids: `open-positions`, `applications`, `growth-paths`, `resources`) |
 | `config-url` | Tenant JSON config + adapter (same merge order as `<agentable-canvas>`) |
-| `panel-data-url` | Legacy moss alias for adapter data URL |
+| `panel-data-url` | Legacy helios alias for adapter data URL |
 | `panel-title` | Optional chrome title override (supports i18n catalog keys) |
 | `hide-chrome` | Full-bleed body without title bar |
 | `slot-name` | Named page-session slot for agent `open_panel` targeting (wired in ) |

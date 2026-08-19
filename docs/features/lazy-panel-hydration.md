@@ -18,7 +18,7 @@ Panel embed surfaces can defer expensive work (page-session join, config fetch, 
 ```html
 <agentable-panel
   panel="open-positions"
-  config-url="/config/sandals-career.json"
+  config-url="/config/archipelago-career.json"
   lazy-hydrate
 ></agentable-panel>
 <script type="module" src="/embed/agentable-panel.js"></script>
@@ -35,7 +35,7 @@ Shadow part: `skeleton` (status landmark, `aria-busy="true"`).
 ```html
 <div
   data-agentable-panel="open-positions"
-  data-config-url="/config/sandals-career.json"
+  data-config-url="/config/archipelago-career.json"
   data-lazy-hydrate
 ></div>
 ```

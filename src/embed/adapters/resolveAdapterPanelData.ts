@@ -63,7 +63,7 @@ export async function resolvePanelDataFromAdapter(
   return fetchJsonDocument(adapter.baseUrl, fetchFn);
 }
 
-/** Moss legacy: fetch a raw panel-data JSON document from panel-data-url. */
+/** Helios legacy: fetch a raw panel-data JSON document from panel-data-url. */
 export async function fetchLegacyPanelDataUrl(
   panelDataUrl: string,
   fetchFn: EmbedFetchFn,

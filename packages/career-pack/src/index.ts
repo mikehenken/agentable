@@ -7,14 +7,14 @@ export {
   resolveCareerChatBundle,
   resolveCareerSystemPrompt,
   CAREER_SUPPRESSED_CORE_TOOLS,
-  MOSS_STARTER_PROMPTS_WITH_TOOLS,
-  SANDALS_STARTER_PROMPTS_WITH_TOOLS,
+  HELIOS_STARTER_PROMPTS_WITH_TOOLS,
+  ARCHIPELAGO_STARTER_PROMPTS_WITH_TOOLS,
   type CareerChatBundle,
   type CareerSuppressedCoreTool,
 } from './careerChatBundle';
 
-export { MOSS_CAREER_SYSTEM_PROMPT } from './prompts/mossSystemPrompt';
-export { SANDALS_CAREER_SYSTEM_PROMPT, SANDALS_VOICE_GREETING } from './prompts/sandalsSystemPrompt';
+export { HELIOS_CAREER_SYSTEM_PROMPT } from './prompts/heliosSystemPrompt';
+export { ARCHIPELAGO_CAREER_SYSTEM_PROMPT, ARCHIPELAGO_VOICE_GREETING } from './prompts/archipelagoSystemPrompt';
 
 export {
   CAREER_PANEL_IDS,
@@ -89,7 +89,7 @@ export {
   type CareerWorkerForwardCompatProof,
 } from './schema/forwardCompat.assert';
 
-export { convertMossPanelData, convertSandalsCareerData } from './fixtures/convert-from-sources';
+export { convertHeliosPanelData, convertArchipelagoCareerData } from './fixtures/convert-from-sources';
 
 export type { CareerPackExtensions, CareerPackExtensionPoints } from './extension-points';
 
@@ -107,20 +107,20 @@ export type {
 } from './types';
 
 export { MINIMAL_CAREER_DATASET } from './fixtures/minimal-dataset';
-export { MOSS_CAREER_DATASET } from './fixtures/moss-dataset';
-export { SANDALS_CAREER_DATASET } from './fixtures/sandals-dataset';
+export { HELIOS_CAREER_DATASET } from './fixtures/helios-dataset';
+export { ARCHIPELAGO_CAREER_DATASET } from './fixtures/archipelago-dataset';
 
 export {
-  MOSS_STARTER_PROMPTS,
-  MOSS_STARTER_PROMPTS_ES,
-  MOSS_PERSONA_EN,
-  MOSS_PERSONA_ES,
-  createMossEmbedConfig,
-  resolveMossPersona,
-  type MossLocaleTag,
-  type MossPersonaLocale,
-  type CreateMossEmbedConfigInput,
-} from './tenants/moss';
+  HELIOS_STARTER_PROMPTS,
+  HELIOS_STARTER_PROMPTS_ES,
+  HELIOS_PERSONA_EN,
+  HELIOS_PERSONA_ES,
+  createHeliosEmbedConfig,
+  resolveHeliosPersona,
+  type HeliosLocaleTag,
+  type HeliosPersonaLocale,
+  type CreateHeliosEmbedConfigInput,
+} from './tenants/helios';
 
 export {
   registerCareerWhiteboard,
@@ -158,17 +158,17 @@ export { createCareerNavFooterRenderer } from './whiteboard/createCareerNavFoote
 export { CareerNavFooter } from './whiteboard/CareerNavFooter';
 
 export {
-  SANDALS_STARTER_PROMPTS,
-  SANDALS_STARTER_PROMPTS_ES,
-  SANDALS_PERSONA_EN,
-  SANDALS_PERSONA_ES,
-  SANDALS_BRAND_LOGO,
-  createSandalsEmbedConfig,
-  resolveSandalsPersona,
-  type SandalsLocaleTag,
-  type SandalsPersonaLocale,
-  type CreateSandalsEmbedConfigInput,
-} from './tenants/sandals';
+  ARCHIPELAGO_STARTER_PROMPTS,
+  ARCHIPELAGO_STARTER_PROMPTS_ES,
+  ARCHIPELAGO_PERSONA_EN,
+  ARCHIPELAGO_PERSONA_ES,
+  ARCHIPELAGO_BRAND_LOGO,
+  createArchipelagoEmbedConfig,
+  resolveArchipelagoPersona,
+  type ArchipelagoLocaleTag,
+  type ArchipelagoPersonaLocale,
+  type CreateArchipelagoEmbedConfigInput,
+} from './tenants/archipelago';
 
 export {
   CAREER_TENANT_PRIMARY_COLORS,

@@ -12,7 +12,7 @@ Interactive **Northstar Atelier** demo: scripted `draw_shapes` and `read_canvas`
 ## Quick start (recommended — Vite dev, no embed build)
 
 ```bash
-cd sandals/agentable-canvas
+cd archipelago/agentable-canvas
 npm run dev:p8-demo
 ```
 
@@ -23,7 +23,7 @@ Open [http://localhost:3018/examples/p8-agent-draw-demo/index.dev.html](http://l
 For the static gallery server (Playwright parity):
 
 ```bash
-cd sandals/agentable-canvas
+cd archipelago/agentable-canvas
 npm run build:gallery-harnesses
 node scripts/e2e-embed-server.mjs
 ```

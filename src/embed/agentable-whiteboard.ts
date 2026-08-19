@@ -5,8 +5,8 @@
  * Use this tag when the host page needs PanelShape panels on a tldraw canvas.
  *
  *     <agentable-whiteboard
- *       tenant="sandals"
- *       config-url="/config/sandals-career.json"
+ *       tenant="archipelago"
+ *       config-url="/config/archipelago-career.json"
  *       canvas-mode="bounded"
  *       canvas-bounds="1200x800"
  *       voice-enabled
@@ -344,7 +344,7 @@ export class AgentableWhiteboardElement extends LitElement {
       this.refreshWhiteboardWiring();
     });
     // Brand tokens applied after config merge in `_recomputeResolved` so
-    // config-url primaryColor (e.g. Sandals #0077B6) is not overwritten by
+    // config-url primaryColor (e.g. Archipelago #0077B6) is not overwritten by
     // the Lit constructor default (#3B82F6). Explicit `primary-color` still
     // wins via attribute snapshot + merge.
     if (this.hasAttribute('primary-color')) {
@@ -540,7 +540,7 @@ export class AgentableWhiteboardElement extends LitElement {
   private _attributeSnapshot(): EmbedAttributeSnapshot {
     // Empty string = "attribute not set" so config-url / CSS can win.
     // Lit constructors always assign built-in defaults; treating those as
-    // explicit attributes would permanently shadow sandals-career.json
+    // explicit attributes would permanently shadow archipelago-career.json
     // primaryColor / welcomeMessage (and other persona fields).
     return {
       tenant: this.hasAttribute('tenant') ? this.tenant : '',

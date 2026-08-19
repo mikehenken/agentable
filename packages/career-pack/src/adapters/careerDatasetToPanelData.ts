@@ -201,9 +201,9 @@ function milestoneLevel(index: number, total: number): { level: LevelKey; levelL
 
 function inferProperty(location: string): string {
   const trimmed = location.trim();
-  if (!trimmed) return 'Sandals Resort';
+  if (!trimmed) return 'Archipelago Resort';
   const islandMatch = trimmed.match(/,\s*([^,]+)$/);
-  return islandMatch?.[1]?.trim() ?? 'Sandals Resort';
+  return islandMatch?.[1]?.trim() ?? 'Archipelago Resort';
 }
 
 function parseNumericJobId(id: string, fallbackIndex: number): number {
@@ -289,12 +289,12 @@ function careerApplicationToPanelApplication(
   return {
     id: application.id,
     role: job?.title ?? 'Open role',
-    property: job ? inferProperty(job.location) : 'Sandals Resort',
+    property: job ? inferProperty(job.location) : 'Archipelago Resort',
     location: job?.location ?? 'Caribbean',
     status: application.status,
     statusTone: applicationStatusTone(application.status),
     submitted: formatSubmittedDate(application.submittedAt),
-    recruiter: 'Sandals Talent Team',
+    recruiter: 'Archipelago Talent Team',
     recruiterRole: 'Career Concierge',
     stages: [
       {

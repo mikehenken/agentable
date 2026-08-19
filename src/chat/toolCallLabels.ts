@@ -38,7 +38,7 @@ function formatArgValue(value: unknown): string {
   return JSON.stringify(value);
 }
 
-/** Moss-style function signature for tool-call chat blocks. */
+/** Helios-style function signature for tool-call chat blocks. */
 export function formatToolCallSignature(
   name: string,
   args: Record<string, unknown>,

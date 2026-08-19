@@ -86,7 +86,7 @@ export function ResourcesPanel({ data }: ReactPanelLoaderProps): ReactElement {
   return (
     <div className="flex flex-col h-full min-h-[380px]" data-testid="resources-panel">
       <div className="shrink-0 px-4 py-3 border-b border-canvas-border space-y-3">
-        <h2 className="text-[15px] font-semibold text-canvas">Sandals Resources</h2>
+        <h2 className="text-[15px] font-semibold text-canvas">Archipelago Resources</h2>
         <input
           type="search"
           value={query}

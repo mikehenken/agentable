@@ -73,7 +73,7 @@ function resolveToolbarConfig(
   return undefined;
 }
 
-/** Merge persona system prompt with optional agentJobsGuide appendix (moss behavior). */
+/** Merge persona system prompt with optional agentJobsGuide appendix (helios behavior). */
 export function mergeAgentJobsGuideIntoPrompt(
   systemPrompt: string,
   agentJobsGuide: string | undefined,
@@ -187,7 +187,7 @@ export function mergeEmbedConfig(
     tenant,
     locale: locale.trim() ? locale : undefined,
     // Surface merged welcome copy into React so ChatPanel empty state can
-    // show the Sandals / tenant greeting (not the Lit constructor default).
+    // show the Archipelago / tenant greeting (not the Lit constructor default).
     ...(welcomeMessage.trim() ? { welcomeMessage } : {}),
     persona: {
       systemPrompt,

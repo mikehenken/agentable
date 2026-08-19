@@ -6,7 +6,7 @@
  *
  *     <agentable-panel
  *       panel="open-positions"
- *       config-url="/config/sandals-career.json"
+ *       config-url="/config/archipelago-career.json"
  *       primary-color="#0077B6"
  *       locale="en"
  *     ></agentable-panel>

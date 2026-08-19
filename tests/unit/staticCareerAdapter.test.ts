@@ -5,7 +5,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import {
   createStaticCareerAdapter,
   MINIMAL_CAREER_DATASET,
-  MOSS_CAREER_DATASET,
+  HELIOS_CAREER_DATASET,
   resolveCareerDatasetInput,
 } from '@agentable/career-pack';
 import type { PanelScope } from '../../src/panels/types';
@@ -18,7 +18,7 @@ describe('createStaticCareerAdapter', () => {
   });
 
   it('returns filtered jobs for career.jobs query params', async () => {
-    const adapter = createStaticCareerAdapter(MOSS_CAREER_DATASET, { latencyMs: 0 });
+    const adapter = createStaticCareerAdapter(HELIOS_CAREER_DATASET, { latencyMs: 0 });
     const all = await adapter.query({ source: 'career.jobs' }, SCOPE, new AbortController().signal);
     expect(Array.isArray(all)).toBe(true);
     expect((all as unknown[]).length).toBe(117);
@@ -32,7 +32,7 @@ describe('createStaticCareerAdapter', () => {
   });
 
   it('searches jobs by title keyword', async () => {
-    const adapter = createStaticCareerAdapter(MOSS_CAREER_DATASET);
+    const adapter = createStaticCareerAdapter(HELIOS_CAREER_DATASET);
     const results = await adapter.query(
       { source: 'career.jobs', params: { search: 'Safety Manager' } },
       SCOPE,

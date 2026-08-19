@@ -2,7 +2,7 @@
  * Career agent tool-routing grounding — appended to system prompts so models
  * prefer domain tools (open_positions) over generic canvas tools (share_artifact).
  *
- * Moss ships this via fixture `agentJobsGuide`; Sandals embed config was missing it.
+ * Helios ships this via fixture `agentJobsGuide`; Archipelago embed config was missing it.
  */
 
 export const DEFAULT_CAREER_AGENT_JOBS_GUIDE = `## Canvas tools — career concierge (MANDATORY routing)

@@ -8,7 +8,7 @@ export interface CareerNavFooterProps {
   collapsed?: boolean;
 }
 
-/** Voice waveform bars (decorative — Moss/Sandals nav rail footer). */
+/** Voice waveform bars (decorative — Helios/Archipelago nav rail footer). */
 function VoiceWaveform(): ReactElement {
   const heights = [6, 12, 8, 14, 10, 16, 9, 13];
   return (

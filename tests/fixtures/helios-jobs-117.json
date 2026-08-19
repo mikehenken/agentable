@@ -1,8 +1,8 @@
 {
- "source": "moss/data/moss-panel-data.json",
- "generatedFrom": "jobs-index.json (live moss.com scrape)",
+ "source": "helios/data/helios-panel-data.json",
+ "generatedFrom": "jobs-index.json (live helios.com scrape)",
  "scrapedAt": "2026-07-01T23:10:50Z",
- "note": "Field projection of the real 117-job moss dataset (reference load); values verbatim from source.",
+ "note": "Field projection of the real 117-job helios dataset (reference load); values verbatim from source.",
  "jobCount": 117,
  "jobs": [
  {
@@ -11,7 +11,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 2,
@@ -19,7 +19,7 @@
  "department": "Digital & Information Technology",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 3,
@@ -27,7 +27,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "Wheatley, AR",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 4,
@@ -35,7 +35,7 @@
  "department": "Early Stage Project Management",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 5,
@@ -43,7 +43,7 @@
  "department": "Corporate Administration",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 6,
@@ -51,7 +51,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 7,
@@ -59,7 +59,7 @@
  "department": "Corporate Administration",
  "track": "Professionals (Salaried)",
  "location": "Fort Lauderdale, FL | Tampa, FL | McKinney, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 8,
@@ -67,7 +67,7 @@
  "department": "Estimating",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 9,
@@ -75,7 +75,7 @@
  "department": "Marketing & Business Development",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 10,
@@ -83,7 +83,7 @@
  "department": "Asset Management",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 11,
@@ -91,7 +91,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 12,
@@ -99,7 +99,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 13,
@@ -107,7 +107,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "NEW MEXICO, COLORADO, FLORIDA, ETC. - MULTI-STATE REQUIRES UP TO 100% TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 14,
@@ -115,7 +115,7 @@
  "department": "Commissioning",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 15,
@@ -123,7 +123,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "DALLAS / FORT WORTH",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 16,
@@ -131,7 +131,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 17,
@@ -139,7 +139,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "TAMPA, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 18,
@@ -147,7 +147,7 @@
  "department": "Corporate Administration",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 19,
@@ -155,7 +155,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "DALLAS / FORT WORTH, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 20,
@@ -163,7 +163,7 @@
  "department": "Digital & Information Technology",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 21,
@@ -171,7 +171,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "FORT PIERCE, FL (MUST LIVE OR RELOCATE TO FORT PIERCE, FL)",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 22,
@@ -179,7 +179,7 @@
  "department": "Engineering",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 23,
@@ -187,7 +187,7 @@
  "department": "Solar Project Management",
  "track": "Professionals (Salaried)",
  "location": "FLORIDA, ARIZONA, COLORADO, ARKANSAS, GEORGIA, NORTH CAROLINA- MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 24,
@@ -195,7 +195,7 @@
  "department": "Executive",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 25,
@@ -203,7 +203,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "REMOTE + 60% TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 26,
@@ -211,7 +211,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "NEW MEXICO, KENTUCKY, TEXAS, COLORADO, FLORIDA - MULTI-STATE REQUIRES UP TO 100% TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 27,
@@ -219,7 +219,7 @@
  "department": "Engineering",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL, OR TAMPA, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 28,
@@ -227,7 +227,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "Coolidge, AZ",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 29,
@@ -235,7 +235,7 @@
  "department": "Finance & Accounting",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL (HYBRID OR REMOTE AVAILABLE)",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 30,
@@ -243,7 +243,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "ALLEN, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 31,
@@ -251,7 +251,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "Safety Specialist, CM",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 32,
@@ -259,7 +259,7 @@
  "department": "Risk Management",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 33,
@@ -267,7 +267,7 @@
  "department": "Finance & Accounting",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 34,
@@ -275,7 +275,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 35,
@@ -283,7 +283,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "FLORIDA, TEXAS, COLORADO – MULTI-STATE REQUIRES 100% TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 36,
@@ -291,7 +291,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "ARKANSAS– 60% TRAVEL REQUIRED",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 37,
@@ -299,7 +299,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 38,
@@ -307,7 +307,7 @@
  "department": "Engineering",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 39,
@@ -315,7 +315,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 40,
@@ -323,7 +323,7 @@
  "department": "Finance & Accounting",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 41,
@@ -331,7 +331,7 @@
  "department": "Risk Management",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL, OPEN TO REMOTE",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 42,
@@ -339,7 +339,7 @@
  "department": "Digital & Information Technology",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 43,
@@ -347,7 +347,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "NEW MEXICO",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 44,
@@ -355,7 +355,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "DALLAS / FORT WORTH, TEXAS",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 45,
@@ -363,7 +363,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "OKLAHOMA",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 46,
@@ -371,7 +371,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 47,
@@ -379,7 +379,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "SARASOTA, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 48,
@@ -387,7 +387,7 @@
  "department": "Digital & Information Technology",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 49,
@@ -395,7 +395,7 @@
  "department": "Digital & Information Technology",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 50,
@@ -403,7 +403,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 51,
@@ -411,7 +411,7 @@
  "department": "Digital & Information Technology",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 52,
@@ -419,7 +419,7 @@
  "department": "Finance & Accounting",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 53,
@@ -427,7 +427,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE – REQUIRES NATIONAL TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 54,
@@ -435,7 +435,7 @@
  "department": "CM Preconstruction",
  "track": "Professionals (Salaried)",
  "location": "MCKINNEY, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 55,
@@ -443,7 +443,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "Fort Lauderdale, FL (hybrid work model, some travel as needed) FORT LAUDERDALE, FL (HYBRID WORK MODEL, SOME TRAVEL AS NEEDED)",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 56,
@@ -451,7 +451,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 57,
@@ -459,7 +459,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "DALLAS / FORT WORTH, TEXAS",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 58,
@@ -467,7 +467,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "ST. PETERSBURG, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 59,
@@ -475,7 +475,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 60,
@@ -483,7 +483,7 @@
  "department": "Procurement & Logistics",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 61,
@@ -491,7 +491,7 @@
  "department": "Engineering",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 62,
@@ -499,7 +499,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 63,
@@ -507,7 +507,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MCKINNEY, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 64,
@@ -515,7 +515,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 65,
@@ -523,7 +523,7 @@
  "department": "CMH Project Management",
  "track": "Professionals (Salaried)",
  "location": "HAWAII",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 66,
@@ -531,7 +531,7 @@
  "department": "Commissioning",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 67,
@@ -539,7 +539,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 68,
@@ -547,7 +547,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 69,
@@ -555,7 +555,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 70,
@@ -563,7 +563,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 71,
@@ -571,7 +571,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 72,
@@ -579,7 +579,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 73,
@@ -587,7 +587,7 @@
  "department": "Corporate Administration",
  "track": "Professionals (Salaried)",
  "location": "WILSON, AR",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 74,
@@ -595,7 +595,7 @@
  "department": "Asset Management",
  "track": "Professionals (Salaried)",
  "location": "WEST MEMPHIS, AR – MULTI-STATE REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 75,
@@ -603,7 +603,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL – 40% TRAVEL REQUIRED",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 76,
@@ -611,7 +611,7 @@
  "department": "Estimating",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 77,
@@ -619,7 +619,7 @@
  "department": "Early Stage Project Management",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 78,
@@ -627,7 +627,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "FLORIDA, GEORGIA, NORTH CAROLINA - MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 79,
@@ -635,7 +635,7 @@
  "department": "Solar Project Management",
  "track": "Professionals (Salaried)",
  "location": "FLORIDA, ARIZONA, COLORADO, ARKANSAS, GEORGIA, NORTH CAROLINA - MULTI-STATE, REQUIRES HIGH TRAVEL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 80,
@@ -643,7 +643,7 @@
  "department": "Human Resources",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 81,
@@ -651,7 +651,7 @@
  "department": "Engineering",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL, HYBRID, OR REMOTE",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 82,
@@ -659,7 +659,7 @@
  "department": "Solar Project Management",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 83,
@@ -667,7 +667,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 84,
@@ -675,7 +675,7 @@
  "department": "CM Project Management",
  "track": "Professionals (Salaried)",
  "location": "SARASOTA, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 85,
@@ -683,7 +683,7 @@
  "department": "Estimating",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL-Solar Division",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 86,
@@ -691,7 +691,7 @@
  "department": "Environmental, Health & Safety",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 87,
@@ -699,7 +699,7 @@
  "department": "Engineering",
  "track": "Professionals (Salaried)",
  "location": "FORT LAUDERDALE, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 88,
@@ -707,7 +707,7 @@
  "department": "Solar Field Operations",
  "track": "Professionals (Salaried)",
  "location": "Arcadia, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 89,
@@ -715,7 +715,7 @@
  "department": "Corporate Administration",
  "track": "Professionals (Salaried)",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 90,
@@ -723,7 +723,7 @@
  "department": "CM Field Operations",
  "track": "Professionals (Salaried)",
  "location": "Laborer, CM",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 91,
@@ -731,7 +731,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Robards, KY",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 92,
@@ -739,7 +739,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 93,
@@ -747,7 +747,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 94,
@@ -755,7 +755,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Kaufman, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 95,
@@ -763,7 +763,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Rosebud, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 96,
@@ -771,7 +771,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Providence, KY",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 97,
@@ -779,7 +779,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "KY",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 98,
@@ -787,7 +787,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Fort Pierce, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 99,
@@ -795,7 +795,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Anson, TX",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 100,
@@ -803,7 +803,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Pueblo, CO",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 101,
@@ -811,7 +811,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 102,
@@ -819,7 +819,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "House, NM",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 103,
@@ -827,7 +827,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 104,
@@ -835,7 +835,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 105,
@@ -843,7 +843,7 @@
  "department": "Solar Quality Control/ Warranty",
  "track": "Solar Hourly",
  "location": "Multiple locations",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 106,
@@ -851,7 +851,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Deer Trail, CO",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 107,
@@ -859,7 +859,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Wilson, AR",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 108,
@@ -867,7 +867,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Wilson, AR",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 109,
@@ -875,7 +875,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Jacksonville, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 110,
@@ -883,7 +883,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Kenansville, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 111,
@@ -891,7 +891,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Clewiston, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 112,
@@ -899,7 +899,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Okeechobee, FL",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 113,
@@ -907,7 +907,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Fort Morgan, CO",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 114,
@@ -915,7 +915,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Belen, NM",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 115,
@@ -923,7 +923,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "House, NM",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 116,
@@ -931,7 +931,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "Hollandale, MS",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  },
  {
  "id": 117,
@@ -939,7 +939,7 @@
  "department": "Solar Field Operations",
  "track": "Solar Hourly",
  "location": "DeRidder, LA",
- "property": "Moss & Associates"
+ "property": "Helios & Associates"
  }
  ]
 }

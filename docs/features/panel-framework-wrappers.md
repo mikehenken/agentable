@@ -64,7 +64,7 @@ import { AgentablePanel } from 'agentable-canvas/react';
 
   panel="open-positions"
 
-  configUrl="/config/sandals-career.json"
+  configUrl="/config/archipelago-career.json"
 
   primaryColor="#0077B6"
 
@@ -102,7 +102,7 @@ import { AgentablePanel } from 'agentable-canvas/vue';
 
     panel="open-positions"
 
-    config-url="/config/sandals-career.json"
+    config-url="/config/archipelago-career.json"
 
     primary-color="#0077B6"
 
@@ -138,7 +138,7 @@ import { AgentablePanel } from 'agentable-canvas/vue';
 
   panel="open-positions"
 
-  configUrl="/config/sandals-career.json"
+  configUrl="/config/archipelago-career.json"
 
   primaryColor="#0077B6"
 

@@ -56,7 +56,7 @@ describe('anonKeyTenantLookup', () => {
     });
 
     expect(result.cacheHit).toBe(false);
-    expect(result.document.tenant).toBe('sandals-white-label');
+    expect(result.document.tenant).toBe('archipelago-white-label');
     expect(result.document.primaryColor).toBe('#0077B6');
     expect(result.document.persona?.assistantName).toBe('Sandy');
     expect('auth' in result.document).toBe(false);
@@ -228,7 +228,7 @@ describe('resolveEmbedPanelData anon-key integration', () => {
     });
 
     expect(result.anonKeyLookup).toBe(true);
-    expect(result.configDoc?.tenant).toBe('sandals-white-label');
+    expect(result.configDoc?.tenant).toBe('archipelago-white-label');
     expect(result.panelDataRaw?.jobs).toHaveLength(1);
   });
 });

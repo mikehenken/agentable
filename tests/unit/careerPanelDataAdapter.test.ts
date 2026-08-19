@@ -1,12 +1,12 @@
 /**
- * Sandals browser blockers — career fixture → React panel-data adapter.
+ * Archipelago browser blockers — career fixture → React panel-data adapter.
  */
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
-  SANDALS_CAREER_DATASET,
+  ARCHIPELAGO_CAREER_DATASET,
   careerDatasetToPanelData,
   coalesceCareerPanelDataPayload,
   isCareerDatasetPanelPayload,
@@ -15,13 +15,13 @@ import { normalizePanelDataPayload } from '../../src/config/panelDataNormalize';
 import panelDataMinimal from '../fixtures/panel-data-minimal.json';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SANDALS_FIXTURE_PATH = path.resolve(
+const ARCHIPELAGO_FIXTURE_PATH = path.resolve(
   __dirname,
-  '../../../sandals/website/public/data/sandals-career-fixture.json');
+  '../../../archipelago/website/public/data/archipelago-career-fixture.json');
 
 describe('careerDatasetToPanelData', () => {
   it('converts career jobs into OpenPositionsPanel-compatible rows', () => {
-    const panelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+    const panelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     const first = panelData.jobs?.[0];
     expect(first).toMatchObject({
       id: 1,
@@ -33,7 +33,7 @@ describe('careerDatasetToPanelData', () => {
   });
 
   it('converts career growth paths into milestone-backed panel rows', () => {
-    const panelData = careerDatasetToPanelData(SANDALS_CAREER_DATASET);
+    const panelData = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
     const first = panelData.growthPaths?.[0];
     expect(first).toMatchObject({
       id: 'path-front-office',
@@ -44,8 +44,8 @@ describe('careerDatasetToPanelData', () => {
     expect(first?.milestones?.[0]?.title).toBe('Front Desk Agent');
   });
 
-  it('detects committed sandals fixture JSON as career schema', () => {
-    const raw: unknown = JSON.parse(readFileSync(SANDALS_FIXTURE_PATH, 'utf8'));
+  it('detects committed archipelago fixture JSON as career schema', () => {
+    const raw: unknown = JSON.parse(readFileSync(ARCHIPELAGO_FIXTURE_PATH, 'utf8'));
     expect(isCareerDatasetPanelPayload(raw)).toBe(true);
     const coalesced = coalesceCareerPanelDataPayload(raw) as {
       jobs?: Array<{ skillMatches?: string[] }>;
@@ -62,7 +62,7 @@ describe('careerDatasetToPanelData', () => {
   });
 
   it('normalizePanelDataPayload coalesces career fixtures before hydration', () => {
-    const raw: unknown = JSON.parse(readFileSync(SANDALS_FIXTURE_PATH, 'utf8'));
+    const raw: unknown = JSON.parse(readFileSync(ARCHIPELAGO_FIXTURE_PATH, 'utf8'));
     const normalized = normalizePanelDataPayload(raw as never);
     const growthPath = normalized.growthPaths?.[0] as { milestones?: unknown[] } | undefined;
     const job = normalized.jobs?.[0] as { skillMatches?: string[] } | undefined;
@@ -71,7 +71,7 @@ describe('careerDatasetToPanelData', () => {
   });
 
   it('coalesces applications into ApplicationsPanel rows with statusTone', () => {
-    const raw: unknown = JSON.parse(readFileSync(SANDALS_FIXTURE_PATH, 'utf8'));
+    const raw: unknown = JSON.parse(readFileSync(ARCHIPELAGO_FIXTURE_PATH, 'utf8'));
     const normalized = normalizePanelDataPayload(raw as never);
     const apps = normalized.applications as
       | Array<{ id: string; role: string; statusTone: string; stages: unknown[] }>
@@ -86,7 +86,7 @@ describe('careerDatasetToPanelData', () => {
   });
 
   it('coalesces growth paths with non-empty milestones for GrowthPathsPanel', () => {
-    const raw: unknown = JSON.parse(readFileSync(SANDALS_FIXTURE_PATH, 'utf8'));
+    const raw: unknown = JSON.parse(readFileSync(ARCHIPELAGO_FIXTURE_PATH, 'utf8'));
     const normalized = normalizePanelDataPayload(raw as never);
     const paths = normalized.growthPaths as
       | Array<{ id: string; milestones: unknown[]; Icon?: unknown }>

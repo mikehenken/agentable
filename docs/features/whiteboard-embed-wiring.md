@@ -68,7 +68,7 @@ Core `agentable-canvas` whiteboard Lit embeds (`<agentable-whiteboard>`, `<agent
 
 
 
-Core uses **attribute-only** theming: `light-canvas` `dark-canvas`. When neither is set, default is **light**. Gallery and operator demo pages that previously relied on the removed tenant heuristic (`sandals → light`, others → dark) must set `dark-canvas` explicitly on the embed tag.
+Core uses **attribute-only** theming: `light-canvas` `dark-canvas`. When neither is set, default is **light**. Gallery and operator demo pages that previously relied on the removed tenant heuristic (`archipelago → light`, others → dark) must set `dark-canvas` explicitly on the embed tag.
 
 
 
@@ -92,7 +92,7 @@ Each host HTML page must load **at most one** tldraw-bearing embed script:
 
 
 
-`tests/unit/embedSingleTldrawBundleGuard.test.ts` scans `examples/**/*.html` and `sandals/website/public/embed/**/*.html` and fails if any page references more than one of the above.
+`tests/unit/embedSingleTldrawBundleGuard.test.ts` scans `examples/**/*.html` and `archipelago/website/public/embed/**/*.html` and fails if any page references more than one of the above.
 
 
 
@@ -132,7 +132,7 @@ Lit hosts that need career panels load the **combined bundle** (single tldraw gr
 
 <link rel="stylesheet" href="/embed/career-whiteboard.css" />
 
-<agentable-whiteboard tenant="sandals" config-url="…" light-canvas></agentable-whiteboard>
+<agentable-whiteboard tenant="archipelago" config-url="…" light-canvas></agentable-whiteboard>
 
 <script type="module" src="/embed/career-whiteboard.js"></script>
 

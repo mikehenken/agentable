@@ -21,7 +21,7 @@ function parseRoleEnds(title: string): { fromRole: string; toRole: string } {
   return { fromRole: title, toRole: title };
 }
 
-interface MossPanelJob {
+interface HeliosPanelJob {
   id: number;
   title: string;
   department: string;
@@ -35,7 +35,7 @@ interface MossPanelJob {
   applicationUrl?: string;
 }
 
-interface MossPanelGrowthPath {
+interface HeliosPanelGrowthPath {
   id: string;
   title: string;
   tagline?: string;
@@ -43,7 +43,7 @@ interface MossPanelGrowthPath {
   milestones?: readonly { title: string }[];
 }
 
-interface MossPanelResource {
+interface HeliosPanelResource {
   id: string;
   title: string;
   type?: string;
@@ -53,15 +53,15 @@ interface MossPanelResource {
   tag?: string;
 }
 
-interface MossPanelDataDocument {
+interface HeliosPanelDataDocument {
   scrapedAt?: string;
-  jobs: readonly MossPanelJob[];
-  growthPaths?: readonly MossPanelGrowthPath[];
-  resources?: readonly MossPanelResource[];
+  jobs: readonly HeliosPanelJob[];
+  growthPaths?: readonly HeliosPanelGrowthPath[];
+  resources?: readonly HeliosPanelResource[];
 }
 
-/** Convert moss `moss-panel-data.json` into normalized `CareerDataset`. */
-export function convertMossPanelData(doc: MossPanelDataDocument): CareerDataset {
+/** Convert helios `helios-panel-data.json` into normalized `CareerDataset`. */
+export function convertHeliosPanelData(doc: HeliosPanelDataDocument): CareerDataset {
   const postedFallback = doc.scrapedAt ?? '2026-07-01T00:00:00.000Z';
   const jobs: CareerJob[] = doc.jobs.map((job) => {
     const tags = [...(job.skillMatches ?? []),...(job.locationTags ?? []),
@@ -80,12 +80,12 @@ export function convertMossPanelData(doc: MossPanelDataDocument): CareerDataset 
       compensation: job.payRange,
       description:
         job.description?.trim() ||
-        `${job.department} role at ${job.location}. Source: moss.com posting.`,
+        `${job.department} role at ${job.location}. Source: helios.com posting.`,
       tags,
       postedAt: postedFallback,
       source: 'fixture' as const,
-      sourceId: `moss-job-${job.id}`,
-      applyUrl: job.applicationUrl?.trim() || 'https://moss.com/why-moss/careers/',
+      sourceId: `helios-job-${job.id}`,
+      applyUrl: job.applicationUrl?.trim() || 'https://helios.com/why-helios/careers/',
     };
   });
 
@@ -113,7 +113,7 @@ export function convertMossPanelData(doc: MossPanelDataDocument): CareerDataset 
   return { jobs, growthPaths, resources, applications: [] };
 }
 
-interface SandalsLegacyJob {
+interface ArchipelagoLegacyJob {
   id: number;
   title: string;
   department: string;
@@ -125,7 +125,7 @@ interface SandalsLegacyJob {
   postedDate?: string;
 }
 
-interface SandalsLegacyGrowthPath {
+interface ArchipelagoLegacyGrowthPath {
   id: string;
   title: string;
   tagline?: string;
@@ -133,26 +133,26 @@ interface SandalsLegacyGrowthPath {
   milestones?: readonly { title: string }[];
 }
 
-interface SandalsLegacyApplication {
+interface ArchipelagoLegacyApplication {
   id: string;
   role: string;
   status: string;
   submitted: string;
 }
 
-interface SandalsLegacyResource {
+interface ArchipelagoLegacyResource {
   id: string;
   title: string;
   type?: string;
   description: string;
 }
 
-/** Convert sandals `career-canvas/data/*.ts` shapes into normalized `CareerDataset`. */
-export function convertSandalsCareerData(input: {
-  jobs: readonly SandalsLegacyJob[];
-  growthPaths: readonly SandalsLegacyGrowthPath[];
-  applications: readonly SandalsLegacyApplication[];
-  resources: readonly SandalsLegacyResource[];
+/** Convert archipelago `career-canvas/data/*.ts` shapes into normalized `CareerDataset`. */
+export function convertArchipelagoCareerData(input: {
+  jobs: readonly ArchipelagoLegacyJob[];
+  growthPaths: readonly ArchipelagoLegacyGrowthPath[];
+  applications: readonly ArchipelagoLegacyApplication[];
+  resources: readonly ArchipelagoLegacyResource[];
 }): CareerDataset {
   const jobs: CareerJob[] = input.jobs.map((job) => ({
     id: String(job.id),
@@ -166,8 +166,8 @@ export function convertSandalsCareerData(input: {
     tags: [...(job.skillMatches ?? []), job.department],
     postedAt: '2026-03-01T00:00:00.000Z',
     source: 'fixture' as const,
-    sourceId: `sandals-job-${job.id}`,
-    applyUrl: 'https://careers.sandals.com/',
+    sourceId: `archipelago-job-${job.id}`,
+    applyUrl: 'https://careers.archipelago.com/',
   }));
 
   const jobIdByTitle = new Map(jobs.map((job) => [job.title.toLowerCase(), job.id]));

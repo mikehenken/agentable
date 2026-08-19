@@ -164,7 +164,7 @@ describe('anonKeyRateLimit ', () => {
       fetchFn: fetchFn as unknown as typeof fetch,
     });
 
-    expect(result.document.tenant).toBe('sandals-white-label');
+    expect(result.document.tenant).toBe('archipelago-white-label');
     expect(fetchFn).toHaveBeenCalledTimes(1);
   });
 });
