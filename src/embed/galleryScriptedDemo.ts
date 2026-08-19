@@ -233,7 +233,7 @@ export async function runGalleryScriptedTool(
     if (perceptionTool === undefined) {
       return { ok: false, toolName, error: `${toolName} tool unavailable` };
     }
-    const agentContext = resolveGalleryScriptedAgentContext;
+    const agentContext = resolveGalleryScriptedAgentContext();
     const result = await withAgentToolContextAsync(agentContext, () =>
       perceptionTool.handler(args));
     if (!result.ok) {
@@ -244,7 +244,7 @@ export async function runGalleryScriptedTool(
 
   const authoringTool = findAuthoringTool(toolName);
   if (authoringTool !== undefined) {
-    const agentContext = resolveGalleryScriptedAgentContext;
+    const agentContext = resolveGalleryScriptedAgentContext();
     const result = await withAgentToolContextAsync(agentContext, () =>
       authoringTool.handler(args));
     if (!result.ok) {
@@ -258,7 +258,7 @@ export async function runGalleryScriptedTool(
     return { ok: false, toolName, error: `${toolName} tool unavailable` };
   }
 
-  const agentContext = resolveGalleryScriptedAgentContext;
+  const agentContext = resolveGalleryScriptedAgentContext();
   const shapesBeforeDraw = toolName === 'draw_shapes' ? countPageShapes() : 0;
   const runDraw = (): Promise<{ ok: boolean; error?: string; result?: unknown }> =>
     withAgentToolContextAsync(agentContext, () => drawTool.handler(args));
@@ -875,7 +875,7 @@ export async function runMeridianGalleryStep(
   hitl?: MeridianHitlDemoResult;
 }> {
   if (step === 'document' || step === 'export' || step === 'hitl') {
-    const bundle = getMeridianGalleryHostBundle;
+    const bundle = getMeridianGalleryHostBundle();
     if (bundle === null) {
       return {
         ok: false,
@@ -920,7 +920,7 @@ export async function runMeridianGalleryStep(
     return wireframe;
   }
 
-  const bundle = getMeridianGalleryHostBundle;
+  const bundle = getMeridianGalleryHostBundle();
   if (bundle === null) {
     return {...wireframe,
       ok: false,

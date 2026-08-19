@@ -32,7 +32,7 @@ function useStablePendingSnapshot(
   const cacheRef = useRef<readonly PendingApprovalRequest[]>(EMPTY_PENDING);
 
   return useCallback(() => {
-    const controller = getActiveApprovalController;
+    const controller = getActiveApprovalController();
     const next = controller?.getPendingForPanel(panelId) ?? EMPTY_PENDING;
     const prev = cacheRef.current;
     const unchanged =
@@ -51,7 +51,7 @@ function useStablePendingSnapshot(
  * blocks another's (D45).
  */
 export function PanelApprovalLayer({ panelId }: PanelApprovalLayerProps): ReactElement | null {
-  const controller = getActiveApprovalController;
+  const controller = getActiveApprovalController();
   const getPendingSnapshot = useStablePendingSnapshot(panelId);
 
   const pending = useSyncExternalStore(
