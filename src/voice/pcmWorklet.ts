@@ -12,7 +12,7 @@ class PcmDownsamplerProcessor extends AudioWorkletProcessor {
     super();
     this.targetRate = 16000;
     this.inputRate = sampleRate;
-    this.ratio = this.inputRate this.targetRate;
+    this.ratio = this.inputRate / this.targetRate;
     this.buffer = [];
     this.outFrame = 0;
   }
@@ -23,7 +23,7 @@ class PcmDownsamplerProcessor extends AudioWorkletProcessor {
     const channel = input[0];
     if (!channel) return true;
 
-     // Simple linear-interpolation downsample to 16kHz.
+    // Simple linear-interpolation downsample to 16kHz.
     const out = [];
     let rms = 0;
     for (let i = 0; this.outFrame + i * this.ratio < channel.length; i++) {
@@ -33,18 +33,18 @@ class PcmDownsamplerProcessor extends AudioWorkletProcessor {
       const frac = srcIdx - lo;
       const sample = channel[lo] * (1 - frac) + channel[hi] * frac;
       rms += sample * sample;
-       // Clamp + convert float [-1,1] → int16
+      // Clamp + convert float [-1,1] → int16
       const clamped = Math.max(-1, Math.min(1, sample));
-      out.push(clamped < 0 ? clamped * 0x8000: clamped * 0x7fff);
+      out.push(clamped < 0 ? clamped * 0x8000 : clamped * 0x7fff);
     }
-     // Advance by the number of input frames we consumed.
+    // Advance by the number of input frames we consumed.
     const consumed = out.length * this.ratio;
     const leftover = channel.length - consumed;
-    this.outFrame = leftover < 0 ? 0: -leftover;
+    this.outFrame = leftover < 0 ? 0 : -leftover;
 
     if (out.length > 0) {
       const int16 = new Int16Array(out);
-      const level = Math.sqrt(rms out.length);
+      const level = Math.sqrt(rms / out.length);
       this.port.postMessage({ pcm: int16.buffer, level }, [int16.buffer]);
     }
     return true;

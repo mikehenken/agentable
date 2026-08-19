@@ -1,5 +1,5 @@
 /**
- * Runtime validation for document payloads and block ops.
+ * Runtime validation for document payloads and block ops (D50).
  */
 import { z } from 'zod';
 import { validateAssetId } from '../../security/codeExecutionBoundary';
@@ -59,7 +59,8 @@ const docBlockSchema: z.ZodType<DocBlock> = z.lazy(() =>
       id: z.string().min(1),
       type: z.literal('pageBreak'),
     }),
-  ]));
+  ]),
+);
 
 export const documentPayloadSchema: z.ZodType<DocumentPayload> = z.object({
   documentId: z.string().min(1),
@@ -70,7 +71,7 @@ export const documentPayloadSchema: z.ZodType<DocumentPayload> = z.object({
 
 export function parseDocumentPayload(value: unknown): DocumentPayload | null {
   const result = documentPayloadSchema.safeParse(value);
-  return result.success ? result.data: null;
+  return result.success ? result.data : null;
 }
 
 export function isDocumentPayload(value: unknown): value is DocumentPayload {

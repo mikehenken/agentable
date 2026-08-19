@@ -23,7 +23,8 @@ export function emitContextActionsPanelChange(open: boolean): void {
         detail: { open },
         bubbles: true,
         composed: true,
-      }));
+      }),
+    );
   }
 }
 

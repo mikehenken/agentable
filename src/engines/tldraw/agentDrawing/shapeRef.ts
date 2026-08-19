@@ -3,7 +3,7 @@
  * toolkit APIs (P8/P12).
  *
  * An agent draws a shape and assigns it a logical id ("ignition"), then later
- * references that same id from connect_shapes group_shapes frame_shapes.
+ * references that same id from connect_shapes / group_shapes / frame_shapes.
  * tldraw shape ids are branded `shape:<unique>` strings, and `createShapeId`
  * is a pure prefixer, so `createShapeId('ignition')` always yields
  * `shape:ignition`. Normalizing both the draw-time id and the reference-time
@@ -20,5 +20,5 @@ const SHAPE_ID_PREFIX = 'shape:';
  * same id without ever double-prefixing (`shape:shape:...`).
  */
 export function toShapeId(ref: string): TLShapeId {
-  return ref.startsWith(SHAPE_ID_PREFIX) ? (ref as TLShapeId): createShapeId(ref);
+  return ref.startsWith(SHAPE_ID_PREFIX) ? (ref as TLShapeId) : createShapeId(ref);
 }

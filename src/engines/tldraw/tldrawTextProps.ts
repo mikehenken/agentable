@@ -35,5 +35,5 @@ export function readPlainTextFromShapeProps(props: Record<string, unknown>): str
   }
 
   const text = lines.join('\n').trimEnd();
-  return text.length > 0 ? text: undefined;
+  return text.length > 0 ? text : undefined;
 }

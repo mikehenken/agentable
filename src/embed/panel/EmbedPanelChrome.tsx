@@ -35,7 +35,7 @@ export function EmbedPanelChrome({
           type="button"
           className="panel-chrome__btn"
           part="chrome-minimize"
-          aria-label={minimized ? t('chrome.panel.restore'): t('chrome.panel.minimize')}
+          aria-label={minimized ? t('chrome.panel.restore') : t('chrome.panel.minimize')}
           onClick={onMinimizeToggle}
         >
           <Minus size={12} aria-hidden="true" />

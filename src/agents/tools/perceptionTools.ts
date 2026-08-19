@@ -1,7 +1,7 @@
 /**
- * Agent canvas perception tools: read_canvas, screenshot_canvas.
- * Model capability gating for screenshot_canvas is handled by in capabilities.ts.
- * Engine capability gating: both tools read the tldraw shape
+ * Agent canvas perception tools (D41, P8-T2): read_canvas, screenshot_canvas.
+ * Model capability gating for screenshot_canvas is handled by D49 in capabilities.ts.
+ * Engine capability gating (P11-T6): both tools read the tldraw shape
  * graph, so both require engine.capabilities.draw the same way draw and
  * walkthrough tools do; an engine that declares draw: false (the DOM
  * workspace engine) refuses with the same structured capability error
@@ -27,7 +27,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function readFiniteNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value: undefined;
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
 function readRegion(value: unknown): CanvasPerceptionRegion | undefined {
@@ -55,13 +55,13 @@ function readRegion(value: unknown): CanvasPerceptionRegion | undefined {
 function readBudget(value: unknown): number | undefined {
   if (typeof value !== 'number' || !Number.isFinite(value)) return undefined;
   const rounded = Math.floor(value);
-  return rounded > 0 ? rounded: undefined;
+  return rounded > 0 ? rounded : undefined;
 }
 
 function readStringArray(value: unknown): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
   const out = value.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0);
-  return out.length > 0 ? out: undefined;
+  return out.length > 0 ? out : undefined;
 }
 
 function readPixelRatio(value: unknown): number | undefined {
@@ -121,10 +121,10 @@ export const PERCEPTION_TOOLS: readonly ToolDefinition[] = [
   {
     declaration: declarationReadCanvas,
     handler: async (args) => {
-      if (!isDrawCapabilityAvailable) {
-        const ready = await waitForOperatorCanvasToolsReady;
+      if (!isDrawCapabilityAvailable()) {
+        const ready = await waitForOperatorCanvasToolsReady();
         if (!ready) {
-          return drawCapabilityRefusal;
+          return drawCapabilityRefusal();
         }
       }
       const regionArg = args.region;
@@ -144,7 +144,7 @@ export const PERCEPTION_TOOLS: readonly ToolDefinition[] = [
         const graph = readCanvasShapeGraph({ region, budget });
         return { ok: true, result: graph };
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     },
@@ -152,10 +152,10 @@ export const PERCEPTION_TOOLS: readonly ToolDefinition[] = [
   {
     declaration: declarationScreenshotCanvas,
     handler: async (args) => {
-      if (!isDrawCapabilityAvailable) {
-        const ready = await waitForOperatorCanvasToolsReady;
+      if (!isDrawCapabilityAvailable()) {
+        const ready = await waitForOperatorCanvasToolsReady();
         if (!ready) {
-          return drawCapabilityRefusal;
+          return drawCapabilityRefusal();
         }
       }
       const regionArg = args.region;
@@ -176,7 +176,7 @@ export const PERCEPTION_TOOLS: readonly ToolDefinition[] = [
         const capture = await screenshotCanvasRegion({ region, pixelRatio, fallbackShapeIds });
         return { ok: true, result: capture };
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
     },

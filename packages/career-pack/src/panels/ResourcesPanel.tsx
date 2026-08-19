@@ -79,7 +79,8 @@ export function ResourcesPanel({ data }: ReactPanelLoaderProps): ReactElement {
       (row) =>
         row.title.toLowerCase().includes(q) ||
         row.description.toLowerCase().includes(q) ||
-        row.type.toLowerCase().includes(q));
+        row.type.toLowerCase().includes(q),
+    );
   }, [resources, query]);
 
   return (
@@ -112,9 +113,9 @@ export function ResourcesPanel({ data }: ReactPanelLoaderProps): ReactElement {
               <span className="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full bg-canvas-primary-tint text-canvas-primary">
                 {featured.tag}
               </span>
-            ): null}
+            ) : null}
           </div>
-        ): null}
+        ) : null}
         <div className="grid gap-2.5">
           {filtered.map((row) => (
             <ResourceCard key={row.id} row={row} />
@@ -122,7 +123,7 @@ export function ResourcesPanel({ data }: ReactPanelLoaderProps): ReactElement {
         </div>
         {filtered.length === 0 ? (
           <p className="text-[13px] text-canvas-muted text-center py-6">No resources match.</p>
-        ): null}
+        ) : null}
       </div>
     </div>
   );

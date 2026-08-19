@@ -1,5 +1,5 @@
 /**
- * Block row extraction for document block-list virtualization.
+ * Block row extraction for D56 document block-list virtualization.
  */
 import type { DocBlock } from './types';
 import { sanitizePlainText } from './sanitizeRuns';
@@ -17,7 +17,7 @@ function blockPreview(block: DocBlock): string {
     case 'paragraph':
       return block.runs.map((run) => sanitizePlainText(run.text)).join(' ');
     case 'list':
-      return block.ordered ? 'Ordered list': 'Bullet list';
+      return block.ordered ? 'Ordered list' : 'Bullet list';
     case 'table':
       return `Table (${block.rows.length} rows)`;
     case 'image':

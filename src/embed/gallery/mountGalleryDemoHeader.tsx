@@ -17,14 +17,14 @@ export function mountGalleryDemoHeader(container: HTMLElement): MountGalleryDemo
     return { ok: false, error: 'header container missing' };
   }
 
-  activeRoot?.unmount;
+  activeRoot?.unmount();
   activeRoot = createRoot(container);
   activeRoot.render(<GalleryDemoHeader />);
   return { ok: true };
 }
 
 export function unmountGalleryDemoHeader(): void {
-  activeRoot?.unmount;
+  activeRoot?.unmount();
   activeRoot = null;
 }
 

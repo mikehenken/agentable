@@ -1,10 +1,10 @@
 /**
- * Arabic locale pack (/). Partial — missing keys fall back to English.
+ * Arabic locale pack (D42/D59). Partial — missing keys fall back to English.
  */
 import type { MessageCatalog } from './en';
 
 export const ar = {
-   // --- Career pack panels ---
+  // --- Career pack panels ---
   'career.panels.openPositions.title': 'الوظائف المتاحة',
   'career.panels.openPositions.subtitle': 'الفرص الحالية',
   'career.panels.applications.title': 'طلباتي',
@@ -19,7 +19,7 @@ export const ar = {
   'career.nav.resources': 'الموارد',
   'career.nav.growthPaths': 'مسارات النمو',
 
-   // --- Panel chrome controls (embed RTL audit) ---
+  // --- Panel chrome controls (embed RTL audit) ---
   'chrome.panel.minimize': 'تصغير اللوحة',
   'chrome.panel.restore': 'استعادة اللوحة',
   'chrome.panel.close': 'إغلاق اللوحة',

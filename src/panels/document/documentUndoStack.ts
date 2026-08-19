@@ -1,5 +1,5 @@
 /**
- * Pre-save document block undo/redo stack.
+ * Pre-save document block undo/redo stack (D53, P12-T2).
  * Persisted document writes reverse only through HITL compensating actions.
  */
 import { applyBlockOp } from './blockOps';
@@ -16,11 +16,11 @@ export interface DocumentUndoStack {
 }
 
 export function createDocumentUndoStack(initial: readonly DocBlock[]): DocumentUndoStack {
-  let current: DocBlock[] = initial.map((block) => ({...block }));
+  let current: DocBlock[] = initial.map((block) => ({ ...block }));
   const undoStack: DocBlock[][] = [];
   const redoStack: DocBlock[][] = [];
 
-  const snapshot = (): DocBlock[] => current.map((block) => ({...block }));
+  const snapshot = (): DocBlock[] => current.map((block) => ({ ...block }));
 
   return {
     get blocks(): readonly DocBlock[] {
@@ -39,7 +39,7 @@ export function createDocumentUndoStack(initial: readonly DocBlock[]): DocumentU
       redoStack.push(snapshot());
       const previous = undoStack.pop();
       if (previous === undefined) return null;
-      current = previous.map((block) => ({...block }));
+      current = previous.map((block) => ({ ...block }));
       return current;
     },
 
@@ -48,7 +48,7 @@ export function createDocumentUndoStack(initial: readonly DocBlock[]): DocumentU
       undoStack.push(snapshot());
       const next = redoStack.pop();
       if (next === undefined) return null;
-      current = next.map((block) => ({...block }));
+      current = next.map((block) => ({ ...block }));
       return current;
     },
 
@@ -61,7 +61,7 @@ export function createDocumentUndoStack(initial: readonly DocBlock[]): DocumentU
     },
 
     reset(blocks: readonly DocBlock[]): void {
-      current = blocks.map((block) => ({...block }));
+      current = blocks.map((block) => ({ ...block }));
       undoStack.length = 0;
       redoStack.length = 0;
     },

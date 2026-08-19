@@ -15,7 +15,7 @@ export class ContextActionsTool extends StateNode {
   static override initial = 'idle';
   static override isLockable = false;
 
-  static override children (){
+  static override children() {
     return [SiteActionsIdle];
   }
 

@@ -8,7 +8,7 @@ export const textSearchQueryAtom = atom('textSearchQuery', '');
 
 /** Open the search bar (idempotent). */
 export function openCanvasTextSearch(): void {
-  if (!showTextSearchAtom.get) {
+  if (!showTextSearchAtom.get()) {
     showTextSearchAtom.set(true);
   }
 }

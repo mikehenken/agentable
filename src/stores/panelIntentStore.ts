@@ -24,6 +24,10 @@ import { create } from 'zustand';
 export interface OpenPositionsIntent {
   /** Department filter chip to apply. */
   department?: string;
+  /** Employment track filter (e.g. Moss "Professionals (Salaried)"). */
+  track?: string;
+  /** Location / market filter. */
+  location?: string;
   /** Free-text search to seed. */
   search?: string;
   /** Job to auto-select on open. Use null to clear; undefined leaves prior. */

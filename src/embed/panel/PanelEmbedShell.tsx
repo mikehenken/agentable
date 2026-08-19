@@ -45,7 +45,8 @@ export interface PanelEmbedShellProps {
 
 function resolvePanelTitle(
   resolved: ResolvedEmbedPanelHost,
-  titleOverride: string | undefined): string {
+  titleOverride: string | undefined,
+): string {
   if (titleOverride?.trim()) {
     return titleOverride.trim();
   }
@@ -117,7 +118,7 @@ function PanelEmbedSurface(props: {
             panelData={props.panelData}
           />
         </div>
-      ): null}
+      ) : null}
     </section>
   );
 }
@@ -179,9 +180,10 @@ export function PanelEmbedShell(props: PanelEmbedShellProps): ReactElement {
       if (cancelled) return;
       const detail =
         error instanceof EmbedPanelResolutionError
-          ? { code: error.code, message: error.message }: {
+          ? { code: error.code, message: error.message }
+          : {
               code: 'PANEL_UNKNOWN',
-              message: error instanceof Error ? error.message: String(error),
+              message: error instanceof Error ? error.message : String(error),
             };
       setResolved(null);
       setHost(null);

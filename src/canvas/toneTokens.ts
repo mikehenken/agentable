@@ -66,3 +66,15 @@ export const TONE_GLOW: Record<ToneKey, string> = {
   violet: v('violet-glow', '0 12px 32px rgba(168, 85, 247, 0.22)'),
   slate: v('slate-glow', '0 12px 32px rgba(107, 114, 128, 0.18)'),
 };
+
+/** Safe lookup for tenant-provided tone keys that may not match the OSS map. */
+export function resolveMapLookup<T extends string, V>(
+  map: Record<T, V>,
+  key: string | undefined,
+  fallback: T,
+): V {
+  if (key !== undefined && key in map) {
+    return map[key as T];
+  }
+  return map[fallback];
+}

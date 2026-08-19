@@ -1,19 +1,19 @@
 /**
  * Derives a JSON-schema-style props description from catalog Zod schemas
- * for agent introspection ( describe_panel).
+ * for agent introspection (D43 describe_panel).
  */
 import { z } from 'zod';
 import type { PropsSchemaDescription } from './types';
 
 function describeZodType(schema: z.ZodType): PropsSchemaDescription {
   if (schema instanceof z.ZodOptional) {
-    const inner = describeZodType(schema.unwrap as z.ZodType);
-    return {...inner, optional: true };
+    const inner = describeZodType(schema.unwrap() as z.ZodType);
+    return { ...inner, optional: true };
   }
 
   if (schema instanceof z.ZodNullable) {
-    const inner = describeZodType(schema.unwrap as z.ZodType);
-    return {...inner, nullable: true };
+    const inner = describeZodType(schema.unwrap() as z.ZodType);
+    return { ...inner, nullable: true };
   }
 
   if (schema instanceof z.ZodString) {
@@ -65,7 +65,7 @@ function describeZodType(schema: z.ZodType): PropsSchemaDescription {
       type: 'object',
       properties,
     };
-    if ('isStrict' in schema && typeof schema.isStrict === 'function' && schema.isStrict) {
+    if ('isStrict' in schema && typeof schema.isStrict === 'function' && schema.isStrict()) {
       description.additionalProperties = false;
     }
     if (required.length > 0) {

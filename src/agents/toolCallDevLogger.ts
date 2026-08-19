@@ -39,7 +39,8 @@ export function isToolCallLoggingEnabled(): boolean {
 function resolveNodeLogPath(): Promise<string> {
   if (nodeLogDirPromise === null) {
     nodeLogDirPromise = import('node:path').then((path) =>
-      path.join(process.cwd(), '.logs', 'tool-calls', 'tool-calls.jsonl'));
+      path.join(process.cwd(), '.logs', 'tool-calls', 'tool-calls.jsonl'),
+    );
   }
   return nodeLogDirPromise;
 }
@@ -50,11 +51,11 @@ async function appendNodeLogLine(line: string): Promise<void> {
   }
   try {
     const [fs, pathMod] = await Promise.all([import('node:fs/promises'), import('node:path')]);
-    const filePath = await resolveNodeLogPath;
-    await fs.mkdir(pathMod.dirname(filePath()), { recursive: true });
-    await fs.appendFile(filePath(), `${line}\n`, 'utf8');
+    const filePath = await resolveNodeLogPath();
+    await fs.mkdir(pathMod.dirname(filePath), { recursive: true });
+    await fs.appendFile(filePath, `${line}\n`, 'utf8');
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message: String(err);
+    const message = err instanceof Error ? err.message : String(err);
     console.warn('[toolCallDevLogger] failed to write log file', message);
   }
 }
@@ -69,7 +70,7 @@ export interface LogToolCallInput {
 }
 
 export function logToolCallDev(input: LogToolCallInput): void {
-  if (!isToolCallLoggingEnabled) {
+  if (!isToolCallLoggingEnabled()) {
     return;
   }
 
@@ -102,7 +103,8 @@ export function logToolCallDev(input: LogToolCallInput): void {
         detail: entry,
         bubbles: true,
         composed: true,
-      }));
+      }),
+    );
   }
 
   void appendNodeLogLine(line);

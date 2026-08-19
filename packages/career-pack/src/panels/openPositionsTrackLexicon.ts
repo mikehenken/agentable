@@ -29,7 +29,7 @@ export const openPositionsTrackLexicon = createLexicon({
   },
 });
 
-/** Infer track label from job type department text for filter chips. */
+/** Infer track label from job type / department text for filter chips. */
 export function inferJobTrack(type: string, department: string): string {
   const combined = `${type} ${department}`.toLowerCase();
   if (/intern/.test(combined)) return 'Internship';

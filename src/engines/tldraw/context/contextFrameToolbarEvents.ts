@@ -36,6 +36,7 @@ export function emitContextFrameToolbarAction(action: ContextFrameToolbarAction)
         detail: { action },
         bubbles: true,
         composed: true,
-      }));
+      }),
+    );
   }
 }

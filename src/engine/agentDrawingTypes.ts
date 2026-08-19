@@ -1,5 +1,5 @@
 /**
- * Agent drawing tool contracts. Types-only: safe for agents,
+ * Agent drawing tool contracts (D41, P8-T1). Types-only: safe for agents,
  * engine SPI consumers, and tests without importing tldraw.
  */
 import type { EngineCapabilities } from './types';
@@ -130,7 +130,7 @@ export interface AgentDiagramEdge {
   label?: string;
 }
 
-/** Logical diagram structure: no coordinates required. */
+/** Logical diagram structure: no coordinates required (P8-T5). */
 export interface AgentDiagramStructure {
   nodes: readonly AgentDiagramNode[];
   edges?: readonly AgentDiagramEdge[];
@@ -143,7 +143,7 @@ export type AgentDiagramPlacement =
   | { kind: 'rect'; x: number; y: number; w: number; h: number }
   | { kind: 'nearPanel'; panelId: string; side?: 'right' | 'left' | 'bottom' | 'top' };
 
-/** Progressive reveal for speech-synced drawing. */
+/** Progressive reveal for speech-synced drawing (P8-T5). */
 export interface AgentDiagramProgressive {
   /** 1-based count of nodes (in layout order) to render this step. */
   step: number;
@@ -181,13 +181,13 @@ export interface AgentClearDrawingsResult {
   agentId: string;
 }
 
-/** Structured refusal when the mounted engine lacks draw capability (/). */
+/** Structured refusal when the mounted engine lacks draw capability (D37/D41). */
 export const ENGINE_DRAW_UNAVAILABLE_CODE = 'ENGINE_DRAW_UNAVAILABLE' as const;
 
 /**
  * Typed capability refusal for draw, canvas perception ("see"), and
  * walkthrough tools when the mounted engine's declared `EngineCapabilities`
- * does not include the capability the tool needs (/). Carries
+ * does not include the capability the tool needs (D37/D41, P11-T6). Carries
  * a stable code, the missing capability key, and an adopter-safe message.
  * Every draw/see/walkthrough tool call reaches this refusal through the
  * normal `ToolResult` contract: never a thrown error, never a silent

@@ -1,6 +1,6 @@
 /**
- * Session locale bootstrap. Called once when the embed or React host
- * mounts so `t`, `getI18n`, and SpecRenderer `dir` share one resolved locale.
+ * Session locale bootstrap (D42). Called once when the embed or React host
+ * mounts so `t()`, `getI18n()`, and SpecRenderer `dir` share one resolved locale.
  */
 import { configureI18n, type I18n } from './index';
 import { ar } from './catalog/ar';
@@ -13,7 +13,7 @@ export interface SessionLocaleBootstrapInput {
   tenantLocale?: string | null;
 }
 
-/** Register built-in locale packs and configure the session-wide `t` instance. */
+/** Register built-in locale packs and configure the session-wide `t()` instance. */
 export function bootstrapSessionLocale(input: SessionLocaleBootstrapInput = {}): I18n {
   return configureI18n({
     embedLocale: input.embedLocale,

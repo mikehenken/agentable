@@ -17,7 +17,7 @@ export class AutoArrangeTool extends StateNode {
   static override initial = 'idle';
   static override isLockable = false;
 
-  static override children (){
+  static override children() {
     return [AutoArrangeIdle];
   }
 

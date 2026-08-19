@@ -2,7 +2,7 @@
  * Fictional Apogee Aerospace fixture for the offline chat-to-draw fallback
  * shown by examples/08-agent-presents. No real companies, agencies, or
  * vehicles. Lives under src/chat (not examples/) because the fallback is
- * compiled into the embed bundle and the gallery import guard forbids
+ * compiled into the embed bundle and the D47 gallery import guard forbids
  * examples/ files importing src/ internals.
  *
  * Used by `src/chat/offlineDrawFallback.ts` when no live chat endpoint is
@@ -27,7 +27,7 @@ const X_OFFSET = 760;
 
 /** T-30s through payload deployment, matching the "3-stage launch-sequence" starter prompt. */
 export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
-   // Title + hand-drawn underline.
+  // Title + hand-drawn underline.
   {
     kind: 'text',
     text: 'Halcyon-7 Launch Sequence',
@@ -47,7 +47,7 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     },
   },
 
-   // Decorative trajectory arc, clear of the title above and the flow below.
+  // Decorative trajectory arc, clear of the title above and the flow below.
   {
     kind: 'freehand',
     style: { color: 'light-blue' },
@@ -63,7 +63,7 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     },
   },
 
-   // Node 1: terminal count (ellipse - start stage).
+  // Node 1: terminal count (ellipse - start stage).
   {
     kind: 'ellipse',
     geometry: { kind: 'rect', x: X_OFFSET + 60, y: 150, w: 200, h: 90 },
@@ -82,7 +82,7 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     },
   },
 
-   // Node 2: stage 1 ignition (box - process step).
+  // Node 2: stage 1 ignition (box - process step).
   {
     kind: 'box',
     geometry: { kind: 'rect', x: X_OFFSET + 350, y: 140, w: 220, h: 100 },
@@ -101,7 +101,7 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     },
   },
 
-   // Node 3: stage 2 separation (box - the critical staging event, circled below).
+  // Node 3: stage 2 separation (box - the critical staging event, circled below).
   {
     kind: 'box',
     geometry: { kind: 'rect', x: X_OFFSET + 660, y: 150, w: 240, h: 100 },
@@ -120,7 +120,7 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     },
   },
 
-   // Node 4: fairing jettison (box - process step).
+  // Node 4: fairing jettison (box - process step).
   {
     kind: 'box',
     geometry: { kind: 'rect', x: X_OFFSET + 990, y: 140, w: 210, h: 100 },
@@ -139,7 +139,7 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     },
   },
 
-   // Node 5: payload deployed (ellipse - terminal stage).
+  // Node 5: payload deployed (ellipse - terminal stage).
   {
     kind: 'ellipse',
     geometry: { kind: 'rect', x: X_OFFSET + 1290, y: 150, w: 220, h: 90 },
@@ -150,9 +150,9 @@ export const APOGEE_LAUNCH_SEQUENCE_SHAPES: readonly AgentDrawShapeInput[] = [
     geometry: { kind: 'text', x: X_OFFSET + 1298, y: 187, maxWidth: 204 },
   },
 
-   // Freehand circled emphasis around the critical staging event, plus a
-   // short annotation - the organic, hand-drawn "look at this one" mark a
-   // person sketches when narrating a risky step.
+  // Freehand circled emphasis around the critical staging event, plus a
+  // short annotation - the organic, hand-drawn "look at this one" mark a
+  // person sketches when narrating a risky step.
   {
     kind: 'freehand',
     style: { color: 'red' },

@@ -20,10 +20,11 @@ export function useWhiteboardSnapshotSync(editor: Editor | null): void {
     if (!editor) return;
 
     const flushSnapshot = (): void => {
-      const snapshot = editor.getSnapshot;
+      const snapshot = editor.getSnapshot();
       emitAgUiStatePatch(
         [{ op: 'replace', path: '/snapshot', value: snapshot }],
-        { source: 'host' });
+        { source: 'host' },
+      );
     };
 
     const scheduleSnapshot = (): void => {

@@ -16,8 +16,8 @@ export function WhiteboardOverlays({
   return (
     <>
       <PanelDockHighlightOverlay />
-      {enableContextToolbar ? <ContextFrameToolbar />: null}
-      {enableLayersPanel ? <LayersPanel />: null}
+      {enableContextToolbar ? <ContextFrameToolbar /> : null}
+      {enableLayersPanel ? <LayersPanel /> : null}
     </>
   );
 }

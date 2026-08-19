@@ -1,5 +1,5 @@
 /**
- * Runtime bridge for story-mode walkthrough. Binds when the
+ * Runtime bridge for story-mode walkthrough (P8-T6). Binds when the
  * whiteboard editor and host camera queue are available.
  */
 import type { CameraQueue } from './camera';
@@ -9,7 +9,7 @@ export interface WalkthroughRuntimeBinding {
   camera: CameraQueue;
   resolveTarget: (target: WalkthroughTarget) => WalkthroughCameraIntent | null;
   applyIntent: (intent: WalkthroughCameraIntent) => void;
-  registerCancelListener?: (onCancel: () => void) => ()=> void;
+  registerCancelListener?: (onCancel: () => void) => () => void;
 }
 
 let boundRuntime: WalkthroughRuntimeBinding | null = null;

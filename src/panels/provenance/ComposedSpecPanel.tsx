@@ -32,7 +32,7 @@ export function ComposedSpecPanel({ data, bodyScroll = 'auto' }: ComposedSpecPan
       hostActions: new Set(),
       panelRegistry: new Set(),
     });
-    return validation.ok ? validation.spec: null;
+    return validation.ok ? validation.spec : null;
   }, [spec]);
 
   if (normalized === null) {

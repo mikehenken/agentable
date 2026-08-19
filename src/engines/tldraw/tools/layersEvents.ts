@@ -14,5 +14,6 @@ export function emitLayersPanelChange(open: boolean): void {
       detail: { open },
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
 }

@@ -7,7 +7,7 @@ export interface ProvenanceBadgeProps {
 }
 
 /**
- * Framework-owned agent provenance marker. Lives in panel chrome so
+ * Framework-owned agent provenance marker (D12). Lives in panel chrome so
  * spec content cannot imitate it.
  */
 export function ProvenanceBadge({ visible }: ProvenanceBadgeProps): ReactElement | null {

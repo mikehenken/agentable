@@ -63,7 +63,7 @@ function sanitizePersona(raw: unknown): EmbedConfigDocument['persona'] | undefin
     if (isForbiddenKey(key) || isForbiddenScalar(value)) continue;
     out[key] = value;
   }
-  return Object.keys(out).length > 0 ? (out as EmbedConfigDocument['persona']): undefined;
+  return Object.keys(out).length > 0 ? (out as EmbedConfigDocument['persona']) : undefined;
 }
 
 function sanitizeAdapter(raw: unknown): EmbedConfigDocument['adapter'] | undefined {
@@ -71,10 +71,10 @@ function sanitizeAdapter(raw: unknown): EmbedConfigDocument['adapter'] | undefin
   const input = raw as Record<string, unknown>;
   const kind = input.kind;
   if (kind === 'static') {
-    const dataUrl = typeof input.dataUrl === 'string' ? input.dataUrl: undefined;
+    const dataUrl = typeof input.dataUrl === 'string' ? input.dataUrl : undefined;
     const data = input.data;
     if (data !== undefined && (typeof data !== 'object' || data === null || Array.isArray(data))) {
-      return dataUrl ? { kind: 'static', dataUrl }: undefined;
+      return dataUrl ? { kind: 'static', dataUrl } : undefined;
     }
     const adapter: StaticEmbedAdapterConfig = { kind: 'static' };
     if (data !== undefined) {
@@ -136,5 +136,5 @@ export function sanitizeEmbedConfigDocument(raw: unknown): EmbedConfigDocument |
     out[key] = value;
   }
 
-  return Object.keys(out).length > 0 ? (out as EmbedConfigDocument): {};
+  return Object.keys(out).length > 0 ? (out as EmbedConfigDocument) : {};
 }

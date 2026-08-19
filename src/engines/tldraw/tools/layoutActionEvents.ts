@@ -1,4 +1,4 @@
-/** Layout chrome action tool ids — auto-arrange reset canvas. */
+/** Layout chrome action tool ids — auto-arrange / reset canvas. */
 
 export const AUTO_ARRANGE_TOOL_ID = 'auto-arrange' as const;
 export const RESET_CANVAS_TOOL_ID = 'reset' as const;
@@ -12,7 +12,8 @@ export function emitWhiteboardAutoArrange(): void {
     new CustomEvent(WHITEBOARD_AUTO_ARRANGE_EVENT, {
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
 }
 
 export function emitWhiteboardResetCanvas(): void {
@@ -21,5 +22,6 @@ export function emitWhiteboardResetCanvas(): void {
     new CustomEvent(WHITEBOARD_RESET_CANVAS_EVENT, {
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
 }

@@ -3,7 +3,7 @@ import { ensureVoiceKernel } from '../../shared/voiceKernel';
 import { emitWhiteboardVoiceToggle, VOICE_TOOL_ID } from './tools/voiceEvents';
 import { VOICE_TOOL_ICON_ID } from './voice/voiceToolbarIcon';
 
-/** UI overrides for the voice toolbar tool (Talk to Sandy Gemini Live). */
+/** UI overrides for the voice toolbar tool (Talk to Sandy / Gemini Live). */
 export const voiceTldrawOverrides: TLUiOverrides = {
   tools(editor: Editor, tools) {
     tools[VOICE_TOOL_ID] = {

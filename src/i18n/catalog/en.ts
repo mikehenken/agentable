@@ -24,6 +24,10 @@ export const en = {
   'catalog.state.stale': 'Data is stale',
   'catalog.confirm.title': 'Confirm',
   'catalog.staleBanner.label': 'Stale',
+  'catalog.repeatableGroup.addRow': 'Add row',
+  'catalog.repeatableGroup.removeRow': 'Remove row',
+  'catalog.repeatableGroup.rowLabel': 'Row {index}',
+  'catalog.action.save': 'Save',
 
   // --- Renderer chrome (02 section 6) ---
   'renderer.stale.message': 'This data changed remotely while you were editing.',
@@ -86,6 +90,80 @@ export const en = {
   'validation.sanitize.urlScheme': 'Disallowed URL scheme at {path}',
   'validation.sanitize.urlScheme.hint': 'Use http or https URLs only',
   'validation.sanitize.controlChar': 'Control characters are not allowed at {path}',
+
+  // --- Panel HITL approval chrome (02 section 7, D14-D16) ---
+  'approval.review.badge': 'Awaiting approval',
+  'approval.review.title': 'Approve {action}',
+  'approval.review.agentAttribution': 'Agent: {agent}',
+  'approval.review.target': 'Target source: {source}',
+  'approval.review.irreversible': 'This action cannot be undone.',
+  'approval.destructive.badge': 'Confirm destructive action',
+  'approval.destructive.title': 'This change is permanent',
+  'approval.destructive.defaultMessage': 'Proceed with {action}? This cannot be undone.',
+  'approval.destructive.confirm': 'Confirm',
+  'approval.approve': 'Approve',
+  'approval.reject': 'Reject',
+  'approval.diff.field': 'Field',
+  'approval.diff.before': 'Current',
+  'approval.diff.after': 'Proposed',
+  'approval.diff.empty': 'No field changes in this payload.',
+  'approval.diff.none': '(empty)',
+
+  // --- Panel chrome: provenance + pin (02 section 7, D12/D13) ---
+  'chrome.provenance.agent': 'Agent',
+  'chrome.pin.persist': 'Pin panel to workspace',
+  'chrome.panel.minimize': 'Minimize panel',
+  'chrome.panel.restore': 'Restore panel',
+  'chrome.panel.close': 'Close panel',
+  'chrome.panel.loading': 'Loading panel…',
+  'chrome.panel.adapterUnavailable': 'Panel data adapter is not available.',
+  'chrome.panel.notRegistered': 'No panel registered for id {panelId}.',
+  'chrome.composed.invalid': 'This composed panel could not be restored.',
+  'chrome.openCanvas.indicator': 'Open canvas',
+  'chrome.openCanvas.indicatorHint':
+    'Agent output is auto-applied on this canvas. Host-data actions still require approval.',
+
+  // --- Career pack panels + nav (D59) ---
+  'career.panels.openPositions.title': 'Open Positions',
+  'career.panels.openPositions.subtitle': 'Current openings',
+  'career.panels.applications.title': 'My Applications',
+  'career.panels.applications.column.job': 'Job',
+  'career.panels.applications.column.status': 'Status',
+  'career.panels.applications.column.submitted': 'Submitted',
+  'career.panels.growthPaths.title': 'Growth Paths',
+  'career.panels.growthPaths.subtitle': 'Example trajectories',
+  'career.panels.resources.title': 'Resources',
+  'career.nav.openPositions': 'Open Positions',
+  'career.nav.newChat': 'New Chat',
+  'career.nav.applications': 'My Applications',
+  'career.nav.resumeDocs': 'Resume & Docs',
+  'career.nav.resources': 'Resources',
+  'career.nav.growthPaths': 'Growth Paths',
+  'career.nav.careerTools': 'Career Tools',
+
+  // --- Support inbox pack panels + nav (P10-T5) ---
+  'support.panels.inbox.title': 'Inbox',
+  'support.panels.inbox.subtitle': 'Tickets waiting on your team',
+  'support.panels.ticketDetail.title': 'Ticket Detail',
+  'support.panels.ticketDetail.column.author': 'Author',
+  'support.panels.ticketDetail.column.role': 'Role',
+  'support.panels.ticketDetail.column.sent': 'Sent',
+  'support.panels.macros.title': 'Macros',
+  'support.panels.macros.subtitle': 'Canned responses',
+  'support.nav.inbox': 'Inbox',
+  'support.nav.ticketDetail': 'Ticket Detail',
+  'support.nav.macros': 'Macros',
+
+  // --- Agent world-model debug panels (P6-T2) ---
+  'agents.panels.activity.title': 'Agent Activity',
+  'agents.panels.activity.subtitle': 'Session activity ledger',
+
+  // --- Panel devtools (P10-T2) ---
+  'devtools.panels.specInspector.title': 'Spec Inspector',
+  'devtools.panels.specInspector.subtitle': 'Validation, bindings, and HITL/repair history',
+  'devtools.panels.specInspector.tabValidation': 'Validation',
+  'devtools.panels.specInspector.tabBindings': 'Bindings',
+  'devtools.panels.specInspector.tabEvents': 'History',
 } as const;
 
 /** Every framework message key; locale packs implement this contract. */

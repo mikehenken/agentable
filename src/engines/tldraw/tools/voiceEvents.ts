@@ -10,5 +10,6 @@ export function emitWhiteboardVoiceToggle(): void {
     new CustomEvent(WHITEBOARD_VOICE_TOGGLE_EVENT, {
       bubbles: true,
       composed: true,
-    }));
+    }),
+  );
 }

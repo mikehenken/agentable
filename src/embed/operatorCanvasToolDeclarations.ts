@@ -40,7 +40,8 @@ const OPERATOR_TOOL_DECLARATIONS: Readonly<Record<string, ToolDeclaration>> = {
 export function getOperatorEmbedFunctionDeclarations(): ToolDeclaration[] {
   const allowed = new Set(getAllowedToolsForOperatorMode(getOperatorMode()));
   return Object.values(OPERATOR_TOOL_DECLARATIONS).filter((declaration) =>
-    allowed.has(declaration.name));
+    allowed.has(declaration.name),
+  );
 }
 
 export type { ToolDeclaration };

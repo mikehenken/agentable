@@ -24,15 +24,15 @@ export function readWhiteboardViewportScreenSize(): { w: number; h: number } | n
 
   }
 
-  const rect = viewportEl.getBoundingClientRect;
+  const rect = viewportEl.getBoundingClientRect();
 
-  if (rect().width <= 80 || rect().height <= 80) {
+  if (rect.width <= 80 || rect.height <= 80) {
 
     return null;
 
   }
 
-  return { w: rect().width, h: rect().height };
+  return { w: rect.width, h: rect.height };
 
 }
 
@@ -90,7 +90,7 @@ export function bindWhiteboardViewportScreenBoundsSync(editor: Editor): () => vo
 
     syncWhiteboardViewportScreenBounds(editor);
 
-    return ()=> undefined;
+    return () => undefined;
 
   }
 
@@ -102,7 +102,7 @@ export function bindWhiteboardViewportScreenBoundsSync(editor: Editor): () => vo
 
     syncWhiteboardViewportScreenBounds(editor);
 
-    return ()=> undefined;
+    return () => undefined;
 
   }
 
@@ -129,6 +129,7 @@ export function bindWhiteboardViewportScreenBoundsSync(editor: Editor): () => vo
       debounceTimer = null;
 
       sync();
+
     }, VIEWPORT_SYNC_DEBOUNCE_MS);
 
   };
@@ -136,9 +137,13 @@ export function bindWhiteboardViewportScreenBoundsSync(editor: Editor): () => vo
 
 
   sync();
+
+
+
   const observer = new ResizeObserver(() => {
 
     scheduleSync();
+
   });
 
   observer.observe(viewportEl);

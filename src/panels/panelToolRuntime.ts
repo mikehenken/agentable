@@ -112,9 +112,9 @@ export interface PanelSpecValidationError {
   message: string;
   nodeId?: string;
   path?: string;
-  /** Nearest-valid-alternative hint from the validator. */
+  /** Nearest-valid-alternative hint from the validator (D43). */
   hint?: string;
-  /** Structured repair suggestion surfaced to agents. */
+  /** Structured repair suggestion surfaced to agents (D43). */
   suggestedFix?: string;
 }
 
@@ -126,7 +126,7 @@ export interface ComposePanelSuccess {
 export interface ComposePanelFailure {
   ok: false;
   errors: readonly PanelSpecValidationError[];
-  /** True when the agent may attempt exactly one structured repair (.7). */
+  /** True when the agent may attempt exactly one structured repair (D9.7). */
   agentRepairEligible: boolean;
 }
 
@@ -139,7 +139,7 @@ export interface PatchPanelSuccess {
 export interface PatchPanelFailure {
   ok: false;
   errors: readonly PanelSpecValidationError[];
-  /** True when the agent may attempt exactly one structured repair (.7). */
+  /** True when the agent may attempt exactly one structured repair (D9.7). */
   agentRepairEligible: boolean;
 }
 
@@ -147,7 +147,7 @@ export type PatchPanelResult = PatchPanelSuccess | PatchPanelFailure;
 
 export interface RunPanelActionOptions {
   actor?: ApprovalActor;
-  /** When true, mutating actions always queue HITL even for user actor ( reversal). */
+  /** When true, mutating actions always queue HITL even for user actor (D53 reversal). */
   forceHitl?: boolean;
 }
 
@@ -159,7 +159,8 @@ export type RunPanelActionResult =
 
 interface ApprovalControllerWithQueue extends ApprovalController {
   queue: (
-    request: Omit<import('./approval/types').PendingApprovalRequest, 'id' | 'createdAt'>) => Promise<import('./approval/types').ApprovalResolutionStatus>;
+    request: Omit<import('./approval/types').PendingApprovalRequest, 'id' | 'createdAt'>,
+  ) => Promise<import('./approval/types').ApprovalResolutionStatus>;
   isAutoApproved: (actionKey: string) => boolean;
 }
 
@@ -177,9 +178,9 @@ interface PanelInstanceState {
   values: Record<string, JsonValue>;
   userDirtyFields: Set<string>;
   agentFilledFields: Set<string>;
-  /** Per-field acting agent for chrome attribution. */
+  /** Per-field acting agent for chrome attribution (D45). */
   fieldAttribution: Map<string, FieldAttribution>;
-  /** Set after the first repair-eligible patch validation failure (.7). */
+  /** Set after the first repair-eligible patch validation failure (D9.7). */
   patchRepairConsumed: boolean;
 }
 
@@ -189,28 +190,33 @@ export interface PanelToolRuntime {
   openPanel(
     id: string,
     scopeOrOptions?: PanelScope | PanelOpenResolveInput,
-    slotLegacy?: string): Promise<{ ok: true; panelId: string } | { ok: false; error: string }>;
+    slotLegacy?: string,
+  ): Promise<{ ok: true; panelId: string } | { ok: false; error: string }>;
   fillPanel(
     id: string,
-    patch: Record<string, unknown>): Promise<FillPanelResult | { ok: false; error: string }>;
+    patch: Record<string, unknown>,
+  ): Promise<FillPanelResult | { ok: false; error: string }>;
   composePanel(
     spec: unknown,
-    options?: { title?: string; pin?: boolean }): Promise<ComposePanelResult>;
+    options?: { title?: string; pin?: boolean },
+  ): Promise<ComposePanelResult>;
   patchPanel(
     panelId: string,
-    ops: unknown): Promise<PatchPanelResult | { ok: false; error: string }>;
+    ops: unknown,
+  ): Promise<PatchPanelResult | { ok: false; error: string }>;
   runPanelAction(
     panelId: string,
     actionId: string,
     payload?: Record<string, unknown>,
-    options?: RunPanelActionOptions): Promise<RunPanelActionResult>;
+    options?: RunPanelActionOptions,
+  ): Promise<RunPanelActionResult>;
   markFieldUserDirty(panelId: string, fieldPath: string): void;
   getFieldMarkers(panelId: string): { agentFilled: ReadonlySet<string>; userDirty: ReadonlySet<string> };
   getFieldAttribution(panelId: string): ReadonlyMap<string, FieldAttribution>;
-  /** Map an open instance id back to its registered definition id ( scopes). */
+  /** Map an open instance id back to its registered definition id (D45 scopes). */
   resolveDefinitionId(panelId: string): string | undefined;
   readonly approvalController: ApprovalController;
-  /** undo/reversal: canvas stack undo + compensating mutation reversal. */
+  /** D53 undo/reversal: canvas stack undo + compensating mutation reversal. */
   readonly undoReversal: UndoReversalRuntime;
   pushCanvasOp(actor: ApprovalActor, op: CanvasStackOp): ReturnType<UndoReversalRuntime['pushCanvasOp']>;
   stackUndo(actor: ApprovalActor): StackUndoResult;
@@ -255,7 +261,7 @@ function nextComposedPanelId(): string {
   return `composed-${composedCounter}`;
 }
 
-/** Reset composed panel id sequence for deterministic eval/tests. */
+/** Reset composed panel id sequence for deterministic eval/tests (P10-T3). */
 export function resetComposedPanelIdCounterForTests(): void {
   composedCounter = 0;
 }
@@ -274,7 +280,8 @@ function toValidationErrors(issues: readonly SpecIssue[]): PanelSpecValidationEr
 function buildValidationContext(
   host: PanelToolHost,
   registry: PanelRegistry,
-  spec: PanelSpec): {
+  spec: PanelSpec,
+): {
   catalog: PanelToolHost['catalog'];
   adapterSources: Set<string>;
   hostActions: Set<string>;
@@ -284,20 +291,22 @@ function buildValidationContext(
     catalog: host.catalog,
     adapterSources: extractAdapterSources(spec),
     hostActions: new Set(),
-    panelRegistry: new Set(registry.ids),
+    panelRegistry: new Set(registry.ids()),
   };
 }
 
 function resolveAgentRepairEligible(
   validatorEligible: boolean | undefined,
-  repairConsumed: boolean): boolean {
+  repairConsumed: boolean,
+): boolean {
   return validatorEligible === true && !repairConsumed;
 }
 
 function validationFailure(
   errors: readonly SpecIssue[],
   validatorEligible: boolean | undefined,
-  repairConsumed: boolean): { errors: readonly PanelSpecValidationError[]; agentRepairEligible: boolean; consumeRepair: boolean } {
+  repairConsumed: boolean,
+): { errors: readonly PanelSpecValidationError[]; agentRepairEligible: boolean; consumeRepair: boolean } {
   const agentRepairEligible = resolveAgentRepairEligible(validatorEligible, repairConsumed);
   return {
     errors: toValidationErrors(errors),
@@ -330,7 +339,8 @@ interface ResolvedActingAgent {
 }
 
 function resolveActingAgent(
-  runOptions: RunPanelActionOptions): ResolvedActingAgent {
+  runOptions: RunPanelActionOptions,
+): ResolvedActingAgent {
   if (runOptions.actor === 'user') {
     return {
       actor: 'user',
@@ -354,7 +364,7 @@ function resolveActingAgent(
   if (explicitActor !== undefined && explicitActor !== 'agent') {
     const agentId = approvalActorAgentId(explicitActor) ?? explicitActor;
     return {
-      actor: explicitActor.startsWith('agent:') ? explicitActor: toApprovalActor(agentId),
+      actor: explicitActor.startsWith('agent:') ? explicitActor : toApprovalActor(agentId),
       agentId,
       agentLabel: agentId,
       provenance: { derivedFrom: `agent:${agentId}` },
@@ -376,7 +386,8 @@ function resolveFillAttribution(): FieldAttribution | undefined {
 }
 
 function normalizeActionPayload(
-  payload: Record<string, unknown> | undefined): Record<string, JsonValue> {
+  payload: Record<string, unknown> | undefined,
+): Record<string, JsonValue> {
   if (payload === undefined) return {};
   const normalized: Record<string, JsonValue> = {};
   for (const [key, value] of Object.entries(payload)) {
@@ -389,16 +400,17 @@ function normalizeActionPayload(
 export interface PanelToolRuntimeOptions extends PanelToolApprovalOptions {
   composeGate?: ComposeGateEvaluation;
   undoReversal?: UndoReversalRuntime;
-  /** Optional devtools session for spec inspector trace. */
+  /** Optional devtools session for spec inspector trace (P10-T2). */
   devtoolsSession?: SpecDevtoolsSession;
-  /** Host telemetry sink emit hook (`host.telemetry.emit`). */
+  /** Host telemetry sink emit hook (`host.telemetry.emit`, D55). */
   telemetryEmit?: TelemetryEmit;
 }
 
 export function createPanelToolRuntime(
   host: PanelToolHost,
   registry: PanelRegistry,
-  options: PanelToolRuntimeOptions = {}): PanelToolRuntime {
+  options: PanelToolRuntimeOptions = {},
+): PanelToolRuntime {
   const instances = new Map<string, PanelInstanceState>();
   const approvalController = (options.approvalController ??
     createApprovalController({ autoApprove: options.autoApprove })) as ApprovalControllerWithQueue;
@@ -433,7 +445,8 @@ export function createPanelToolRuntime(
 
   const getOrCreateDefinitionInstance = (
     definitionId: string,
-    scope: PanelScope): PanelInstanceState => {
+    scope: PanelScope,
+  ): PanelInstanceState => {
     const existing = resolveDefinitionInstance(definitionId);
     if (existing !== undefined) return existing;
 
@@ -475,8 +488,8 @@ export function createPanelToolRuntime(
         agentDescription: meta.agentDescription,
         scope: meta.scope,
         contextKinds: meta.contextKinds,
-        fields: meta.fields.length > 0 ? meta.fields: undefined,
-        actions: meta.actions.length > 0 ? meta.actions: undefined,
+        fields: meta.fields.length > 0 ? meta.fields : undefined,
+        actions: meta.actions.length > 0 ? meta.actions : undefined,
         openInstances: openByDefinition.get(meta.id) ?? [],
       }));
     },
@@ -484,7 +497,8 @@ export function createPanelToolRuntime(
     async openPanel(
       id: string,
       scopeOrOptions?: PanelScope | PanelOpenResolveInput,
-      slotLegacy?: string): Promise<{ ok: true; panelId: string } | { ok: false; error: string }> {
+      slotLegacy?: string,
+    ): Promise<{ ok: true; panelId: string } | { ok: false; error: string }> {
       if (disposed) {
         return { ok: false, error: 'panel tool runtime disposed' };
       }
@@ -504,7 +518,7 @@ export function createPanelToolRuntime(
       try {
         await host.panels.open(id, openOptions);
       } catch (err) {
-        const message = err instanceof Error ? err.message: String(err);
+        const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };
       }
 
@@ -514,7 +528,8 @@ export function createPanelToolRuntime(
 
     async fillPanel(
       id: string,
-      patchInput: Record<string, unknown>): Promise<FillPanelResult | { ok: false; error: string }> {
+      patchInput: Record<string, unknown>,
+    ): Promise<FillPanelResult | { ok: false; error: string }> {
       if (disposed) {
         return { ok: false, error: 'panel tool runtime disposed' };
       }
@@ -574,7 +589,8 @@ export function createPanelToolRuntime(
 
     async composePanel(
       specInput: unknown,
-      options?: { title?: string; pin?: boolean }): Promise<ComposePanelResult> {
+      options?: { title?: string; pin?: boolean },
+    ): Promise<ComposePanelResult> {
       if (disposed) {
         return {
           ok: false,
@@ -605,7 +621,8 @@ export function createPanelToolRuntime(
       }
 
       const specRecord = specInput as JsonObject;
-      const withAgentOrigin: PanelSpec = {...(specRecord as unknown as PanelSpec),
+      const withAgentOrigin: PanelSpec = {
+        ...(specRecord as unknown as PanelSpec),
         origin: 'agent',
       };
 
@@ -616,7 +633,8 @@ export function createPanelToolRuntime(
         const failure = validationFailure(
           validation.errors,
           validation.agentRepairEligible,
-          composeRepairConsumed);
+          composeRepairConsumed,
+        );
         const repairAttempt = composeRepairConsumed;
         if (failure.consumeRepair) {
           composeRepairConsumed = true;
@@ -628,16 +646,18 @@ export function createPanelToolRuntime(
             withAgentOrigin,
             validation.errors,
             failure.agentRepairEligible,
-            'compose');
+            'compose',
+          );
         }
         telemetryEmit?.(
           buildComposeTelemetryEvent({
-            phase: repairAttempt ? 'repair': 'compose',
+            phase: repairAttempt ? 'repair' : 'compose',
             outcome: 'rejected',
             tool: 'compose_panel',
             agentRepairEligible: failure.agentRepairEligible,
             errorCodes: failure.errors.map((entry) => entry.code),
-          }));
+          }),
+        );
         return {
           ok: false,
           errors: failure.errors,
@@ -655,7 +675,8 @@ export function createPanelToolRuntime(
           panelId,
           validation.spec,
           [],
-          validation.warnings);
+          validation.warnings,
+        );
       }
       const instance: PanelInstanceState = {
         panelId,
@@ -677,11 +698,12 @@ export function createPanelToolRuntime(
 
       telemetryEmit?.(
         buildComposeTelemetryEvent({
-          phase: repairedSuccess ? 'repair': 'compose',
-          outcome: repairedSuccess ? 'repaired_success': 'success',
+          phase: repairedSuccess ? 'repair' : 'compose',
+          outcome: repairedSuccess ? 'repaired_success' : 'success',
           tool: 'compose_panel',
           panelId,
-        }));
+        }),
+      );
 
       void options?.title;
       return { ok: true, panelId };
@@ -689,7 +711,8 @@ export function createPanelToolRuntime(
 
     async patchPanel(
       panelId: string,
-      opsInput: unknown): Promise<PatchPanelResult | { ok: false; error: string }> {
+      opsInput: unknown,
+    ): Promise<PatchPanelResult | { ok: false; error: string }> {
       if (disposed) {
         return { ok: false, error: 'panel tool runtime disposed' };
       }
@@ -731,7 +754,8 @@ export function createPanelToolRuntime(
         }
         operations.push({
           op: op.op,
-          path: op.path,...(op.value !== undefined ? { value: op.value as JsonValue }: {}),
+          path: op.path,
+          ...(op.value !== undefined ? { value: op.value as JsonValue } : {}),
         });
       }
 
@@ -739,13 +763,14 @@ export function createPanelToolRuntime(
       if (!patched.ok) {
         telemetryEmit?.(
           buildComposeTelemetryEvent({
-            phase: instance.patchRepairConsumed ? 'repair': 'compose',
+            phase: instance.patchRepairConsumed ? 'repair' : 'compose',
             outcome: 'rejected',
             tool: 'patch_panel',
             panelId,
             agentRepairEligible: false,
             errorCodes: ['PATCH_APPLY_FAILED'],
-          }));
+          }),
+        );
         return {
           ok: false,
           agentRepairEligible: false,
@@ -753,19 +778,22 @@ export function createPanelToolRuntime(
         };
       }
 
-      const patchedSpec: PanelSpec = {...(patched.document as unknown as PanelSpec),
+      const patchedSpec: PanelSpec = {
+        ...(patched.document as unknown as PanelSpec),
         origin: 'agent',
       };
 
       const validation = validateSpec(
         patchedSpec,
         buildValidationContext(host, registry, patchedSpec),
-        { agentRepairRound: true });
+        { agentRepairRound: true },
+      );
       if (!validation.ok) {
         const failure = validationFailure(
           validation.errors,
           validation.agentRepairEligible,
-          instance.patchRepairConsumed);
+          instance.patchRepairConsumed,
+        );
         if (failure.consumeRepair) {
           instance.patchRepairConsumed = true;
         }
@@ -776,17 +804,19 @@ export function createPanelToolRuntime(
             patchedSpec,
             validation.errors,
             failure.agentRepairEligible,
-            'patch');
+            'patch',
+          );
         }
         telemetryEmit?.(
           buildComposeTelemetryEvent({
-            phase: failure.consumeRepair || instance.patchRepairConsumed ? 'repair': 'compose',
+            phase: failure.consumeRepair || instance.patchRepairConsumed ? 'repair' : 'compose',
             outcome: 'rejected',
             tool: 'patch_panel',
             panelId,
             agentRepairEligible: failure.agentRepairEligible,
             errorCodes: failure.errors.map((entry) => entry.code),
-          }));
+          }),
+        );
         return {
           ok: false,
           errors: failure.errors,
@@ -803,15 +833,17 @@ export function createPanelToolRuntime(
           panelId,
           validation.spec,
           [],
-          validation.warnings);
+          validation.warnings,
+        );
       }
       telemetryEmit?.(
         buildComposeTelemetryEvent({
-          phase: repairedSuccess ? 'repair': 'compose',
-          outcome: repairedSuccess ? 'repaired_success': 'success',
+          phase: repairedSuccess ? 'repair' : 'compose',
+          outcome: repairedSuccess ? 'repaired_success' : 'success',
           tool: 'patch_panel',
           panelId,
-        }));
+        }),
+      );
       return { ok: true };
     },
 
@@ -819,7 +851,8 @@ export function createPanelToolRuntime(
       panelId: string,
       actionId: string,
       payload?: Record<string, unknown>,
-      runOptions: RunPanelActionOptions = {}): Promise<RunPanelActionResult> {
+      runOptions: RunPanelActionOptions = {},
+    ): Promise<RunPanelActionResult> {
       if (disposed) {
         return { status: 'error', message: 'panel tool runtime disposed' };
       }
@@ -867,7 +900,7 @@ export function createPanelToolRuntime(
           approvalController.isAutoApproved(actionId) ||
           approvalController.isAutoApproved(autoApproveKey));
 
-      const currentData = {...instance.values };
+      const currentData = { ...instance.values };
 
       const executeMutation = (): RunPanelActionResult => {
         let ledgerEntryId: string | undefined;
@@ -897,10 +930,10 @@ export function createPanelToolRuntime(
       }
 
       const diff = computePayloadDiff(currentData, actionPayload);
-      const initialPhase = bypassReview && action.destructive ? 'destructive_confirm': 'review';
+      const initialPhase = bypassReview && action.destructive ? 'destructive_confirm' : 'review';
 
       if (initialPhase === 'review' && diff.length === 0 && Object.keys(actionPayload).length === 0) {
-         // No visible diff; still surface review for mutating agent actions.
+        // No visible diff; still surface review for mutating agent actions (D14).
       }
 
       const resolution = await approvalController.queue({
@@ -928,9 +961,12 @@ export function createPanelToolRuntime(
           definitionId: instance.definitionId,
           actionId,
           agentId: acting.agentId,
-        }));
+        }),
+      );
 
-      const pendingEntry = approvalController.getPendingForPanel(instance.panelId).find((entry) => entry.actionId === actionId);
+      const pendingEntry = approvalController
+        .getPendingForPanel(instance.panelId)
+        .find((entry) => entry.actionId === actionId);
       if (devtoolsSession !== undefined && pendingEntry !== undefined) {
         recordSpecHitlQueued(devtoolsSession, pendingEntry);
       }
@@ -946,7 +982,8 @@ export function createPanelToolRuntime(
             definitionId: instance.definitionId,
             actionId,
             agentId: acting.agentId,
-          }));
+          }),
+        );
         return { status: 'rejected_by_user' };
       }
 
@@ -961,13 +998,14 @@ export function createPanelToolRuntime(
           definitionId: instance.definitionId,
           actionId,
           agentId: acting.agentId,
-        }));
+        }),
+      );
 
-      const mutationResult = executeMutation;
+      const mutationResult = executeMutation();
       if (devtoolsSession !== undefined) {
-        recordSpecActionRun(devtoolsSession, instance.panelId, actionId, mutationResult().status);
+        recordSpecActionRun(devtoolsSession, instance.panelId, actionId, mutationResult.status);
       }
-      return mutationResult();
+      return mutationResult;
     },
 
     markFieldUserDirty(panelId: string, fieldPath: string): void {
@@ -1013,21 +1051,21 @@ export function createPanelToolRuntime(
       if (disposed) {
         throw new Error('panel tool runtime disposed');
       }
-      return undoReversal.pushCanvasOp(actor === 'user' ? 'user': actor, op);
+      return undoReversal.pushCanvasOp(actor === 'user' ? 'user' : actor, op);
     },
 
     stackUndo(actor: ApprovalActor): StackUndoResult {
       if (disposed) {
         return { ok: false, code: 'STACK_EMPTY', message: 'panel tool runtime disposed' };
       }
-      return undoReversal.stackUndo(actor === 'user' ? 'user': actor);
+      return undoReversal.stackUndo(actor === 'user' ? 'user' : actor);
     },
 
     stackRedo(actor: ApprovalActor): StackRedoResult {
       if (disposed) {
         return { ok: false, code: 'STACK_EMPTY', message: 'panel tool runtime disposed' };
       }
-      return undoReversal.stackRedo(actor === 'user' ? 'user': actor);
+      return undoReversal.stackRedo(actor === 'user' ? 'user' : actor);
     },
 
     reverseMutation(ledgerEntryId: string, actor: ApprovalActor = 'user'): Promise<ReversalResult> {
@@ -1064,7 +1102,8 @@ export function applyFillPatch(
     agentFilledFields: Set<string>;
   },
   patch: Record<string, JsonValue>,
-  allowed: ReadonlySet<string>): FillPanelResult {
+  allowed: ReadonlySet<string>,
+): FillPanelResult {
   const applied: string[] = [];
   const skippedUserDirty: string[] = [];
   const errors: PanelFieldError[] = [];

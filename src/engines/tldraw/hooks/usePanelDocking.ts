@@ -31,8 +31,8 @@ export function usePanelDocking(editor: Editor | null): void {
         return;
       }
 
-      const selectedIds = editor.getSelectedShapeIds;
-      const panelIds = selectedIds().filter((id) => editor.getShape(id)?.type === 'panel');
+      const selectedIds = editor.getSelectedShapeIds();
+      const panelIds = selectedIds.filter((id) => editor.getShape(id)?.type === 'panel');
       if (panelIds.length !== 1) {
         setPanelDockPreview(null);
         return;
@@ -43,15 +43,15 @@ export function usePanelDocking(editor: Editor | null): void {
       if (!pagePoint) return;
 
       const preview = previewPanelDockHighlight(editor, panelId, pagePoint);
-      setPanelDockPreview(preview ? { highlight: preview.highlight }: null);
+      setPanelDockPreview(preview ? { highlight: preview.highlight } : null);
     };
 
     const handlePointerUp = (): void => {
       setPanelDockPreview(null);
       if (!editor.isIn('select.translating')) return;
 
-      const selectedIds = editor.getSelectedShapeIds;
-      const panelIds = selectedIds().filter((id) => editor.getShape(id)?.type === 'panel');
+      const selectedIds = editor.getSelectedShapeIds();
+      const panelIds = selectedIds.filter((id) => editor.getShape(id)?.type === 'panel');
       if (panelIds.length !== 1) return;
 
       const panelId = panelIds[0];
@@ -70,13 +70,13 @@ export function usePanelDocking(editor: Editor | null): void {
 
     const unsubscribeStore = editor.store.listen(
       (entry) => {
-         // Ignore our own reflow writes to avoid redundant re-entrant work.
+        // Ignore our own reflow writes to avoid redundant re-entrant work.
         if (isReflowInProgress()) return;
 
-         // GROUP/frame resize → reflow docked panels + centered preview so they
-         // track the new inner bounds (chat/files stay flush + full-height, and
-         // the preview keeps symmetric gutters). Fires live during the resize
-         // drag; the reflow settles at a fixed point so it can't fight auto-fit.
+        // GROUP/frame resize → reflow docked panels + centered preview so they
+        // track the new inner bounds (chat/files stay flush + full-height, and
+        // the preview keeps symmetric gutters). Fires live during the resize
+        // drag; the reflow settles at a fixed point so it can't fight auto-fit.
         const frameIds = collectContextGroupFrameIdsFromStoreDiff(entry.changes);
         for (const frameId of frameIds) {
           reflowContextFrameRow(editor, frameId);
@@ -95,13 +95,14 @@ export function usePanelDocking(editor: Editor | null): void {
           resizingPanelRef.current = null;
           const ctx = findContextFrameGroupForShape(editor, resizedId);
           if (ctx) {
-             // Reflow (not just cascade) so resizing one panel re-centers the
-             // preview and keeps the equal-gutter row intact.
+            // Reflow (not just cascade) so resizing one panel re-centers the
+            // preview and keeps the equal-gutter row intact.
             reflowContextFrameRow(editor, ctx.frameId);
           }
         }
       },
-      { source: 'user', scope: 'document' });
+      { source: 'user', scope: 'document' },
+    );
 
     const onEditorEvent = (info: TLEventInfo): void => {
       if (info.name === 'pointer_move') {

@@ -1,5 +1,5 @@
 /**
- * Host-only panelShapeApi stub for operator embed bundles ( iter-12).
+ * Host-only panelShapeApi stub for operator embed bundles (P13-T7 iter-12).
  * Avoids shipping a second tldraw graph — draw/read paths use whiteboard host APIs.
  */
 
@@ -16,9 +16,9 @@ export function inspectBoundEditorStore(_createdShapeIds: readonly string[]): {
 }
 
 export function unbindEditor(): void {
-   // no-op in operator embed
+  // no-op in operator embed
 }
 
 export function bindEditor(_editor: unknown): void {
-   // no-op in operator embed
+  // no-op in operator embed
 }

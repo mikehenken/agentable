@@ -37,7 +37,7 @@ export function OperatorA2UITranscriptLite({
             <p part="a2ui-block-subtitle" className="a2ui-block-subtitle">
               {block.subtitle}
             </p>
-          ): null}
+          ) : null}
         </div>
       ))}
     </div>

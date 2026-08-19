@@ -61,7 +61,8 @@ export function ApprovalCard({
             request.confirmMessage ??
               t('approval.destructive.defaultMessage', {
                 action: sanitizeInertText(request.actionLabel),
-              }))}
+              }),
+          )}
         </p>
         <div className="panel-approval-card__actions">
           <button
@@ -119,7 +120,7 @@ export function ApprovalCard({
       <div className="panel-approval-card__diff" data-testid="approval-payload-diff">
         {request.diff.length === 0 ? (
           <p className="panel-approval-card__diff-empty">{t('approval.diff.empty')}</p>
-        ): (
+        ) : (
           <table className="panel-approval-card__diff-table">
             <thead>
               <tr>

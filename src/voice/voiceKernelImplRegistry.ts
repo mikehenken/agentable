@@ -1,21 +1,21 @@
 /**
  * Reference-counted voice kernel impl registration — multiple `useGeminiLive`
  * mounts (dock + floating operator) must not clear the transport when one
- * surface remounts after gallery chrome reparenting ( iter-7).
+ * surface remounts after gallery chrome reparenting (P13-T7 iter-7).
  */
 import { ensureVoiceKernel, type VoiceKernelImpl } from '../shared/voiceKernel';
 
 const implByMount = new Map<symbol, VoiceKernelImpl>();
 
 function syncActiveImpl(): void {
-  const kernel = ensureVoiceKernel;
+  const kernel = ensureVoiceKernel();
   const entries = [...implByMount.entries()];
   if (entries.length === 0) {
-    kernel().voice._clearImpl();
+    kernel.voice._clearImpl();
     return;
   }
   const [, activeImpl] = entries[entries.length - 1];
-  kernel().voice._setImpl(activeImpl);
+  kernel.voice._setImpl(activeImpl);
 }
 
 /**

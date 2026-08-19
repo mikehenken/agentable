@@ -31,14 +31,14 @@ export function isPanelInsideContextFrame(editor: Editor, shapeId: TLShapeId): b
  */
 export function ejectGlobalPanelsFromSiteFrames(editor: Editor): number {
   let ejected = 0;
-  const pageId = editor.getCurrentPageId;
+  const pageId = editor.getCurrentPageId();
 
   for (const panelId of CANVAS_GLOBAL_PANEL_IDS) {
     const shapeId = createShapeId(`panel:${panelId}`);
     const shape = editor.getShape(shapeId);
     if (!shape || shape.type !== 'panel') continue;
     if (!isPanelInsideContextFrame(editor, shapeId)) continue;
-    editor.reparentShapes([shapeId], pageId());
+    editor.reparentShapes([shapeId], pageId);
     ejected += 1;
   }
 

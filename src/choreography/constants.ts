@@ -1,10 +1,10 @@
 /** Reserved panel id for the active chat surface (02 section 10). */
 export const CHAT_PANEL_ID = 'chat';
 
-/** User-visible prompt handback: inserts text and focuses chat. */
+/** User-visible prompt handback: inserts text and focuses chat (D28). */
 export const CHAT_PROMPT_EVENT = 'landi:chat-prompt';
 
-/** Restore surface the chat panel before handback. */
+/** Restore / surface the chat panel before handback. */
 export const OPEN_CHAT_EVENT = 'agentable:open-chat';
 
 /** Focus the chat composer without sending (existing contract). */

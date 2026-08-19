@@ -2,11 +2,11 @@
  * PanelChrome — title bar rendered atop a panel shape's body.
  *
  * Important pointer-event policy:
- * The title bar deliberately does NOT call `stopPropagation` on pointer
- * events. Pointer events fall through to tldraw, so the user can grab the
- * shape by its title and drag it. The body container (in `PanelShape.tsx`)
- * is the layer that stops propagation — that's where the panel's
- * interactive content lives.
+ *   The title bar deliberately does NOT call `stopPropagation` on pointer
+ *   events. Pointer events fall through to tldraw, so the user can grab the
+ *   shape by its title and drag it. The body container (in `PanelShape.tsx`)
+ *   is the layer that stops propagation — that's where the panel's
+ *   interactive content lives.
  *
  * Buttons inside the title bar (close, minimise) DO stop propagation so the
  * click doesn't accidentally start a tldraw drag. They also call
@@ -25,9 +25,9 @@ export interface PanelChromeProps {
    * a friendlier title via shape `data`. */
   title: string;
   minimized: boolean;
-  /** When true, render the agent provenance badge. */
+  /** When true, render the agent provenance badge (D12). */
   showProvenanceBadge?: boolean;
-  /** When true, show the pin affordance for ephemeral composed instances. */
+  /** When true, show the pin affordance for ephemeral composed instances (D13). */
   showPinButton?: boolean;
   /** When true, the composed spec is already persisted on the shape. */
   pinned?: boolean;
@@ -56,9 +56,9 @@ export function PanelChrome({
           >
             <Pin size={12} />
           </ChromeButton>
-        ): null}
+        ) : null}
         <ChromeButton
-          aria-label={minimized ? t('chrome.panel.restore'): t('chrome.panel.minimize')}
+          aria-label={minimized ? t('chrome.panel.restore') : t('chrome.panel.minimize')}
           onClick={() => updatePanelChrome(panelId, { minimized: !minimized })}
         >
           <Minus size={12} />

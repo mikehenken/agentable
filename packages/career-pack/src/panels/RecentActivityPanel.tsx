@@ -13,7 +13,7 @@ const ACTIVITY = [
   {
     id: 'a2',
     time: '18m ago',
-    label: 'Tool call: open_positions',
+    label: 'Tool call: open_positions()',
     detail: 'Sandy surfaced 5 matching roles',
     icon: Wrench,
   },

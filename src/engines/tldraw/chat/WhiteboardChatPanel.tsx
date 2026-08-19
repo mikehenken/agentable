@@ -2,16 +2,16 @@
  * WhiteboardChatPanel - flush-column chat surface for the whiteboard.
  *
  * Reuses the existing `<ChatPanel chromeless>` from the legacy canvas:
- * - Same Gemini chat client (real API, tool round-trips)
- * - Same voice transcript subscription (`landi:voice-transcript`)
- * - Same tool call echo (`landi:tool-call`)
- * - Same focus event (`landi:focus-chat-input`)
+ *   - Same Gemini chat client (real API, tool round-trips)
+ *   - Same voice transcript subscription (`landi:voice-transcript`)
+ *   - Same tool call echo (`landi:tool-call`)
+ *   - Same focus event (`landi:focus-chat-input`)
  *
  * The only difference is presentation:
- * - No `<DraggablePanel>` wrapper (the chat column is fixed by the
- * `WhiteboardShell` grid)
- * - No `useLayoutStore` visibility gate (the column is always visible
- * when the route is mounted)
+ *   - No `<DraggablePanel>` wrapper (the chat column is fixed by the
+ *     `WhiteboardShell` grid)
+ *   - No `useLayoutStore` visibility gate (the column is always visible
+ *     when the route is mounted)
  *
  * That isolation is owned by the `chromeless` prop on the underlying
  * `<ChatPanel>` component. By keeping one component with a chromeless
@@ -31,7 +31,7 @@ export function WhiteboardChatPanel({
 }: WhiteboardPanelProps): ReactElement {
   return (
     <div
-      data-testid={hostedInWhiteboard ? 'whiteboard-chat-panel': 'whiteboard-chat-column'}
+      data-testid={hostedInWhiteboard ? 'whiteboard-chat-panel' : 'whiteboard-chat-column'}
       style={{
         height: '100%',
         minHeight: 0,

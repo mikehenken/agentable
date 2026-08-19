@@ -9,7 +9,7 @@ export interface PanelDockPreviewState {
 }
 
 let activePreview: PanelDockPreviewState | null = null;
-const listeners = new Set<() => void>;
+const listeners = new Set<() => void>();
 
 export function getPanelDockPreview(): PanelDockPreviewState | null {
   return activePreview;

@@ -32,7 +32,7 @@ export function mapAiPersonaState(input: MapAiPersonaStateInput = {}): AiPersona
     case 'speaking':
       return 'speaking';
     case 'error':
-      return input.preferAsleepWhenIdle ? 'asleep': 'idle';
+      return input.preferAsleepWhenIdle ? 'asleep' : 'idle';
     case 'idle':
       break;
     default: {
@@ -42,7 +42,7 @@ export function mapAiPersonaState(input: MapAiPersonaStateInput = {}): AiPersona
   }
 
   if (input.isAwaitingReply) return 'thinking';
-  return input.preferAsleepWhenIdle ? 'asleep': 'idle';
+  return input.preferAsleepWhenIdle ? 'asleep' : 'idle';
 }
 
 /** Parse/normalize a config visual block; invalid payloads → null. */

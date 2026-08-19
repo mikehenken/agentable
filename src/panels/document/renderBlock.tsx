@@ -46,7 +46,7 @@ export function BlockRenderer(props: BlockRendererProps): React.ReactElement {
 
   switch (block.type) {
     case 'heading': {
-      const Tag = block.level === 1 ? 'h1': block.level === 2 ? 'h2': 'h3';
+      const Tag = block.level === 1 ? 'h1' : block.level === 2 ? 'h2' : 'h3';
       return (
         <Tag {...common} data-testid="doc-block-heading">
           {sanitizePlainText(block.text)}
@@ -75,7 +75,7 @@ export function BlockRenderer(props: BlockRendererProps): React.ReactElement {
             </li>
           ))}
         </ol>
-      ): (
+      ) : (
         <ul {...common} data-testid="doc-block-list">
           {block.items.map((itemBlocks, index) => (
             <li key={`item-${index}`}>
@@ -111,7 +111,7 @@ export function BlockRenderer(props: BlockRendererProps): React.ReactElement {
           <span data-testid="doc-image-asset">{sanitizeAssetIdForDisplay(block.assetId)}</span>
           {block.alt !== undefined ? (
             <figcaption>{sanitizePlainText(block.alt)}</figcaption>
-          ): null}
+          ) : null}
         </figure>
       );
     case 'callout':

@@ -1,5 +1,5 @@
 /**
- * Persistent open-canvas chrome indicator.
+ * Persistent open-canvas chrome indicator (D50, P12-T5).
  * Visible only when the resolved canvasPolicy preset is `open`.
  */
 import type { CSSProperties, ReactElement } from 'react';
@@ -34,7 +34,7 @@ const containerStyle: CSSProperties = {
 };
 
 export function OpenCanvasIndicator(): ReactElement | null {
-  const { canvasPolicy } = useCanvasConfig;
+  const { canvasPolicy } = useCanvasConfig();
 
   if (!isOpenCanvasPolicy(canvasPolicy)) {
     return null;

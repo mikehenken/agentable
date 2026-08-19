@@ -5,8 +5,20 @@
  * canvas exclusively through an engine handle, so nothing in this module
  * knows which engine implementation is mounted.
  */
-import type { EngineLifecycleHandle } from '../engine/types';
-import { emitAgUiStatePatch } from '../canvas/protocol/ag-ui';
+import { createAgentRuntime, type AgentRuntime } from '../agents/runtime';
+import { bindEngineCapabilities } from '../agents/engineBridge';
+import { createUndoReversalRuntime, type UndoReversalRuntime } from '../agents/reversal';
+import type { AppShellRegionId, EngineCapabilities, EngineLifecycleHandle } from '../engine/types';
+import { emitAgUiStatePatch } from '../protocol/ag-ui';
+import {
+  bindVoiceTelemetry,
+  createHostTelemetry,
+  registerEmbedTelemetryEmit,
+  type HostTelemetry,
+  type TelemetrySink,
+} from '../telemetry';
+import { setActiveApprovalController } from './approval/approvalController';
+import { setOperatorRegistrationRuntime } from '../agents/surface/operatorRegistrationBridge';
 import { createPanelRegistry, type PanelRegistry } from './registry';
 import type { ComposeGateConfig, ComposeGateEvaluation } from './composeGate';
 import { evaluateComposeGate } from './composeGate';
@@ -14,6 +26,7 @@ import {
   createPanelToolRuntime,
   registerHostActions,
   registerPanelTools,
+  createPanelToolsFromRegistry,
   type ToolDefinition,
 } from './tools';
 import { createDataLifecycle } from './renderer/dataLifecycle';
@@ -29,7 +42,7 @@ import { defaultCatalog } from './spec';
 
 /**
  * The engine contract now lives in src/engine (panel system spec section
- * 14). The host consumes the lifecycle slice; these re-exports keep
+ * 14, D37). The host consumes the lifecycle slice; these re-exports keep
  * the established public names for existing consumers, `EngineHandle`
  * here being the slice `createCanvasHost` requires rather than the full
  * SPI handle of the same name in src/engine.
@@ -41,6 +54,12 @@ export type { EngineLifecycleHandle as EngineHandle } from '../engine/types';
 export interface PanelOpenOptions {
   /** Host-defined scope the panel instance binds to. */
   scope?: PanelScope;
+  /** Named page-session slot for D44 embed placement (P9-T2). */
+  slot?: string;
+  /** App-shell region for DOM workspace placement (P11-T3). */
+  region?: AppShellRegionId;
+  tabGroup?: number;
+  order?: number;
   /** Typed chrome options, replacing the reserved `__*` data keys. */
   chrome?: PanelChromeOptions;
   /** Instance data, persisted with the panel container. JSON only. */
@@ -115,10 +134,18 @@ export interface CreateCanvasHostOptions {
    */
   catalog?: ReadonlyMap<string, CatalogEntry>;
   /**
-   * Port-order gate for agent `compose_panel`. When set and closed,
+   * Action ids (or `definitionId:actionId` keys) that skip HITL review
+   * for agent-triggered mutations. Destructive actions still require the
+   * confirm step (02 section 7, D14).
+   */
+  autoApprove?: readonly string[];
+  /**
+   * Port-order gate for agent `compose_panel` (D29). When set and closed,
    * the tool is omitted from declarations and calls return COMPOSE_GATE_CLOSED.
    */
   composeGate?: ComposeGateConfig;
+  /** Host-supplied telemetry sink (D55). Also register at runtime via `host.telemetry.registerSink`. */
+  telemetrySink?: TelemetrySink;
 }
 
 /**
@@ -147,9 +174,17 @@ export interface CanvasHost {
    * The resolved catalog instance in use.
    */
   catalog: ReadonlyMap<string, CatalogEntry>;
+  /** Model-agnostic agent runtime (`registerModelResolver`, sessions, D49). */
+  agents: AgentRuntime;
+  /** Host-supplied runtime telemetry sink boundary (`emit`, D55). */
+  telemetry: HostTelemetry;
   panels: CanvasHostPanels;
-  /** Data lifecycle + invalidate (02 section 8). */
+  /** Data lifecycle + invalidate (02 section 8, P1-T5). */
   data: CanvasHostData;
+  /** HITL approval queue for panel mutations (02 section 7). */
+  approvals: import('./approval/types').ApprovalController;
+  /** D53 undo/reversal ledger and stack undo for canvas-local ops. */
+  undo: UndoReversalRuntime;
   /** Resolves once the engine reports readiness, then stays resolved. */
   whenReady(): Promise<void>;
   /**
@@ -186,7 +221,8 @@ function emitDataInvalidatePatch(source: string, scope?: PanelScope): void {
   }
   emitAgUiStatePatch(
     [{ op: 'replace', path: `${AG_UI_DATA_INVALIDATE_PATH_PREFIX}${source}`, value }],
-    { source: 'host' });
+    { source: 'host' },
+  );
 }
 
 
@@ -197,18 +233,31 @@ function scopeKey(scope: PanelScope): string {
   return JSON.stringify([scope.contextId ?? null, scope.entityId ?? null]);
 }
 
+function readEngineCapabilities(engine: EngineLifecycleHandle): EngineCapabilities | null {
+  if (!('capabilities' in engine)) {
+    return null;
+  }
+  const candidate = (engine as { capabilities?: EngineCapabilities }).capabilities;
+  if (!candidate || typeof candidate.draw !== 'boolean') {
+    return null;
+  }
+  return candidate;
+}
+
 export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const { engine, persistence } = options;
+  const unbindEngineCapabilities = (() => {
+    const caps = readEngineCapabilities(engine);
+    return caps ? bindEngineCapabilities(caps) : null;
+  })();
   const catalog = options.catalog ?? defaultCatalog;
   const registry = createPanelRegistry(options.panels ?? []);
   let unregisterPanelTools: (() => void) | null = null;
   let panelToolRuntime: ReturnType<typeof createPanelToolRuntime> | null = null;
-  const composeGateEvaluation: ComposeGateEvaluation | undefined =
-    options.composeGate !== undefined
-      ? evaluateComposeGate(options.composeGate, registry)
-      : undefined;
+  let agents: AgentRuntime | null = null;
   const unregisterHostActions = options.hostActions?.length
-    ? registerHostActions(options.hostActions): null;
+    ? registerHostActions(options.hostActions)
+    : null;
   let disposed = false;
 
   const dataLifecycle: DataLifecycle | null =
@@ -216,7 +265,8 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
       ? createDataLifecycle({
           adapter: options.adapter,
           onInvalidate: emitDataInvalidatePatch,
-        }): null;
+        })
+      : null;
 
   const data: CanvasHostData = {
     lifecycle: dataLifecycle,
@@ -310,7 +360,12 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
+    unbindVoiceTelemetry();
+    unbindEmbedTelemetry();
+    unbindEngineCapabilities?.();
     panelToolRuntime?.dispose();
+    setActiveApprovalController(null);
+    setOperatorRegistrationRuntime(null);
     unregisterPanelTools?.();
     unregisterHostActions?.();
     dataLifecycle?.dispose();
@@ -323,7 +378,8 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
 
   const openPanel = async (
     id: string,
-    openOptions: PanelOpenOptions = {}): Promise<void> => {
+    openOptions: PanelOpenOptions = {},
+  ): Promise<void> => {
     if (!registry.has(id)) {
       throw new Error(`no panel registered for id "${id}"`);
     }
@@ -345,21 +401,62 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
     definitions: registry.definitions,
   };
 
-  if ((options.panels ?? []).length > 0) {
-    panelToolRuntime = createPanelToolRuntime(
-      { panels: hostPanels, catalog },
-      registry,
-      { composeGate: composeGateEvaluation },
-    );
-    unregisterPanelTools = registerPanelTools(registry, panelToolRuntime, {
+  const composeGateEvaluation: ComposeGateEvaluation | undefined =
+    options.composeGate !== undefined
+      ? evaluateComposeGate(options.composeGate, registry)
+      : undefined;
+
+  const runtimeRef: { current: ReturnType<typeof createPanelToolRuntime> | null } = {
+    current: null,
+  };
+
+  const telemetry: HostTelemetry = createHostTelemetry(options.telemetrySink);
+  const unbindVoiceTelemetry = bindVoiceTelemetry(telemetry.emit.bind(telemetry));
+  const unbindEmbedTelemetry = registerEmbedTelemetryEmit(telemetry.emit.bind(telemetry));
+
+  panelToolRuntime = createPanelToolRuntime(
+    { panels: hostPanels, catalog },
+    registry,
+    {
+      autoApprove: options.autoApprove,
       composeGate: composeGateEvaluation,
-    });
-  }
+      telemetryEmit: telemetry.emit.bind(telemetry),
+      undoReversal: createUndoReversalRuntime({
+        executeCompensatingAction: async (panelId, actionId, payload, actor) => {
+          const runtime = runtimeRef.current;
+          if (runtime === undefined || runtime === null) {
+            return { status: 'error', message: 'panel tool runtime not initialized' };
+          }
+          return runtime.runPanelAction(panelId, actionId, payload, { actor, forceHitl: true });
+        },
+      }),
+    },
+  );
+  runtimeRef.current = panelToolRuntime;
+
+  agents = createAgentRuntime({
+    activity: panelToolRuntime.undoReversal.activity,
+    tools: createPanelToolsFromRegistry(registry, panelToolRuntime, {
+      composeGate: composeGateEvaluation,
+    }),
+    resolvePanelDefinitionId: (panelId) => panelToolRuntime.resolveDefinitionId(panelId),
+    telemetryEmit: telemetry.emit.bind(telemetry),
+  });
+
+  setActiveApprovalController(panelToolRuntime.approvalController);
+  setOperatorRegistrationRuntime(agents!);
+  unregisterPanelTools = registerPanelTools(registry, panelToolRuntime, {
+    composeGate: composeGateEvaluation,
+  });
 
   return {
     catalog,
+    agents: agents!,
+    telemetry,
     panels: hostPanels,
     data,
+    approvals: panelToolRuntime.approvalController,
+    undo: panelToolRuntime.undoReversal,
     whenReady: () => ready,
     whenRestoreSettled,
     dispose,

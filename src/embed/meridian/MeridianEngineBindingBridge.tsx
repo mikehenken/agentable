@@ -4,18 +4,18 @@ import { useOptionalMeridianGalleryHost } from './MeridianGalleryHostContext';
 
 /** Binds the tldraw editor to the Meridian gallery engine handle once WhiteboardShell mounts. */
 export function MeridianEngineBindingBridge(): null {
-  const bundle = useOptionalMeridianGalleryHost;
+  const bundle = useOptionalMeridianGalleryHost();
 
   useEffect(() => {
     if (bundle === null) return;
 
     const { engine } = bundle;
-    if (engine.tryAttachBoundEditor) {
-      return ()=> undefined;
+    if (engine.tryAttachBoundEditor()) {
+      return () => undefined;
     }
 
     const observer = new MutationObserver(() => {
-      if (engine.tryAttachBoundEditor) {
+      if (engine.tryAttachBoundEditor()) {
         observer.disconnect();
       }
     });
@@ -24,9 +24,9 @@ export function MeridianEngineBindingBridge(): null {
 
     return () => {
       observer.disconnect();
-      const editor = getEditor;
+      const editor = getEditor();
       if (editor) {
-        engine.attachEditor(editor);
+        engine.attachEditor(editor)();
       }
     };
   }, [bundle]);

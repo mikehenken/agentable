@@ -1,5 +1,5 @@
 /**
- * Operator embed stub — no tldraw/panelShapeApi import ( iter-9).
+ * Operator embed stub — no tldraw/panelShapeApi import (P13-T7 iter-9).
  * Blurs the whiteboard host editor when the operator composer takes focus.
  */
 
@@ -16,7 +16,9 @@ export function editableTargetShouldCaptureKey(target: EventTarget | null): bool
         '[contenteditable=""]',
         '[contenteditable="true"]',
         '[contenteditable="plaintext-only"]',
-      ].join(', ')));
+      ].join(', '),
+    ),
+  );
 }
 
 interface WhiteboardBlurHost extends HTMLElement {

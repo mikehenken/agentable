@@ -34,11 +34,12 @@ export function usePanelStacking(editor: Editor | null): void {
 
           const prevPanelSet = new Set(panelShapeIds(editor, prevIds));
           const newlySelected = nextPanels.filter((id) => !prevPanelSet.has(id));
-          const toFront = newlySelected.length > 0 ? newlySelected: nextPanels;
+          const toFront = newlySelected.length > 0 ? newlySelected : nextPanels;
           editor.bringToFront(toFront);
         }
       },
-      { source: 'user', scope: 'document' });
+      { source: 'user', scope: 'document' },
+    );
 
     return unsubscribe;
   }, [editor]);

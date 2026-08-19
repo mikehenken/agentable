@@ -2,7 +2,7 @@ import type { TLUiAssetUrlOverrides } from 'tldraw';
 
 /**
  * Custom tldraw icon id for the bottom-toolbar voice tool.
- * tldraw's built-in sprite has no microphone audio glyph — unknown ids
+ * tldraw's built-in sprite has no microphone / audio glyph — unknown ids
  * fall back to `question-mark-circle` (looks like a Help button).
  */
 export const VOICE_TOOL_ICON_ID = 'microphone' as const;

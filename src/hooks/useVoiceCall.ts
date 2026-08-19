@@ -7,7 +7,7 @@
  *
  * Stable snapshots — `useSyncExternalStore` requires `getSnapshot` to return
  * a referentially-stable value when nothing changed. The kernel's
- * `voice.getSnapshot` is the single source of that stable reference; it
+ * `voice.getSnapshot()` is the single source of that stable reference; it
  * replaces the frozen object on every `_publish`. No external caching needed.
  */
 import { useSyncExternalStore } from 'react';
@@ -25,12 +25,12 @@ const EMPTY_SNAPSHOT: VoiceKernelSnapshot = {
 };
 
 function subscribe(cb: () => void): () => void {
-  const kernel = ensureVoiceKernel;
-  return kernel().voice.subscribe(() => cb);
+  const kernel = ensureVoiceKernel();
+  return kernel.voice.subscribe(() => cb());
 }
 
 function getSnapshot(): VoiceKernelSnapshot {
-  return ensureVoiceKernel().voice.getSnapshot;
+  return ensureVoiceKernel().voice.getSnapshot();
 }
 
 function getServerSnapshot(): VoiceKernelSnapshot {
@@ -55,7 +55,7 @@ export function defaultVoiceLabel(state: VoiceState, idleLabel = 'Talk'): string
     case 'error':
       return 'Try again';
     default: {
-       // Compile-time exhaustiveness check.
+      // Compile-time exhaustiveness check.
       const _exhaustive: never = state;
       return _exhaustive;
     }
@@ -67,7 +67,7 @@ export interface UseVoiceCallResult {
   state: VoiceState;
   /** Last published mic/output level, 0..1. Polled by canvas at ~60Hz. */
   level: number;
-  /** True when state is connecting listening speaking. */
+  /** True when state is connecting / listening / speaking. */
   isActive: boolean;
   /** Last transport-layer error message, if any. */
   errorMessage: string | undefined;
@@ -89,15 +89,15 @@ export interface UseVoiceCallResult {
 
 export function useVoiceCall(): UseVoiceCallResult {
   const snap = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const kernel = ensureVoiceKernel;
+  const kernel = ensureVoiceKernel();
   const isActive =
     snap.state === 'connecting' || snap.state === 'listening' || snap.state === 'speaking';
-   // The kernel's transport impl is registered by `useGeminiLive` on canvas
-   // mount. Until then, calling `start` hits the no-impl warn path. We
-   // surface that as `available: false` so consumers can disable their CTA.
-   // We can't introspect `impl` directly (it's closed-over), but a reliable
-   // proxy is whether a no-API-key error has fired (the canvas's
-   // useGeminiLive publishes that error before any user action).
+  // The kernel's transport impl is registered by `useGeminiLive` on canvas
+  // mount. Until then, calling `start()` hits the no-impl warn path. We
+  // surface that as `available: false` so consumers can disable their CTA.
+  // We can't introspect `impl` directly (it's closed-over), but a reliable
+  // proxy is whether a no-API-key error has fired (the canvas's
+  // useGeminiLive publishes that error before any user action).
   const available = snap.state !== 'error' || snap.errorMessage !== 'VITE_GEMINI_API_KEY is not set';
 
   return {
@@ -106,8 +106,8 @@ export function useVoiceCall(): UseVoiceCallResult {
     errorMessage: snap.errorMessage,
     isActive,
     available,
-    start: () => void kernel().voice.start,
-    stop: () => void kernel().voice.stop,
-    toggle: () => void kernel().voice.toggle,
+    start: () => void kernel.voice.start(),
+    stop: () => void kernel.voice.stop(),
+    toggle: () => void kernel.voice.toggle(),
   };
 }

@@ -119,3 +119,6 @@ export { DEFAULT_LOCALE, localeFallbackChain, resolveLocale } from './resolveLoc
 export type { LocaleResolutionInput } from './resolveLocale';
 export { bootstrapSessionLocale } from './bootstrapSessionLocale';
 export type { SessionLocaleBootstrapInput } from './bootstrapSessionLocale';
+export { ar } from './catalog/ar';
+export { es } from './catalog/es';
+export { isMessageKey, resolveCatalogString } from './resolveCatalogString';

@@ -45,7 +45,7 @@ export function JourneyPanel(_props: ReactPanelLoaderProps): ReactElement {
           >
             {step.done ? (
               <CheckCircle2 size={20} className="text-canvas-primary shrink-0 mt-0.5" />
-            ): (
+            ) : (
               <Circle size={20} className="text-canvas-faint shrink-0 mt-0.5" />
             )}
             <div className="min-w-0 flex-1">
@@ -60,8 +60,8 @@ export function JourneyPanel(_props: ReactPanelLoaderProps): ReactElement {
               >
                 <ArrowRight size={16} />
               </button>
-            ): null}
-            {index < STEPS.length - 1 ? null: null}
+            ) : null}
+            {index < STEPS.length - 1 ? null : null}
           </div>
         ))}
       </div>

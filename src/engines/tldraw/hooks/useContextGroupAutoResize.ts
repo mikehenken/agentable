@@ -18,7 +18,7 @@ function isPanelDragInProgress(editor: Editor): boolean {
 
 function resolveFitMode(editor: Editor, forceFinal: boolean): ContextGroupFitMode {
   if (forceFinal) return 'final';
-  return isPanelDragInProgress(editor) ? 'preview': 'final';
+  return isPanelDragInProgress(editor) ? 'preview' : 'final';
 }
 
 /**
@@ -103,7 +103,8 @@ export function useContextGroupAutoResize(editor: Editor | null): void {
         const panelIds = collectPanelShapeIdsFromStoreDiff(entry.changes);
         scheduleFit(panelIds);
       },
-      { source: 'user', scope: 'document' });
+      { source: 'user', scope: 'document' },
+    );
 
     const handlePointerUp = (): void => {
       const selectedIds = editor.getSelectedShapeIds();

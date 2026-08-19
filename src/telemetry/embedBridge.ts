@@ -1,5 +1,5 @@
 /**
- * Embed rate-limit telemetry bridge ( ).
+ * Embed rate-limit telemetry bridge (D55 / P15-T3).
  *
  * Embeds may emit before `createCanvasHost` exists; hosts wire
  * `registerEmbedTelemetryEmit(host.telemetry.emit)` at host construction.
@@ -44,6 +44,7 @@ export function emitEmbedRateLimitTelemetry(input: EmbedRateLimitTelemetryInput)
       limit: input.limit,
       windowMs: input.windowMs,
       anonKeyHint: input.anonKeyHint,
-      errorCodes: input.outcome === 'refused' ? ['RATE_LIMITED']: undefined,
-    }));
+      errorCodes: input.outcome === 'refused' ? ['RATE_LIMITED'] : undefined,
+    }),
+  );
 }

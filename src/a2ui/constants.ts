@@ -1,4 +1,4 @@
-/** Supported A2UI protocol version for ingestion ( ). */
+/** Supported A2UI protocol version for ingestion (D40 / P10-T1). */
 export const A2UI_PROTOCOL_VERSION = 'v1.0';
 
 /** Well-known basic catalog id from the A2UI v1.0 specification. */

@@ -103,11 +103,12 @@ function macrosPanel(): PanelDefinition {
 
 /** Three Tier 2 schema panels compiled deterministically from the builder. */
 export function createSupportInboxPanelDefinitions(): readonly PanelDefinition[] {
-  const panels = [inboxPanel, ticketDetailPanel, macrosPanel];
-  const ids = panels.map((panel) => panel().id);
+  const panels = [inboxPanel(), ticketDetailPanel(), macrosPanel()];
+  const ids = panels.map((panel) => panel.id);
   if (ids.join(',') !== SUPPORT_INBOX_PANEL_IDS.join(',')) {
     throw new Error(
-      `[support-inbox-pack] panel id drift: expected [${SUPPORT_INBOX_PANEL_IDS.join(', ')}], got [${ids.join(', ')}]`);
+      `[support-inbox-pack] panel id drift: expected [${SUPPORT_INBOX_PANEL_IDS.join(', ')}], got [${ids.join(', ')}]`,
+    );
   }
   return panels;
 }

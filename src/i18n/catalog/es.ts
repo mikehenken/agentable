@@ -1,11 +1,11 @@
 /**
- * Spanish locale pack. Ships with the career pack in P4; partial —
+ * Spanish locale pack (D59). Ships with the career pack in P4; partial —
  * missing keys fall back to English via the locale fallback chain.
  */
 import type { MessageCatalog } from './en';
 
 export const es = {
-   // --- Career pack panels ---
+  // --- Career pack panels (D59) ---
   'career.panels.openPositions.title': 'Posiciones abiertas',
   'career.panels.openPositions.subtitle': 'Vacantes actuales',
   'career.panels.applications.title': 'Mis solicitudes',
@@ -20,7 +20,7 @@ export const es = {
   'career.nav.resources': 'Recursos',
   'career.nav.growthPaths': 'Rutas de crecimiento',
 
-   // --- Panel chrome controls (embed RTL audit) ---
+  // --- Panel chrome controls (embed RTL audit) ---
   'chrome.panel.minimize': 'Minimizar panel',
   'chrome.panel.restore': 'Restaurar panel',
   'chrome.panel.close': 'Cerrar panel',

@@ -1,5 +1,5 @@
 /**
- * Gallery-13 embed entry — resizable chrome + demo header ( iter-7).
+ * Gallery-13 embed entry — resizable chrome + demo header (P13-T7 iter-7).
  */
 export { mountCanvasWideAgentChrome } from './mountCanvasWideAgentChrome';
 export { mountGalleryDemoHeader } from './mountGalleryDemoHeader';

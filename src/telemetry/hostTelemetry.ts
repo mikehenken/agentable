@@ -1,7 +1,7 @@
 /**
- * Host-facing telemetry facade (`host.telemetry`).
+ * Host-facing telemetry facade (`host.telemetry`, D55).
  *
- * Mirrors the model-resolver boundary: the framework emits structured
+ * Mirrors the model-resolver boundary (D49): the framework emits structured
  * events; the host registers a sink that routes them to its own stack.
  */
 import { redactTelemetryEvent } from './redactTelemetryEvent';

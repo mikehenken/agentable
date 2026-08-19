@@ -1,6 +1,6 @@
 import type { A2UIEnvelope } from '../../a2ui/types';
 
-/** Canvas-wide operator tool-scope preset ( 03 §13). Enforced at runtime in. */
+/** Canvas-wide operator tool-scope preset (D51 / 03 §13). Enforced at runtime in P13-T2. */
 export type OperatorMode = 'auto' | 'ask' | 'build' | 'draw';
 
 export type OperatorMessageRole = 'user' | 'assistant' | 'system';
@@ -45,7 +45,7 @@ export interface OperatorA2UIMessage {
   id: string;
   role: OperatorMessageRole;
   kind: 'a2ui';
-  /** Ordered A2UI v1.0 envelopes rendered through the ingestion adapter. */
+  /** Ordered A2UI v1.0 envelopes rendered through the D40 ingestion adapter. */
   envelopes: readonly A2UIEnvelope[];
   timestamp: string;
 }
@@ -84,7 +84,7 @@ export interface OperatorModeChangedDetail {
 export interface OperatorModelChangedDetail {
   modelAlias: string;
   previousModelAlias: string | null;
-  /** Alias that supplied the binding after resolution (may differ when fallback used). */
+  /** Alias that supplied the binding after D49 resolution (may differ when fallback used). */
   resolvedAlias?: string;
   fallbackUsed?: boolean;
 }
