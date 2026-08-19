@@ -52,7 +52,7 @@ describe('career fixture schema validation ', () => {
   });
 
   it('converts helios-panel-data.json shape into schema-valid dataset', () => {
-    const heliosPanelDataPath = path.resolve(__dirname, '../../../helios/data/helios-panel-data.json');
+    const heliosPanelDataPath = path.resolve(__dirname, '../fixtures/helios-panel-data.json');
     const raw = JSON.parse(readFileSync(heliosPanelDataPath, 'utf8'));
     const converted = convertHeliosPanelData(raw);
     const result = validateCareerDataset(converted);

@@ -1,0 +1,68 @@
+name: Deploy examples
+
+# Publishes the examples gallery to Cloudflare Pages.
+#
+# Runs on every push to main and after the release workflow tags a version, so
+# the hosted gallery always matches the released bundles. The build is ordered:
+# vite.embed.config.ts sets emptyOutDir and therefore must run first, otherwise
+# it wipes the sibling bundles that the examples load.
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows: ['Release package']
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-examples
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # For workflow_run, only publish when the release actually succeeded.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build embed bundles and assemble the gallery
+        run: npm run build:examples-site
+
+      - name: Verify the assembled site
+        # Fail before publishing if the artifact is missing its entry points.
+        run: |
+          test -f dist/site/index.html
+          test -d dist/site/examples
+          test -f dist/site/embed/agentable-canvas.js
+          test -f dist/site/embed/agentable-panel.js
+          test -f dist/site/embed/agentable-whiteboard.js
+          echo "examples: $(find dist/site/examples -mindepth 1 -maxdepth 1 -type d | wc -l)"
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy dist/site
+            --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'agentable-examples' }}
+            --branch=main

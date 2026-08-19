@@ -1,0 +1,29 @@
+{
+  "tenant": "helios",
+  "generatedFrom": "synthetic sample",
+  "scrapedAt": "2026-07-01T00:00:00.000Z",
+  "jobCount": 2,
+  "departments": ["Construction Management", "Solar Operations"],
+  "jobs": [
+    {
+      "id": 1,
+      "title": "Construction Manager",
+      "department": "Construction Management",
+      "track": "Professionals",
+      "location": "Dallas, TX",
+      "payRange": "$95,000 - $120,000",
+      "description": "Lead field crews across utility-scale solar builds.",
+      "skillMatches": ["Scheduling", "Safety"]
+    },
+    {
+      "id": 2,
+      "title": "Solar Installer",
+      "department": "Solar Operations",
+      "track": "Solar Hourly",
+      "location": "Remote - Texas",
+      "payRange": "$22 - $28 hr",
+      "description": "Install and commission rooftop photovoltaic arrays.",
+      "skillMatches": ["Electrical"]
+    }
+  ]
+}

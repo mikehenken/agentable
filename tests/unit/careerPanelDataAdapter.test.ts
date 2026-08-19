@@ -17,7 +17,7 @@ import panelDataMinimal from '../fixtures/panel-data-minimal.json';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ARCHIPELAGO_FIXTURE_PATH = path.resolve(
   __dirname,
-  '../../../archipelago/website/public/data/archipelago-career-fixture.json');
+  '../../packages/career-pack/src/fixtures/archipelago.json');
 
 describe('careerDatasetToPanelData', () => {
   it('converts career jobs into OpenPositionsPanel-compatible rows', () => {

@@ -48,7 +48,7 @@ export interface CareerChatBundle {
 }
 
 const HELIOS_AGENT_JOBS_GUIDE_SOURCE =
-  'archipelago/helios/data/career-fixture.json#agentJobsGuide (116-role scrape 2026-07-21)';
+  'career-fixture.json#agentJobsGuide';
 
 /** Helios starter chips with deterministic tool prefetch (parity with Mason playbook). */
 export const HELIOS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
