@@ -62,8 +62,7 @@ function readExportedDeclarations(): ExportedDeclaration[] {
     filePath,
     readFileSync(filePath, 'utf8'),
     ts.ScriptTarget.Latest,
-    true,
-  );
+    true);
   const found: ExportedDeclaration[] = [];
 
   for (const statement of source.statements) {
@@ -112,16 +111,13 @@ function readExportedDeclarations(): ExportedDeclaration[] {
 
 describe('panels/types exported surface', () => {
   it('exports exactly the expected contract names', () => {
-    const names = readExportedDeclarations()
-      .map((declaration) => declaration.name)
-      .sort();
+    const names = readExportedDeclarations().map((declaration) => declaration.name).sort();
     expect(names).toEqual(EXPECTED_EXPORTS);
   });
 
   it('remains a types-only module in source', () => {
     const runtimeExports = readExportedDeclarations().filter(
-      (declaration) => !declaration.typeOnly,
-    );
+      (declaration) => !declaration.typeOnly);
     expect(runtimeExports).toEqual([]);
   });
 

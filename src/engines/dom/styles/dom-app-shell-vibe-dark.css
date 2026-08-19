@@ -1,0 +1,78 @@
+/**
+ * DOM app-shell gallery dark theme — aligns with whiteboard embed examples
+ * (12-open-agent-canvas, 08-agent-presents) and panel chrome tokens.
+ */.dom-workspace-shell.app-shell--gallery-dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 96%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 96%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 96%;
+  --primary: 210 40% 96%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 96%;
+  --border: 217 33% 22%;
+  --input: 217 33% 22%;
+  --ring: 186 94% 32%;
+  background: #121212;
+  color: #ececec;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region {
+  min-width: 0;
+  background: #1a1a1a;
+  border-inline: 1px solid rgb(255 255 255 / 0.04);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-body {
+  min-height: 0;
+  padding: 0;
+  background: #121212;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-body--main {
+  background: #181818;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-body--sidebar {
+  background: #141414;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-tab-strip {
+  flex-shrink: 0;
+  gap: 2px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.09);
+  background: #1a1a1a;
+  padding-inline: 8px;
+  padding-block: 4px;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-tab-strip [role='tab'] {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #9ca3af;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-tab-strip [role='tab'][aria-selected='true'] {
+  color: #f8fafc;
+  background: rgb(255 255 255 / 0.08);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-tab-strip [role='tab']:hover {
+  color: #e2e8f0;
+  background: rgb(255 255 255 / 0.05);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-layout--split {
+  overflow: hidden;
+}.dom-workspace-shell.app-shell--gallery-dark [data-slot='resizable-panel'] {
+  min-width: 0;
+  overflow: hidden;
+}.dom-workspace-shell.app-shell--gallery-dark [data-slot='resizable-handle'] {
+  background: rgb(255 255 255 / 0.08);
+  width: 1px;
+  flex-shrink: 0;
+}.dom-workspace-shell.app-shell--gallery-dark [data-slot='resizable-handle'] > div {
+  border-color: rgb(255 255 255 / 0.16);
+  background: #1a1a1a;
+  color: #94a3b8;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-layout--compact.dom-region-layout__toolbar {
+  border-bottom: 1px solid rgb(255 255 255 / 0.09);
+}

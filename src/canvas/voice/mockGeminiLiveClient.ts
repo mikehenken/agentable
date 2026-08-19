@@ -96,10 +96,8 @@ export function createMockVoiceClient(
   // usually mean it), persona greeting fills in when scenario is silent.
   const baseScenario = options.scenario ?? DEFAULT_SCENARIO;
   const scenario: MockVoiceScenario = baseScenario.greeting
-    ? baseScenario
-    : persona.voiceGreeting
-      ? { ...baseScenario, greeting: persona.voiceGreeting }
-      : baseScenario;
+    ? baseScenario: persona.voiceGreeting
+      ? {...baseScenario, greeting: persona.voiceGreeting }: baseScenario;
 
   let active = false;
   let inputLevel = 0;

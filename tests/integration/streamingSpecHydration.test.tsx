@@ -80,8 +80,7 @@ function mountStreaming(): Harness {
   const adapter = fixedPlanAdapter();
   const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
   const view = render(
-    <StreamingSpecRenderer session={session} scope={SCOPE} lifecycle={lifecycle} />,
-  );
+    <StreamingSpecRenderer session={session} scope={SCOPE} lifecycle={lifecycle} />);
   return {
     session,
     chunks,

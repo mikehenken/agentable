@@ -22,4 +22,14 @@ export type {
   ValidateSpecSuccess,
 } from './types';
 export { validateSpec } from './validate';
+export {
+  COMPOSE_GATE_CLOSED_CODE,
+  FROZEN_REPAIR_ERROR_CODES,
+  PANEL_TOOL_REPAIR_ERROR_CODES,
+  SPEC_ERROR_CODES,
+  isFrozenRepairErrorCode,
+  type ComposeGateErrorCode,
+  type PanelToolRepairErrorCode,
+  type RepairErrorCode,
+} from './repairVocabulary';
 export { catalog as defaultCatalog } from '../catalog';

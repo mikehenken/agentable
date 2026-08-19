@@ -43,8 +43,7 @@ import { CURRENT_SPEC_VERSION } from './spec/constants';
 export interface SourcePayloads {}
 
 type PayloadOf<TSource extends string> = TSource extends keyof SourcePayloads
-  ? SourcePayloads[TSource & keyof SourcePayloads]
-  : unknown;
+  ? SourcePayloads[TSource & keyof SourcePayloads]: unknown;
 
 /**
  * Field paths for a source: the payload's own keys when the host has
@@ -379,8 +378,7 @@ function checkBind(ctx: CompileContext, blockId: string, bind: string): void {
   if (!ctx.sourceNames.has(bind)) {
     fail(
       'BUILDER_BIND_UNKNOWN',
-      `Block "${blockId}" binds unknown source "${bind}"; declare it in sources`,
-    );
+      `Block "${blockId}" binds unknown source "${bind}"; declare it in sources`);
   }
 }
 
@@ -388,8 +386,7 @@ function checkActionRef(ctx: CompileContext, blockId: string, ref: string): void
   if (!ctx.actionIds.has(ref)) {
     fail(
       'BUILDER_ACTION_UNKNOWN',
-      `Block "${blockId}" references undeclared action "${ref}"; declare it in actions`,
-    );
+      `Block "${blockId}" references undeclared action "${ref}"; declare it in actions`);
   }
 }
 
@@ -400,8 +397,7 @@ function checkShowIfOperand(ctx: CompileContext, blockId: string, operand: JsonV
     if (!SCOPE_KEYS.has(key)) {
       fail(
         'BUILDER_SHOWIF_SCOPE_KEY',
-        `Block "${blockId}" showIf references invalid scope key "${key}"; use contextId or entityId`,
-      );
+        `Block "${blockId}" showIf references invalid scope key "${key}"; use contextId or entityId`);
     }
     return;
   }
@@ -410,8 +406,7 @@ function checkShowIfOperand(ctx: CompileContext, blockId: string, operand: JsonV
     if (!ctx.stateKeys.has(key)) {
       fail(
         'BUILDER_SHOWIF_STATE_KEY',
-        `Block "${blockId}" showIf references undeclared state key "${key}"`,
-      );
+        `Block "${blockId}" showIf references undeclared state key "${key}"`);
     }
     return;
   }
@@ -420,8 +415,7 @@ function checkShowIfOperand(ctx: CompileContext, blockId: string, operand: JsonV
     if (!ctx.sourceNames.has(sourceName)) {
       fail(
         'BUILDER_SHOWIF_SOURCE_UNKNOWN',
-        `Block "${blockId}" showIf references undeclared source "${sourceName}"`,
-      );
+        `Block "${blockId}" showIf references undeclared source "${sourceName}"`);
     }
   }
 }
@@ -429,8 +423,7 @@ function checkShowIfOperand(ctx: CompileContext, blockId: string, operand: JsonV
 function compileShowIf(
   ctx: CompileContext,
   blockId: string,
-  showIf: ShowIfConfig | undefined,
-): SpecCondition | undefined {
+  showIf: ShowIfConfig | undefined): SpecCondition | undefined {
   if (showIf === undefined) return undefined;
   const [left, right] = showIf.$eq;
   checkShowIfOperand(ctx, blockId, left);
@@ -442,9 +435,7 @@ function compileBlockProps(ctx: CompileContext, blockId: string, block: RuntimeB
   switch (block.block) {
     case 'header': {
       return {
-        title: block.title as string,
-        ...(block.icon !== undefined ? { icon: block.icon } : {}),
-        ...(block.subtitle !== undefined ? { subtitle: block.subtitle } : {}),
+        title: block.title as string,...(block.icon !== undefined ? { icon: block.icon }: {}),...(block.subtitle !== undefined ? { subtitle: block.subtitle }: {}),
       };
     }
     case 'form': {
@@ -465,11 +456,8 @@ function compileBlockProps(ctx: CompileContext, blockId: string, block: RuntimeB
       for (const ref of row.rowActions ?? []) checkActionRef(ctx, blockId, ref);
       return {
         bind,
-        row: cloneJsonObject(row),
-        ...(block.search !== undefined ? { search: block.search } : {}),
-        ...(block.filters !== undefined
-          ? { filters: block.filters.map((filter) => cloneJsonObject(filter)) }
-          : {}),
+        row: cloneJsonObject(row),...(block.search !== undefined ? { search: block.search }: {}),...(block.filters !== undefined
+          ? { filters: block.filters.map((filter) => cloneJsonObject(filter)) }: {}),
       };
     }
     case 'table': {
@@ -478,23 +466,18 @@ function compileBlockProps(ctx: CompileContext, blockId: string, block: RuntimeB
       for (const ref of block.rowActions ?? []) checkActionRef(ctx, blockId, ref);
       return {
         bind,
-        columns: (block.columns ?? []).map((column) => cloneJsonObject(column)),
-        ...(block.rowActions !== undefined ? { rowActions: [...block.rowActions] } : {}),
+        columns: (block.columns ?? []).map((column) => cloneJsonObject(column)),...(block.rowActions !== undefined ? { rowActions: [...block.rowActions] }: {}),
       };
     }
     case 'badge': {
       if (block.bind !== undefined) checkBind(ctx, blockId, block.bind);
-      return {
-        ...(block.text !== undefined ? { text: block.text } : {}),
-        ...(block.bind !== undefined ? { bind: block.bind } : {}),
-        ...(block.tone !== undefined ? { tone: block.tone } : {}),
+      return {...(block.text !== undefined ? { text: block.text }: {}),...(block.bind !== undefined ? { bind: block.bind }: {}),...(block.tone !== undefined ? { tone: block.tone }: {}),
       };
     }
     case 'empty-state': {
       if (block.action !== undefined) checkActionRef(ctx, blockId, block.action);
       return {
-        message: block.message as string,
-        ...(block.action !== undefined ? { action: block.action } : {}),
+        message: block.message as string,...(block.action !== undefined ? { action: block.action }: {}),
       };
     }
     case 'filter-chips': {
@@ -504,8 +487,7 @@ function compileBlockProps(ctx: CompileContext, blockId: string, block: RuntimeB
     }
     case 'custom-slot': {
       return {
-        name: block.name as string,
-        ...(block.props !== undefined ? { props: cloneJsonObject(block.props) } : {}),
+        name: block.name as string,...(block.props !== undefined ? { props: cloneJsonObject(block.props) }: {}),
       };
     }
     default:
@@ -525,8 +507,7 @@ interface AssignedBlock {
 function assignBlockIds(
   ctx: CompileContext,
   blocks: readonly RuntimeBlock[],
-  prefix: string,
-): AssignedBlock[] {
+  prefix: string): AssignedBlock[] {
   return blocks.map((block) => ({ id: resolveBlockId(ctx, block, prefix), block }));
 }
 
@@ -554,8 +535,7 @@ function compileTabsBlock(ctx: CompileContext, blockId: string, block: RuntimeBl
   const node: SpecNode = {
     type: 'tabs',
     props: { tabs: tabEntries.map((entry) => ({ ...entry })) },
-    children: tabEntries.map((entry) => entry.child),
-    ...(showIf !== undefined ? { showIf } : {}),
+    children: tabEntries.map((entry) => entry.child),...(showIf !== undefined ? { showIf }: {}),
   };
   ctx.emitted.push([blockId, node]);
 
@@ -565,8 +545,7 @@ function compileTabsBlock(ctx: CompileContext, blockId: string, block: RuntimeBl
     const assigned = assignBlockIds(
       ctx,
       (tab.blocks ?? []) as readonly RuntimeBlock[],
-      entry.child,
-    );
+      entry.child);
     ctx.emitted.push([
       entry.child,
       { type: 'panel-body', children: assigned.map((item) => item.id) },
@@ -585,8 +564,7 @@ function emitBlocks(ctx: CompileContext, assigned: readonly AssignedBlock[]): vo
     const showIf = compileShowIf(ctx, id, block.showIf);
     const node: SpecNode = {
       type: NODE_TYPES[block.block] ?? block.block,
-      props: compileBlockProps(ctx, id, block),
-      ...(showIf !== undefined ? { showIf } : {}),
+      props: compileBlockProps(ctx, id, block),...(showIf !== undefined ? { showIf }: {}),
     };
     ctx.emitted.push([id, node]);
   }
@@ -602,8 +580,7 @@ function compileSpec(
   blocks: readonly RuntimeBlock[],
   sources: SourcesConfig | undefined,
   state: JsonObject | undefined,
-  actions: ActionsConfig | undefined,
-): PanelSpec {
+  actions: ActionsConfig | undefined): PanelSpec {
   const ctx: CompileContext = {
     sourceNames: new Set(Object.keys(sources ?? {})),
     stateKeys: new Set(Object.keys(state ?? {})),
@@ -626,15 +603,10 @@ function compileSpec(
   return {
     v: CURRENT_SPEC_VERSION,
     origin: 'host',
-    root: 'body',
-    ...(sources !== undefined
-      ? { sources: cloneJsonObject(sources) as unknown as Record<string, SpecSourceBinding> }
-      : {}),
-    ...(state !== undefined ? { state: cloneJsonObject(state) } : {}),
-    nodes,
-    ...(actions !== undefined
-      ? { actions: cloneJsonObject(actions) as unknown as Record<string, SpecAction> }
-      : {}),
+    root: 'body',...(sources !== undefined
+      ? { sources: cloneJsonObject(sources) as unknown as Record<string, SpecSourceBinding> }: {}),...(state !== undefined ? { state: cloneJsonObject(state) }: {}),
+    nodes,...(actions !== undefined
+      ? { actions: cloneJsonObject(actions) as unknown as Record<string, SpecAction> }: {}),
   };
 }
 
@@ -653,8 +625,7 @@ export function defineSchemaPanel<
     config.blocks as readonly RuntimeBlock[],
     config.sources,
     config.state,
-    config.actions,
-  );
+    config.actions);
   return { kind: 'spec', id: config.id, meta: config.meta, spec };
 }
 
@@ -672,15 +643,13 @@ export function defineStaticPanel<
     if ((action as SpecAction).kind === 'mutate') {
       fail(
         'BUILDER_STATIC_MUTATE_FORBIDDEN',
-        `Static panel "${config.id}" declares mutate action "${actionId}"; use defineSchemaPanel`,
-      );
+        `Static panel "${config.id}" declares mutate action "${actionId}"; use defineSchemaPanel`);
     }
   }
   const spec = compileSpec(
     config.blocks as readonly RuntimeBlock[],
     undefined,
     config.state,
-    config.actions as ActionsConfig | undefined,
-  );
+    config.actions as ActionsConfig | undefined);
   return { kind: 'spec', id: config.id, meta: config.meta, spec };
 }

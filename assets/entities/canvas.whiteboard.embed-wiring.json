@@ -1,0 +1,53 @@
+{
+  "entity_id": "canvas.whiteboard.embed-wiring",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard",
+  "name": "Whiteboard embed wiring",
+  "description": "Generic core seam for injecting host, navItems, and panel registries into Lit whiteboard embeds via explicit injection or registered pack providers — no core-to-pack imports.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "whiteboard",
+    "embed",
+    "pack-boundary",
+    "career-pack"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.whiteboard-embed-wiring::feature",
+    "source_files": [
+      "src/embed/whiteboard/resolveWhiteboardEmbedWiring.ts",
+      "src/embed/whiteboard/whiteboardWiringProviderRegistry.ts",
+      "src/embed/agentable-whiteboard.ts",
+      "src/embed/agentable-canvas.ts",
+      "packages/career-pack/src/whiteboard/registerCareerWhiteboard.ts",
+      "packages/career-pack/src/embed/careerWhiteboardEntry.ts",
+      "vite.embed-career-whiteboard.config.ts"
+    ],
+    "related_entities": [
+      "canvas.whiteboard.career-embed-bundle"
+    ],
+    "boundary_test": "tests/unit/careerPackBundleBoundary.test.ts",
+    "host_contract_test": "tests/unit/embedSingleTldrawBundleGuard.test.ts"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/whiteboard-embed-wiring.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "region": { "x": 0, "y": 0, "w": 800, "h": 560 },
+  "slots": [
+    {
+      "role": "header",
+      "label": "Header",
+      "geometry": { "x": 40, "y": 40, "w": 720, "h": 64 },
+      "placement": { "x": 40, "y": 40, "w": 720, "h": 64 },
+      "spec": {
+        "v": 1,
+        "origin": "agent",
+        "root": "body",
+        "nodes": {
+          "body": { "type": "panel-body", "children": ["hdr", "copy"] },
+          "hdr": { "type": "header", "props": { "title": "Site header" } },
+          "copy": { "type": "text", "props": { "text": "Header" } }
+        }
+      }
+    },
+    {
+      "role": "nav",
+      "label": "Navigation",
+      "geometry": { "x": 40, "y": 120, "w": 160, "h": 400 },
+      "placement": { "x": 40, "y": 120, "w": 160, "h": 400 },
+      "spec": {
+        "v": 1,
+        "origin": "agent",
+        "root": "body",
+        "nodes": {
+          "body": { "type": "panel-body", "children": ["hdr", "copy"] },
+          "hdr": { "type": "header", "props": { "title": "Navigation" } },
+          "copy": { "type": "text", "props": { "text": "Navigation" } }
+        }
+      }
+    },
+    {
+      "role": "main",
+      "label": "Hero",
+      "geometry": { "x": 220, "y": 120, "w": 540, "h": 400 },
+      "placement": { "x": 220, "y": 120, "w": 540, "h": 400 },
+      "spec": {
+        "v": 1,
+        "origin": "agent",
+        "root": "body",
+        "nodes": {
+          "body": { "type": "panel-body", "children": ["hdr", "copy"] },
+          "hdr": { "type": "header", "props": { "title": "Hero section" } },
+          "copy": { "type": "text", "props": { "text": "Hero" } }
+        }
+      }
+    }
+  ]
+}

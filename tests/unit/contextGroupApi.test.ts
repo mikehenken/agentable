@@ -17,8 +17,7 @@ import {
 
 vi.mock('tldraw', async (importOriginal) => {
   const actual = await importOriginal<typeof import('tldraw')>();
-  return {
-    ...actual,
+  return {...actual,
     fitFrameToContent: vi.fn(),
   };
 });
@@ -68,9 +67,7 @@ function makeStubEditor(): StubEditor {
     updateShape: vi.fn((patch: StubFrame & { id: string }) => {
       const existing = frames.get(patch.id);
       if (!existing) return;
-      frames.set(patch.id, {
-        ...existing,
-        ...patch,
+      frames.set(patch.id, {...existing,...patch,
         props: { ...existing.props, ...patch.props },
       });
     }),
@@ -85,12 +82,8 @@ function makeStubEditor(): StubEditor {
     setCurrentTool: vi.fn(),
     groupShapes: vi.fn(),
     getSortedChildIdsForParent: vi.fn((parentId: string) => {
-      const childPanels = [...panels.values()]
-        .filter((p) => p.parentId === parentId)
-        .map((p) => p.id);
-      const childFrames = [...frames.values()]
-        .filter((f) => f.parentId === parentId)
-        .map((f) => f.id);
+      const childPanels = [...panels.values()].filter((p) => p.parentId === parentId).map((p) => p.id);
+      const childFrames = [...frames.values()].filter((f) => f.parentId === parentId).map((f) => f.id);
       return [...childPanels, ...childFrames];
     }),
   };
@@ -146,8 +139,7 @@ describe('resolveSiteIdFromPanelData', () => {
 describe('contextGroupFrameId', () => {
   it('builds stable frame ids', () => {
     expect(contextGroupFrameId({ kind: 'site', id: 'site-1' })).toBe(
-      createShapeId('context:site:site-1'),
-    );
+      createShapeId('context:site:site-1'));
   });
 });
 
@@ -158,20 +150,17 @@ describe('assignPanelsToSiteGroup', () => {
     const frameId = contextGroupFrameId({ kind: 'site', id: 'site-1' });
 
     expect(
-      assignPanelsToSiteGroup(editor as never, ['chat', 'project-brief'], 'site-1'),
-    ).toBe(true);
+      assignPanelsToSiteGroup(editor as never, ['chat', 'project-brief'], 'site-1')).toBe(true);
 
     expect(editor.createShape).toHaveBeenCalledWith(
       expect.objectContaining({
         id: frameId,
         type: 'frame',
         props: expect.objectContaining({ name: expect.stringContaining('Site') }),
-      }),
-    );
+      }));
     expect(editor.reparentShapes).toHaveBeenCalledWith(
       ['shape:panel:chat', 'shape:panel:project-brief'],
-      frameId,
-    );
+      frameId);
   });
 
   it('nests site frame under agency frame when agencyId provided', () => {
@@ -184,8 +173,7 @@ describe('assignPanelsToSiteGroup', () => {
     const agencyFrameId = contextGroupFrameId({ kind: 'agency', id: 'agency-99' });
     const siteFrameId = contextGroupFrameId({ kind: 'site', id: 'site-1' });
     expect(editor.createShape).toHaveBeenCalledWith(
-      expect.objectContaining({ id: agencyFrameId, type: 'frame' }),
-    );
+      expect.objectContaining({ id: agencyFrameId, type: 'frame' }));
     expect(editor.reparentShapes).toHaveBeenCalledWith([siteFrameId], agencyFrameId);
   });
 });

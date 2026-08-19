@@ -46,7 +46,7 @@ Same custom-element API once loaded.
 
 ---
 
-## Mode 2 — npm-style install from GitHub (React / Vite / Webpack hosts)
+## Mode 2 — npm-style install from GitHub (React Vite Webpack hosts)
 
 For React projects that want to import the canvas as a library and use
 typed React components instead of the web-component wrapper.
@@ -114,7 +114,7 @@ import 'agentable-canvas/embed';   // Always pre-built
 
 ---
 
-## Mode 3 — Git submodule (monorepo / vendored)
+## Mode 3 — Git submodule (monorepo vendored)
 
 For organizations that want to fork or pin a specific commit and ship it
 inside their monorepo:

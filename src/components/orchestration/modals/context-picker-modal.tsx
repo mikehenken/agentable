@@ -30,8 +30,7 @@ export function flattenArtifacts(workspaces: Workspace[], activeRunId: string): 
     c.projects.forEach((p) => {
       p.runs.forEach((r) => {
         (r.artifacts || []).forEach((a) => {
-          rows.push({
-            ...a,
+          rows.push({...a,
             clientId: c.id,
             clientName: c.name,
             clientTag: c.tag,
@@ -245,12 +244,9 @@ export const ContextPickerModal: React.FC<ContextPickerModalProps> = ({
         {Object.keys(grouped).length === 0 && (
           <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--fg-faint)", fontSize: 12.5 }}>
             {loading
-              ? "Loading artifacts…"
-              : query
-                ? "No artifacts match."
-                : scopeRunIds.length === 0
-                  ? "No runs in scope yet."
-                  : "No artifacts in this scope yet."}
+              ? "Loading artifacts…": query
+                ? "No artifacts match.": scopeRunIds.length === 0
+                  ? "No runs in scope yet.": "No artifacts in this scope yet."}
           </div>
         )}
         {Object.entries(grouped).map(([groupLabel, items]) => (

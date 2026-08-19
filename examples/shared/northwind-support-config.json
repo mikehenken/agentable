@@ -1,0 +1,25 @@
+{
+  "tenant": "northwind-support",
+  "locale": "en",
+  "primaryColor": "#2563EB",
+  "welcomeMessage": "Northwind Support Desk — triage tickets with Casey, your concierge.",
+  "persona": {
+    "assistantName": "Casey",
+    "tenantTitle": "Northwind Support Desk",
+    "systemPrompt": "You are Casey, the Northwind Support concierge. Help agents triage fictional SaaS tickets only.",
+    "voiceGreeting": "",
+    "starterPrompts": [
+      { "emoji": "📥", "label": "Open queue", "text": "Show open tickets waiting on us." },
+      { "emoji": "⚡", "label": "Urgent", "text": "Find urgent tickets from today." }
+    ]
+  },
+  "adapter": {
+    "kind": "static",
+    "dataUrl": "/examples/shared/northwind-support-data.json"
+  },
+  "panels": [
+    { "id": "inbox", "kind": "spec" },
+    { "id": "ticket-detail", "kind": "spec" },
+    { "id": "macros", "kind": "spec" }
+  ]
+}

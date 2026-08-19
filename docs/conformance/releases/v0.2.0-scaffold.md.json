@@ -1,0 +1,17 @@
+{
+  "packageVersion": "0.2.0",
+  "generatedAtIso": "2026-07-21T18:39:03.479Z",
+  "enginePassed": true,
+  "engineTotals": {
+    "passed": 32,
+    "failed": 0,
+    "total": 32
+  },
+  "a11yPassed": true,
+  "a11yTotals": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7
+  },
+  "allPassed": true
+}

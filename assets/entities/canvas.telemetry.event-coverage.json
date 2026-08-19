@@ -1,0 +1,53 @@
+{
+  "entity_id": "canvas.telemetry.event-coverage",
+  "entity_type": "feature",
+  "parent_id": "canvas.telemetry.sink-boundary",
+  "name": "Telemetry event coverage with frozen error codes",
+  "description": "Structured runtime telemetry across compose, HITL, tool latency/error, voice session, and costClass spend with snapshot-tested frozen error codes.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "telemetry",
+    "observability",
+    "host",
+    "compose",
+    "hitl",
+    "tool",
+    "voice",
+    "cost"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.telemetry-event-coverage::feature",
+    "source_files": [
+      "src/telemetry/types.ts",
+      "src/telemetry/frozenErrorCodes.ts",
+      "src/telemetry/extractToolErrorCodes.ts",
+      "src/telemetry/emit.ts",
+      "src/telemetry/voiceBridge.ts",
+      "src/telemetry/budgetBridge.ts",
+      "src/agents/toolExecutor.ts",
+      "src/agents/runtime.ts",
+      "src/panels/panelToolRuntime.ts",
+      "src/panels/host.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

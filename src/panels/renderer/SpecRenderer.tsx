@@ -83,8 +83,7 @@ interface NamedSourceRef {
 function useNodeSources(
   refs: readonly NamedSourceRef[],
   scope: PanelScope,
-  lifecycle: DataLifecycle,
-): React.RefObject<ReadonlyMap<string, SourceBindingHandle>> {
+  lifecycle: DataLifecycle): React.RefObject<ReadonlyMap<string, SourceBindingHandle>> {
   const handlesRef = useRef<ReadonlyMap<string, SourceBindingHandle>>(new Map());
 
   const subscribe = useCallback(
@@ -104,13 +103,11 @@ function useNodeSources(
         handlesRef.current = new Map();
       };
     },
-    [refs, scope, lifecycle],
-  );
+    [refs, scope, lifecycle]);
 
   const getVersionKey = useCallback(
     () => refs.map((entry) => lifecycle.getVersion(entry.ref, scope)).join('|'),
-    [refs, scope, lifecycle],
-  );
+    [refs, scope, lifecycle]);
 
   useSyncExternalStore(subscribe, getVersionKey);
   return handlesRef;
@@ -126,8 +123,7 @@ function isEmptyData(data: unknown): boolean {
 function deriveNodeState(
   snapshot: SourceSnapshot | null,
   saving: boolean,
-  selfDirty: boolean,
-): SpecNodeContextValue['state'] {
+  selfDirty: boolean): SpecNodeContextValue['state'] {
   if (saving) return 'saving';
   if (snapshot !== null) {
     if (snapshot.status === 'idle' || snapshot.status === 'loading') return 'loading';
@@ -166,8 +162,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
   const bindName = useMemo(() => {
     const candidate = node?.props?.bind;
     return typeof candidate === 'string' && spec.sources?.[candidate] !== undefined
-      ? candidate
-      : null;
+      ? candidate: null;
   }, [node, spec.sources]);
 
   const namedRefs = useMemo<readonly NamedSourceRef[]>(() => {
@@ -194,8 +189,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
       const entry = namedRefs.find((candidate) => candidate.name === name);
       return entry === undefined ? null : lifecycle.peek(entry.ref, scope);
     },
-    [namedRefs, lifecycle, scope],
-  );
+    [namedRefs, lifecycle, scope]);
 
   const snapshot = bindName !== null ? snapshotFor(bindName) : null;
 
@@ -206,8 +200,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
         handlesRef.current.get(bindName)?.setDirty(ownerId, dirty);
       }
     },
-    [bindName, handlesRef, ownerId],
-  );
+    [bindName, handlesRef, ownerId]);
 
   const runMutation = useCallback(
     async (action: DeclaredAction, payload?: Record<string, unknown>) => {
@@ -232,8 +225,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
         setMutationError(result.error);
       }
     },
-    [lifecycle, scope, setDirty, bindName, handlesRef, spec.sources],
-  );
+    [lifecycle, scope, setDirty, bindName, handlesRef, spec.sources]);
 
   const dispatch = useCallback(
     (actionRef: string, payload?: Record<string, unknown>) => {
@@ -257,8 +249,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
           break;
       }
     },
-    [spec.actions, runMutation, renderer],
-  );
+    [spec.actions, runMutation, renderer]);
 
   const state = deriveNodeState(snapshot, saving, selfDirty);
 
@@ -271,8 +262,7 @@ export function SpecNodeView({ nodeId }: { nodeId: string }): React.ReactElement
       setDirty,
       state,
     }),
-    [scope, bindName, snapshot, dispatch, selfDirty, setDirty, state],
-  );
+    [scope, bindName, snapshot, dispatch, selfDirty, setDirty, state]);
 
   if (node === undefined) return null;
 
@@ -365,8 +355,7 @@ export function SpecRenderer(props: SpecRendererProps): React.ReactElement {
       onOpenPanel,
       onPrompt,
     }),
-    [spec, scope, catalog, lifecycle, onHostAction, onOpenPanel, onPrompt],
-  );
+    [spec, scope, catalog, lifecycle, onHostAction, onOpenPanel, onPrompt]);
 
   // D42 layout contract: the renderer root carries the resolved locale's
   // text direction, so the CSS logical properties used by chrome and

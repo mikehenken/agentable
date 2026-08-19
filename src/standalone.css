@@ -15,10 +15,7 @@
  * would duplicate it. Plain top-level CSS rules instead; they get
  * source-order specificity which is exactly what we want for these
  * standalone overrides.
- */
-
-/* Hide scrollbars (standalone canvas is fullscreen — scrollbars are noise). */
-:where(*) {
+ ** Hide scrollbars (standalone canvas is fullscreen — scrollbars are noise). */:where(*) {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -27,8 +24,7 @@
   display: none;
 }
 
-/* Cursor defaults for the standalone shell. */
-:where(*) {
+/* Cursor defaults for the standalone shell. */:where(*) {
   cursor: default;
 }
 

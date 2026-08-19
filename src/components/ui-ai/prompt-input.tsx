@@ -68,8 +68,7 @@ export const PromptInput: React.FC<PromptInputProps> = ({
         flexDirection: "column",
         gap: 8,
         boxShadow: focused
-          ? "0 0 0 3px color-mix(in srgb, var(--vibe-accent, #ff6b57) 18%, transparent)"
-          : "none",
+          ? "0 0 0 3px color-mix(in srgb, var(--vibe-accent, #ff6b57) 18%, transparent)": "none",
         transition: "border-color .15s ease, box-shadow .15s ease",
       }}
     >

@@ -48,8 +48,7 @@ function maxHeightForPanel(panelId: string): number {
   const { h } = gridSpanToSize(
     { columns: 12, rowHeight: GRID_ROW_HEIGHT, gutter: GRID_GUTTER, colWidth: 80 },
     span,
-    false,
-  );
+    false);
   return h + HEIGHT_TOLERANCE_PX;
 }
 
@@ -61,8 +60,7 @@ function panelRectFromEditor(editor: Editor, shapeId: TLShapeId): LayoutRect | n
 
 function collectSiteContextPanels(
   editor: Editor,
-  frameId: TLShapeId,
-): SiteContextPanelSnapshot[] {
+  frameId: TLShapeId): SiteContextPanelSnapshot[] {
   const panels: SiteContextPanelSnapshot[] = [];
   for (const childId of editor.getSortedChildIdsForParent(frameId)) {
     const shape = editor.getShape(childId);
@@ -98,8 +96,7 @@ export function isSiteContextLayoutInvalid(panels: SiteContextPanelSnapshot[]): 
 }
 
 function layoutOptionsFromPanels(
-  panels: SiteContextPanelSnapshot[],
-): {
+  panels: SiteContextPanelSnapshot[]): {
   includeChat: boolean;
   includeBrief: boolean;
   includePreview: boolean;
@@ -118,8 +115,7 @@ function applyPlacements(
   editor: Editor,
   frameId: TLShapeId,
   panels: SiteContextPanelSnapshot[],
-  placements: SiteContextPanelPlacement[],
-): void {
+  placements: SiteContextPanelPlacement[]): void {
   const byPanelId = new Map(placements.map((p) => [p.panelId, p]));
   const frame = editor.getShape(frameId);
   for (const panel of panels) {
@@ -130,15 +126,13 @@ function applyPlacements(
     // into the frame's local space before writing shape x/y.
     const local =
       frame && existing?.parentId === frameId
-        ? editor.getPointInShapeSpace(frame, { x: target.x, y: target.y })
-        : { x: target.x, y: target.y };
+        ? editor.getPointInShapeSpace(frame, { x: target.x, y: target.y }): { x: target.x, y: target.y };
     editor.updateShape({
       id: panel.shapeId,
       type: 'panel',
       x: local.x,
       y: local.y,
-      props: {
-        ...(existing?.props as Record<string, unknown>),
+      props: {...(existing?.props as Record<string, unknown>),
         w: target.w,
         h: target.h,
       },
@@ -152,8 +146,7 @@ function applyPlacements(
  */
 export function repairSiteContextFrameLayout(
   editor: Editor,
-  frameId: TLShapeId,
-): boolean {
+  frameId: TLShapeId): boolean {
   const panels = collectSiteContextPanels(editor, frameId);
   if (panels.length === 0 || !isSiteContextLayoutInvalid(panels)) {
     return false;
@@ -172,8 +165,7 @@ export function repairSiteContextFrameLayout(
 
   const placements = computeInitialSiteContextLayout(
     anchor,
-    layoutOptionsFromPanels(panels),
-  );
+    layoutOptionsFromPanels(panels));
 
   applyPlacements(editor, frameId, panels, placements);
   fitContextGroupFrameToContent(editor, frameId, { mode: 'final' });

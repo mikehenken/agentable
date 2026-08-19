@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03 — Multi-surface dashboard · Archipelago Resorts</title>
+    <link rel="stylesheet" href="/embed/agentable-panel.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #0f172a;
+        color: #f8fafc;
+        min-height: 100vh;
+      }.dashboard {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        grid-template-rows: auto 1fr auto;
+        gap: 1rem;
+        padding: 1rem;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+      header {
+        grid-column: 1 -1;
+      }.panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      [data-agentable-panel],
+      [data-agentable-slot],
+      agentable-panel,
+      agent-status-pill {
+        border: 1px solid #334155;
+        border-radius: 10px;
+        background: #1e293b;
+        min-height: 200px;
+      }
+      agentable-panel {
+        display: block;
+        min-height: 280px;
+      }.sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }.status-row {
+        grid-column: 1 -1;
+        display: flex;
+        justify-content: flex-end;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <header>
+        <h1 style="margin: 0; font-size: 1.25rem">Operations dashboard</h1>
+        <p style="margin: 0.25rem 0 0; color: #94a3b8; font-size: 0.9rem">
+          Chat dock + two panels + status widget on one shared session.
+        </p>
+      </header>
+      <section class="panels">
+        <div
+          data-agentable-panel="open-positions"
+          data-config-url="/examples/shared/archipelago-panel-config.json"
+          data-primary-color="#0E7490"
+          data-skip-react-mount
+        ></div>
+        <div
+          data-agentable-panel="growth-paths"
+          data-config-url="/examples/shared/archipelago-panel-config.json"
+          data-primary-color="#0E7490"
+          data-skip-react-mount
+        ></div>
+      </section>
+      <aside class="sidebar">
+        <section data-agentable-slot="sidebar"></section>
+      </aside>
+      <div class="status-row">
+        <agent-status-pill tenant="archipelago-resorts"></agent-status-pill>
+      </div>
+    </div>
+    <script type="module" src="/embed/agent-status-pill.js"></script>
+    <script type="module" src="/embed/agentable-panel.js"></script>
+    <script type="module">
+      window.__galleryExample = '03-multi-surface-dashboard';
+      Promise.all([
+        customElements.whenDefined('agentable-panel'),
+        customElements.whenDefined('agent-status-pill'),
+      ]).then( => {
+        const mounted = document.querySelectorAll('[data-agentable-mounted]').length;
+        window.__galleryReady = {
+          example: '03-multi-surface-dashboard',
+          ok: mounted >= 2,
+          mountedPanels: mounted,
+        };
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "entity_id": "canvas.panels.compose-eval-harness",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "Compose eval harness",
+  "description": "Deterministic compose_panel eval harness with seeded adapter, fixed clock, mock model stubs, per-model metrics, and CI regression gate scaffold.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "eval",
+    "compose",
+    "metrics",
+    "regression",
+    "testing"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.compose-eval-harness::feature",
+    "source_files": [
+      "tests/eval/compose/fixedClock.ts",
+      "tests/eval/compose/seededRandom.ts",
+      "tests/eval/compose/seededAdapter.ts",
+      "tests/eval/compose/specFixtures.ts",
+      "tests/eval/compose/mockModelProvider.ts",
+      "tests/eval/compose/metrics.ts",
+      "tests/eval/compose/resultsTable.ts",
+      "tests/eval/compose/regressionGate.ts",
+      "tests/eval/compose/harness.ts",
+      "tests/eval/compose/fixtures/compose-eval-suite.json",
+      "tests/unit/composeEvalHarness.test.ts",
+      "scripts/run-compose-eval.mjs",
+      "src/panels/panelToolRuntime.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": true
+  }
+}

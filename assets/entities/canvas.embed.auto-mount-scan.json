@@ -1,0 +1,41 @@
+{
+  "entity_id": "canvas.embed.auto-mount-scan",
+  "entity_type": "feature",
+  "parent_id": "canvas.embed",
+  "name": "AutoMountScan",
+  "description": "Embed script auto-scan for `[data-agentable-panel]` and `[data-agentable-slot]` placeholders — one script tag, zero authored JS.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "panel",
+    "auto-mount",
+    "page-session",
+    "slots"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.auto-mount-scan::feature",
+    "source_file": "src/embed/autoMountScan.ts",
+    "bootstrap_entry": "src/embed/agentable-panel-bootstrap.ts",
+    "export": "./embed/panel"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

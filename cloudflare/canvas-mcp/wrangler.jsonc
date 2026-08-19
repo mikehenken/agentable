@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "agentable-canvas-mcp",
+  "account_id": "dd84ae290b8a011725410e223c0ea928",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "dev": {
+    "port": 8790
+  },
+  "vars": {
+    "MCP_OAUTH_ISSUER": "https://agentable-canvas-mcp-dev.workers.dev"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CANVAS_MCP_OAUTH_KV",
+      "id": "CANVAS_MCP_OAUTH_KV_PLACEHOLDER",
+      "preview_id": "CANVAS_MCP_OAUTH_KV_PREVIEW_PLACEHOLDER"
+    }
+  ]
+}

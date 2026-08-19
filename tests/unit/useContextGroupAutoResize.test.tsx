@@ -48,8 +48,7 @@ describe('useContextGroupAutoResize', () => {
       vi.fn((cb: FrameRequestCallback) => {
         cb(0);
         return 1;
-      }),
-    );
+      }));
     vi.stubGlobal('cancelAnimationFrame', vi.fn());
   });
 
@@ -83,8 +82,7 @@ describe('useContextGroupAutoResize', () => {
     const stub = makeStubEditor();
     stub.getSelectedShapeIds.mockReturnValue([panelId]);
     stub.getShape.mockImplementation((id: string) =>
-      id === panelId ? { id, type: 'panel', props: { data: {} } } : undefined,
-    );
+      id === panelId ? { id, type: 'panel', props: { data: {} } }: undefined);
 
     const editor = stub as unknown as Editor;
     renderHook(() => useContextGroupAutoResize(editor));

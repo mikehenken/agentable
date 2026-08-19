@@ -98,9 +98,7 @@ function makeStubEditor(): StubEditor {
     updateShape: vi.fn((patch: Partial<StubShape> & { id: string }) => {
       const existing = shapes.get(patch.id);
       if (!existing) return;
-      shapes.set(patch.id, {
-        ...existing,
-        ...patch,
+      shapes.set(patch.id, {...existing,...patch,
         props: { ...existing.props, ...(patch.props ?? {}) },
       } as StubShape);
     }),
@@ -146,8 +144,7 @@ function asEditor(stub: StubEditor): Editor {
 function panelShape(
   panelId: string,
   rect: { x: number; y: number; w: number; h: number },
-  data: Record<string, unknown> = {},
-): StubShape {
+  data: Record<string, unknown> = {}): StubShape {
   return {
     id: `shape:panel:${panelId}`,
     typeName: 'shape',
@@ -343,8 +340,7 @@ describe('camera and viewport', () => {
     engine.setCamera({ x: 1, y: 2, zoom: 0.5 }, { animate: true });
     expect(stub.setCamera).toHaveBeenLastCalledWith(
       { x: 1, y: 2, z: 0.5 },
-      { animation: { duration: 350 } },
-    );
+      { animation: { duration: 350 } });
   });
 
   it('throws on camera reads without an attached editor', () => {
@@ -393,8 +389,7 @@ describe('camera and viewport', () => {
     engine.zoomTo({ x: 0, y: 0, w: 400, h: 300 }, { inset: 32 });
     expect(stub.zoomToBounds).toHaveBeenCalledWith(
       { x: 0, y: 0, w: 400, h: 300 },
-      { inset: 32, animation: { duration: 350 } },
-    );
+      { inset: 32, animation: { duration: 350 } });
   });
 
   it('reports viewport info with per-panel visibility ratios', () => {

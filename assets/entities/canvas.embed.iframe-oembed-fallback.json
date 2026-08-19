@@ -1,0 +1,59 @@
+{
+  "entity_id": "canvas.embed.iframe-oembed-fallback",
+  "entity_type": "feature",
+  "parent_id": "canvas.embed",
+  "name": "IframeOEmbedFallback",
+  "description": "Sandboxed iframe embed host + oEmbed discovery/response + typed postMessage bridge for script-stripping CMS hosts.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "iframe",
+    "oembed",
+    "postmessage",
+    "panel",
+    "cms"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.iframe-oembed-fallback::feature",
+    "source_file": "src/embed/iframe-oembed/index.ts",
+    "iframe_host": "src/embed/iframe/iframeHostBootstrap.ts",
+    "iframe_host_html": "dist/embed/iframe-host.html",
+    "parent_element": "src/embed/agentable-iframe-embed.ts",
+    "export": "./embed/iframe-oembed"
+  },
+  "routes": [
+    {
+      "path": "/embed/iframe-host.html",
+      "methods": [
+        "GET"
+      ],
+      "description": "Sandboxed iframe host page for panel embed surfaces"
+    },
+    {
+      "path": "/oembed",
+      "methods": [
+        "GET"
+      ],
+      "description": "oEmbed discovery endpoint (host serves via createOEmbedHttpHandler)"
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

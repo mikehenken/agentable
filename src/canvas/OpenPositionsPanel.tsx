@@ -334,8 +334,7 @@ export function OpenPositionsPanel({
         onSave={ctx.onSave}
       />
     ),
-    [],
-  );
+    []);
   const renderDetail = useCallback(
     (job: Job, ctx: { saved: boolean; onBack: () => void; onSave: () => void }) => (
       <JobDetailView
@@ -345,13 +344,11 @@ export function OpenPositionsPanel({
         onSave={ctx.onSave}
       />
     ),
-    [],
-  );
+    []);
   const getTitle = useCallback(
     ({ count, selected }: { count: number; selected: Job | null }) =>
       selected ? selected.title : `Open Positions · ${count}`,
-    [],
-  );
+    []);
 
   // Agent-driven controlled state. We lift selectedId / query / filterValues
   // / savedIds out of <ListPanel> so the panelIntentStore can pre-seed them
@@ -383,8 +380,7 @@ export function OpenPositionsPanel({
       next.selected = intent.selectedJobId;
     } else if (typeof intent.selectedJobTitle === 'string' && intent.selectedJobTitle.trim()) {
       const match = jobs.find((j) =>
-        j.title.toLowerCase().includes(intent.selectedJobTitle!.toLowerCase()),
-      );
+        j.title.toLowerCase().includes(intent.selectedJobTitle!.toLowerCase()));
       if (match) next.selected = match.id;
     } else if (intent.selectedJobId === null) {
       next.selected = null;
@@ -413,8 +409,7 @@ export function OpenPositionsPanel({
 
   const savedSet = useMemo(
     () => new Set<ListPanelItemId>(Array.from(savedJobIds)),
-    [savedJobIds],
-  );
+    [savedJobIds]);
   const onSavedIdsChange = useCallback(
     (next: Set<ListPanelItemId>) => {
       // Diff prev vs next to figure out which job changed, then route
@@ -429,8 +424,7 @@ export function OpenPositionsPanel({
         if (before !== after) toggleSavedJob(id);
       }
     },
-    [savedJobIds, toggleSavedJob],
-  );
+    [savedJobIds, toggleSavedJob]);
 
   return (
     <ListPanel<Job>
@@ -521,8 +515,7 @@ function JobCard({
                 }}
                 className={`p-1.5 rounded-md transition-colors ${
                   saved
-                    ? 'text-amber-500 bg-amber-50'
-                    : 'text-canvas-faint hover:text-amber-500 hover:bg-amber-50'
+                    ? 'text-amber-500 bg-amber-50': 'text-canvas-faint hover:text-amber-500 hover:bg-amber-50'
                 }`}
                 aria-label={saved ? 'Remove saved' : 'Save job'}
               >
@@ -569,10 +562,8 @@ function JobCard({
 function CompatibilityBadge({ score }: { score: number }) {
   const tone =
     score >= 90
-      ? 'bg-emerald-600 text-white ring-1 ring-emerald-700/40'
-      : score >= 80
-        ? 'bg-amber-400 text-amber-900'
-        : 'bg-blue-400 text-white';
+      ? 'bg-emerald-600 text-white ring-1 ring-emerald-700/40': score >= 80
+        ? 'bg-amber-400 text-amber-900': 'bg-blue-400 text-white';
   return (
     <span
       className={`${tone} rounded-full px-2 py-0.5 text-[10px] font-semibold shadow-sm`}
@@ -610,8 +601,7 @@ function JobDetailView({
             onClick={onSave}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[12px] font-medium transition-colors ${
               saved
-                ? 'bg-amber-50 text-amber-700'
-                : 'bg-canvas-surface-subtle text-canvas-faint hover:bg-canvas-surface-subtle'
+                ? 'bg-amber-50 text-amber-700': 'bg-canvas-surface-subtle text-canvas-faint hover:bg-canvas-surface-subtle'
             }`}
           >
             <Bookmark size={12} fill={saved ? 'currentColor' : 'none'} />

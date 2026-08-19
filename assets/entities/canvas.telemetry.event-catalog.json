@@ -1,0 +1,65 @@
+{
+  "entity_id": "canvas.telemetry.event-catalog",
+  "entity_type": "feature",
+  "parent_id": "canvas.telemetry.sink-boundary",
+  "name": "Telemetry event catalog",
+  "description": "Published reference catalog for all runtime telemetry event families, frozen error codes, and a host reference sink example.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "telemetry",
+    "observability",
+    "host",
+    "catalog",
+    "docs"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.telemetry-event-catalog::feature",
+    "source_files": [
+      "docs/features/telemetry-event-catalog.md",
+      "examples/telemetry-reference-sink/referenceSink.ts",
+      "examples/telemetry-reference-sink/README.md",
+      "src/telemetry/types.ts",
+      "src/telemetry/frozenErrorCodes.ts",
+      "tests/unit/telemetryEventCatalog.test.ts"
+    ]
+  },
+  "routes": [],
+  "links": [
+    {
+      "rel": "parent",
+      "entity_id": "canvas.telemetry.sink-boundary"
+    },
+    {
+      "rel": "related",
+      "entity_id": "canvas.telemetry.event-coverage"
+    },
+    {
+      "rel": "related",
+      "entity_id": "canvas.telemetry.redaction-guarantee"
+    },
+    {
+      "rel": "related",
+      "entity_id": "canvas.embed.anon-key-rate-limiting"
+    }
+  ],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/telemetry-event-catalog.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

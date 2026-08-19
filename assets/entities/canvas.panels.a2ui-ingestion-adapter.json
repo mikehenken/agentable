@@ -1,0 +1,49 @@
+{
+  "entity_id": "canvas.panels.a2ui-ingestion-adapter",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "A2UI v1.0 ingestion adapter",
+  "description": "Translates A2UI v1.0 server-to-client payloads into platform PanelSpec IR through validateSpec.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "a2ui",
+    "ingestion",
+    "spec",
+    "conformance"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.a2ui-ingestion-adapter::feature",
+    "source_files": [
+      "src/a2ui/index.ts",
+      "src/a2ui/ingest.ts",
+      "src/a2ui/schema.ts",
+      "src/a2ui/componentMap.ts",
+      "src/a2ui/surfaceState.ts",
+      "src/a2ui/dynamicValue.ts",
+      "tests/fixtures/a2ui/conformance-fixtures.json",
+      "tests/unit/a2uiIngestionAdapter.test.ts",
+      "tests/integration/a2uiIngestionRenderParity.test.tsx"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

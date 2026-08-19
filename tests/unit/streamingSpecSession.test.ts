@@ -146,10 +146,8 @@ describe('createStreamingSpecSession protocol', () => {
   });
 
   it('keeps the last good partial when an invalid node arrives, then fails at end', () => {
-    const badSpec: PanelSpec = {
-      ...FULL_SPEC,
-      nodes: {
-        ...FULL_SPEC.nodes,
+    const badSpec: PanelSpec = {...FULL_SPEC,
+      nodes: {...FULL_SPEC.nodes,
         // header.title is required by the catalog schema.
         header: { type: 'header', props: { subtitle: 'no title' } },
       },
@@ -227,7 +225,6 @@ describe('specToStreamChunks', () => {
 
   it('throws on a nodeOrder id that is not in the spec', () => {
     expect(() => specToStreamChunks(FULL_SPEC, { nodeOrder: ['missing'] })).toThrow(
-      /not in spec\.nodes/,
-    );
+      /not in spec\.nodes/);
   });
 });

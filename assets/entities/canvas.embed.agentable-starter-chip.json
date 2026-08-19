@@ -1,0 +1,42 @@
+{
+  "entity_id": "canvas.embed.agentable-starter-chip",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.embed.widgets-family",
+  "name": "AgentableStarterChipElement",
+  "description": "Standalone Lit starter prompt chip that dispatches chat prompt choreography into the shared page session.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "widget",
+    "starter-chip",
+    "chat",
+    "lit"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.agentable-starter-chip::component",
+    "source_file": "src/embed/widgets/agentable-starter-chip.ts",
+    "export": "./embed/agentable-starter-chip"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/embed-widgets-family.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

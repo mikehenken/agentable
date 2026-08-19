@@ -70,11 +70,9 @@ export function listSiteContextLayers(editor: Editor, siteId: string): SiteConte
  */
 export function resolveSelectedSiteContextLayerId(
   editor: Editor,
-  siteId: string,
-): TLShapeId | null {
+  siteId: string): TLShapeId | null {
   const layerIds = new Set(
-    listSiteContextLayers(editor, siteId).map((layer) => layer.shapeId),
-  );
+    listSiteContextLayers(editor, siteId).map((layer) => layer.shapeId));
   if (layerIds.size === 0) return null;
 
   for (const shapeId of editor.getSelectedShapeIds()) {
@@ -88,11 +86,9 @@ export function resolveSelectedSiteContextLayerId(
 export function selectSiteContextLayer(
   editor: Editor,
   shapeId: TLShapeId,
-  siteId: string,
-): boolean {
+  siteId: string): boolean {
   const isLayer = listSiteContextLayers(editor, siteId).some(
-    (layer) => layer.shapeId === shapeId,
-  );
+    (layer) => layer.shapeId === shapeId);
   if (!isLayer) return false;
 
   focusShapeInCanvas(editor, shapeId);

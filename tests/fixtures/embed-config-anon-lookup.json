@@ -1,0 +1,20 @@
+{
+  "tenant": "sandals-white-label",
+  "primaryColor": "#0077B6",
+  "welcomeMessage": "Welcome from anon-key lookup.",
+  "locale": "en",
+  "persona": {
+    "assistantName": "Sandy",
+    "systemPrompt": "You are Sandy.",
+    "starterPrompts": [{ "label": "Roles", "prompt": "Show open roles." }]
+  },
+  "adapter": {
+    "kind": "static",
+    "dataUrl": "/fixtures/panel-data-minimal.json"
+  },
+  "auth": {
+    "serviceRoleKey": "must-be-stripped",
+    "token": "must-be-stripped"
+  },
+  "secretApiKey": "sk_live_must_be_stripped"
+}

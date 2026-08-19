@@ -1,0 +1,47 @@
+{
+  "entity_id": "canvas.agents.communicative-visuals-auto-layout",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents.drawing-tools",
+  "name": "Communicative visuals auto-layout",
+  "description": "draw_shapes flow, timeline, radial, and nested auto-layout from logical diagram structure with parentId containers, progressive reveal, and placement targets.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "drawing",
+    "diagram",
+    "auto-layout",
+    "communicative-visuals"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.communicative-visuals-auto-layout::feature",
+    "source_files": [
+      "src/engines/tldraw/agentDrawing/communicativeVisualLayout.ts",
+      "src/engines/tldraw/agentDrawing/diagramToDrawShapes.ts",
+      "src/engines/tldraw/agentDrawing/agentDrawingApi.ts",
+      "src/agents/tools/drawingTools.ts",
+      "src/agents/tools/diagramNormalization.ts",
+      "src/agents/tools/enforceStructuralDiagramDraw.ts",
+      "src/chat/postDrawCanvasGrouping.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

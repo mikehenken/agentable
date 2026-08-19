@@ -1,0 +1,52 @@
+{
+  "entity_id": "canvas.embed.panel-framework-wrappers",
+  "entity_type": "feature",
+  "parent_id": "canvas.embed",
+  "name": "PanelFrameworkWrappers",
+  "description": "React, Vue, and Svelte thin wrappers for `<agentable-panel>` — camelCase props and typed event map forwarding.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "panel",
+    "react",
+    "vue",
+    "svelte",
+    "interop",
+    "wrappers"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.panel-framework-wrappers::feature",
+    "source_files": [
+      "src/embed/wrappers/agentablePanelWrapperCore.ts",
+      "src/react/AgentablePanel.tsx",
+      "src/vue/AgentablePanel.vue",
+      "src/svelte/AgentablePanel.svelte"
+    ],
+    "exports": [
+      "./react/panel",
+      "./vue/panel",
+      "./svelte/panel",
+      "./embed/wrappers/panel"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

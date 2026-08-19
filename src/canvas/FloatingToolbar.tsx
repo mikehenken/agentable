@@ -69,10 +69,8 @@ export function FloatingToolbar() {
                 onClick={() => handleToolClick(tool.id)}
                 className={`p-2 rounded-lg transition-colors ${
                   tool.id === 'camera'
-                    ? 'bg-canvas-primary text-white hover:bg-canvas-primary-hover'
-                    : (tool.id === 'history' && showActivity) || (tool.id === 'camera' && showScreenshot)
-                    ? 'bg-canvas-primary-tint text-canvas-primary'
-                    : 'hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas-muted'
+                    ? 'bg-canvas-primary text-white hover:bg-canvas-primary-hover': (tool.id === 'history' && showActivity) || (tool.id === 'camera' && showScreenshot)
+                    ? 'bg-canvas-primary-tint text-canvas-primary': 'hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas-muted'
                 }`}
               >
                 <tool.icon size={18} strokeWidth={1.5} />

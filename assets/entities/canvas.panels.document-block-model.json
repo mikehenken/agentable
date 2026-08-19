@@ -1,0 +1,49 @@
+{
+  "entity_id": "canvas.panels.document-block-model",
+  "entity_type": "feature",
+  "parent_id": "canvas.panels",
+  "name": "Document panel block model",
+  "description": "Portable document primitive with DocumentView catalog composite, pre-save block-op undo stack, and virtualized block list.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "document",
+    "open-canvas",
+    "virtualization",
+    "undo"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.document-block-model::feature",
+    "source_files": [
+      "src/panels/document/types.ts",
+      "src/panels/document/blockOps.ts",
+      "src/panels/document/documentUndoStack.ts",
+      "src/panels/document/sanitizeRuns.ts",
+      "src/panels/document/validate.ts",
+      "src/panels/document/renderBlock.tsx",
+      "src/panels/document/DocumentView.tsx",
+      "src/panels/document/documentAdapter.ts",
+      "src/agents/panels/documentPanel.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

@@ -224,8 +224,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
               },
               bubbles: true,
               composed: true,
-            }),
-          );
+            }));
         },
         onToolCall: (call: { name: string; args: Record<string, unknown>; ok: boolean }) => {
           // Mirror to host page; chat panel uses this to render
@@ -235,8 +234,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
               detail: { ...call, timestamp: new Date().toISOString() },
               bubbles: true,
               composed: true,
-            }),
-          );
+            }));
         },
         onBargeIn: () => {
           window.dispatchEvent(
@@ -244,8 +242,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
               detail: { timestamp: new Date().toISOString() },
               bubbles: true,
               composed: true,
-            }),
-          );
+            }));
         },
       };
       // Select transport: mock when forced/no-key, real Gemini Live otherwise.
@@ -292,8 +289,7 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
             if (!response.ok) {
               const detail = await response.text().catch(() => '');
               throw new Error(
-                `[voiceKernel] token mint failed: HTTP ${response.status} ${detail.slice(0, 200)}`,
-              );
+                `[voiceKernel] token mint failed: HTTP ${response.status} ${detail.slice(0, 200)}`);
             }
             const data = (await response.json()) as { token?: string; expireTime?: string };
             if (!data.token) {
@@ -304,14 +300,12 @@ export function useGeminiLive(options: UseGeminiLiveOptions): UseGeminiLiveResul
             const expireMs = data.expireTime ? new Date(data.expireTime).getTime() : now + 1200_000;
             tokenCacheRef.current = { token: data.token, expiresAt: expireMs - 30_000 };
             return data.token;
-          }
-        : apiKey;
+          }: apiKey;
 
       clientRef.current = useMock
         ? createMockVoiceClient(personaRef.current, callbacks, {
             scenario: options.mockScenario,
-          })
-        : createVoiceClient(apiKeySource, personaRef.current, callbacks);
+          }): createVoiceClient(apiKeySource, personaRef.current, callbacks);
     }
     return clientRef.current;
   }, [apiKey, tokenEndpoint, available, useMock, options.mockScenario]);

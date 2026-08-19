@@ -1,0 +1,19 @@
+{
+  "tenant": "archipelago-resorts",
+  "locale": "ar",
+  "primaryColor": "#0E7490",
+  "welcomeMessage": "مرحبًا بكم في أرخipelago Resorts — استكشفوا مسارات الضيافة على الجزر.",
+  "persona": {
+    "assistantName": "Meridian",
+    "tenantTitle": "مرافق مسارات الضيافة",
+    "systemPrompt": "You are Meridian, the Archipelago Resorts career concierge. Respond in Arabic when the locale is ar.",
+    "voiceGreeting": "",
+    "starterPrompts": [
+      { "emoji": "🌴", "label": "أدوار الجزر", "text": "اعرض أدوار الضيافة المفتوحة." }
+    ]
+  },
+  "adapter": {
+    "kind": "static",
+    "dataUrl": "/examples/shared/archipelago-career-data.json"
+  }
+}

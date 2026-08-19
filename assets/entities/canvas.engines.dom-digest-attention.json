@@ -1,0 +1,43 @@
+{
+  "entity_id": "canvas.engines.dom-digest-attention",
+  "entity_type": "feature",
+  "parent_id": "canvas.engines.dom-engine",
+  "name": "DOM digest attention visibility",
+  "description": "Maps DOM tab and region visibility to workspace digest attention tiers (focused tab > visible > tabbed-hidden > closed), capped by live browser tab-focus and document-visibility signals.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "engine",
+    "dom",
+    "digest",
+    "attention",
+    "visibility"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.dom-digest-attention::feature",
+    "source_files": [
+      "src/engines/dom/digestAttention.ts",
+      "src/engines/dom/browserAttentionSignalController.ts",
+      "src/engines/dom/engine.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": false
+  }
+}

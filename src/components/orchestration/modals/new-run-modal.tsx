@@ -177,8 +177,7 @@ const Field: React.FC<{ inp: NewRunWorkflowInput; value: unknown; onChange: (v: 
             ))}
           </ul>
         )}
-      </div>,
-    );
+      </div>);
   }
 
   if (inp.kind === "artifact")
@@ -213,8 +212,7 @@ const Field: React.FC<{ inp: NewRunWorkflowInput; value: unknown; onChange: (v: 
           {(value as React.ReactNode) || `Pick ${inp.artifactKind} artifact…`}
         </span>
         <Icon name="chright" size={11} style={{ marginLeft: "auto", color: "var(--fg-faint)" }} />
-      </button>,
-    );
+      </button>);
 
   if (inp.kind === "text")
     return wrap(
@@ -233,8 +231,7 @@ const Field: React.FC<{ inp: NewRunWorkflowInput; value: unknown; onChange: (v: 
           outline: "none",
           fontFamily: "var(--font-sans)",
         }}
-      />,
-    );
+      />);
 
   if (inp.kind === "number") {
     const cur = (value as number) ?? (inp.default as number) ?? 0;
@@ -280,8 +277,7 @@ const Field: React.FC<{ inp: NewRunWorkflowInput; value: unknown; onChange: (v: 
         >
           +
         </button>
-      </div>,
-    );
+      </div>);
   }
 
   if (inp.kind === "toggle")
@@ -310,8 +306,7 @@ const Field: React.FC<{ inp: NewRunWorkflowInput; value: unknown; onChange: (v: 
             boxShadow: "0 1px 2px rgba(0,0,0,.15)",
           }}
         ></span>
-      </button>,
-    );
+      </button>);
 
   return null;
 };
@@ -665,8 +660,7 @@ const KickoffStep: React.FC<{
           </div>
           <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--fg-muted)", lineHeight: 1.45 }}>
             {wf.id === "custom"
-              ? "Describe what you want. The agent will plan, dispatch sub-workflows when useful, and emit artifacts as it goes."
-              : "Open the run with a message. The conductor will fill the gaps in your config from the conversation, then dispatch the workflow."}
+              ? "Describe what you want. The agent will plan, dispatch sub-workflows when useful, and emit artifacts as it goes.": "Open the run with a message. The conductor will fill the gaps in your config from the conversation, then dispatch the workflow."}
           </p>
           <textarea
             value={chatDraft}

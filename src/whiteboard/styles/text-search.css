@@ -1,8 +1,7 @@
 /**
  * Canvas text search — HelperButtons overlay (tldraw text-search example pattern).
  * @see https://tldraw.dev/examples/text-search
- */
-.whiteboard-text-search {
+ */.whiteboard-text-search {
   pointer-events: all;
   display: flex;
   flex-direction: column;
@@ -14,15 +13,11 @@
   border: 1px solid var(--landi-color-border, var(--tl-color-divider, #3a3a3a));
   background: var(--landi-color-surface, var(--tl-color-panel, #1f1f1f));
   box-shadow: 0 8px 28px rgb(0 0 0 / 0.45);
-}
-
-.whiteboard-text-search__form {
+}.whiteboard-text-search__form {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.whiteboard-text-search__input {
+}.whiteboard-text-search__input {
   flex: 1;
   min-width: 0;
   padding: 6px 10px;
@@ -33,14 +28,10 @@
   font-size: 13px;
   line-height: 1.4;
   outline: none;
-}
-
-.whiteboard-text-search__input:focus {
+}.whiteboard-text-search__input:focus {
   border-color: rgb(255 140 122 / 0.55);
   box-shadow: 0 0 0 2px rgb(255 140 122 / 0.15);
-}
-
-.whiteboard-text-search__meta {
+}.whiteboard-text-search__meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -48,9 +39,7 @@
   padding: 0 2px;
   font-size: 11px;
   color: var(--landi-color-text-muted, #a1a1aa);
-}
-
-.whiteboard-text-search__close {
+}.whiteboard-text-search__close {
   flex-shrink: 0;
   padding: 4px 8px;
   border: none;
@@ -59,14 +48,10 @@
   color: var(--landi-color-text-muted, #a1a1aa);
   font-size: 12px;
   cursor: pointer;
-}
-
-.whiteboard-text-search__close:hover {
+}.whiteboard-text-search__close:hover {
   background: var(--landi-color-hover, rgb(255 255 255 / 0.06));
   color: var(--landi-color-text, #fafafa);
-}
-
-.whiteboard-text-search__results {
+}.whiteboard-text-search__results {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -75,9 +60,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.whiteboard-text-search__result {
+}.whiteboard-text-search__result {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -92,31 +75,22 @@
   line-height: 1.35;
   text-align: left;
   cursor: pointer;
-}
-
-.whiteboard-text-search__result:hover,
-.whiteboard-text-search__result--active {
+}.whiteboard-text-search__result:hover,.whiteboard-text-search__result--active {
   background: rgb(255 140 122 / 0.14);
-}
-
-.whiteboard-text-search__result-label {
+}.whiteboard-text-search__result-label {
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
-}
-
-.whiteboard-text-search__result-snippet {
+}.whiteboard-text-search__result-snippet {
   font-size: 11px;
   color: var(--landi-color-text-muted, #a1a1aa);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
-}
-
-.whiteboard-text-search__empty {
+}.whiteboard-text-search__empty {
   margin: 0;
   padding: 8px;
   font-size: 12px;

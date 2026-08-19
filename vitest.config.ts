@@ -23,6 +23,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@agentable/career-pack': path.resolve(__dirname, 'packages/career-pack/src/index.ts'),
+      '@agentable/support-inbox-pack': path.resolve(__dirname, 'packages/support-inbox-pack/src/index.ts'),
+      '@agentable/catalog-charts': path.resolve(__dirname, 'packages/catalog-charts/src/index.ts'),
     },
   },
   test: {
@@ -30,10 +33,10 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/unit/**/*.test.ts', 'tests/unit/**/*.test.tsx', 'tests/integration/**/*.test.ts', 'tests/integration/**/*.test.tsx'],
-    // Mock voice scenarios run with real timers (350ms connecting + ~2s
+    /* Mock voice scenarios run with real timers (350ms connecting + ~2s
     // greeting). Default 5s vitest timeout is too tight for the explicit-
     // scenario integration tests. 15s gives headroom without masking
-    // genuine hangs.
+     genuine hangs. */
     testTimeout: 15_000,
     coverage: {
       provider: 'v8',

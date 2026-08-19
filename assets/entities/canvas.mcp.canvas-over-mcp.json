@@ -1,0 +1,92 @@
+{
+  "entity_id": "canvas.mcp.canvas-over-mcp",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "Canvas-over-MCP",
+  "description": "Thin streamable HTTP MCP server exposing a live workspace's panel tools and digest with OAuth token scope enforcement. Auth pattern mirrors landing-editor NAS OAuth; no landi platform routes.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "mcp",
+    "panels",
+    "oauth",
+    "workspace",
+    "digest",
+    "scope"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.canvas-over-mcp::feature",
+    "source_files": [
+      "src/mcp/scopes.ts",
+      "src/mcp/auth.ts",
+      "src/mcp/workspaceBridge.ts",
+      "src/mcp/toolSchemas.ts",
+      "src/mcp/registerTools.ts",
+      "src/mcp/fixture.ts",
+      "src/mcp/index.ts",
+      "cloudflare/canvas-mcp/src/index.ts",
+      "cloudflare/canvas-mcp/src/env.ts",
+      "cloudflare/canvas-mcp/src/oauth/routes.ts",
+      "cloudflare/canvas-mcp/wrangler.jsonc",
+      "tests/unit/canvasMcp.test.ts"
+    ]
+  },
+  "routes": [
+    {
+      "path": "/canvas/mcp",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "Streamable HTTP MCP endpoint (worker scaffold)"
+    },
+    {
+      "path": "/.well-known/oauth-protected-resource/canvas/mcp",
+      "methods": [
+        "GET"
+      ],
+      "description": "RFC 9728 protected resource metadata"
+    },
+    {
+      "path": "/.well-known/oauth-authorization-server",
+      "methods": [
+        "GET"
+      ],
+      "description": "RFC 8414 authorization server metadata"
+    },
+    {
+      "path": "/canvas/oauth/health",
+      "methods": [
+        "GET"
+      ],
+      "description": "OAuth scaffold health"
+    },
+    {
+      "path": "/health",
+      "methods": [
+        "GET"
+      ],
+      "description": "Worker health"
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [
+    "oauth2_bearer"
+  ],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": true
+  }
+}

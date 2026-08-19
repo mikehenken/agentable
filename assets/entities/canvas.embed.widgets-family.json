@@ -1,0 +1,48 @@
+{
+  "entity_id": "canvas.embed.widgets-family",
+  "entity_type": "feature",
+  "parent_id": "canvas.embed",
+  "name": "EmbedWidgetsFamily",
+  "description": " widgets family — voice call button, starter chip, ask-about-this button, and agent status pill as separate budgeted Lit embed bundles.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "widgets",
+    "lit",
+    "page-session",
+    "voice",
+    "chat"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.widgets-family::feature",
+    "source_dir": "src/embed/widgets/",
+    "members": [
+      "canvas.embed.voice-call-button",
+      "canvas.embed.agentable-starter-chip",
+      "canvas.embed.ask-about-this-button",
+      "canvas.embed.agent-status-pill"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/embed-widgets-family.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

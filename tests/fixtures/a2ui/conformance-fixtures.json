@@ -1,0 +1,331 @@
+[
+  {
+    "id": "user-profile-card",
+    "description": "A2UI v1.0 createSurface user profile card (spec example) with path-bound Text",
+    "messages": [
+      {
+        "version": "v1.0",
+        "createSurface": {
+          "surfaceId": "user_profile_card",
+          "catalogId": "https://a2ui.org/specification/v1_0/catalogs/basic/catalog.json",
+          "components": [
+            {
+              "id": "root",
+              "component": "Column",
+              "children": ["user_name"]
+            },
+            {
+              "id": "user_name",
+              "component": "Text",
+              "text": { "path": "/name" }
+            }
+          ],
+          "dataModel": {
+            "name": "John Doe"
+          }
+        }
+      }
+    ],
+    "expectedIr": {
+      "v": 1,
+      "origin": "agent",
+      "root": "root",
+      "state": {
+        "name": "John Doe"
+      },
+      "nodes": {
+        "root": {
+          "type": "panel-body",
+          "children": ["user_name"]
+        },
+        "user_name": {
+          "type": "header",
+          "props": {
+            "title": "John Doe"
+          }
+        }
+      }
+    },
+    "validation": {
+      "adapterSources": [],
+      "hostActions": [],
+      "panelRegistry": []
+    }
+  },
+  {
+    "id": "dual-text-column",
+    "description": "A2UI v1.0 updateComponents dual Text under Column (spec example)",
+    "messages": [
+      {
+        "version": "v1.0",
+        "updateComponents": {
+          "surfaceId": "user_profile_card",
+          "components": [
+            {
+              "id": "root",
+              "component": "Column",
+              "children": ["user_name", "user_title"]
+            },
+            {
+              "id": "user_name",
+              "component": "Text",
+              "text": "John Doe"
+            },
+            {
+              "id": "user_title",
+              "component": "Text",
+              "text": "Software Engineer",
+              "variant": "caption"
+            }
+          ]
+        }
+      }
+    ],
+    "expectedIr": {
+      "v": 1,
+      "origin": "agent",
+      "root": "root",
+      "nodes": {
+        "root": {
+          "type": "panel-body",
+          "children": ["user_name", "user_title"]
+        },
+        "user_name": {
+          "type": "header",
+          "props": {
+            "title": "John Doe"
+          }
+        },
+        "user_title": {
+          "type": "badge",
+          "props": {
+            "text": "Software Engineer"
+          }
+        }
+      }
+    },
+    "validation": {
+      "adapterSources": [],
+      "hostActions": [],
+      "panelRegistry": []
+    }
+  },
+  {
+    "id": "markdown-heading-text",
+    "description": "A2UI Text with markdown-style heading maps to header title",
+    "messages": [
+      {
+        "version": "v1.0",
+        "updateComponents": {
+          "surfaceId": "heading_card",
+          "components": [
+            {
+              "id": "root",
+              "component": "Column",
+              "children": ["header_text"]
+            },
+            {
+              "id": "header_text",
+              "component": "Text",
+              "text": "# Contact Us"
+            }
+          ]
+        }
+      }
+    ],
+    "expectedIr": {
+      "v": 1,
+      "origin": "agent",
+      "root": "root",
+      "nodes": {
+        "root": {
+          "type": "panel-body",
+          "children": ["header_text"]
+        },
+        "header_text": {
+          "type": "header",
+          "props": {
+            "title": "Contact Us"
+          }
+        }
+      }
+    },
+    "validation": {
+      "adapterSources": [],
+      "hostActions": [],
+      "panelRegistry": []
+    }
+  },
+  {
+    "id": "submit-button-host-action",
+    "description": "A2UI Button event maps to action-row + host action ref",
+    "messages": [
+      {
+        "version": "v1.0",
+        "updateComponents": {
+          "surfaceId": "contact_form_1",
+          "components": [
+            {
+              "id": "root",
+              "component": "Column",
+              "children": ["submit_button"]
+            },
+            {
+              "id": "submit_button",
+              "component": "Button",
+              "child": "submit_button_label",
+              "variant": "primary",
+              "action": {
+                "event": {
+                  "name": "submitContactForm"
+                }
+              }
+            },
+            {
+              "id": "submit_button_label",
+              "component": "Text",
+              "text": "Send Message"
+            }
+          ]
+        }
+      }
+    ],
+    "expectedIr": {
+      "v": 1,
+      "origin": "agent",
+      "root": "root",
+      "nodes": {
+        "root": {
+          "type": "panel-body",
+          "children": ["submit_button"]
+        },
+        "submit_button": {
+          "type": "action-row",
+          "props": {
+            "actions": ["submitContactForm"]
+          }
+        },
+        "submit_button_label": {
+          "type": "header",
+          "props": {
+            "title": "Send Message"
+          }
+        }
+      },
+      "actions": {
+        "submitContactForm": {
+          "kind": "host",
+          "action": "submitContactForm"
+        }
+      }
+    },
+    "validation": {
+      "adapterSources": [],
+      "hostActions": ["submitContactForm"],
+      "panelRegistry": []
+    }
+  },
+  {
+    "id": "contact-email-stream",
+    "description": "A2UI JSONL stream: createSurface + updateComponents + updateDataModel (contact form subset)",
+    "messages": [
+      {
+        "version": "v1.0",
+        "createSurface": {
+          "surfaceId": "contact_form_1",
+          "catalogId": "https://a2ui.org/specification/v1_0/catalogs/basic/catalog.json"
+        }
+      },
+      {
+        "version": "v1.0",
+        "updateComponents": {
+          "surfaceId": "contact_form_1",
+          "components": [
+            {
+              "id": "root",
+              "component": "Card",
+              "child": "email_group"
+            },
+            {
+              "id": "email_group",
+              "component": "Column",
+              "children": ["email_label", "email_field"]
+            },
+            {
+              "id": "email_label",
+              "component": "Text",
+              "text": "Email Address",
+              "variant": "caption"
+            },
+            {
+              "id": "email_field",
+              "component": "TextField",
+              "label": "Email",
+              "value": { "path": "/contact/email" },
+              "variant": "shortText"
+            }
+          ]
+        }
+      },
+      {
+        "version": "v1.0",
+        "updateDataModel": {
+          "surfaceId": "contact_form_1",
+          "path": "/contact",
+          "value": {
+            "email": "john.doe@example.com"
+          }
+        }
+      }
+    ],
+    "expectedIr": {
+      "v": 1,
+      "origin": "agent",
+      "root": "root",
+      "sources": {
+        "a2ui": {
+          "source": "a2ui.data"
+        }
+      },
+      "state": {
+        "contact": {
+          "email": "john.doe@example.com"
+        }
+      },
+      "nodes": {
+        "root": {
+          "type": "panel-body",
+          "children": ["email_group"]
+        },
+        "email_group": {
+          "type": "panel-body",
+          "children": ["email_label", "email_field"]
+        },
+        "email_label": {
+          "type": "badge",
+          "props": {
+            "text": "Email Address"
+          }
+        },
+        "email_field": {
+          "type": "field-form",
+          "props": {
+            "bind": "a2ui",
+            "fields": [
+              {
+                "bind": "email",
+                "type": "text",
+                "label": "Email"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "validation": {
+      "adapterSources": ["a2ui.data"],
+      "hostActions": [],
+      "panelRegistry": []
+    }
+  }
+]

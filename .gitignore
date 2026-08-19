@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+.logs/
+# Per-example runtime config with real (non-placeholder) endpoints/keys.
+# Committed examples ship only the matching *.example.json with placeholders.
+*.local.json
 
 # Editor directories and files
 .vscode/*
@@ -25,3 +29,8 @@ dist-ssr
 .playwright-mcp/
 .cursor/
 vitest.config.ts.timestamp-*
+
+# Never commit env files or their backups (real API keys)
+.env
+.env.*
+*.bak

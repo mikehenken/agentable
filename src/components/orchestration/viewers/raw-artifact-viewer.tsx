@@ -116,16 +116,13 @@ export const RawArtifactViewer: React.FC<RawArtifactViewerProps> = ({
     let mounted = true;
     setLoading(true);
     setError(null);
-    fetchBody(artifactKey)
-      .then((b) => {
+    fetchBody(artifactKey).then((b) => {
         if (!mounted) return;
         if (b) setBody(b);
         else setError("Artifact not found in R2 or could not be read.");
-      })
-      .catch((e: unknown) => {
+      }).catch((e: unknown) => {
         if (mounted) setError(e instanceof Error ? e.message : String(e));
-      })
-      .finally(() => {
+      }).finally(() => {
         if (mounted) setLoading(false);
       });
     return () => {
@@ -525,8 +522,7 @@ const CodeBody: React.FC<{ content: string; highlight: ((line: string) => React.
     {highlight
       ? content.split("\n").map((line, i) => (
           <div key={i}>{highlight(line)}</div>
-        ))
-      : content}
+        )): content}
   </pre>
 );
 

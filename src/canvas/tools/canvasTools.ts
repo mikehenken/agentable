@@ -68,8 +68,7 @@ const KNOWN_PANELS: readonly PanelId[] = [
 function showPanel(
   id: PanelId,
   source: string,
-  panelProps?: Record<string, unknown>,
-): ToolResult {
+  panelProps?: Record<string, unknown>): ToolResult {
   if (!KNOWN_PANELS.includes(id)) {
     return { ok: false, error: `unknown panel id "${id}"` };
   }
@@ -424,8 +423,7 @@ export function getTool(name: string): ToolDefinition | undefined {
  */
 export async function executeTool(
   name: string,
-  args: Record<string, unknown>,
-): Promise<ToolResult> {
+  args: Record<string, unknown>): Promise<ToolResult> {
   const tool = getTool(name);
   if (!tool) {
     return { ok: false, error: `unknown tool "${name}"` };
@@ -435,8 +433,7 @@ export async function executeTool(
     if (result.ok) {
       emitAgUiStatePatch(
         [{ op: 'replace', path: `/tools/${name}/lastResult`, value: result.result }],
-        { source: 'tool', toolName: name },
-      );
+        { source: 'tool', toolName: name });
     }
     return result;
   } catch (err) {

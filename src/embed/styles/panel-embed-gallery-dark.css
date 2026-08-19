@@ -1,0 +1,249 @@
+/**
+ * Panel embed gallery-dark theme — reusable dark spec-block styling for
+ * standalone `<agentable-panel data-theme="gallery-dark">`.
+ *
+ * Adapted from dom-app-shell-panel-body.css (example 11). Sets Landi tokens
+ * on the shadow host so React inline styles and catalog spec blocks inherit
+ * correct contrast (fixes light page `color` inheriting into white surfaces).
+ */:host([data-theme='gallery-dark']) {
+  color-scheme: dark;
+  color: var(--landi-color-text, #ececec);
+  background: transparent;
+  direction: inherit;
+
+  --panel-embed-body-text: #ececec;
+  --panel-embed-body-muted: #9ca3af;
+  --panel-embed-body-faint: #6b7280;
+  --panel-embed-row-bg: rgb(255 255 255 / 0.03);
+  --panel-embed-row-border: rgb(255 255 255 / 0.08);
+  --panel-embed-row-hover: rgb(255 255 255 / 0.06);
+  --panel-embed-accent: var(--landi-color-primary, #0e7490);
+
+  --landi-color-surface: #1f1f1f;
+  --landi-color-surface-subtle: #181818;
+  --landi-color-background: #141414;
+  --landi-color-border: rgb(255 255 255 / 0.12);
+  --landi-color-text: #ececec;
+  --landi-color-text-muted: #9ca3af;
+  --landi-color-text-secondary: #a1a1aa;
+  --landi-color-hover: rgb(255 255 255 / 0.08);
+  --landi-radius-panel: 0;
+}
+
+/* --- Panel surface (EmbedPanelShell inline style override via tokens) --- */:host([data-theme='gallery-dark']).agentable-panel-surface {
+  background: var(--landi-color-surface, #1f1f1f);
+  border-color: var(--landi-color-border, rgb(255 255 255 / 0.12));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  color: var(--landi-color-text, #ececec);
+}:host([data-theme='gallery-dark']) agentable-virtual-list {
+  direction: inherit;
+}
+
+/* --- Panel chrome (EmbedPanelChrome) — base + dark theme (peer: example 11) --- */:host([data-theme='gallery-dark']).panel-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  padding-block: 0;
+  padding-inline: 12px 8px;
+  border-bottom: 1px solid var(--landi-color-border, rgb(255 255 255 / 0.12));
+  background: #1a1a1a;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--landi-color-text, #ececec);
+  user-select: none;
+}:host([data-theme='gallery-dark']).panel-chrome__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}:host([data-theme='gallery-dark']).panel-chrome__leading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}:host([data-theme='gallery-dark']).panel-chrome__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}:host([data-theme='gallery-dark']).panel-chrome__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.04);
+  color: var(--landi-color-text-muted, #b4b4b4);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}:host([data-theme='gallery-dark']).panel-chrome__btn:hover {
+  background: var(--landi-color-hover, rgb(255 255 255 / 0.1));
+  border-color: rgb(255 255 255 / 0.14);
+  color: var(--landi-color-text, #ececec);
+}:host([data-theme='gallery-dark']).panel-chrome__btn:focus-visible {
+  outline: 2px solid var(--landi-color-primary, #0e7490);
+  outline-offset: 1px;
+}:host([data-theme='gallery-dark']).panel-chrome__btn svg {
+  display: block;
+  flex-shrink: 0;
+  stroke: currentColor;
+}:host([data-theme='gallery-dark']).panel-shape__body {
+  background: transparent;
+}:host([data-theme='gallery-dark']) [data-testid='spec-renderer-root'] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  color: inherit;
+}:host([data-theme='gallery-dark']) [data-testid='panel-body'] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding-block: 12px;
+  padding-inline: 14px;
+}
+
+/* --- Header block --- */:host([data-theme='gallery-dark']).spec-block--header {
+  flex-shrink: 0;
+  padding-block: 10px 8px;
+  padding-inline: 14px;
+  border-bottom: 1px solid var(--panel-embed-row-border);
+  background: rgb(255 255 255 / 0.02);
+  text-align: start;
+}:host([data-theme='gallery-dark']).spec-block__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--panel-embed-body-text);
+  text-align: start;
+}:host([data-theme='gallery-dark']).spec-block__subtitle {
+  margin-block-start: 4px;
+  margin-block-end: 0;
+  margin-inline: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--panel-embed-body-muted);
+  text-align: start;
+}
+
+/* --- List block --- */:host([data-theme='gallery-dark']).spec-block--list,:host([data-theme='gallery-dark']) [data-testid='list'] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}:host([data-theme='gallery-dark']) agentable-virtual-list::part(viewport) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  padding-block: 8px 12px;
+  padding-inline: 10px;
+}:host([data-theme='gallery-dark']) agentable-virtual-list::part(row) {
+  padding-block: 10px;
+  padding-inline: 12px;
+  border: 1px solid var(--panel-embed-row-border);
+  border-radius: 6px;
+  background: var(--panel-embed-row-bg);
+  cursor: default;
+  text-align: start;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}:host([data-theme='gallery-dark']) agentable-virtual-list::part(row):hover {
+  background: var(--panel-embed-row-hover);
+  border-color: rgb(255 255 255 / 0.12);
+}:host([data-theme='gallery-dark']) agentable-virtual-list::part(row-title) {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--panel-embed-body-text);
+  line-height: 1.35;
+  text-align: start;
+}:host([data-theme='gallery-dark']) agentable-virtual-list::part(row-subtitle) {
+  display: block;
+  margin-block-start: 3px;
+  font-size: 11.5px;
+  color: var(--panel-embed-body-muted);
+  text-align: start;
+}
+
+/* --- Table block --- */:host([data-theme='gallery-dark']).spec-block--table {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-block: 4px 12px;
+  padding-inline: 10px;
+  overflow: auto;
+}:host([data-theme='gallery-dark']).spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}:host([data-theme='gallery-dark']).spec-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-block: 8px;
+  padding-inline: 10px;
+  border-bottom: 1px solid var(--panel-embed-row-border);
+  background: rgb(20 20 20 / 0.98);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: start;
+  text-transform: uppercase;
+  color: var(--panel-embed-body-muted);
+}:host([data-theme='gallery-dark']).spec-table tbody td {
+  padding-block: 9px;
+  padding-inline: 10px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.05);
+  color: var(--panel-embed-body-text);
+  vertical-align: middle;
+  text-align: start;
+}:host([data-theme='gallery-dark']).spec-table tbody tr:hover td {
+  background: var(--panel-embed-row-hover);
+}:host([data-theme='gallery-dark']).spec-table__status {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 2px;
+  padding-inline: 8px;
+  border-radius: 999px;
+  border: 1px solid rgb(14 116 144 / 0.45);
+  background: rgb(14 116 144 / 0.14);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5eead4;
+  text-transform: capitalize;
+}
+
+/* --- State placeholders --- */:host([data-theme='gallery-dark']) [data-testid='loading-skeleton'],:host([data-theme='gallery-dark']) [data-testid='empty-placeholder'],:host([data-theme='gallery-dark']) [data-testid='error-card'],:host([data-theme='gallery-dark']) [data-testid='agentable-panel-skeleton'],:host([data-theme='gallery-dark']) [part='skeleton'] {
+  margin-block: 16px;
+  margin-inline: 14px;
+  padding: 16px;
+  border: 1px dashed var(--panel-embed-row-border);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.02);
+  color: var(--panel-embed-body-muted);
+  font-size: 12px;
+  text-align: center;
+}:host([data-theme='gallery-dark']) [data-testid='error-card'],:host([data-theme='gallery-dark']) [part='error'] {
+  border-color: rgb(239 68 68 / 0.35);
+  color: #fca5a5;
+}

@@ -38,8 +38,7 @@ function ChartContainer({
   id,
   className,
   children,
-  config,
-  ...props
+  config,...props
 }: React.ComponentProps<"div"> & {
   config: ChartConfig
   children: React.ComponentProps<
@@ -81,22 +80,18 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
+        __html: Object.entries(THEMES).map(
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
+${colorConfig.map(([key, itemConfig]) => {
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
     return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+  }).join("\n")}
 }
 `
-          )
-          .join("\n"),
+          ).join("\n"),
       }}
     />
   )
@@ -138,8 +133,7 @@ function ChartTooltipContent({
     const itemConfig = getPayloadConfigFromPayload(config, item, key)
     const value =
       !labelKey && typeof label === "string"
-        ? config[label as keyof typeof config]?.label || label
-        : itemConfig?.label
+        ? config[label as keyof typeof config]?.label || label: itemConfig?.label
 
     if (labelFormatter) {
       return (
@@ -179,9 +173,7 @@ function ChartTooltipContent({
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
-        {payload
-          .filter((item) => item.type !== "none")
-          .map((item, index) => {
+        {payload.filter((item) => item.type !== "none").map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
@@ -277,9 +269,7 @@ function ChartLegendContent({
         className
       )}
     >
-      {payload
-        .filter((item) => item.type !== "none")
-        .map((item) => {
+      {payload.filter((item) => item.type !== "none").map((item) => {
           const key = `${nameKey || item.dataKey || "value"}`
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
 
@@ -322,8 +312,7 @@ function getPayloadConfigFromPayload(
     "payload" in payload &&
     typeof payload.payload === "object" &&
     payload.payload !== null
-      ? payload.payload
-      : undefined
+      ? payload.payload: undefined
 
   let configLabelKey: string = key
 
@@ -343,8 +332,7 @@ function getPayloadConfigFromPayload(
   }
 
   return configLabelKey in config
-    ? config[configLabelKey]
-    : config[key as keyof typeof config]
+    ? config[configLabelKey]: config[key as keyof typeof config]
 }
 
 export {

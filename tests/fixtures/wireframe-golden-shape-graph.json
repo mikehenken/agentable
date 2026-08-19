@@ -1,0 +1,38 @@
+{
+  "region": { "x": 0, "y": 0, "w": 800, "h": 560 },
+  "shapes": [
+    {
+      "id": "shape:wf-header",
+      "nativeType": "geo",
+      "kind": "box",
+      "geometry": { "kind": "rect", "x": 40, "y": 40, "w": 720, "h": 64 },
+      "parentId": null,
+      "zOrder": 3056
+    },
+    {
+      "id": "shape:wf-nav",
+      "nativeType": "geo",
+      "kind": "box",
+      "geometry": { "kind": "rect", "x": 40, "y": 120, "w": 160, "h": 400 },
+      "parentId": null,
+      "zOrder": 3057
+    },
+    {
+      "id": "shape:wf-main",
+      "nativeType": "geo",
+      "kind": "box",
+      "geometry": { "kind": "rect", "x": 220, "y": 120, "w": 540, "h": 400 },
+      "parentId": null,
+      "zOrder": 3058
+    },
+    {
+      "id": "shape:wf-hero-label",
+      "nativeType": "text",
+      "kind": "text",
+      "geometry": { "kind": "text", "x": 240, "y": 140, "w": 80, "h": 24 },
+      "text": "Hero",
+      "parentId": null,
+      "zOrder": 3059
+    }
+  ]
+}

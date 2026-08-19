@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apogee Aerospace · Systems Design Studio</title>
+    <link rel="stylesheet" href="/embed/agentable-whiteboard.css" />
+    <style>:root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: #0b1220;
+        color: #e7ecf3;
+      }
+      header {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        padding: 0.9rem 1.5rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+        background: linear-gradient(180deg, #0f1a2e 0%, #0b1220 100%);
+      }.brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        min-width: 0;
+      }.brand-mark {
+        display: grid;
+        flex-shrink: 0;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #1c3f72 0%, #3b6fb8 100%);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }.brand-text h1 {
+        margin: 0;
+        font-size: 0.92rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #f4f7fb;
+        white-space: nowrap;
+      }.brand-text p {
+        margin: 1px 0 0;
+        font-size: 0.78rem;
+        color: #93a3be;
+        white-space: nowrap;
+      }.tagline {
+        max-width: 420px;
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        color: #93a3be;
+        text-align: right;
+      }
+      main {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+      }
+      agentable-whiteboard {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 560px;
+      }
+      @media (max-width: 720px) {.tagline {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">AA</div>
+        <div class="brand-text">
+          <h1>Apogee Aerospace</h1>
+          <p>Systems Design Studio</p>
+        </div>
+      </div>
+      <p class="tagline">Tell Nova what to sketch. It draws the diagram live on the shared whiteboard.</p>
+    </header>
+    <main>
+      <agentable-whiteboard tenant="apogee-aerospace" dark-canvas></agentable-whiteboard>
+    </main>
+
+    <script type="module">
+       Resolve config-url before the whiteboard bundle defines the custom
+       element: prefer a coordinator-provided config.local.json (real
+       chatProxyUrl tokenEndpoint, gitignored, never committed here);
+       fall back to the committed config.example.json (placeholder
+       endpoints, offline chat-to-draw demo) when the local file is
+       absent. The top-level await makes this a blocking step in module
+       execution order, so the attribute is always set before the next
+       module script below runs and upgrades the element - no second
+       script imports engine code, so there is only ever one tldraw
+       instance on this page.
+      const CONFIG_CANDIDATES = ['./config.local.json', './config.example.json'];
+      const whiteboardEl = document.querySelector('agentable-whiteboard');
+
+      async function resolveConfigUrl {
+        for (const url of CONFIG_CANDIDATES) {
+          try {
+            const response = await fetch(url);
+            if (response.ok) return url;
+          } catch {
+             Network-level failure (offline, blocked request): try the
+             next candidate instead of throwing.
+          }
+        }
+        return CONFIG_CANDIDATES[CONFIG_CANDIDATES.length - 1];
+      }
+
+      window.__galleryExample = '08-agent-presents';
+      const resolvedConfigUrl = await resolveConfigUrl;
+      whiteboardEl.setAttribute('config-url', resolvedConfigUrl);
+
+       Test-observability hook only (mirrors window.__galleryReady
+       window.__p8AgentDrawDemoResult elsewhere in this gallery): both the
+       live and offline chat-to-draw paths dispatch this event per tool
+       call, so recording it lets Playwright confirm a prompt actually
+       drew shapes without depending on tldraw's internal DOM structure.
+      window.__agentPresentsToolCalls = [];
+      window.addEventListener('landi:tool-call', (e) => {
+        window.__agentPresentsToolCalls.push(e.detail);
+      });
+    </script>
+    <script type="module" src="/embed/agentable-whiteboard.js"></script>
+    <script type="module">
+      customElements.whenDefined('agentable-whiteboard').then( => {
+        window.__galleryReady = { example: '08-agent-presents', ok: true };
+      });
+    </script>
+  </body>
+</html>

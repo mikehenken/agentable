@@ -1,0 +1,38 @@
+{
+  "entity_id": "canvas.whiteboard.shell",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.whiteboard",
+  "name": "WhiteboardShell",
+  "description": "tldraw-based whiteboard root with chat column and panel shapes. Exported via package./whiteboard.",
+  "version": "0.1.9",
+  "status": "stable",
+  "tags": [
+    "whiteboard",
+    "tldraw",
+    "canvas"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.ui.whiteboard-shell::component",
+    "source_file": "src/whiteboard/WhiteboardShell.tsx",
+    "export": "./whiteboard"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

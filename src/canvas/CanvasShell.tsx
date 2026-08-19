@@ -96,8 +96,7 @@ function CanvasShellInner({ panels }: { panels: PanelRegistry }) {
       console.error(
         '[CanvasShell] `panels` prop reference changed after mount. ' +
           'Define the registry at module scope (NOT inline in JSX) — every ' +
-          'change re-creates lazy components, refetches chunks, and remounts panel state.',
-      );
+          'change re-creates lazy components, refetches chunks, and remounts panel state.');
     }
   }, [panels]);
 
@@ -110,8 +109,7 @@ function CanvasShellInner({ panels }: { panels: PanelRegistry }) {
         id,
         Lazy: lazy(loader),
       })),
-    [panels],
-  );
+    [panels]);
 
   // Idle-warm every lazy panel chunk after first paint. Cancel fn cleans
   // the idle handle on unmount or registry change.
@@ -139,8 +137,7 @@ function CanvasShellInner({ panels }: { panels: PanelRegistry }) {
       lastPos.current = { x: e.clientX, y: e.clientY };
       panBy(dx, dy);
     },
-    [panBy],
-  );
+    [panBy]);
 
   const endPan = useCallback(() => {
     isPanning.current = false;

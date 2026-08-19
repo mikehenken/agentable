@@ -69,8 +69,7 @@ async function main() {
   for (const budget of BUDGETS) {
     const filePath = path.join(distRoot, budget.file);
     if (!(await fileExists(filePath))) {
-      results.push({
-        ...budget,
+      results.push({...budget,
         status: 'missing',
         size: 0,
       });
@@ -79,8 +78,7 @@ async function main() {
     const size = await gzippedSize(filePath);
     const overBudget = size > budget.max;
     if (overBudget) failed = true;
-    results.push({
-      ...budget,
+    results.push({...budget,
       status: overBudget ? 'over' : 'ok',
       size,
     });

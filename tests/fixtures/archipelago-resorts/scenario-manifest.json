@@ -1,0 +1,25 @@
+{
+  "brand": "Archipelago Resorts",
+  "tenant": "archipelago-resorts",
+  "scenarios": [
+    {
+      "id": "career-trajectory",
+      "layout": "timeline",
+      "nodeCount": 4
+    },
+    {
+      "id": "job-economy-chart",
+      "chartType": "chart-bar",
+      "composedOrigin": "agent",
+      "pinnable": true
+    },
+    {
+      "id": "island-walkthrough",
+      "layout": "radial",
+      "nodeCount": 5,
+      "walkthroughSteps": 5,
+      "cedesOnUserInput": true
+    }
+  ],
+  "forbiddenBrandNames": ["Sandals", "Beaches", "Moss", "Fidelity"]
+}

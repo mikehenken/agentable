@@ -33,8 +33,7 @@ describe('gridPlacementToRect', () => {
       spec,
       { x: 100, y: 80 },
       { col: 0, row: 0, colSpan: 3, rowSpan: 7 },
-      true,
-    );
+      true);
     expect(rect.x % 20).toBe(0);
     expect(rect.y % 20).toBe(0);
     expect(rect.w % 20).toBe(0);

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>09 — Multi-agent page · Archipelago Resorts</title>
+  </head>
+  <body>
+    <h1>Multi-agent defaults </h1>
+    <p>Two agents with attribution and scope enforcement — graduated P6 fixture.</p>
+    <pre id="status">running…</pre>
+    <script type="module" src="/gallery/09-multi-agent-harness.js"></script>
+    <script type="module">
+      window.__galleryExample = '09-multi-agent-page';
+      const status = document.getElementById('status');
+      const poll = => {
+        const result = window.__multiAgentE2eResult;
+        if (result === undefined) {
+          window.setTimeout(poll, 50);
+          return;
+        }
+        status.textContent = JSON.stringify(result, null, 2);
+        window.__galleryReady = { example: '09-multi-agent-page', ok: result.ok };
+      };
+      poll;
+    </script>
+  </body>
+</html>

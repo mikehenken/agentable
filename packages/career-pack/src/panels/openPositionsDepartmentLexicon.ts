@@ -1,0 +1,43 @@
+import { createLexicon } from '../../../../src/components/primitives/lexicon';
+
+/** Agent-supplied department aliases → canonical hospitality departments. */
+export const openPositionsDepartmentLexicon = createLexicon({
+  canonical: [
+    'Guest Services',
+    'Food & Beverage',
+    'Operations',
+    'Information Technology',
+    'Spa & Wellness',
+    'Environmental',
+  ],
+  synonyms: {
+    guest: 'Guest Services',
+    hospitality: 'Guest Services',
+    'front desk': 'Guest Services',
+    concierge: 'Guest Services',
+    'guest experience': 'Guest Services',
+    culinary: 'Food & Beverage',
+    chef: 'Food & Beverage',
+    'f&b': 'Food & Beverage',
+    kitchen: 'Food & Beverage',
+    food: 'Food & Beverage',
+    beverage: 'Food & Beverage',
+    ops: 'Operations',
+    operations: 'Operations',
+    resort: 'Operations',
+    management: 'Operations',
+    it: 'Information Technology',
+    tech: 'Information Technology',
+    technology: 'Information Technology',
+    software: 'Information Technology',
+    developer: 'Information Technology',
+    engineering: 'Information Technology',
+    spa: 'Spa & Wellness',
+    wellness: 'Spa & Wellness',
+    massage: 'Spa & Wellness',
+    sustainability: 'Environmental',
+    marine: 'Environmental',
+    environmental: 'Environmental',
+    ecology: 'Environmental',
+  },
+});

@@ -1,0 +1,45 @@
+{
+  "entity_id": "canvas.embed.agentable-app-shell",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.embed",
+  "name": "AgentableAppShellElement",
+  "description": "Lit embed web component for the DOM workspace engine app shell: main/sidebar regions, resizable splits, per-region tabs, career-pack panels, layout persistence. No tldraw.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "embed",
+    "app-shell",
+    "web-component",
+    "lit",
+    "dom-engine"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.agentable-app-shell::component",
+    "source_file": "src/embed/agentable-app-shell.ts",
+    "workspace": "src/embed/appShell/AppShellWorkspace.tsx",
+    "layout": "src/embed/appShell/appShellLayout.ts",
+    "export": "./embed/app-shell",
+    "build": "npm run build:embed:app-shell"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/dom-workspace-engine.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": true
+  }
+}

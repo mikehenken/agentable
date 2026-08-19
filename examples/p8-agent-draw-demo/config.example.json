@@ -1,0 +1,30 @@
+{
+  "tenant": "northstar-atelier",
+  "locale": "en",
+  "primaryColor": "#7C3AED",
+  "welcomeMessage": "Northstar Atelier — Creative studio workflow: agent draw & see.",
+  "voiceEnabled": false,
+  "canvasMode": "bounded",
+  "canvasBounds": "400x720",
+  "canvasBehavior": "contain",
+  "persona": {
+    "assistantName": "Astra",
+    "tenantTitle": "Design Agent",
+    "greetingMode": "user-first",
+    "systemPrompt": "You are Astra, a fictional Northstar Atelier design agent. You sketch creative workflows on the shared whiteboard using draw_shapes, read_canvas, and clear_agent_drawings. Reference only fictional Northstar Atelier clients and projects.",
+    "starterPrompts": [
+      {
+        "emoji": "✨",
+        "label": "Studio flow",
+        "text": "Sketch the client brief to final delivery timeline."
+      },
+      {
+        "emoji": "🎨",
+        "label": "Moodboard",
+        "text": "Draw a moodboard review step in the workflow."
+      }
+    ],
+    "chatProxyUrl": "<OFFLINE_SCRIPTED_DEMO>",
+    "tokenEndpoint": "<OFFLINE_SCRIPTED_DEMO>"
+  }
+}

@@ -30,8 +30,7 @@ describe('cache key construction', () => {
     expect(sourceCacheKey({ source: 's', params: { q: 2 } }, SCOPE_A)).not.toBe(base);
     expect(sourceCacheKey({ source: 's', params: { q: 1 } }, SCOPE_B)).not.toBe(base);
     expect(
-      sourceCacheKey({ source: 's', params: { q: 1 } }, { contextId: 'site-1' }),
-    ).not.toBe(base);
+      sourceCacheKey({ source: 's', params: { q: 1 } }, { contextId: 'site-1' })).not.toBe(base);
   });
 
   it('stableStringify round-trips primitives and nested structures deterministically', () => {
@@ -272,8 +271,7 @@ describe('retry policy', () => {
     const adapter = createMockDataAdapter({
       plan: (ref, _scope, callIndex) =>
         callIndex === 0
-          ? { error: { code: 'unavailable', message: 'try later' } }
-          : { data: `${ref.source}-recovered` },
+          ? { error: { code: 'unavailable', message: 'try later' } }: { data: `${ref.source}-recovered` },
     });
     const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
     const handle = lifecycle.acquire({ source: 'jobs' }, SCOPE_A);

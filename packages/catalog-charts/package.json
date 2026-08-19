@@ -1,0 +1,21 @@
+{
+  "name": "@agentable/catalog-charts",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Optional Recharts-backed chart catalog composites for Agentable panels ( heavy-dependency add-on).",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog/entries.ts",
+    "./schema": "./src/schema/chartProps.ts"
+  },
+  "dependencies": {
+    "recharts": "^2.15.4",
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "agentable-canvas": ">=0.2.0",
+    "react": ">=18.0.0"
+  }
+}

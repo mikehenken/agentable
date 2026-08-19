@@ -145,8 +145,7 @@ const newTabId = () => `tab-${Date.now().toString(36)}-${(__tabCounter++).toStri
  */
 const initialTabDescriptor = (
   defaults: ChatPanelProps["defaults"] | undefined,
-  currentRun: ChatPanelProps["currentRun"] | undefined,
-): ChatTabDescriptor => {
+  currentRun: ChatPanelProps["currentRun"] | undefined): ChatTabDescriptor => {
   if (currentRun?.runId) {
     return {
       id: `run:${currentRun.runId}`,
@@ -257,18 +256,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     () => (persistKey ? readPersistedState(persistKey) : null),
     // persistKey is stable per-user; intentional one-shot hydration.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+    []);
 
   const initial = React.useMemo(
     () => initialTabDescriptor(defaults, currentRun ?? null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+    []);
 
   const [tabs, setTabs] = React.useState<InternalTab[]>(() => {
-    const buildTab = (desc: ChatTabDescriptor): InternalTab => ({
-      ...desc,
+    const buildTab = (desc: ChatTabDescriptor): InternalTab => ({...desc,
       session: createSession(desc),
       mode: desc.mode ?? defaults.mode ?? "agent",
       profile: desc.profile ?? defaults.profile ?? profiles[0]?.id ?? "",
@@ -292,8 +288,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           profile: p.profile,
           model: p.model,
           sessionId: p.sessionId,
-        }),
-      );
+        }));
     }
     return [buildTab(initial)];
   });
@@ -322,8 +317,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         void t.session.restore(p.sessionId!).then((res) => {
           if (cancelled || !res) return;
           setTabs((ts2) =>
-            ts2.map((x) => (x.id === p.id ? { ...x, messages: res.messages } : x)),
-          );
+            ts2.map((x) => (x.id === p.id ? {...x, messages: res.messages }: x)));
         });
         return ts;
       });
@@ -346,8 +340,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     (id: string, patch: Partial<InternalTab>) => {
       setTabs((ts) => ts.map((t) => (t.id === id ? { ...t, ...patch } : t)));
     },
-    [],
-  );
+    []);
 
   const openTab = React.useCallback(
     (descriptor: ChatTabDescriptor) => {
@@ -356,15 +349,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       const existing = tabs.find(
         (t) =>
           t.scope?.runId === descriptor.scope?.runId &&
-          (t.mode === descriptor.mode || !descriptor.mode),
-      );
+          (t.mode === descriptor.mode || !descriptor.mode));
       if (existing) {
         setActiveTabId(existing.id);
         return;
       }
       const session = createSession(descriptor);
-      const next: InternalTab = {
-        ...descriptor,
+      const next: InternalTab = {...descriptor,
         session,
         mode:
           descriptor.mode ??
@@ -384,8 +375,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       setTabs((ts) => [...ts, next]);
       setActiveTabId(next.id);
     },
-    [tabs, createSession, defaults, profiles, models],
-  );
+    [tabs, createSession, defaults, profiles, models]);
 
   const closeTab = React.useCallback(
     (id: string) => {
@@ -401,8 +391,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return next;
       });
     },
-    [activeTabId],
-  );
+    [activeTabId]);
 
   // Scroll handling moved to <Conversation> — `use-stick-to-bottom`
   // pins the view to the latest message while honoring user scroll-up.
@@ -422,9 +411,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   React.useEffect(() => {
     setTabs((ts) =>
       ts.map((t) =>
-        t.mode === "conductor" && !conductorAvailable(t.scope) ? { ...t, mode: "agent" } : t,
-      ),
-    );
+        t.mode === "conductor" && !conductorAvailable(t.scope) ? {...t, mode: "agent" }: t));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -511,8 +498,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         window.dispatchEvent(
           new CustomEvent("agentable-sidebar:toggle", {
             detail: { key: "agentable-orch:chatpanel", force: "expand" },
-          }),
-        );
+          }));
         requestAnimationFrame(() => {
           const ta = document.querySelector<HTMLTextAreaElement>("aside textarea");
           ta?.focus();
@@ -556,52 +542,41 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       if (active.session.sendStream) {
         const result = await active.session.sendStream(text, meta, (delta) => {
           setTabs((ts) =>
-            ts.map((t) => (t.id === tabId ? { ...t, streamingText: t.streamingText + delta } : t)),
-          );
+            ts.map((t) => (t.id === tabId ? {...t, streamingText: t.streamingText + delta }: t)));
         });
         setTabs((ts) =>
           ts.map((t) => {
             if (t.id !== tabId) return t;
             const finalText = result?.text && result.text.length > 0 ? result.text : t.streamingText;
-            return {
-              ...t,
+            return {...t,
               sending: false,
-              messages: [
-                ...t.messages,
+              messages: [...t.messages,
                 { role: "assistant", text: finalText, meta: result?.meta ?? meta } as ChatMessage,
               ],
               streamingText: "",
             };
-          }),
-        );
+          }));
       } else {
         const reply = await active.session.send(text, meta);
         setTabs((ts) =>
           ts.map((t) =>
-            t.id === tabId ? { ...t, sending: false, messages: [...t.messages, reply] } : t,
-          ),
-        );
+            t.id === tabId ? {...t, sending: false, messages: [...t.messages, reply] }: t));
       }
     } catch (err) {
       setTabs((ts) =>
         ts.map((t) =>
           t.id === tabId
-            ? {
-                ...t,
+            ? {...t,
                 sending: false,
                 streamingText: "",
-                messages: [
-                  ...t.messages,
+                messages: [...t.messages,
                   {
                     role: "assistant",
                     text: `Failed to reach the orchestrator: ${err instanceof Error ? err.message : String(err)}`,
                     meta,
                   } as ChatMessage,
                 ],
-              }
-            : t,
-        ),
-      );
+              }: t));
     }
   };
 
@@ -612,8 +587,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const onPlanRun = (plan: { title?: string; steps: { title: string }[]; planId?: string }) => {
     const stepList = plan.steps.map((s, i) => `${i + 1}. ${s.title}`).join("\n");
     void sendText(
-      `Execute this plan as the coordinator. Use the run lifecycle tools (create_run, run_phases) to dispatch the work, and report progress with tool cards as you go.\n\nPlan: ${plan.title ?? "(untitled)"}\n${stepList}`,
-    );
+      `Execute this plan as the coordinator. Use the run lifecycle tools (create_run, run_phases) to dispatch the work, and report progress with tool cards as you go.\n\nPlan: ${plan.title ?? "(untitled)"}\n${stepList}`);
   };
   const onPlanRefine = (plan: { title?: string }) => {
     void sendText(`Refine the plan "${plan.title ?? "(untitled)"}" — what would you adjust before running it?`);
@@ -655,8 +629,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       sending: true,
       streamingText: "",
       messages: [...active.messages, userMsg],
-      messageAttachments: {
-        ...active.messageAttachments,
+      messageAttachments: {...active.messageAttachments,
         [active.messages.length]: userAttachments,
       },
       // Clear pending — only send `ready` files; uploading-in-flight stay.
@@ -673,8 +646,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       if (active.session.sendStream) {
         const result = await active.session.sendStream(text, meta, (delta) => {
           setTabs((ts) =>
-            ts.map((t) => (t.id === tabId ? { ...t, streamingText: t.streamingText + delta } : t)),
-          );
+            ts.map((t) => (t.id === tabId ? {...t, streamingText: t.streamingText + delta }: t)));
         });
         // On stream done, persist the assistant turn from the adapter's
         // returned ChatMessage rather than the streamed accumulator.
@@ -687,45 +659,35 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           ts.map((t) => {
             if (t.id !== tabId) return t;
             const finalText = result?.text && result.text.length > 0 ? result.text : t.streamingText;
-            return {
-              ...t,
+            return {...t,
               sending: false,
-              messages: [
-                ...t.messages,
+              messages: [...t.messages,
                 { role: "assistant", text: finalText, meta: result?.meta ?? meta } as ChatMessage,
               ],
               streamingText: "",
             };
-          }),
-        );
+          }));
       } else {
         const reply = await active.session.send(text, meta);
         setTabs((ts) =>
           ts.map((t) =>
-            t.id === tabId ? { ...t, sending: false, messages: [...t.messages, reply] } : t,
-          ),
-        );
+            t.id === tabId ? {...t, sending: false, messages: [...t.messages, reply] }: t));
       }
     } catch (err) {
       setTabs((ts) =>
         ts.map((t) =>
           t.id === tabId
-            ? {
-                ...t,
+            ? {...t,
                 sending: false,
                 streamingText: "",
-                messages: [
-                  ...t.messages,
+                messages: [...t.messages,
                   {
                     role: "assistant",
                     text: `Failed to reach the orchestrator: ${err instanceof Error ? err.message : String(err)}`,
                     meta,
                   } as ChatMessage,
                 ],
-              }
-            : t,
-        ),
-      );
+              }: t));
     }
   };
 
@@ -748,57 +710,39 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         status: "uploading",
       }));
       setTabs((ts) =>
-        ts.map((t) => (t.id === tabId ? { ...t, pendingAttachments: [...t.pendingAttachments, ...staged] } : t)),
-      );
+        ts.map((t) => (t.id === tabId ? {...t, pendingAttachments: [...t.pendingAttachments,...staged] }: t)));
       list.forEach((file, idx) => {
         const id = staged[idx].id;
-        active.session
-          .upload!(file)
-          .then(({ key, label }) => {
+        active.session.upload!(file).then(({ key, label }) => {
             setTabs((ts) =>
               ts.map((t) =>
                 t.id === tabId
-                  ? {
-                      ...t,
+                  ? {...t,
                       pendingAttachments: t.pendingAttachments.map((a) =>
-                        a.id === id ? { ...a, status: "ready", key, name: label ?? a.name } : a,
-                      ),
-                    }
-                  : t,
-              ),
-            );
-          })
-          .catch((err: unknown) => {
+                        a.id === id ? {...a, status: "ready", key, name: label ?? a.name }: a),
+                    }: t));
+          }).catch((err: unknown) => {
             const message = err instanceof Error ? err.message : String(err);
             setTabs((ts) =>
               ts.map((t) =>
                 t.id === tabId
-                  ? {
-                      ...t,
+                  ? {...t,
                       pendingAttachments: t.pendingAttachments.map((a) =>
-                        a.id === id ? { ...a, status: "failed", error: message } : a,
-                      ),
-                    }
-                  : t,
-              ),
-            );
+                        a.id === id ? {...a, status: "failed", error: message }: a),
+                    }: t));
           });
       });
     },
-    [active],
-  );
+    [active]);
 
   const removeAttachment = React.useCallback(
     (id: string) => {
       const tabId = active.id;
       setTabs((ts) =>
         ts.map((t) =>
-          t.id === tabId ? { ...t, pendingAttachments: t.pendingAttachments.filter((a) => a.id !== id) } : t,
-        ),
-      );
+          t.id === tabId ? {...t, pendingAttachments: t.pendingAttachments.filter((a) => a.id !== id) }: t));
     },
-    [active.id],
-  );
+    [active.id]);
 
   // Drag-drop on the panel + hidden file input ref.
   const [dragging, setDragging] = React.useState(false);
@@ -1256,9 +1200,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             borderRadius: 6,
           }}
         >
-          {modes
-            .filter((m) => m.id !== "conductor" || conductorAvailable(active.scope))
-            .map((m) => {
+          {modes.filter((m) => m.id !== "conductor" || conductorAvailable(active.scope)).map((m) => {
             const on = m.id === active.mode;
             return (
               <button
@@ -1607,13 +1549,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             placeholder={
               active.mode === "conductor"
                 ? active.scope?.runId
-                  ? `Ask the conductor about this run…`
-                  : "Ask the conductor — e.g. 'list recent runs'"
-                : active.mode === "agent"
-                  ? "Ask the agent — anything about this project"
-                  : active.mode === "workflow-builder"
-                    ? "Describe a workflow to build (attach a doc to ground it)…"
-                    : "Describe what you want to plan…"
+                  ? `Ask the conductor about this run…`: "Ask the conductor — e.g. 'list recent runs'": active.mode === "agent"
+                  ? "Ask the agent — anything about this project": active.mode === "workflow-builder"
+                    ? "Describe a workflow to build (attach a doc to ground it)…": "Describe what you want to plan…"
             }
             rows={2}
             style={{

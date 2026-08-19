@@ -30,9 +30,7 @@ function findFreePosition(
   openingId: string
 ): { x: number; y: number } {
   const GAP = 16;
-  const visiblePanels = Object.entries(panels)
-    .filter(([id, p]) => id !== openingId && p.visible)
-    .map(([_, p]) => p);
+  const visiblePanels = Object.entries(panels).filter(([id, p]) => id !== openingId && p.visible).map(([_, p]) => p);
 
   if (visiblePanels.length === 0) {
     return { x: 260, y: 80 };
@@ -40,13 +38,11 @@ function findFreePosition(
 
   // Find rightmost panel
   const rightmost = visiblePanels.reduce((max, p) =>
-    p.x + (p.w || 300) > max.x + (max.w || 300) ? p : max
-  , visiblePanels[0]);
+    p.x + (p.w || 300) > max.x + (max.w || 300) ? p: max, visiblePanels[0]);
 
   // Find bottom panel
   const bottommost = visiblePanels.reduce((max, p) =>
-    p.y + (p.h || 400) > max.y + (max.h || 400) ? p : max
-  , visiblePanels[0]);
+    p.y + (p.h || 400) > max.y + (max.h || 400) ? p: max, visiblePanels[0]);
 
   // Try placing to the right first
   const rightX = rightmost.x + (rightmost.w || 300) + GAP;
@@ -147,9 +143,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
       const maxBottom = VH - BOTTOMBAR_H;       // panel's bottom edge cannot cross this
       const maxRight = VW - 20;                 // panel's right edge cannot cross this
 
-      const visiblePanels = Object.entries(state.panels)
-        .filter(([pid, p]) => pid !== id && p.visible)
-        .map(([_, p]) => p);
+      const visiblePanels = Object.entries(state.panels).filter(([pid, p]) => pid !== id && p.visible).map(([_, p]) => p);
 
       let newX = startX;
       let newY = startY;
@@ -200,10 +194,8 @@ export const useLayoutStore = create<LayoutState>((set) => ({
       newY = Math.max(TOPBAR_H, Math.min(newY, maxBottom - newH));
 
       return {
-        panels: {
-          ...state.panels,
-          [id]: {
-            ...panel,
+        panels: {...state.panels,
+          [id]: {...panel,
             visible: true,
             x: newX,
             y: newY,
@@ -218,8 +210,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
   hidePanel: (id: PanelId) => {
     set((state) => ({
-      panels: {
-        ...state.panels,
+      panels: {...state.panels,
         [id]: { ...state.panels[id], visible: false },
       },
     }));
@@ -232,18 +223,15 @@ export const useLayoutStore = create<LayoutState>((set) => ({
       const isVisible = panel.visible;
       if (isVisible) {
         return {
-          panels: {
-            ...state.panels,
+          panels: {...state.panels,
             [id]: { ...panel, visible: false },
           },
         };
       } else {
         const newPos = findFreePosition(state.panels, id);
         return {
-          panels: {
-            ...state.panels,
-            [id]: {
-              ...panel,
+          panels: {...state.panels,
+            [id]: {...panel,
               visible: true,
               x: panel.x || newPos.x,
               y: panel.y || newPos.y,
@@ -257,8 +245,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
   movePanel: (id: PanelId, x: number, y: number) => {
     set((state) => ({
-      panels: {
-        ...state.panels,
+      panels: {...state.panels,
         [id]: { ...state.panels[id], x, y },
       },
     }));
@@ -266,8 +253,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
   resizePanel: (id: PanelId, w: number, h: number) => {
     set((state) => ({
-      panels: {
-        ...state.panels,
+      panels: {...state.panels,
         [id]: { ...state.panels[id], w, h },
       },
     }));
@@ -275,8 +261,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
   minimizePanel: (id: PanelId) => {
     set((state) => ({
-      panels: {
-        ...state.panels,
+      panels: {...state.panels,
         [id]: { ...state.panels[id], minimized: true },
       },
     }));
@@ -284,8 +269,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
   maximizePanel: (id: PanelId) => {
     set((state) => ({
-      panels: {
-        ...state.panels,
+      panels: {...state.panels,
         [id]: { ...state.panels[id], minimized: false },
       },
     }));
@@ -302,49 +286,42 @@ export const useLayoutStore = create<LayoutState>((set) => ({
       const ART_W = 320;
 
       return {
-        panels: {
-          ...state.panels,
-          nav: {
-            ...state.panels.nav,
+        panels: {...state.panels,
+          nav: {...state.panels.nav,
             x: NAV_X,
             y: NAV_Y,
             w: NAV_W,
             visible: true,
           },
-          chat: {
-            ...state.panels.chat,
+          chat: {...state.panels.chat,
             x: NAV_X + NAV_W + GAP,
             y: NAV_Y,
             w: CHAT_W,
             h: Math.min(480, window.innerHeight - NAV_Y - GAP),
             visible: true,
           },
-          artifacts: {
-            ...state.panels.artifacts,
+          artifacts: {...state.panels.artifacts,
             x: NAV_X + NAV_W + GAP + CHAT_W + GAP,
             y: NAV_Y,
             w: ART_W,
             h: Math.min(480, window.innerHeight - NAV_Y - GAP),
             visible: true,
           },
-          journey: {
-            ...state.panels.journey,
+          journey: {...state.panels.journey,
             x: NAV_X + NAV_W + GAP + CHAT_W + GAP,
             y: NAV_Y + Math.min(480, window.innerHeight - NAV_Y - GAP) + GAP,
             w: ART_W,
             h: 280,
             visible: true,
           },
-          'growth-paths': {
-            ...state.panels['growth-paths'],
+          'growth-paths': {...state.panels['growth-paths'],
             x: NAV_X + NAV_W + GAP,
             y: NAV_Y + Math.min(480, window.innerHeight - NAV_Y - GAP) + GAP,
             w: CHAT_W,
             h: 400,
             visible: false,
           },
-          voice: {
-            ...state.panels.voice,
+          voice: {...state.panels.voice,
             x: NAV_X,
             y: window.innerHeight - 220 - GAP,
             w: 280,
@@ -377,8 +354,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
   setPanelPosition: (id: PanelId, x: number, y: number) => {
     set((state) => ({
-      panels: {
-        ...state.panels,
+      panels: {...state.panels,
         [id]: { ...state.panels[id], x, y },
       },
     }));

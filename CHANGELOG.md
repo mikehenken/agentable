@@ -44,7 +44,7 @@ Initial public release.
 
 - **Lit web component** (`<agentable-canvas>`) — drop-in embed for any HTML host.
   Shadow DOM isolation, dual-form (hex + HSL) brand tokens, custom-event API,
-  imperative `startVoiceCall()` / `endVoiceCall()` methods.
+  imperative `startVoiceCall` `endVoiceCall` methods.
 - **React wrapper** (`agentable-canvas/react`) — typed props + event handlers
   for React 18/19 hosts.
 - **Pure React shell** (`agentable-canvas/react-canvas`) — `<CanvasShell>` and
@@ -80,7 +80,7 @@ Initial public release.
 - CopilotKit dependencies are present (`@copilotkit/react-core`, `@copilotkit/react-ui`)
   but are not yet wired. The current tool surface uses Gemini Live's native
   function-calling protocol so it works for both voice and chat paths through
-  one registry. CopilotKit / AG-UI integration is planned for a future release.
+  one registry. CopilotKit AG-UI integration is planned for a future release.
 - All 5 mock job listings, 3 mock applications, and 3 example growth paths
   are placeholder data for the OSS demo. Tenants override via panel injection
   or future tenant config.

@@ -1,0 +1,85 @@
+{
+  "tickets": [
+    {
+      "id": "tkt-2001",
+      "subject": "Workspace invite email never arrived",
+      "customerName": "Avery Chen",
+      "customerEmail": "avery.chen@example.test",
+      "status": "open",
+      "priority": "urgent",
+      "channel": "email",
+      "preview": "Our new hire still cannot accept the workspace invite.",
+      "updatedAt": "2026-07-21T11:15:00.000Z",
+      "assignee": "Casey Agent"
+    },
+    {
+      "id": "tkt-2002",
+      "subject": "Macro keyboard shortcut conflict",
+      "customerName": "Blake Ortiz",
+      "customerEmail": "blake.ortiz@example.test",
+      "status": "pending",
+      "priority": "normal",
+      "channel": "chat",
+      "preview": "Ctrl+M opens macros and the browser menu at the same time.",
+      "updatedAt": "2026-07-20T18:40:00.000Z"
+    },
+    {
+      "id": "tkt-2003",
+      "subject": "Resolved — stale SLA badge after reply",
+      "customerName": "Drew Patel",
+      "customerEmail": "drew.patel@example.test",
+      "status": "resolved",
+      "priority": "low",
+      "channel": "email",
+      "preview": "Badge cleared after refresh; closing as resolved.",
+      "updatedAt": "2026-07-19T08:05:00.000Z",
+      "assignee": "Casey Agent"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-nw-1",
+      "ticketId": "tkt-2001",
+      "author": "Avery Chen",
+      "role": "customer",
+      "body": "Our new hire still cannot accept the workspace invite.",
+      "sentAt": "2026-07-21T11:00:00.000Z"
+    },
+    {
+      "id": "msg-nw-2",
+      "ticketId": "tkt-2001",
+      "author": "Casey Agent",
+      "role": "agent",
+      "body": "I resent the invite and confirmed the domain allow-list.",
+      "sentAt": "2026-07-21T11:15:00.000Z"
+    },
+    {
+      "id": "msg-nw-3",
+      "ticketId": "tkt-2002",
+      "author": "Blake Ortiz",
+      "role": "customer",
+      "body": "Ctrl+M opens macros and the browser menu at the same time.",
+      "sentAt": "2026-07-20T18:40:00.000Z"
+    }
+  ],
+  "macros": [
+    {
+      "id": "macro-nw-1",
+      "title": "Invite troubleshooting",
+      "category": "Access",
+      "body": "I have resent your workspace invite. Please check spam and confirm the email domain is allow-listed."
+    },
+    {
+      "id": "macro-nw-2",
+      "title": "Escalate to platform",
+      "category": "Escalation",
+      "body": "I am escalating this to our platform team and will update you within one business day."
+    },
+    {
+      "id": "macro-nw-3",
+      "title": "Close as resolved",
+      "category": "Closure",
+      "body": "Glad this is working now. I am marking the ticket resolved — reply here if anything regresses."
+    }
+  ]
+}

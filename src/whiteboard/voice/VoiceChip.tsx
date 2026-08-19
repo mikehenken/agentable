@@ -37,14 +37,10 @@ export function VoiceChip(): ReactElement {
   const isError = voice.state === 'error';
 
   const label = isError
-    ? 'Try again'
-    : isSpeaking
-    ? `${assistantName} is speaking`
-    : isListening
-    ? 'Listening · End call'
-    : isConnecting
-    ? 'Connecting…'
-    : idleLabel;
+    ? 'Try again': isSpeaking
+    ? `${assistantName} is speaking`: isListening
+    ? 'Listening · End call': isConnecting
+    ? 'Connecting…': idleLabel;
 
   // Level meter — gentle gamma curve so quiet speech still pulses but
   // loud speech doesn't clip the dot.
@@ -56,12 +52,9 @@ export function VoiceChip(): ReactElement {
   //   - listening: primary (default teal)
   //   - idle/connecting: muted
   const dotColor = isError
-    ? 'var(--landi-color-error, #EF4444)'
-    : isSpeaking
-    ? 'var(--landi-color-accent, #C9A227)'
-    : voice.isActive
-    ? 'var(--landi-color-primary, #0D7377)'
-    : 'var(--landi-color-text-muted, #6B6B66)';
+    ? 'var(--landi-color-error, #EF4444)': isSpeaking
+    ? 'var(--landi-color-accent, #C9A227)': voice.isActive
+    ? 'var(--landi-color-primary, #0D7377)': 'var(--landi-color-text-muted, #6B6B66)';
 
   const Icon = isError ? AlertCircle : voice.isActive ? Mic : MicOff;
   const disabled = !voice.available && !isError;
@@ -81,12 +74,10 @@ export function VoiceChip(): ReactElement {
         borderRadius: 999,
         border: `1px solid ${
           voice.isActive
-            ? 'var(--landi-color-primary, #0D7377)'
-            : 'var(--landi-color-border, #E5E5E0)'
+            ? 'var(--landi-color-primary, #0D7377)': 'var(--landi-color-border, #E5E5E0)'
         }`,
         background: voice.isActive
-          ? 'var(--landi-color-primary-tint, rgba(13, 115, 119, 0.08))'
-          : 'var(--landi-color-surface, #FFFFFF)',
+          ? 'var(--landi-color-primary-tint, rgba(13, 115, 119, 0.08))': 'var(--landi-color-surface, #FFFFFF)',
         color: 'var(--landi-color-text, #1A1A1A)',
         fontSize: 13,
         fontWeight: 500,

@@ -1,7 +1,6 @@
 // Shared domain types for orchestration components.
 // Names align with the worker doc (Workspace > Project > Run > Phase > Iteration > Artifacts).
 // Prototype seed data uses "Client" — kept as a type alias for visual fidelity.
-
 export type RunStatus = "complete" | "running" | "superseded" | "draft" | "queued";
 export type RunVerdict = "PASS" | "FAIL" | null;
 
@@ -176,8 +175,7 @@ export interface ChatSessionAdapter {
   sendStream?(
     text: string,
     opts: { mode: ChatMode; profile: string; model: string },
-    onDelta: (delta: string) => void,
-  ): Promise<ChatMessage>;
+    onDelta: (delta: string) => void): Promise<ChatMessage>;
   /** Persist mode/profile/model swap; PATCHes the session. */
   patch(opts: Partial<{ mode: ChatMode; profile: string; model: string }>): Promise<void>;
   /** Attach an R2 artifact key to the session context. */

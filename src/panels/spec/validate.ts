@@ -39,8 +39,7 @@ function issue(
   code: SpecIssue['code'],
   message: string,
   severity: SpecIssue['severity'],
-  extra?: Pick<SpecIssue, 'nodeId' | 'path' | 'hint'>,
-): SpecIssue {
+  extra?: Pick<SpecIssue, 'nodeId' | 'path' | 'hint'>): SpecIssue {
   return { code, message, severity, ...extra };
 }
 
@@ -106,8 +105,7 @@ function specByteSize(value: unknown): number {
 function collectStringLengths(
   value: JsonValue,
   path: string,
-  out: Array<{ path: string; length: number }>,
-): void {
+  out: Array<{ path: string; length: number }>): void {
   if (typeof value === 'string') {
     out.push({ path, length: value.length });
     return;
@@ -147,8 +145,7 @@ function stripControlChars(value: string): string {
 function walkJsonStrings(
   value: JsonValue,
   visitor: (text: string, path: string) => void,
-  path = '',
-): void {
+  path = ''): void {
   if (typeof value === 'string') {
     visitor(value, path);
     return;
@@ -222,26 +219,21 @@ function scanStringForSanitizationIssues(
   text: string,
   path: string,
   errors: SpecIssue[],
-  nodeId?: string,
-): void {
+  nodeId?: string): void {
   if (JAVASCRIPT_SCHEME.test(text.trim())) {
     errors.push(
       issue(
         'SPEC_SANITIZE_JAVASCRIPT_URL',
         t('validation.sanitize.javascriptUrl', { path }),
         'error',
-        { nodeId, path },
-      ),
-    );
+        { nodeId, path }));
   } else if (looksLikeUrl(text) && !isAllowedHttpUrl(text)) {
     errors.push(
       issue(
         'SPEC_SANITIZE_URL_SCHEME',
         t('validation.sanitize.urlScheme', { path }),
         'error',
-        { nodeId, path, hint: t('validation.sanitize.urlScheme.hint') },
-      ),
-    );
+        { nodeId, path, hint: t('validation.sanitize.urlScheme.hint') }));
   }
   if (containsControlChar(text)) {
     errors.push(
@@ -249,9 +241,7 @@ function scanStringForSanitizationIssues(
         'SPEC_SANITIZE_CONTROL_CHAR',
         t('validation.sanitize.controlChar', { path }),
         'error',
-        { nodeId, path },
-      ),
-    );
+        { nodeId, path }));
   }
 }
 
@@ -259,8 +249,7 @@ function walkJsonStringsForSanitization(
   value: JsonValue,
   pathPrefix: string,
   errors: SpecIssue[],
-  nodeId?: string,
-): void {
+  nodeId?: string): void {
   walkJsonStrings(value, (text, subPath) => {
     const fullPath = pathPrefix ? `${pathPrefix}.${subPath}` : subPath;
     scanStringForSanitizationIssues(text, fullPath, errors, nodeId);
@@ -390,9 +379,7 @@ function normalizeUnknownNode(nodeId: string, raw: unknown, parsed: SpecNode): N
     props: {
       originalType: parsed.type,
       nodeId,
-    },
-    ...(parsed.children !== undefined ? { children: [...parsed.children] } : {}),
-    ...(parsed.showIf !== undefined ? { showIf: parsed.showIf } : {}),
+    },...(parsed.children !== undefined ? { children: [...parsed.children] }: {}),...(parsed.showIf !== undefined ? { showIf: parsed.showIf }: {}),
     [UNKNOWN_NODE_RAW_KEY]: rawRecord,
   };
 }
@@ -402,8 +389,7 @@ function parseSources(raw: Record<string, unknown>): Record<string, SpecSourceBi
   for (const [name, value] of Object.entries(raw)) {
     if (!isRecord(value) || typeof value.source !== 'string') return null;
     sources[name] = {
-      source: value.source,
-      ...(isRecord(value.params) ? { params: value.params as JsonObject } : {}),
+      source: value.source,...(isRecord(value.params) ? { params: value.params as JsonObject }: {}),
     };
   }
   return sources;
@@ -419,14 +405,8 @@ function parseActions(raw: Record<string, unknown>): Record<string, SpecAction> 
         actions[id] = {
           kind: 'mutate',
           source: value.source,
-          op: value.op,
-          ...(typeof value.mutates === 'boolean' ? { mutates: value.mutates } : {}),
-          ...(typeof value.destructive === 'boolean' ? { destructive: value.destructive } : {}),
-          ...(typeof value.confirm === 'string' ? { confirm: value.confirm } : {}),
-          ...(value.variant === 'ai' ? { variant: 'ai' as const } : {}),
-          ...(Array.isArray(value.targetFields)
-            ? { targetFields: value.targetFields.filter((f): f is string => typeof f === 'string') }
-            : {}),
+          op: value.op,...(typeof value.mutates === 'boolean' ? { mutates: value.mutates }: {}),...(typeof value.destructive === 'boolean' ? { destructive: value.destructive }: {}),...(typeof value.confirm === 'string' ? { confirm: value.confirm }: {}),...(value.variant === 'ai' ? { variant: 'ai' as const }: {}),...(Array.isArray(value.targetFields)
+            ? { targetFields: value.targetFields.filter((f): f is string => typeof f === 'string') }: {}),
         };
         break;
       }
@@ -439,8 +419,7 @@ function parseActions(raw: Record<string, unknown>): Record<string, SpecAction> 
         if (typeof value.panelId !== 'string') return null;
         actions[id] = {
           kind: 'panel',
-          panelId: value.panelId,
-          ...(typeof value.scopeFrom === 'string' ? { scopeFrom: value.scopeFrom } : {}),
+          panelId: value.panelId,...(typeof value.scopeFrom === 'string' ? { scopeFrom: value.scopeFrom }: {}),
         };
         break;
       }
@@ -458,8 +437,7 @@ function parseActions(raw: Record<string, unknown>): Record<string, SpecAction> 
 
 function formatAgentRepairResult(
   errors: SpecIssue[],
-  agentRepairRound: boolean | undefined,
-): Pick<ValidateSpecResult, 'agentRepairEligible'> {
+  agentRepairRound: boolean | undefined): Pick<ValidateSpecResult, 'agentRepairEligible'> {
   if (!agentRepairRound) return {};
   return { agentRepairEligible: errors.length > 0 };
 }
@@ -471,8 +449,7 @@ function formatAgentRepairResult(
 export function validateSpec(
   input: unknown,
   context: SpecValidationContext,
-  options: ValidateSpecOptions = {},
-): ValidateSpecResult {
+  options: ValidateSpecOptions = {}): ValidateSpecResult {
   const errors: SpecIssue[] = [];
   const warnings: SpecIssue[] = [];
 
@@ -483,9 +460,7 @@ export function validateSpec(
         'SPEC_BUDGET_SIZE',
         t('validation.budget.size', { max: SPEC_MAX_TOTAL_BYTES }),
         'error',
-        { hint: t('validation.budget.size.hint') },
-      ),
-    );
+        { hint: t('validation.budget.size.hint') }));
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
   }
 
@@ -494,8 +469,7 @@ export function validateSpec(
     errors.push(
       issue('SPEC_ENVELOPE_INVALID', t('validation.envelope.invalid'), 'error', {
         hint: t('validation.envelope.invalid.hint'),
-      }),
-    );
+      }));
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
   }
 
@@ -506,9 +480,7 @@ export function validateSpec(
       issue(
         'SPEC_VERSION_UNKNOWN',
         t('validation.version.newer', { version: envelope.v, supported: CURRENT_SPEC_VERSION }),
-        'error',
-      ),
-    );
+        'error'));
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
   }
 
@@ -520,8 +492,7 @@ export function validateSpec(
         issue('SPEC_NODES_INVALID', t('validation.node.invalid', { nodeId }), 'error', {
           nodeId,
           hint: t('validation.node.invalid.hint'),
-        }),
-      );
+        }));
       continue;
     }
     parsedNodes[nodeId] = parsed;
@@ -540,8 +511,7 @@ export function validateSpec(
     errors.push(
       issue('SPEC_ROOT_UNKNOWN', t('validation.root.unknown', { root: envelope.root }), 'error', {
         nodeId: envelope.root,
-      }),
-    );
+      }));
     return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
   }
 
@@ -557,8 +527,7 @@ export function validateSpec(
       errors.push(
         issue('SPEC_ENVELOPE_INVALID', t('validation.envelope.sourcesInvalid'), 'error', {
           path: 'sources',
-        }),
-      );
+        }));
       return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
     }
     workingSpec = { ...workingSpec, sources };
@@ -573,8 +542,7 @@ export function validateSpec(
       errors.push(
         issue('SPEC_ENVELOPE_INVALID', t('validation.envelope.actionsInvalid'), 'error', {
           path: 'actions',
-        }),
-      );
+        }));
       return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
     }
     workingSpec.actions = actions;
@@ -591,9 +559,7 @@ export function validateSpec(
             supported: CURRENT_SPEC_VERSION,
           }),
           'error',
-          { hint: t('validation.version.needsMigrations.hint') },
-        ),
-      );
+          { hint: t('validation.version.needsMigrations.hint') }));
       return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
     }
     try {
@@ -605,8 +571,7 @@ export function validateSpec(
       errors.push(
         issue('SPEC_VERSION_UNKNOWN', message, 'error', {
           hint: t('validation.version.migrationFailed.hint'),
-        }),
-      );
+        }));
       return { ok: false, errors, warnings, ...formatAgentRepairResult(errors, options.agentRepairRound) };
     }
   }
@@ -619,9 +584,7 @@ export function validateSpec(
         'SPEC_BUDGET_NODES',
         t('validation.budget.nodes', { count: nodeCount, max: SPEC_MAX_NODES }),
         'error',
-        { hint: t('validation.budget.nodes.hint', { max: SPEC_MAX_NODES }) },
-      ),
-    );
+        { hint: t('validation.budget.nodes.hint', { max: SPEC_MAX_NODES }) }));
   }
 
   const tree = analyzeTree(workingSpec.root, workingSpec.nodes);
@@ -631,9 +594,7 @@ export function validateSpec(
         'SPEC_BUDGET_DEPTH',
         t('validation.budget.depth', { depth: tree.depth, max: SPEC_MAX_DEPTH }),
         'error',
-        { nodeId: workingSpec.root, hint: t('validation.budget.depth.hint') },
-      ),
-    );
+        { nodeId: workingSpec.root, hint: t('validation.budget.depth.hint') }));
   }
 
   for (const cycle of tree.cycles) {
@@ -642,9 +603,7 @@ export function validateSpec(
         'SPEC_CYCLE',
         t('validation.tree.cycle', { cycle: cycle.join(' -> ') }),
         'error',
-        { nodeId: cycle[0], hint: t('validation.tree.cycle.hint') },
-      ),
-    );
+        { nodeId: cycle[0], hint: t('validation.tree.cycle.hint') }));
   }
 
   for (const dup of tree.duplicateChildren) {
@@ -653,17 +612,14 @@ export function validateSpec(
         'SPEC_DUPLICATE_CHILD',
         t('validation.tree.duplicateChild', { nodeId: dup.nodeId, childId: dup.childId }),
         'error',
-        { nodeId: dup.nodeId, hint: t('validation.tree.duplicateChild.hint') },
-      ),
-    );
+        { nodeId: dup.nodeId, hint: t('validation.tree.duplicateChild.hint') }));
   }
 
   for (const orphanId of tree.orphans) {
     warnings.push(
       issue('SPEC_ORPHAN_NODE', t('validation.tree.orphan', { nodeId: orphanId }), 'warning', {
         nodeId: orphanId,
-      }),
-    );
+      }));
   }
 
   // --- Step 2: catalog membership + unknown placeholder ---
@@ -678,9 +634,7 @@ export function validateSpec(
           'SPEC_NODE_UNKNOWN',
           t('validation.node.unknownType', { type: node.type }),
           'warning',
-          { nodeId, hint: t('validation.node.unknownType.hint') },
-        ),
-      );
+          { nodeId, hint: t('validation.node.unknownType.hint') }));
       normalizedNodes[nodeId] = normalizeUnknownNode(nodeId, raw, node);
       continue;
     }
@@ -691,8 +645,7 @@ export function validateSpec(
   for (const [nodeId, node] of Object.entries(normalizedNodes)) {
     if (node.type === UNKNOWN_NODE_PLACEHOLDER_TYPE) continue;
     const catalogEntry = context.catalog.get(
-      workingSpec.nodes[nodeId]?.type ?? node.type,
-    );
+      workingSpec.nodes[nodeId]?.type ?? node.type);
     if (catalogEntry === undefined) continue;
     const props = node.props ?? {};
     const result = catalogEntry.props.safeParse(props);
@@ -706,9 +659,7 @@ export function validateSpec(
             nodeId,
             path: 'props',
             hint: result.error.issues[0]?.message ?? t('validation.node.propsInvalid.hint'),
-          },
-        ),
-      );
+          }));
     } else {
       normalizedNodes[nodeId] = { ...node, props: result.data as JsonObject };
     }
@@ -728,9 +679,7 @@ export function validateSpec(
             'SPEC_ACTION_REF_SMUGGLED',
             t('validation.action.refSmuggled', { ref }),
             'error',
-            { nodeId, path, hint: t('validation.action.refSmuggled.hint') },
-          ),
-        );
+            { nodeId, path, hint: t('validation.action.refSmuggled.hint') }));
         continue;
       }
       if (looksLikeUrl(ref) || JAVASCRIPT_SCHEME.test(ref)) {
@@ -739,9 +688,7 @@ export function validateSpec(
             'SPEC_ACTION_URL_FORBIDDEN',
             t('validation.action.refUrl', { ref }),
             'error',
-            { nodeId, path },
-          ),
-        );
+            { nodeId, path }));
         continue;
       }
       if (!actionIds.has(ref)) {
@@ -750,9 +697,7 @@ export function validateSpec(
             'SPEC_ACTION_REF_MISSING',
             t('validation.action.refMissing', { ref }),
             'error',
-            { nodeId, path, hint: t('validation.action.refMissing.hint') },
-          ),
-        );
+            { nodeId, path, hint: t('validation.action.refMissing.hint') }));
       }
     }
   }
@@ -765,9 +710,7 @@ export function validateSpec(
             'SPEC_ACTION_REF_SMUGGLED',
             t('validation.action.idSmuggled', { actionId }),
             'error',
-            { path: `actions.${actionId}`, hint: t('validation.action.idSmuggled.hint') },
-          ),
-        );
+            { path: `actions.${actionId}`, hint: t('validation.action.idSmuggled.hint') }));
       }
 
       const serialized = JSON.stringify(action);
@@ -777,9 +720,7 @@ export function validateSpec(
             'SPEC_ACTION_URL_FORBIDDEN',
             t('validation.action.urlPayload', { actionId }),
             'error',
-            { path: `actions.${actionId}` },
-          ),
-        );
+            { path: `actions.${actionId}` }));
       }
 
       switch (action.kind) {
@@ -790,9 +731,7 @@ export function validateSpec(
                 'SPEC_ACTION_SOURCE_UNKNOWN',
                 t('validation.action.sourceUnknown', { actionId, source: action.source }),
                 'error',
-                { path: `actions.${actionId}.source`, hint: t('validation.action.sourceUnknown.hint') },
-              ),
-            );
+                { path: `actions.${actionId}.source`, hint: t('validation.action.sourceUnknown.hint') }));
           }
           break;
         case 'host':
@@ -802,9 +741,7 @@ export function validateSpec(
                 'SPEC_HOST_ACTION_UNKNOWN',
                 t('validation.action.hostUnknown', { action: action.action }),
                 'error',
-                { path: `actions.${actionId}.action` },
-              ),
-            );
+                { path: `actions.${actionId}.action` }));
           }
           break;
         case 'panel':
@@ -814,9 +751,7 @@ export function validateSpec(
                 'SPEC_PANEL_UNKNOWN',
                 t('validation.action.panelUnknown', { actionId, panelId: action.panelId }),
                 'error',
-                { path: `actions.${actionId}.panelId` },
-              ),
-            );
+                { path: `actions.${actionId}.panelId` }));
           }
           break;
         default:
@@ -841,9 +776,7 @@ export function validateSpec(
               max: SPEC_MAX_STRING_PROP,
             }),
             'error',
-            { nodeId, path: entry.path },
-          ),
-        );
+            { nodeId, path: entry.path }));
       }
     }
   }
@@ -859,8 +792,7 @@ export function validateSpec(
         walkJsonStringsForSanitization(
           binding.params,
           `sources.${sourceName}.params`,
-          errors,
-        );
+          errors);
       }
     }
   }
@@ -871,8 +803,7 @@ export function validateSpec(
         scanStringForSanitizationIssues(
           field.value,
           `actions.${actionId}.${field.path}`,
-          errors,
-        );
+          errors);
       }
     }
   }
@@ -910,8 +841,7 @@ export function validateSpec(
       const sanitized = sanitizeJsonValue(binding.params);
       sourcesChanged = sourcesChanged || sanitized.changed;
       nextSources[sourceName] = sanitized.changed
-        ? { ...binding, params: sanitized.value as JsonObject }
-        : binding;
+        ? {...binding, params: sanitized.value as JsonObject }: binding;
     }
     if (sourcesChanged) {
       sanitizedSources = nextSources;
@@ -925,8 +855,7 @@ export function validateSpec(
     if (node.showIf !== undefined) {
       const sanitizedShowIf = sanitizeJsonValue(node.showIf.$eq);
       if (sanitizedShowIf.changed) {
-        nextNode = {
-          ...nextNode,
+        nextNode = {...nextNode,
           showIf: { $eq: sanitizedShowIf.value as [JsonValue, JsonValue] },
         };
       }
@@ -942,20 +871,16 @@ export function validateSpec(
     }
   }
 
-  const normalized: NormalizedPanelSpec = {
-    ...workingSpec,
+  const normalized: NormalizedPanelSpec = {...workingSpec,
     v: CURRENT_SPEC_VERSION,
-    nodes: normalizedNodes,
-    ...(sanitizedState !== undefined ? { state: sanitizedState } : {}),
-    ...(sanitizedSources !== undefined ? { sources: sanitizedSources } : {}),
+    nodes: normalizedNodes,...(sanitizedState !== undefined ? { state: sanitizedState }: {}),...(sanitizedSources !== undefined ? { sources: sanitizedSources }: {}),
   };
 
   // --- Step 7: agent repair eligibility flag ---
   return {
     ok: true,
     spec: normalized,
-    warnings,
-    ...formatAgentRepairResult([], options.agentRepairRound),
+    warnings,...formatAgentRepairResult([], options.agentRepairRound),
   };
 }
 

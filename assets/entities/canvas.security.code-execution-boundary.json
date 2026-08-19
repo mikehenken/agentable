@@ -1,0 +1,53 @@
+{
+  "entity_id": "canvas.security.code-execution-boundary",
+  "entity_type": "feature",
+  "parent_id": "canvas.panels",
+  "name": "Code-execution boundary hardening",
+  "description": "G4 shared sanitize/validate layer for renderer and asset paths; red-team inert rendering for markup/JS-shaped strings; canvasPolicy allowCodePreview gate consumer.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "security",
+    "G4",
+    "renderer",
+    "open-canvas"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.code-execution-boundary::feature",
+    "source_files": [
+      "src/security/codeExecutionBoundary.ts",
+      "src/security/index.ts",
+      "src/panels/document/sanitizeRuns.ts",
+      "src/panels/document/validate.ts",
+      "src/panels/document/renderBlock.tsx",
+      "src/panels/renderer/SpecRenderer.tsx",
+      "src/panels/approval/ApprovalCard.tsx",
+      "src/panels/approval/payloadDiff.ts",
+      "src/panels/catalog/components.tsx",
+      "src/panels/catalog/fieldFormFields.tsx",
+      "src/i18n/resolveCatalogString.ts",
+      "src/agents/authoringAssetBridge.ts",
+      "tests/unit/codeExecutionBoundary.test.tsx"
+    ],
+    "decision": "G4"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

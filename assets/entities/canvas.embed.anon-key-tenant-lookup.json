@@ -1,0 +1,49 @@
+{
+  "entity_id": "canvas.embed.anon-key-tenant-lookup",
+  "entity_type": "feature",
+  "parent_id": "canvas.embed",
+  "name": "AnonKeyTenantLookup",
+  "description": "Public anon-key tenant embed config lookup completing the white-label contract with script-tag and JS API parity.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "white-label",
+    "anon-key",
+    "tenant-config",
+    "g3"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.anon-key-tenant-lookup::feature",
+    "source_file": "src/embed/tenantLookup/anonKeyTenantLookup.ts",
+    "js_api": "src/embed/embedApi.ts",
+    "lookup_route_default": "/agentable/embed/config"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/agentable/embed/config",
+      "description": "Host-provided public tenant config lookup (anon key via query + X-Agentable-Anon-Key header). Implemented by embed host, not agentable-canvas."
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [
+    "anon-key"
+  ],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

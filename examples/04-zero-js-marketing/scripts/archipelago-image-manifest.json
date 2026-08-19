@@ -1,0 +1,328 @@
+{
+  "generatedAt": "2026-07-25T04:53:01.850Z",
+  "model": "gemini-3-pro-image",
+  "fallbackModel": "gemini-3.1-flash-image",
+  "imageSize": "2K",
+  "dryRun": false,
+  "brand": "Archipelago Resorts",
+  "note": "Fictional Caribbean hospitality brand. No Sandals/Beaches/Moss trademarks.",
+  "assets": [
+    {
+      "id": "hero-team-collage",
+      "source": "public/images/hero-team-collage.jpg",
+      "purpose": "Full-bleed careers hero collage (multi-scene hospitality staff)",
+      "output": "assets/hero-team-collage.jpg",
+      "aspectRatio": "16:9",
+      "kind": "photo",
+      "usedBy": [
+        "#hero background"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "hero-caribbean",
+      "source": "public/images/hero-caribbean.jpg",
+      "purpose": "Alt hero Bahamas resort portal card",
+      "output": "assets/hero-caribbean.jpg",
+      "aspectRatio": "16:9",
+      "kind": "photo",
+      "usedBy": [
+        "#resorts The Bahamas card"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "hero-cinematic",
+      "source": "public/images/hero-cinematic.jpg",
+      "purpose": "Alt cinematic hero plate (gallery reserve)",
+      "output": "assets/hero-cinematic.jpg",
+      "aspectRatio": "16:9",
+      "kind": "photo",
+      "usedBy": [
+        "reserve future hero variants"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "hero-dramatic",
+      "source": "public/images/hero-dramatic.jpg",
+      "purpose": "Alt dramatic hero plate (gallery reserve)",
+      "output": "assets/hero-dramatic.jpg",
+      "aspectRatio": "16:9",
+      "kind": "photo",
+      "usedBy": [
+        "reserve future hero variants"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "resort-jamaica",
+      "source": "public/images/resort-jamaica.jpg",
+      "purpose": "Resort portal — Jamaica island card",
+      "output": "assets/resort-jamaica.jpg",
+      "aspectRatio": "4:3",
+      "kind": "photo",
+      "usedBy": [
+        "#resorts Jamaica"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "resort-stlucia",
+      "source": "public/images/resort-stlucia.jpg",
+      "purpose": "Resort portal — Saint Lucia island card",
+      "output": "assets/resort-stlucia.jpg",
+      "aspectRatio": "4:3",
+      "kind": "photo",
+      "usedBy": [
+        "#resorts Saint Lucia"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "resort-barbados",
+      "source": "public/images/resort-barbados.jpg",
+      "purpose": "Resort portal — Barbados island card",
+      "output": "assets/resort-barbados.jpg",
+      "aspectRatio": "4:3",
+      "kind": "photo",
+      "usedBy": [
+        "#resorts Barbados"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "mission-people",
+      "source": "public/images/mission-people.jpg",
+      "purpose": "Mission pillar — people collaboration",
+      "output": "assets/mission-people.jpg",
+      "aspectRatio": "4:3",
+      "kind": "photo",
+      "usedBy": [
+        "#mission People first"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "mission-craft",
+      "source": "public/images/mission-craft.jpg",
+      "purpose": "Mission pillar — craft mastery",
+      "output": "assets/mission-craft.jpg",
+      "aspectRatio": "4:3",
+      "kind": "photo",
+      "usedBy": [
+        "#mission Craft that matters"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "mission-continuity",
+      "source": "public/images/mission-continuity.jpg",
+      "purpose": "Mission pillar — tenure continuity",
+      "output": "assets/mission-continuity.jpg",
+      "aspectRatio": "4:3",
+      "kind": "photo",
+      "usedBy": [
+        "#mission Continuity"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "role-instructor",
+      "source": "public/images/role-instructor.jpg",
+      "purpose": "Roles mosaic — ACU instructor",
+      "output": "assets/role-instructor.jpg",
+      "aspectRatio": "1:1",
+      "kind": "photo",
+      "usedBy": [
+        "#roles ACU Instructor"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "role-manager",
+      "source": "public/images/role-manager.jpg",
+      "purpose": "Roles mosaic — resort manager",
+      "output": "assets/role-manager.jpg",
+      "aspectRatio": "3:2",
+      "kind": "photo",
+      "usedBy": [
+        "#roles Resort Manager"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "role-marine",
+      "source": "public/images/role-marine.jpg",
+      "purpose": "Roles mosaic — marine biologist sustainability",
+      "output": "assets/role-marine.jpg",
+      "aspectRatio": "1:1",
+      "kind": "photo",
+      "usedBy": [
+        "#roles Marine Biologist"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "role-developer",
+      "source": "public/images/role-developer.jpg",
+      "purpose": "Roles mosaic — software developer tech hub",
+      "output": "assets/role-developer.jpg",
+      "aspectRatio": "3:2",
+      "kind": "photo",
+      "usedBy": [
+        "#roles Senior Software Developer",
+        "growth path corporate"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "role-chef",
+      "source": "public/images/role-chef.jpg",
+      "purpose": "Roles mosaic — executive chef",
+      "output": "assets/role-chef.jpg",
+      "aspectRatio": "3:2",
+      "kind": "photo",
+      "usedBy": [
+        "#roles Executive Chef",
+        "growth path culinary"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "team-maya",
+      "source": "public/images/team-kerone.jpg",
+      "purpose": "Testimonial portrait — Maya Ortega (replaces Sandals Kerone)",
+      "output": "assets/team-maya.jpg",
+      "aspectRatio": "3:4",
+      "kind": "photo",
+      "usedBy": [
+        "#testimonials",
+        "#publications stories",
+        "mission quote"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "team-elena",
+      "source": "public/images/team-sandra.jpg",
+      "purpose": "Testimonial portrait — Elena Ruiz (replaces Sandals Sandra-Lee)",
+      "output": "assets/team-elena.jpg",
+      "aspectRatio": "3:4",
+      "kind": "photo",
+      "usedBy": [
+        "#testimonials",
+        "growth path hospitality"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "team-marcus",
+      "source": "public/images/team-andre.jpg",
+      "purpose": "Testimonial portrait — Marcus Chen (replaces Sandals Andre)",
+      "output": "assets/team-marcus.jpg",
+      "aspectRatio": "3:4",
+      "kind": "photo",
+      "usedBy": [
+        "#testimonials"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "team-julian",
+      "source": "public/images/team-carlton.jpg",
+      "purpose": "Testimonial portrait — Julian Brooks (replaces Sandals Carlton)",
+      "output": "assets/team-julian.jpg",
+      "aspectRatio": "3:4",
+      "kind": "photo",
+      "usedBy": [
+        "#testimonials"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "logo-harbor-institute",
+      "source": "public/images/logo-fiu.png",
+      "purpose": "Fictional academic partner mark (replaces FIU)",
+      "output": "assets/logo-harbor-institute.png",
+      "aspectRatio": "1:1",
+      "kind": "logo",
+      "usedBy": [
+        "#scu partner grid"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "logo-coral-cay",
+      "source": "public/images/logo-uwi.png",
+      "purpose": "Fictional academic partner mark (replaces UWI)",
+      "output": "assets/logo-coral-cay.png",
+      "aspectRatio": "1:1",
+      "kind": "logo",
+      "usedBy": [
+        "#scu partner grid"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "logo-tide-trust",
+      "source": "public/images/logo-heart.png",
+      "purpose": "Fictional workforce partner mark (replaces HEART/NSTA)",
+      "output": "assets/logo-tide-trust.png",
+      "aspectRatio": "1:1",
+      "kind": "logo",
+      "usedBy": [
+        "#scu partner grid"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "brand-wordmark",
+      "source": "public/images/sandals-logo.png",
+      "purpose": "Archipelago Resorts wordmark (replaces Sandals logo)",
+      "output": "assets/brand-wordmark.png",
+      "aspectRatio": "21:9",
+      "kind": "wordmark",
+      "usedBy": [
+        "optional brand asset; HTML uses CSS mark by default"
+      ],
+      "status": "generated",
+      "error": null
+    },
+    {
+      "id": "paper-texture",
+      "source": "public/images/paper-texture.jpg",
+      "purpose": "Subtle CSS paper texture overlay",
+      "output": "assets/paper-texture.jpg",
+      "aspectRatio": "1:1",
+      "kind": "texture",
+      "usedBy": [
+        "styles (optional texture)"
+      ],
+      "status": "generated",
+      "error": null
+    }
+  ]
+}

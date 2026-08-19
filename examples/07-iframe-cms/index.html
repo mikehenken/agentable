@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>07 — iframe CMS · Archipelago Resorts</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #fafafa;
+        color: #171717;
+      }.cms-shell {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }.cms-toolbar {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #737373;
+        margin-bottom: 0.75rem;
+      }
+      iframe {
+        width: 100%;
+        min-height: 520px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cms-shell">
+      <div class="cms-toolbar">CMS preview · script-stripped host · iframe fallback </div>
+      <h1 style="margin: 0 0 1rem; font-size: 1.5rem">Careers block</h1>
+      <iframe
+        id="agentable-iframe"
+        title="Archipelago Resorts careers panel"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        referrerpolicy="strict-origin-when-cross-origin"
+      ></iframe>
+    </div>
+    <script type="module">
+      window.__galleryExample = '07-iframe-cms';
+      const iframe = document.getElementById('agentable-iframe');
+      const parentOrigin = window.location.origin;
+      const src = new URL('/embed/iframe-host.html', window.location.origin);
+      src.searchParams.set('surface', 'panel');
+      src.searchParams.set('panel', 'open-positions');
+      src.searchParams.set('config-url', '/examples/shared/archipelago-panel-config.json');
+      src.searchParams.set('parent-origin', parentOrigin);
+      src.searchParams.set('bridge-id', 'gallery07');
+      iframe.src = src.toString;
+
+      window.addEventListener('message', (event) => {
+        if (event.origin !== window.location.origin) return;
+        if (event.data?.type === 'agentable:bridge-ready') {
+          window.__galleryReady = { example: '07-iframe-cms', ok: true };
+        }
+      });
+
+      customElements.whenDefined('agentable-panel').catch( => {
+        /* panel lives inside iframe */
+      });
+
+      iframe.addEventListener('load', => {
+        window.setTimeout( => {
+          if (!window.__galleryReady) {
+            window.__galleryReady = { example: '07-iframe-cms', ok: true, via: 'iframe-load' };
+          }
+        }, 1500);
+      });
+    </script>
+  </body>
+</html>

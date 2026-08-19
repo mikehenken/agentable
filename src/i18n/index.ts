@@ -117,3 +117,5 @@ export { formatIcuMessage } from './messageFormat';
 export type { MessageValue, MessageValues } from './messageFormat';
 export { DEFAULT_LOCALE, localeFallbackChain, resolveLocale } from './resolveLocale';
 export type { LocaleResolutionInput } from './resolveLocale';
+export { bootstrapSessionLocale } from './bootstrapSessionLocale';
+export type { SessionLocaleBootstrapInput } from './bootstrapSessionLocale';

@@ -1,0 +1,58 @@
+{
+  "entity_id": "canvas.framework.published-conformance-skill",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "Published conformance, a11y, skill, and llms.txt",
+  "description": "Per-release engine SPI conformance + axe accessibility gate scaffold, framework SKILL.md with references, and package-root llms.txt for coding-agent integration. Public docs publish deferred under freeze.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "conformance",
+    "a11y",
+    "axe",
+    "skill",
+    "llms.txt",
+    "release",
+    "documentation"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.published-conformance-a11y-skill::feature",
+    "source_files": [
+      ".cursor/skills/agentable-framework/SKILL.md",
+      ".cursor/skills/agentable-framework/references/package-exports.md",
+      ".cursor/skills/agentable-framework/references/panel-tools.md",
+      ".cursor/skills/agentable-framework/references/spec-ir.md",
+      ".cursor/skills/agentable-framework/references/safety-invariants.md",
+      ".cursor/skills/agentable-framework/references/workflows/adopt-embed.md",
+      "llms.txt",
+      "tests/conformance/types.ts",
+      "tests/conformance/releaseReport.ts",
+      "tests/conformance/releaseGate.ts",
+      "tests/unit/releaseConformanceGate.test.ts",
+      "tests/unit/engineConformanceTldraw.test.ts",
+      "tests/component/a11y.test.ts",
+      "scripts/run-release-conformance.mjs",
+      "web-test-runner.a11y.config.js",
+      "docs/conformance/RELEASE_REPORT.template.md"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": true
+  }
+}

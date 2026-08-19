@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>10 — Locale RTL · Archipelago Resorts</title>
+    <style>:root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      html[lang='ar'] body {
+        font-family: 'Inter', 'Segoe UI', 'Noto Sans Arabic', system-ui, sans-serif;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 0.9rem;
+        padding-inline: 1.5rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+        background: linear-gradient(180deg, #134e4a 0%, #0f172a 100%);
+      }.brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        min-width: 0;
+      }.brand-mark {
+        display: grid;
+        flex-shrink: 0;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #0e7490 0%, #14b8a6 100%);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+      }.brand-text h1 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #f8fafc;
+        text-align: start;
+      }.brand-text p {
+        margin-block: 2px 0;
+        margin-inline: 0;
+        font-size: 0.78rem;
+        color: #94a3b8;
+        text-align: start;
+      }.locale-switch {
+        display: inline-flex;
+        gap: 0.35rem;
+        padding: 0.2rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(15, 23, 42, 0.65);
+      }.locale-switch button {
+        border: 0;
+        border-radius: 999px;
+        padding-block: 0.35rem;
+        padding-inline: 0.85rem;
+        font: inherit;
+        font-size: 0.78rem;
+        cursor: pointer;
+        color: #cbd5e1;
+        background: transparent;
+      }.locale-switch button[aria-pressed='true'] {
+        color: #f8fafc;
+        background: #0e7490;
+      }
+      main {
+        max-width: 920px;
+        margin-inline: auto;
+        padding-block: 1.5rem 2rem;
+        padding-inline: 1.25rem;
+      }.lede {
+        margin-block: 0 1.25rem;
+        margin-inline: 0;
+        font-size: 0.88rem;
+        line-height: 1.55;
+        color: #94a3b8;
+        text-align: start;
+      }.panel-band {
+        min-height: 420px;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #141414;
+        box-shadow:
+          0 0 0 1px rgb(0 0 0 0.35),
+          inset 0 1px 0 rgb(255 255 255 0.04);
+      }.panel-band--dark {
+        --panel-band-surface: #141414;
+      }
+      agentable-panel {
+        display: block;
+        min-height: 420px;
+        direction: inherit;
+      }
+      details.gallery-telemetry {
+        margin-block-start: 1rem;
+        margin-inline: 0;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background: rgba(15, 23, 42, 0.92);
+        font-size: 0.72rem;
+        color: #94a3b8;
+      }
+      details.gallery-telemetry summary {
+        cursor: pointer;
+        padding-block: 0.35rem;
+        padding-inline: 0.65rem;
+        user-select: none;
+        text-align: start;
+      }
+      details.gallery-telemetry pre {
+        margin: 0;
+        padding-block: 0.5rem 0.65rem;
+        padding-inline: 0.65rem;
+        overflow: auto;
+        text-align: start;
+      }
+      @media (max-width: 640px) {
+        header {
+          padding-inline: 1rem;
+        }.locale-switch {
+          width: 100%;
+          justify-content: stretch;
+        }.locale-switch button {
+          flex: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="brand-mark" id="brand-mark" aria-hidden="true">AR</div>
+        <div class="brand-text">
+          <h1 id="page-title">مسارات الضيافة — Archipelago Resorts</h1>
+          <p id="page-subtitle">Locale RTL · direction plumbing</p>
+        </div>
+      </div>
+      <div
+        class="locale-switch"
+        role="group"
+        aria-label="Locale"
+        data-testid="locale-switch"
+      >
+        <button type="button" data-locale="en" aria-pressed="false">English</button>
+        <button type="button" data-locale="ar" aria-pressed="true">العربية</button>
+      </div>
+    </header>
+    <main>
+      <p class="lede" id="page-lede">
+        Locale <code>ar</code> تفعّل واجهة RTL عبر CSS المنطقي — مساحة اللوحة تعكس اتجاه المستند.
+      </p>
+      <div class="panel-band panel-band--dark">
+        <agentable-panel
+          id="career-panel"
+          panel="open-positions"
+          tenant="archipelago-resorts"
+          locale="ar"
+          data-theme="gallery-dark"
+          config-url="/examples/shared/archipelago-locale-ar-config.json"
+          primary-color="#0E7490"
+        ></agentable-panel>
+      </div>
+      <details class="gallery-telemetry">
+        <summary>Gallery telemetry</summary>
+        <pre id="telemetry">waiting…</pre>
+      </details>
+    </main>
+    <script type="module" src="/embed/agentable-panel.js"></script>
+    <script type="module">
+      const CONFIG = {
+        ar: {
+          lang: 'ar',
+          dir: 'rtl',
+          brandMark: 'AR',
+          title: 'مسارات الضيافة — Archipelago Resorts',
+          subtitle: 'Locale RTL · direction plumbing',
+          lede:
+            'Locale <code>ar</code> تفعّل واجهة RTL عبر CSS المنطقي — مساحة اللوحة تعكس اتجاه المستند.',
+        },
+        en: {
+          lang: 'en',
+          dir: 'ltr',
+          brandMark: 'EN',
+          title: 'Hospitality careers — Archipelago Resorts',
+          subtitle: 'Locale LTR · direction plumbing',
+          lede:
+            'Locale <code>en</code> drives LTR chrome via logical CSS — panel workspace mirrors document direction.',
+        },
+      };
+
+      window.__galleryExample = '10-locale-rtl';
+
+      const panel = document.getElementById('career-panel');
+      const telemetry = document.getElementById('telemetry');
+      const localeButtons = document.querySelectorAll('[data-locale]');
+
+      function panelWorkspaceDir {
+        const root = panel?.shadowRoot;
+        return root?.querySelector('[dir]')?.getAttribute('dir') ?? null;
+      }
+
+      function panelThemeDark {
+        return panel?.getAttribute('data-theme') === 'gallery-dark';
+      }
+
+      function refreshTelemetry {
+        const docDir = document.documentElement.getAttribute('dir');
+        const panelDir = panelWorkspaceDir;
+        const locale = panel?.getAttribute('locale') ?? '';
+        const expectedDir = locale === 'ar' ? 'rtl': 'ltr';
+        const themeDark = panelThemeDark;
+        const ok =
+          Boolean(panel) &&
+          docDir === expectedDir &&
+          panelDir === expectedDir &&
+          themeDark;
+
+        window.__galleryReady = {
+          example: '10-locale-rtl',
+          ok,
+          locale,
+          docDir,
+          panelDir,
+          themeDark,
+        };
+
+        telemetry.textContent = JSON.stringify(window.__galleryReady, null, 2);
+        return window.__galleryReady;
+      }
+
+      function applyLocale(nextLocale) {
+        const spec = CONFIG[nextLocale];
+        if (!spec || !panel) return;
+
+        document.documentElement.lang = spec.lang;
+        document.documentElement.dir = spec.dir;
+        document.getElementById('page-title').textContent = spec.title;
+        document.getElementById('page-subtitle').textContent = spec.subtitle;
+        document.getElementById('page-lede').innerHTML = spec.lede;
+        document.getElementById('brand-mark').textContent = spec.brandMark;
+
+        localeButtons.forEach((btn) => {
+          const active = btn.getAttribute('data-locale') === nextLocale;
+          btn.setAttribute('aria-pressed', active ? 'true': 'false');
+        });
+
+        panel.setAttribute('locale', nextLocale);
+        refreshTelemetry;
+        requestAnimationFrame( => refreshTelemetry);
+        setTimeout(refreshTelemetry, 400);
+        setTimeout(refreshTelemetry, 1200);
+      }
+
+      localeButtons.forEach((btn) => {
+        btn.addEventListener('click', => {
+          const next = btn.getAttribute('data-locale');
+          if (next && next !== panel.getAttribute('locale')) {
+            applyLocale(next);
+          }
+        });
+      });
+
+      customElements.whenDefined('agentable-panel').then( => {
+        panel?.addEventListener('agentable:panel-ready', => refreshTelemetry);
+        const observer = new MutationObserver( => refreshTelemetry);
+        if (panel?.shadowRoot) {
+          observer.observe(panel.shadowRoot, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ['dir'],
+          });
+        }
+        observer.observe(panel, {
+          attributes: true,
+          attributeFilter: ['locale', 'data-theme'],
+        });
+        refreshTelemetry;
+        requestAnimationFrame( => refreshTelemetry);
+        setTimeout(refreshTelemetry, 800);
+        setTimeout(refreshTelemetry, 2000);
+      });
+    </script>
+  </body>
+</html>

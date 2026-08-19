@@ -8,7 +8,14 @@
 import type { EngineLifecycleHandle } from '../engine/types';
 import { emitAgUiStatePatch } from '../canvas/protocol/ag-ui';
 import { createPanelRegistry, type PanelRegistry } from './registry';
-import { registerHostActions, type ToolDefinition } from './tools';
+import type { ComposeGateConfig, ComposeGateEvaluation } from './composeGate';
+import { evaluateComposeGate } from './composeGate';
+import {
+  createPanelToolRuntime,
+  registerHostActions,
+  registerPanelTools,
+  type ToolDefinition,
+} from './tools';
 import { createDataLifecycle } from './renderer/dataLifecycle';
 import type { DataAdapter, DataLifecycle } from './renderer/types';
 import type {
@@ -22,7 +29,7 @@ import { defaultCatalog } from './spec';
 
 /**
  * The engine contract now lives in src/engine (panel system spec section
- * 14, D37). The host consumes the lifecycle slice; these re-exports keep
+ * 14). The host consumes the lifecycle slice; these re-exports keep
  * the established public names for existing consumers, `EngineHandle`
  * here being the slice `createCanvasHost` requires rather than the full
  * SPI handle of the same name in src/engine.
@@ -107,6 +114,11 @@ export interface CreateCanvasHostOptions {
    * the host will use the default v1 catalog under the hood.
    */
   catalog?: ReadonlyMap<string, CatalogEntry>;
+  /**
+   * Port-order gate for agent `compose_panel`. When set and closed,
+   * the tool is omitted from declarations and calls return COMPOSE_GATE_CLOSED.
+   */
+  composeGate?: ComposeGateConfig;
 }
 
 /**
@@ -136,7 +148,7 @@ export interface CanvasHost {
    */
   catalog: ReadonlyMap<string, CatalogEntry>;
   panels: CanvasHostPanels;
-  /** Data lifecycle + invalidate (02 section 8, P1-T5). */
+  /** Data lifecycle + invalidate (02 section 8). */
   data: CanvasHostData;
   /** Resolves once the engine reports readiness, then stays resolved. */
   whenReady(): Promise<void>;
@@ -174,8 +186,7 @@ function emitDataInvalidatePatch(source: string, scope?: PanelScope): void {
   }
   emitAgUiStatePatch(
     [{ op: 'replace', path: `${AG_UI_DATA_INVALIDATE_PATH_PREFIX}${source}`, value }],
-    { source: 'host' },
-  );
+    { source: 'host' });
 }
 
 
@@ -190,9 +201,14 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const { engine, persistence } = options;
   const catalog = options.catalog ?? defaultCatalog;
   const registry = createPanelRegistry(options.panels ?? []);
+  let unregisterPanelTools: (() => void) | null = null;
+  let panelToolRuntime: ReturnType<typeof createPanelToolRuntime> | null = null;
+  const composeGateEvaluation: ComposeGateEvaluation | undefined =
+    options.composeGate !== undefined
+      ? evaluateComposeGate(options.composeGate, registry)
+      : undefined;
   const unregisterHostActions = options.hostActions?.length
-    ? registerHostActions(options.hostActions)
-    : null;
+    ? registerHostActions(options.hostActions): null;
   let disposed = false;
 
   const dataLifecycle: DataLifecycle | null =
@@ -200,8 +216,7 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
       ? createDataLifecycle({
           adapter: options.adapter,
           onInvalidate: emitDataInvalidatePatch,
-        })
-      : null;
+        }): null;
 
   const data: CanvasHostData = {
     lifecycle: dataLifecycle,
@@ -295,6 +310,8 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
+    panelToolRuntime?.dispose();
+    unregisterPanelTools?.();
     unregisterHostActions?.();
     dataLifecycle?.dispose();
     offChange?.();
@@ -306,8 +323,7 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
 
   const openPanel = async (
     id: string,
-    openOptions: PanelOpenOptions = {},
-  ): Promise<void> => {
+    openOptions: PanelOpenOptions = {}): Promise<void> => {
     if (!registry.has(id)) {
       throw new Error(`no panel registered for id "${id}"`);
     }
@@ -321,15 +337,28 @@ export function createCanvasHost(options: CreateCanvasHostOptions): CanvasHost {
     engine.openPanel({ panelId: id, ...openOptions });
   };
 
+  const hostPanels: CanvasHostPanels = {
+    open: openPanel,
+    has: registry.has,
+    get: registry.get,
+    ids: registry.ids,
+    definitions: registry.definitions,
+  };
+
+  if ((options.panels ?? []).length > 0) {
+    panelToolRuntime = createPanelToolRuntime(
+      { panels: hostPanels, catalog },
+      registry,
+      { composeGate: composeGateEvaluation },
+    );
+    unregisterPanelTools = registerPanelTools(registry, panelToolRuntime, {
+      composeGate: composeGateEvaluation,
+    });
+  }
+
   return {
     catalog,
-    panels: {
-      open: openPanel,
-      has: registry.has,
-      get: registry.get,
-      ids: registry.ids,
-      definitions: registry.definitions,
-    },
+    panels: hostPanels,
     data,
     whenReady: () => ready,
     whenRestoreSettled,

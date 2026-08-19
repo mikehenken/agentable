@@ -101,8 +101,7 @@ export function usePanelDocking(editor: Editor | null): void {
           }
         }
       },
-      { source: 'user', scope: 'document' },
-    );
+      { source: 'user', scope: 'document' });
 
     const onEditorEvent = (info: TLEventInfo): void => {
       if (info.name === 'pointer_move') {

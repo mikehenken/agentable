@@ -1,0 +1,50 @@
+{
+  "entity_id": "canvas.panels.document-export",
+  "entity_type": "feature",
+  "parent_id": "canvas.panels.document-persistence",
+  "name": "Document panel export (PDF/DOCX)",
+  "description": "Block-model export to PDF and DOCX via export_document host action; byte-stable golden seed. No HTML round-trip.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "document",
+    "export",
+    "open-canvas"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.document-export::feature",
+    "source_files": [
+      "src/panels/document/documentExport.ts",
+      "src/panels/document/exportPdf.ts",
+      "src/panels/document/exportDocx.ts",
+      "src/panels/document/deterministicZip.ts",
+      "src/panels/document/exportText.ts",
+      "src/panels/document/exportTypes.ts",
+      "src/panels/document/exportDocumentHostAction.ts",
+      "src/panels/document/goldenExportSeed.ts",
+      "tests/unit/documentExport.test.ts",
+      "tests/fixtures/document-export-golden.json"
+    ],
+    "decision": ""
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

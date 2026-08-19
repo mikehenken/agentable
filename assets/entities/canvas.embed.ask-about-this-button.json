@@ -1,0 +1,42 @@
+{
+  "entity_id": "canvas.embed.ask-about-this-button",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.embed.widgets-family",
+  "name": "AskAboutThisButtonElement",
+  "description": "Contextual Lit CTA that sends an ask-about prompt into the shared chat surface via dispatchChatPrompt.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "widget",
+    "chat",
+    "contextual",
+    "lit"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.ask-about-this-button::component",
+    "source_file": "src/embed/widgets/ask-about-this-button.ts",
+    "export": "./embed/ask-about-this-button"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/embed-widgets-family.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

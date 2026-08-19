@@ -1,0 +1,13 @@
+{
+  "tenant": "moss-fixture",
+  "persona": {
+    "systemPrompt": "You are Mason.",
+    "assistantName": "Mason"
+  },
+  "canvasMode": "bounded",
+  "canvasBounds": "1200x800",
+  "adapter": {
+    "kind": "static",
+    "dataUrl": "/fixtures/panel-data-minimal.json"
+  }
+}

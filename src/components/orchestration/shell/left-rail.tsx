@@ -53,8 +53,7 @@ const InlineCreate: React.FC<InlineCreateProps> = ({ kind, defaultEmoji = "🏢"
       name: name.trim(),
       tag:
         kind === "client"
-          ? tag.trim().toUpperCase().slice(0, 4) || name.trim().slice(0, 3).toUpperCase()
-          : undefined,
+          ? tag.trim().toUpperCase().slice(0, 4) || name.trim().slice(0, 3).toUpperCase() : undefined,
       emoji,
     });
   };
@@ -510,8 +509,7 @@ export const LeftRail: React.FC<LeftRailProps> = ({
         setBusyKey(null);
       }
     },
-    [],
-  );
+    []);
   // Walk the tree to find which workspace + project contains the
   // active run, so those paths can be auto-expanded.
   const activePath = React.useMemo(() => {
@@ -844,16 +842,10 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                     visible={hover}
                     open={menuKey === `ws-menu:${c.id}`}
                     onToggle={() => setMenuKey(menuKey === `ws-menu:${c.id}` ? null : `ws-menu:${c.id}`)}
-                    items={[
-                      ...(onRenameWorkspace
-                        ? [{ label: "Rename…", onClick: () => onRenameWorkspace(c.id, c.name) }]
-                        : []),
-                      ...(onArchiveWorkspace
-                        ? [{ label: "Archive", onClick: () => void onArchiveWorkspace(c.id) }]
-                        : []),
-                      ...(onDeleteWorkspace
-                        ? [{ label: "Delete", onClick: () => { if (confirm(`Delete workspace "${c.name}"? This cannot be undone.`)) void onDeleteWorkspace(c.id); }, danger: true }]
-                        : []),
+                    items={[...(onRenameWorkspace
+                        ? [{ label: "Rename…", onClick: () => onRenameWorkspace(c.id, c.name) }]: []),...(onArchiveWorkspace
+                        ? [{ label: "Archive", onClick: () => void onArchiveWorkspace(c.id) }]: []),...(onDeleteWorkspace
+                        ? [{ label: "Delete", onClick: () => { if (confirm(`Delete workspace "${c.name}"? This cannot be undone.`)) void onDeleteWorkspace(c.id); }, danger: true }]: []),
                     ]}
                   />
                 )}
@@ -946,16 +938,10 @@ export const LeftRail: React.FC<LeftRailProps> = ({
                             visible={phover}
                             open={menuKey === `proj-menu:${pkey}`}
                             onToggle={() => setMenuKey(menuKey === `proj-menu:${pkey}` ? null : `proj-menu:${pkey}`)}
-                            items={[
-                              ...(onRenameProject
-                                ? [{ label: "Rename…", onClick: () => onRenameProject(c.id, p.id, p.name) }]
-                                : []),
-                              ...(onArchiveProject
-                                ? [{ label: "Archive", onClick: () => void onArchiveProject(c.id, p.id) }]
-                                : []),
-                              ...(onDeleteProject
-                                ? [{ label: "Delete", onClick: () => { if (confirm(`Delete project "${p.name}"? This cannot be undone.`)) void onDeleteProject(c.id, p.id); }, danger: true }]
-                                : []),
+                            items={[...(onRenameProject
+                                ? [{ label: "Rename…", onClick: () => onRenameProject(c.id, p.id, p.name) }]: []),...(onArchiveProject
+                                ? [{ label: "Archive", onClick: () => void onArchiveProject(c.id, p.id) }]: []),...(onDeleteProject
+                                ? [{ label: "Delete", onClick: () => { if (confirm(`Delete project "${p.name}"? This cannot be undone.`)) void onDeleteProject(c.id, p.id); }, danger: true }]: []),
                             ]}
                           />
                         )}

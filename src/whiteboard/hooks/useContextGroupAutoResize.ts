@@ -103,8 +103,7 @@ export function useContextGroupAutoResize(editor: Editor | null): void {
         const panelIds = collectPanelShapeIdsFromStoreDiff(entry.changes);
         scheduleFit(panelIds);
       },
-      { source: 'user', scope: 'document' },
-    );
+      { source: 'user', scope: 'document' });
 
     const handlePointerUp = (): void => {
       const selectedIds = editor.getSelectedShapeIds();

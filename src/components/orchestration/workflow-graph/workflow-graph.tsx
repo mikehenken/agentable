@@ -105,14 +105,10 @@ const Node: React.FC<NodeProps> = ({ node, isHover, isActive, onClick, onHover }
   const clickable = !!node.artifact || !!node.link;
   const sc = node.status ? STATUS_COLORS[node.status] : null;
   const ringTone = sc
-    ? sc.bar
-    : node.kind === "decision" || node.kind === "wait" || node.kind === "human"
-      ? "var(--warn)"
-      : node.kind === "emit" || node.kind === "downstream"
-        ? "var(--positive)"
-        : node.kind === "step-llm" || node.kind === "trigger"
-          ? "var(--accent)"
-          : "var(--border-base)";
+    ? sc.bar: node.kind === "decision" || node.kind === "wait" || node.kind === "human"
+      ? "var(--warn)": node.kind === "emit" || node.kind === "downstream"
+        ? "var(--positive)": node.kind === "step-llm" || node.kind === "trigger"
+          ? "var(--accent)": "var(--border-base)";
 
   return (
     <div
@@ -130,10 +126,8 @@ const Node: React.FC<NodeProps> = ({ node, isHover, isActive, onClick, onHover }
         borderRadius: isCard ? 6 : 8,
         padding: isCard ? "8px 10px" : "10px 12px",
         boxShadow: isActive
-          ? "0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent)"
-          : isHover && clickable
-            ? "0 4px 12px rgba(15,15,15,.05)"
-            : "none",
+          ? "0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent)": isHover && clickable
+            ? "0 4px 12px rgba(15,15,15,.05)": "none",
         cursor: clickable ? "pointer" : "default",
         display: "flex",
         flexDirection: "column",
@@ -286,12 +280,9 @@ const Edge: React.FC<{ a: BoardNode; b: BoardNode; opts: EdgeOpts; hover: boolea
   const tone = opts.tone || "neutral";
   const stroke =
     tone === "warn"
-      ? "var(--warn)"
-      : tone === "positive"
-        ? "var(--positive)"
-        : opts.thin
-          ? "var(--border-base)"
-          : "var(--border-strong)";
+      ? "var(--warn)": tone === "positive"
+        ? "var(--positive)": opts.thin
+          ? "var(--border-base)": "var(--border-strong)";
   const widthBase = opts.thin ? 1 : 1.4;
   const width = hover ? widthBase + 0.5 : widthBase;
   const dash = opts.dashed ? "3 3" : "none";

@@ -1,0 +1,45 @@
+{
+  "entity_id": "canvas.agents.story-mode-walkthrough",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents.drawing-tools",
+  "name": "Story mode walkthrough",
+  "description": "present_walkthrough tool queues camera steps through the P6 politeness queue, emits narration to chat or voice, and cedes on user camera input.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "walkthrough",
+    "camera",
+    "story-mode",
+    "communicative-visuals"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.story-mode-walkthrough::feature",
+    "source_files": [
+      "src/agents/walkthroughRunner.ts",
+      "src/agents/walkthroughBridge.ts",
+      "src/agents/walkthroughTypes.ts",
+      "src/agents/tools/walkthroughTools.ts",
+      "src/engines/tldraw/walkthrough/walkthroughCameraApi.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

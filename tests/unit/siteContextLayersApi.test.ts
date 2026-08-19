@@ -15,8 +15,7 @@ import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupAp
 
 vi.mock('tldraw', async (importOriginal) => {
   const actual = await importOriginal<typeof import('tldraw')>();
-  return {
-    ...actual,
+  return {...actual,
     fitFrameToContent: vi.fn(),
   };
 });
@@ -49,10 +48,7 @@ function makeStubEditor(): StubEditor {
     __shapes: shapes,
     getShape: vi.fn((id: string) => shapes.get(id)),
     getSortedChildIdsForParent: vi.fn((parentId: string) =>
-      [...shapes.values()]
-        .filter((shape) => shape.parentId === parentId)
-        .map((shape) => shape.id),
-    ),
+      [...shapes.values()].filter((shape) => shape.parentId === parentId).map((shape) => shape.id)),
     getSelectedShapeIds: vi.fn(() => []),
     setCurrentTool: vi.fn(),
     select: vi.fn(),

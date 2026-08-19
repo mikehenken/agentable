@@ -1,0 +1,16 @@
+{
+  "name": "@agentable/support-inbox-pack",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Shared support-inbox domain pack for Agentable canvas hosts — Tier 2 panel definitions, generated tools, persona scaffold, and documented extension points ( pattern).",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./extension-points": "./src/extension-points.ts",
+    "./fixtures/minimal": "./src/fixtures/minimal-dataset.ts"
+  },
+  "peerDependencies": {
+    "agentable-canvas": ">=0.2.0"
+  }
+}

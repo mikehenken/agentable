@@ -1,0 +1,45 @@
+import { chromium } from 'playwright';
+
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage;
+await page.goto('http://127.0.0.1:5199/examples/13-canvas-wide-agent/index.html?nochrome=1', {
+  waitUntil: 'networkidle',
+});
+await page.waitForFunction( => window.__operatorGalleryResult?.ok === true, {
+  timeout: 45_000,
+});
+
+const result = await page.evaluate(async () => {
+  const wb = document.querySelector('agentable-whiteboard');
+  await wb?.whenReady?.(15_000);
+  await wb.runOperatorScriptedTool('clear_agent_drawings', {});
+
+  const samples = [];
+  const draw = await wb.runOperatorScriptedTool('draw_shapes', {
+    shapes: [
+      {
+        kind: 'box',
+        text: 'Timing',
+        geometry: { kind: 'rect', x: 200, y: 200, w: 220, h: 140 },
+        style: { fill: 'solid', color: 'blue', size: 'm' },
+      },
+    ],
+  });
+
+  samples.push({ t: 0, store: draw?.result?._store, read: null, domGeo: wb.shadowRoot?.querySelectorAll('[data-shape-type="geo"]')?.length ?? 0 });
+
+  for (const ms of [50, 100, 180, 300, 500, 1000, 2000]) {
+    await new Promise((r) => setTimeout(r, ms === 50 ? 50: ms - (samples[samples.length - 1].t || 0)));
+    const read = await wb.runOperatorScriptedTool('read_canvas', {});
+    samples.push({
+      t: ms,
+      read: read?.result?.shapes?.length ?? -1,
+      domGeo: wb.shadowRoot?.querySelectorAll('[data-shape-type="geo"]')?.length ?? 0,
+    });
+  }
+
+  return { drawOk: draw?.ok, createdIds: draw?.result?.createdShapeIds, samples };
+});
+
+console.log(JSON.stringify(result, null, 2));
+await browser.close;

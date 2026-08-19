@@ -1,0 +1,47 @@
+{
+  "entity_id": "canvas.catalog.charts-addon",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "Catalog charts add-on",
+  "description": "Optional @agentable/catalog-charts package — Recharts-backed bar, line, area, and pie catalog composites with Zod props for validated, provenance-badged, pinnable panel specs.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "catalog",
+    "charts",
+    "recharts",
+    "addon",
+    "d35"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.catalog-charts-addon::feature",
+    "source_files": [
+      "packages/catalog-charts/src/index.ts",
+      "packages/catalog-charts/src/catalog/entries.ts",
+      "packages/catalog-charts/src/catalog/components.tsx",
+      "packages/catalog-charts/src/schema/chartProps.ts",
+      "packages/catalog-charts/src/panels.ts",
+      "packages/catalog-charts/src/pack.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

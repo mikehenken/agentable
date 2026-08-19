@@ -1,0 +1,43 @@
+{
+  "forbiddenKeys": [
+    "apiKey",
+    "secret",
+    "password",
+    "serviceRoleKey",
+    "access_token",
+    "refreshToken",
+    "bearer",
+    "geminiApiKey"
+  ],
+  "allowedKeys": ["panelId", "anonKeyHint", "errorCodes", "agentId", "toolName"],
+  "secretValues": [
+    "sk_live_abc123secretkey",
+    "pk_live_abcdefghijklmnop",
+    "pk_test_abcdefghijklmnop",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.signature",
+    "AIzaSyABCDEF0123456789",
+    "sbp_0123456789abcdef",
+    "Bearer eyJhbGciOiJIUzI1NiJ9.payload.sig"
+  ],
+  "benignValues": ["composed-1", "editor", "pk_live_…", "site-seo"],
+  "piiEmails": ["user@example.com", "alice@corp.example"],
+  "pollutedComposeEvent": {
+    "ts": "2026-07-21T12:00:00.000Z",
+    "family": "compose",
+    "phase": "compose",
+    "outcome": "rejected",
+    "tool": "compose_panel",
+    "panelId": "composed-1",
+    "errorCodes": ["SPEC_ACTION_REF_MISSING"],
+    "apiKey": "sk_live_leaked",
+    "password": "hunter2"
+  },
+  "pollutedEmbedEvent": {
+    "ts": "2026-07-21T12:00:00.000Z",
+    "family": "embed",
+    "operation": "tenant_lookup",
+    "outcome": "refused",
+    "anonKeyHint": "pk_live_abcdefghijklmnop",
+    "errorCodes": ["RATE_LIMITED"]
+  }
+}

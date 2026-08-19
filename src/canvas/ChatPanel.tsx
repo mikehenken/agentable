@@ -45,8 +45,7 @@ function PersonaHalo({ size = 'sm', initial }: { size?: 'sm' | 'lg'; initial: st
           'linear-gradient(135deg, var(--vibe-accent, #ff6b57) 0%, var(--vibe-accent-2, #ff8f6b) 55%, #ffb199 100%)',
         boxShadow:
           size === 'lg'
-            ? '0 0 0 6px color-mix(in srgb, var(--vibe-accent, #ff6b57) 14%, transparent), 0 8px 30px color-mix(in srgb, var(--vibe-accent, #ff6b57) 35%, transparent)'
-            : '0 0 0 3px color-mix(in srgb, var(--vibe-accent, #ff6b57) 12%, transparent)',
+            ? '0 0 0 6px color-mix(in srgb, var(--vibe-accent, #ff6b57) 14%, transparent), 0 8px 30px color-mix(in srgb, var(--vibe-accent, #ff6b57) 35%, transparent)': '0 0 0 3px color-mix(in srgb, var(--vibe-accent, #ff6b57) 12%, transparent)',
       }}
     >
       {initial}
@@ -174,8 +173,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
             const data = (await response.json()) as { token?: string };
             if (!data.token) throw new Error('token mint missing token field');
             return data.token;
-          }
-        : apiKey,
+          }: apiKey,
       systemInstruction: persona.systemPrompt,
     });
   }, [useMock, apiKey, tokenEndpoint, chatProxyUrl, persona.systemPrompt]);
@@ -211,12 +209,9 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
           // Append to the previous fragment instead of pushing a new one.
           return prev.map((m, i) =>
             i === prev.length - 1
-              ? { ...m, text: `${m.text} ${detail.text}`.trim(), createdAt: detail.timestamp }
-              : m,
-          );
+              ? {...m, text: `${m.text} ${detail.text}`.trim(), createdAt: detail.timestamp }: m);
         }
-        return [
-          ...prev,
+        return [...prev,
           {
             id: `voice-${detail.role}-${now.toString(36)}`,
             role: detail.role,
@@ -240,8 +235,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     const onToolCall = (e: Event) => {
       const detail = (e as CustomEvent<ToolCallEvent>).detail;
       if (!detail) return;
-      setMessages((prev) => [
-        ...prev,
+      setMessages((prev) => [...prev,
         {
           id: `tool-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
           role: 'assistant',
@@ -289,14 +283,12 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
       // earlier random one-liners from the OSS canvas were misleading
       // because they implied a working assistant when there wasn't one.
       window.setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
+        setMessages((prev) => [...prev,
           {
             id: `a-${Date.now().toString(36)}`,
             role: 'assistant',
             text: useMock
-              ? '(Mock chat — set VITE_LANDI_CHAT_PROXY_URL or VITE_GEMINI_API_KEY to enable live responses.)'
-              : '(Chat is not configured for this preview.)',
+              ? '(Mock chat — set VITE_LANDI_CHAT_PROXY_URL or VITE_GEMINI_API_KEY to enable live responses.)': '(Chat is not configured for this preview.)',
             source: 'text',
             createdAt: new Date().toISOString(),
           },
@@ -312,10 +304,8 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
         // chat client appends `userMessage` itself. We capture state with
         // a functional setter to avoid stale-closure on rapid sends.
         messages,
-        trimmed,
-      );
-      setMessages((prev) => [
-        ...prev,
+        trimmed);
+      setMessages((prev) => [...prev,
         {
           id: `a-${Date.now().toString(36)}`,
           role: 'assistant',
@@ -327,8 +317,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     } catch (err) {
       const msg = (err as Error).message ?? 'chat failed';
       setError(msg);
-      setMessages((prev) => [
-        ...prev,
+      setMessages((prev) => [...prev,
         {
           id: `e-${Date.now().toString(36)}`,
           role: 'assistant',
@@ -409,10 +398,8 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
 
             <p style={{ marginTop: 24, fontSize: 11, color: '#6f6f6f' }}>
               {chatClient
-                ? `Live ${assistantName} · responses are real`
-                : useMock
-                  ? `Mock ${assistantName} · set VITE_LANDI_CHAT_PROXY_URL for live responses`
-                  : `${assistantName} chat unavailable`}
+                ? `Live ${assistantName} · responses are real`: useMock
+                  ? `Mock ${assistantName} · set VITE_LANDI_CHAT_PROXY_URL for live responses`: `${assistantName} chat unavailable`}
             </p>
           </div>
         </div>
@@ -585,8 +572,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
                 opacity: canSend ? 1 : 0.4,
                 transition: 'opacity .15s ease',
                 background: canSend
-                  ? 'linear-gradient(135deg, var(--vibe-accent) 0%, var(--vibe-accent-2) 100%)'
-                  : '#3a3a3a',
+                  ? 'linear-gradient(135deg, var(--vibe-accent) 0%, var(--vibe-accent-2) 100%)': '#3a3a3a',
               }}
             >
               <Send size={15} />
@@ -596,15 +582,7 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
       </div>
 
       {/* Hover-reveal message toolbars + markdown spacing for the dark theme. */}
-      <style>{`
-        .landi-msg:hover .landi-msg__toolbar { opacity: 1 !important; }
-        .landi-md > *:first-child { margin-top: 0; }
-        .landi-md > *:last-child { margin-bottom: 0; }
-        .landi-md p { margin: 0 0 8px; }
-        .landi-md ul, .landi-md ol { margin: 0 0 8px; padding-left: 18px; }
-        .landi-md code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-        .landi-md pre { background: #0d0d0d; border: 1px solid var(--vibe-border); border-radius: 8px; padding: 10px; overflow-x: auto; }
-        .landi-md a { color: var(--vibe-accent); }
+      <style>{`.landi-msg:hover.landi-msg__toolbar { opacity: 1 !important; }.landi-md > *:first-child { margin-top: 0; }.landi-md > *:last-child { margin-bottom: 0; }.landi-md p { margin: 0 0 8px; }.landi-md ul,.landi-md ol { margin: 0 0 8px; padding-left: 18px; }.landi-md code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; font-size: 12px; }.landi-md pre { background: #0d0d0d; border: 1px solid var(--vibe-border); border-radius: 8px; padding: 10px; overflow-x: auto; }.landi-md a { color: var(--vibe-accent); }
       `}</style>
     </div>
   );

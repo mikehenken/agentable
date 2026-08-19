@@ -1,0 +1,48 @@
+{
+  "entity_id": "canvas.examples.agent-presents",
+  "entity_type": "feature",
+  "parent_id": "canvas.examples",
+  "name": "Agent presents demo scenarios",
+  "description": " gallery example 08-agent-presents: fictional Archipelago Resorts career trajectory draw, job-economy composed chart panel, and island walkthrough fixtures with e2e harness.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "examples",
+    "gallery",
+    "agents",
+    "drawing",
+    "charts",
+    "walkthrough",
+    "demo"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.agent-presents-demo-scenarios::feature",
+    "source_files": [
+      "examples/08-agent-presents/fixtures/archipelagoResorts.ts",
+      "examples/08-agent-presents/fixtures/index.ts",
+      "tests/e2e/harness/agentPresentsScenario.ts",
+      "tests/integration/agentPresentsE2e.test.ts",
+      "tests/unit/agentPresentsFixtures.test.ts",
+      "tests/fixtures/archipelago-resorts/scenario-manifest.json"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

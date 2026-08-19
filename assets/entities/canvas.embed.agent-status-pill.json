@@ -1,0 +1,41 @@
+{
+  "entity_id": "canvas.embed.agent-status-pill",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.embed.widgets-family",
+  "name": "AgentStatusPillElement",
+  "description": "Read-only Lit agent status badge subscribing to window.__agentStatusKernel__.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "widget",
+    "agent-status",
+    "lit"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.agent-status-pill::component",
+    "source_file": "src/embed/widgets/agent-status-pill.ts",
+    "export": "./embed/agent-status-pill"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/embed-widgets-family.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

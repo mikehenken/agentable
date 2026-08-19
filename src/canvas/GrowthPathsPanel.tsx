@@ -257,8 +257,7 @@ export function GrowthPathsPanel() {
                 onClick={() => setActiveId(p.id)}
                 className={`relative overflow-hidden rounded-xl p-3 text-left transition-all ${
                   activeId === p.id
-                    ? 'text-white shadow-canvas-primary-active'
-                    : 'bg-canvas-surface text-canvas border border-canvas-border hover:border-canvas-primary/30 hover:shadow-sm'
+                    ? 'text-white shadow-canvas-primary-active': 'bg-canvas-surface text-canvas border border-canvas-border hover:border-canvas-primary/30 hover:shadow-sm'
                 }`}
                 style={activeId === p.id ? { background: p.gradient } : undefined}
               >
@@ -273,8 +272,7 @@ export function GrowthPathsPanel() {
                   <span
                     className={`text-[10px] font-semibold rounded-full px-1.5 py-0.5 ${
                       activeId === p.id
-                        ? 'bg-canvas-surface/20 backdrop-blur text-white'
-                        : 'bg-emerald-50 text-emerald-700'
+                        ? 'bg-canvas-surface/20 backdrop-blur text-white': 'bg-emerald-50 text-emerald-700'
                     }`}
                   >
                     {p.match}% fit

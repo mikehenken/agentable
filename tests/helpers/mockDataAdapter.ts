@@ -127,21 +127,18 @@ export function createMockDataAdapter(options: MockAdapterOptions = {}): MockDat
     },
 
     queryCount(source?: string): number {
-      return queries.filter((query) => source === undefined || query.ref.source === source)
-        .length;
+      return queries.filter((query) => source === undefined || query.ref.source === source).length;
     },
 
     abortedCount(source?: string): number {
       return queries.filter(
         (query) =>
-          query.outcome === 'aborted' && (source === undefined || query.ref.source === source),
-      ).length;
+          query.outcome === 'aborted' && (source === undefined || query.ref.source === source)).length;
     },
 
     subscriberCount(source?: string): number {
       return subscribers.filter(
-        (entry) => entry.active && (source === undefined || entry.ref.source === source),
-      ).length;
+        (entry) => entry.active && (source === undefined || entry.ref.source === source)).length;
     },
 
     emitRemoteChange(source: string): void {

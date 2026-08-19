@@ -73,10 +73,8 @@ function toAdapterError(reason: unknown): AdapterError {
     if (typeof candidate.code === 'string' && ADAPTER_ERROR_CODES.has(candidate.code)) {
       return {
         code: candidate.code as AdapterError['code'],
-        message: typeof candidate.message === 'string' ? candidate.message : 'Query failed',
-        ...(isFieldErrors((reason as { fieldErrors?: unknown }).fieldErrors)
-          ? { fieldErrors: (reason as { fieldErrors: Record<string, string> }).fieldErrors }
-          : {}),
+        message: typeof candidate.message === 'string' ? candidate.message: 'Query failed',...(isFieldErrors((reason as { fieldErrors?: unknown }).fieldErrors)
+          ? { fieldErrors: (reason as { fieldErrors: Record<string, string> }).fieldErrors }: {}),
       };
     }
   }
@@ -282,8 +280,7 @@ export function createDataLifecycle(options: CreateDataLifecycleOptions): DataLi
       refetch: () => startFetch(entry, { clear: false }),
       setDirty: (ownerId: string, dirty: boolean): void => {
         const changed = dirty
-          ? !entry.dirtyOwners.has(ownerId)
-          : entry.dirtyOwners.delete(ownerId);
+          ? !entry.dirtyOwners.has(ownerId): entry.dirtyOwners.delete(ownerId);
         if (dirty) {
           entry.dirtyOwners.add(ownerId);
           ownedDirtyIds.add(ownerId);
@@ -343,8 +340,7 @@ export function createDataLifecycle(options: CreateDataLifecycleOptions): DataLi
   const mutate = (
     action: DeclaredAction,
     payload: unknown,
-    scope: PanelScope,
-  ): Promise<MutationResult> => {
+    scope: PanelScope): Promise<MutationResult> => {
     if (disposed) {
       return Promise.resolve({
         ok: false,

@@ -1,0 +1,13 @@
+{
+  "tenant": "meridian-labs",
+  "workspace": {
+    "documents": {}
+  },
+  "projects": [
+    {
+      "id": "atlas-onboarding",
+      "name": "Atlas onboarding",
+      "status": "draft"
+    }
+  ]
+}

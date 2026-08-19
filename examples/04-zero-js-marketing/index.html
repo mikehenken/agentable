@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>Archipelago Resorts Careers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="scroll-progress" class="scroll-progress" aria-hidden="true"></div>
+
+    <header id="site-nav" class="site-nav">
+      <div class="container">
+        <a id="brand-link" class="brand" href="#hero">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <span class="brand-text">Archipelago Resorts</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary">
+          <button type="button" data-nav-target="resorts">Locations</button>
+          <button type="button" data-nav-target="mission">Mission</button>
+          <button type="button" data-nav-target="growth">Growth</button>
+          <button type="button" data-nav-target="scu">Learning</button>
+          <button type="button" data-nav-target="roles">Roles</button>
+          <button type="button" data-nav-target="publications">Stories</button>
+        </nav>
+
+        <div class="nav-actions">
+          <button type="button" class="nav-cta" data-scroll-agent>Explore open roles</button>
+          <button
+            id="menu-toggle"
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Open menu"
+          >
+            ☰
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+      <nav aria-label="Mobile">
+        <button type="button" data-nav-target="resorts">Locations</button>
+        <button type="button" data-nav-target="mission">Mission</button>
+        <button type="button" data-nav-target="growth">Growth</button>
+        <button type="button" data-nav-target="scu">Learning</button>
+        <button type="button" data-nav-target="roles">Roles</button>
+        <button type="button" data-nav-target="publications">Stories</button>
+        <button type="button" data-nav-target="testimonials">Testimonials</button>
+        <button type="button" class="nav-cta" data-scroll-agent>Explore open roles</button>
+      </nav>
+    </div>
+
+    <main>
+      <!-- Hero -->
+      <section id="hero">
+        <div class="hero-bg" aria-hidden="true">
+          <img
+            src="assets/hero-team-collage.jpg"
+            alt=""
+            width="1920"
+            height="1080"
+            fetchpriority="high"
+          />
+          <div class="hero-overlay-warm"></div>
+          <div class="hero-overlay-dark"></div>
+        </div>
+        <div class="hero-content">
+          <p class="hero-kicker">Discover your next chapter at Archipelago Resorts</p>
+          <h1 class="hero-title">
+            Your journey is not a file we process. It is a story we are waiting to read.
+          </h1>
+          <p class="hero-lede">
+            We are dedicated to fostering talent and growth. Explore a direct path from who you are
+            to who you can become within our island teams.
+          </p>
+          <button type="button" class="hero-cta" data-scroll-agent>
+            <span aria-hidden="true">◎</span>
+            Browse live open positions
+          </button>
+        </div>
+      </section>
+
+      <!-- Resort Portals -->
+      <section id="resorts" class="section-light">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">8 Caribbean Islands</span>
+              <h2 class="section-title">
+                Where would you<br />
+                <span class="accent">actually be?</span>
+              </h2>
+            </div>
+            <div>
+              <p class="section-lede">
+                From Jamaica's vibrant culture to Saint Lucia's piton views, each island offers a
+                different chapter in your career story.
+              </p>
+            </div>
+          </div>
+
+          <div class="resort-grid">
+            <article class="resort-card">
+              <div class="resort-card-media">
+                <img src="assets/resort-jamaica.jpg" alt="Jamaica coastline resort" loading="lazy" />
+                <span class="resort-badge">7 properties</span>
+              </div>
+              <div class="resort-card-body">
+                <h3>Jamaica</h3>
+                <p class="tagline">Where it all began</p>
+                <span class="resort-pill" style="background: rgba(14, 116, 144, 0.12); color: #0e7490"
+                  >$120M renovation</span
+                >
+              </div>
+            </article>
+            <article class="resort-card">
+              <div class="resort-card-media">
+                <img src="assets/resort-stlucia.jpg" alt="Saint Lucia resort" loading="lazy" />
+                <span class="resort-badge">3 properties</span>
+              </div>
+              <div class="resort-card-body">
+                <h3>Saint Lucia</h3>
+                <p class="tagline">The heart of the Caribbean</p>
+                <span class="resort-pill" style="background: rgba(201, 162, 39, 0.12); color: #c9a227"
+                  >3 unique resorts</span
+                >
+              </div>
+            </article>
+            <article class="resort-card">
+              <div class="resort-card-media">
+                <img src="assets/resort-barbados.jpg" alt="Barbados resort" loading="lazy" />
+                <span class="resort-badge">2 properties</span>
+              </div>
+              <div class="resort-card-body">
+                <h3>Barbados</h3>
+                <p class="tagline">Island of innovation</p>
+                <span class="resort-pill" style="background: rgba(8, 145, 178, 0.12); color: #0891b2"
+                  >600 rooms coming</span
+                >
+              </div>
+            </article>
+            <article class="resort-card">
+              <div class="resort-card-media">
+                <img src="assets/hero-caribbean.jpg" alt="Bahamas crystal waters" loading="lazy" />
+                <span class="resort-badge">2 properties</span>
+              </div>
+              <div class="resort-card-body">
+                <h3>The Bahamas</h3>
+                <p class="tagline">Crystal clear waters</p>
+                <span class="resort-pill" style="background: rgba(244, 162, 97, 0.12); color: #f4a261"
+                  >World-class diving</span
+                >
+              </div>
+            </article>
+          </div>
+
+          <div class="resort-banner">
+            <div class="resort-banner-inner">
+              <p>
+                For 44 years, Archipelago Resorts has been
+                <strong>Caribbean-owned and Caribbean-headquartered</strong>. The Foundation has
+                contributed $45 million to island communities. We source 90% of produce locally across our island homes.
+              </p>
+              <div class="resort-banner-stats">
+                <div class="stat-block">
+                  <div class="stat-value gold">$45M</div>
+                  <div class="stat-label">Foundation Giving</div>
+                </div>
+                <div class="stat-block">
+                  <div class="stat-value teal">90%</div>
+                  <div class="stat-label">Local Sourcing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mission -->
+      <section id="mission">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">Our Culture</span>
+              <h2 class="section-title">
+                Work where people,<br />
+                <span class="accent">craft, and continuity</span> meet
+              </h2>
+            </div>
+            <div>
+              <p class="section-lede">
+                Archipelago is not only a view. It is people who show up every day committed to
+                something bigger than themselves.
+              </p>
+            </div>
+          </div>
+
+          <div class="pillar-grid">
+            <article class="pillar-card">
+              <div class="pillar-media">
+                <img src="assets/mission-people.jpg" alt="Team members collaborating" loading="lazy" />
+                <div class="pillar-stat"><strong>158K+</strong> certificates issued</div>
+              </div>
+              <div class="pillar-body">
+                <h3>People first, always</h3>
+                <p>
+                  We have invested $5 million in Archipelago Corporate University over five years.
+                  From basic hospitality training to doctoral degrees, your pace, your path.
+                </p>
+              </div>
+            </article>
+            <article class="pillar-card">
+              <div class="pillar-media">
+                <img src="assets/mission-craft.jpg" alt="Craftsmanship in hospitality" loading="lazy" />
+                <div class="pillar-stat"><strong>20</strong> ACU campuses</div>
+              </div>
+              <div class="pillar-body">
+                <h3>Craft that matters</h3>
+                <p>
+                  Every role is an opportunity to master something. The work you do shapes
+                  experiences people remember forever.
+                </p>
+              </div>
+            </article>
+            <article class="pillar-card">
+              <div class="pillar-media">
+                <img
+                  src="assets/mission-continuity.jpg"
+                  alt="Long-tenured team member"
+                  loading="lazy"
+                />
+                <div class="pillar-stat"><strong>33</strong> years longest tenure</div>
+              </div>
+              <div class="pillar-body">
+                <h3>Continuity you can build on</h3>
+                <p>
+                  Cross-island mobility is not a perk. It is how leaders are made across our
+                  Caribbean portfolio.
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <div class="mission-quote">
+            <blockquote>
+              "The person who lit candles and created romantic moments now directs the entire guest
+              experience operation."
+            </blockquote>
+            <span class="highlight">Sixteen years of momentum, not just tenure.</span>
+            <cite>Maya Ortega, Director of Guest Services</cite>
+          </div>
+        </div>
+      </section>
+
+      <!-- Growth Paths -->
+      <section id="growth" class="section-light">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">Our Foundation</span>
+              <h2 class="section-title">
+                You are joining 44 years<br />
+                of <span class="accent">unstoppable momentum</span>
+              </h2>
+            </div>
+            <div>
+              <p class="section-lede">We have built the stage. Now you take the spotlight.</p>
+            </div>
+          </div>
+
+          <div class="timeline-grid">
+            <article class="timeline-card">
+              <div class="year">1981</div>
+              <h3>Azure Atoll Opens</h3>
+              <p>The first Archipelago island flagship. Where the journey began.</p>
+            </article>
+            <article class="timeline-card">
+              <div class="year">2012</div>
+              <h3>ACU Launched</h3>
+              <p>Archipelago Corporate University, the region's first corporate educational institution.</p>
+            </article>
+            <article class="timeline-card">
+              <div class="year">2024</div>
+              <h3>$1B Expansion</h3>
+              <p>Nearly one billion dollars in announced expansion across the Caribbean.</p>
+            </article>
+            <article class="timeline-card">
+              <div class="year">2026</div>
+              <h3>Coral Reach Opens</h3>
+              <p>The immediate future you are joining. New properties, new opportunities.</p>
+            </article>
+          </div>
+
+          <div class="stats-row">
+            <div>
+              <div class="value">85%</div>
+              <div class="label">Leadership promoted from within</div>
+            </div>
+            <div>
+              <div class="value">2-3 yrs</div>
+              <div class="label">Average promotion cycle</div>
+            </div>
+            <div>
+              <div class="value">8</div>
+              <div class="label">Islands to build your career</div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">Career Paths</span>
+              <h2 class="section-title">Your path to <span class="accent">growth</span></h2>
+            </div>
+            <div>
+              <p class="section-lede">
+                Real career trajectories backed by real people who walked them.
+              </p>
+            </div>
+          </div>
+
+          <div class="path-layout">
+            <div class="path-tabs">
+              <button type="button" class="path-tab is-active" data-path-id="hospitality">
+                <h3>Hospitality Operations</h3>
+                <p>From front desk to resort leadership</p>
+              </button>
+              <button type="button" class="path-tab" data-path-id="corporate">
+                <h3>Technology and Innovation</h3>
+                <p>Build the systems that power paradise</p>
+              </button>
+              <button type="button" class="path-tab" data-path-id="culinary">
+                <h3>Culinary Excellence</h3>
+                <p>From line cook to executive chef</p>
+              </button>
+            </div>
+            <div id="path-feature" class="path-feature" aria-live="polite"></div>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn-dark" data-scroll-agent>Explore all career paths</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACU -->
+      <section id="scu">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">The Engine</span>
+              <h2 class="section-title">
+                Growth is not just encouraged.<br />
+                <span class="accent">It is engineered.</span>
+              </h2>
+            </div>
+            <div>
+              <p class="section-lede">
+                Introducing Archipelago Corporate University, built to invest in you.
+              </p>
+            </div>
+          </div>
+
+          <div class="bento-grid">
+            <div class="bento-hero">
+              <div class="big">$5M+</div>
+              <h3>Invested in education</h3>
+              <p>Over 5 years. Not reimbursement. Direct investment.</p>
+            </div>
+            <div class="bento-card">
+              <div class="num">158K+</div>
+              <div class="sub">Certificates issued since 2012</div>
+            </div>
+            <div class="bento-card">
+              <div class="num">20</div>
+              <div class="sub">Physical campuses across properties</div>
+            </div>
+            <div class="bento-card">
+              <div class="num">20,297</div>
+              <div class="sub">Team members enrolled</div>
+            </div>
+            <div class="bento-card">
+              <div class="num">$2M</div>
+              <div class="sub">In scholarships awarded</div>
+            </div>
+          </div>
+
+          <h3 class="section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem">
+            Academic partnerships that <span class="accent">matter</span>
+          </h3>
+          <div class="partner-grid">
+            <article class="partner-card">
+              <img
+                src="assets/logo-harbor-institute.png"
+                alt="Harbor Institute of Hospitality"
+                loading="lazy"
+              />
+              <h4>Harbor Institute of Hospitality</h4>
+              <p style="color: #0e7490; font-size: 0.875rem">School of Guest Experience</p>
+              <p style="font-size: 0.875rem; color: rgba(26, 26, 46, 0.5)">
+                Fully funded diploma programs with the first cohort of 22 managers graduating in
+                2024.
+              </p>
+            </article>
+            <article class="partner-card">
+              <img src="assets/logo-coral-cay.png" alt="Coral Cay University" loading="lazy" />
+              <h4>Coral Cay University</h4>
+              <p style="color: #c9a227; font-size: 0.875rem">Azure Atoll Campus</p>
+              <p style="font-size: 0.875rem; color: rgba(26, 26, 46, 0.5)">
+                Permanent institution at the Azure Atoll campus for hospitality leadership.
+              </p>
+            </article>
+            <article class="partner-card">
+              <img src="assets/logo-tide-trust.png" alt="Tide Workforce Trust" loading="lazy" />
+              <h4>Tide Workforce Trust</h4>
+              <p style="color: #f4a261; font-size: 0.875rem">Workforce Development</p>
+              <p style="font-size: 0.875rem; color: rgba(26, 26, 46, 0.5)">
+                Training 300 hotel workers over two years with a scalable regional model.
+              </p>
+            </article>
+          </div>
+
+          <p style="font-size: 0.875rem; color: rgba(26, 26, 46, 0.6); margin-bottom: 1rem">
+            Your pathway from entry to <strong style="color: #c9a227">doctorate</strong>
+          </p>
+          <div class="degree-pills">
+            <div class="degree-pill"><div class="dur">2-4 weeks</div><div class="lvl">Basic</div></div>
+            <div class="degree-pill"><div class="dur">1-3 months</div><div class="lvl">Certifications</div></div>
+            <div class="degree-pill"><div class="dur">6-12 months</div><div class="lvl">Diploma</div></div>
+            <div class="degree-pill"><div class="dur">2 years</div><div class="lvl">Associate</div></div>
+            <div class="degree-pill"><div class="dur">4 years</div><div class="lvl">Bachelor</div></div>
+            <div class="degree-pill"><div class="dur">2 years</div><div class="lvl">Master</div></div>
+            <div class="degree-pill"><div class="dur">3-5 years</div><div class="lvl">Doctoral</div></div>
+          </div>
+
+          <div class="proof-box">
+            <h3 style="margin-top: 0">What makes ACU distinct</h3>
+            <ul class="proof-list">
+              <li>More campuses than any Caribbean competitor</li>
+              <li>Harbor Institute partnership brings world-class hospitality education</li>
+              <li>Fully funded diplomas, not reimbursement, investment</li>
+              <li>158,000+ certificates issued since 2012</li>
+              <li>From basic training to doctoral degrees</li>
+              <li>20 locations means learning happens where you work</li>
+            </ul>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn-gold">Explore ACU programs</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roles Mosaic -->
+      <section id="roles">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">Open Roles</span>
+              <h2 class="section-title">
+                Open the door to<br />
+                <span class="accent">your next role</span>
+              </h2>
+            </div>
+            <div>
+              <p class="section-lede">
+                From front-line hospitality to corporate leadership, find where you fit in the
+                Caribbean's premier luxury resort company.
+              </p>
+            </div>
+          </div>
+
+          <div class="mosaic-grid">
+            <div class="mosaic-info">
+              <div class="big">Global</div>
+              <p style="margin: 0.5rem 0 0; color: rgba(255, 255, 255, 0.6); font-size: 0.875rem">
+                Hiring across the Caribbean and beyond
+              </p>
+            </div>
+            <div class="mosaic-info">
+              <div class="big">24</div>
+              <p style="margin: 0; color: rgba(26, 26, 46, 0.5); font-size: 0.875rem">Departments</p>
+            </div>
+            <div class="mosaic-info teal">
+              <div class="big">8</div>
+              <p style="margin: 0; color: rgba(255, 255, 255, 0.7); font-size: 0.875rem">Islands</p>
+            </div>
+            <article class="mosaic-tile mosaic-square">
+              <img src="assets/role-instructor.jpg" alt="ACU Instructor role" loading="lazy" />
+              <div class="tile-body">
+                <h3>ACU Instructor</h3>
+                <p>Multiple locations</p>
+              </div>
+            </article>
+            <article class="mosaic-tile mosaic-wide">
+              <img src="assets/role-manager.jpg" alt="Resort Manager role" loading="lazy" />
+              <div class="tile-body">
+                <h3>Resort Manager</h3>
+                <p>Azure Atoll, Meridian Sea</p>
+              </div>
+            </article>
+            <article class="mosaic-tile mosaic-square">
+              <img src="assets/role-marine.jpg" alt="Marine Biologist role" loading="lazy" />
+              <div class="tile-body">
+                <h3>Marine Biologist</h3>
+                <p>Sustainability team</p>
+              </div>
+            </article>
+            <article class="mosaic-tile mosaic-wide">
+              <img src="assets/role-developer.jpg" alt="Software Developer role" loading="lazy" />
+              <div class="tile-body">
+                <h3>Senior Software Developer</h3>
+                <p>Meridian Tech Hub</p>
+              </div>
+            </article>
+            <article class="mosaic-tile mosaic-square">
+              <img src="assets/role-chef.jpg" alt="Executive Chef role" loading="lazy" />
+              <div class="tile-body">
+                <h3>Executive Chef</h3>
+                <p>Mistral Key</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn-dark" data-scroll-agent>Explore all open roles</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Publications -->
+      <section id="publications">
+        <div class="container">
+          <div class="section-header" style="text-align: center; display: block">
+            <span class="section-kicker">Media Coverage</span>
+            <h2 class="section-title">
+              The story, <span class="accent">well-documented</span>
+            </h2>
+            <p class="section-lede" style="max-width: 36rem; margin: 0.75rem auto 0">
+              Over 300 positive publications about building careers at Archipelago Resorts.
+            </p>
+          </div>
+
+          <div class="pub-filters">
+            <button type="button" class="pub-filter is-active" data-pub-filter="all">All Stories</button>
+            <button type="button" class="pub-filter" data-pub-filter="career">Career Growth</button>
+            <button type="button" class="pub-filter" data-pub-filter="innovation">Innovation</button>
+            <button type="button" class="pub-filter" data-pub-filter="sustainability">Sustainability</button>
+            <button type="button" class="pub-filter" data-pub-filter="community">Community</button>
+          </div>
+
+          <div class="pub-grid">
+            <article class="pub-card" data-pub-category="career">
+              <div class="cat">Career Growth</div>
+              <h3>From front desk to regional director: an Archipelago career arc</h3>
+              <div class="meta"><span>Caribbean Business</span><span>Mar 2025</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="innovation">
+              <div class="cat">Innovation</div>
+              <h3>How Archipelago Corporate University is reshaping hospitality training</h3>
+              <div class="meta"><span>Hospitality Today</span><span>Feb 2025</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="sustainability">
+              <div class="cat">Sustainability</div>
+              <h3>Coral restoration teams hire marine biologists across island properties</h3>
+              <div class="meta"><span>Travel Weekly</span><span>Jan 2025</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="community">
+              <div class="cat">Community</div>
+              <h3>$45M foundation giving reaches every island Archipelago calls home</h3>
+              <div class="meta"><span>Jamaica Observer</span><span>Dec 2024</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="career">
+              <div class="cat">Career Growth</div>
+              <h3>Cross-island mobility keeps talent climbing at Archipelago Resorts</h3>
+              <div class="meta"><span>HR Caribbean</span><span>Nov 2024</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="innovation">
+              <div class="cat">Innovation</div>
+              <h3>Technology hub powers guest experience across the Archipelago portfolio</h3>
+              <div class="meta"><span>Tech Hospitality</span><span>Oct 2024</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="sustainability">
+              <div class="cat">Sustainability</div>
+              <h3>Local sourcing at 90% sets a new standard for island resort operations</h3>
+              <div class="meta"><span>Green Travel</span><span>Sep 2024</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="community">
+              <div class="cat">Community</div>
+              <h3>Archipelago apprenticeships open doors for 300 new hospitality workers</h3>
+              <div class="meta"><span>Tide Trust News</span><span>Aug 2024</span></div>
+            </article>
+            <article class="pub-card" data-pub-category="career">
+              <div class="cat">Career Growth</div>
+              <h3>Executive chefs share paths from prep line to leading forty-person kitchens</h3>
+              <div class="meta"><span>Culinary Caribbean</span><span>Jul 2024</span></div>
+            </article>
+          </div>
+
+          <h3 style="text-align: center; margin-top: 4rem; margin-bottom: 1.5rem">Team Member Stories</h3>
+          <div class="story-grid">
+            <article class="story-card">
+              <h4>Maya Ortega</h4>
+              <p class="role">Director of Guest Services</p>
+              <p>From candlelight dinners to directing the entire guest experience operation.</p>
+            </article>
+            <article class="story-card">
+              <h4>Elena Ruiz</h4>
+              <p class="role">Assistant Concierge Manager</p>
+              <p>Cross-island transfers opened doors she did not know existed.</p>
+            </article>
+            <article class="story-card">
+              <h4>Marcus Chen</h4>
+              <p class="role">Evening Duty Manager</p>
+              <p>150 ACU courses later, he runs the evening operation.</p>
+            </article>
+            <article class="story-card">
+              <h4>Julian Brooks</h4>
+              <p class="role">Star Award Winner</p>
+              <p>Thirty-three years of consistency, respect, and recognition.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section id="testimonials" class="section-light">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="section-kicker">Testimonials</span>
+              <h2 class="section-title">Hear from <span class="accent">our people</span></h2>
+            </div>
+            <div>
+              <p class="section-lede">
+                Real stories from team members who started exactly where you are and built careers
+                that span decades and islands.
+              </p>
+            </div>
+          </div>
+
+          <div class="testimonial-shell">
+            <div class="testimonial-grid">
+              <div class="testimonial-media">
+                <img
+                  data-testimonial-image
+                  class="is-active"
+                  src="assets/team-maya.jpg"
+                  alt="Maya Ortega"
+                  width="640"
+                  height="480"
+                />
+                <img data-testimonial-image src="assets/team-elena.jpg" alt="Elena Ruiz" />
+                <img data-testimonial-image src="assets/team-marcus.jpg" alt="Marcus Chen" />
+                <img data-testimonial-image src="assets/team-julian.jpg" alt="Julian Brooks" />
+              </div>
+              <div class="testimonial-content">
+                <div data-testimonial-index class="testimonial-slide is-active">
+                  <blockquote>
+                    "I started setting up candlelight dinners as a contract worker. Sixteen years
+                    later, I direct the entire guest experience."
+                  </blockquote>
+                  <div class="name">Maya Ortega</div>
+                  <div class="role">Director of Guest Services</div>
+                  <div class="testimonial-badge">Manager of the Year award recipient</div>
+                </div>
+                <div data-testimonial-index class="testimonial-slide">
+                  <blockquote>
+                    "Every two to three years, a new level. Cross-island mobility is real here."
+                  </blockquote>
+                  <div class="name">Elena Ruiz</div>
+                  <div class="role">Assistant Concierge Manager</div>
+                  <div class="testimonial-badge">Team Member of the Year (2009)</div>
+                </div>
+                <div data-testimonial-index class="testimonial-slide">
+                  <blockquote>
+                    "ACU gave me the tools. I gave myself the commitment. 150 courses later, I run
+                    the evening operation."
+                  </blockquote>
+                  <div class="name">Marcus Chen</div>
+                  <div class="role">Evening Duty Manager</div>
+                  <div class="testimonial-badge">150+ ACU courses completed</div>
+                </div>
+                <div data-testimonial-index class="testimonial-slide">
+                  <blockquote>
+                    "I started as a houseman in 1991. In 2016, I earned Star Award as number one
+                    housekeeper. Still earning awards in year 33."
+                  </blockquote>
+                  <div class="name">Julian Brooks</div>
+                  <div class="role">Star Award Winner</div>
+                  <div class="testimonial-badge">Number one housekeeper (2016)</div>
+                </div>
+
+                <div class="testimonial-nav">
+                  <button id="testimonial-prev" type="button" aria-label="Previous testimonial">←</button>
+                  <button id="testimonial-next" type="button" aria-label="Next testimonial">→</button>
+                  <div class="testimonial-dots">
+                    <button type="button" data-testimonial-dot="0" class="is-active" aria-label="Slide 1"></button>
+                    <button type="button" data-testimonial-dot="1" aria-label="Slide 2"></button>
+                    <button type="button" data-testimonial-dot="2" aria-label="Slide 3"></button>
+                    <button type="button" data-testimonial-dot="3" aria-label="Slide 4"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 2.5rem; margin-bottom: 1rem">More stories</h3>
+          <div class="thumb-grid">
+            <button type="button" data-testimonial-thumb="0" class="is-active">
+              <img src="assets/team-maya.jpg" alt="" />
+              <span class="overlay"><span>Maya Ortega</span></span>
+            </button>
+            <button type="button" data-testimonial-thumb="1">
+              <img src="assets/team-elena.jpg" alt="" />
+              <span class="overlay"><span>Elena Ruiz</span></span>
+            </button>
+            <button type="button" data-testimonial-thumb="2">
+              <img src="assets/team-marcus.jpg" alt="" />
+              <span class="overlay"><span>Marcus Chen</span></span>
+            </button>
+            <button type="button" data-testimonial-thumb="3">
+              <img src="assets/team-julian.jpg" alt="" />
+              <span class="overlay"><span>Julian Brooks</span></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Open Positions panel band (replaces Career Concierge Canvas) -->
+      <section id="agent">
+        <div class="container">
+          <div class="agent-header">
+            <span class="agent-badge">Live career listings</span>
+            <h2>Open Positions at Archipelago Resorts</h2>
+            <p>
+              Browse current roles across our island portfolio. One script tag, one data attribute,
+              and your marketing page ships with live career content. No React bundle required.
+            </p>
+          </div>
+
+          <div class="whiteboard-embed-mount">
+            <agentable-whiteboard
+              tenant="archipelago-resorts"
+              config-url="/examples/shared/archipelago-career-whiteboard-config.json"
+              canvas-mode="bounded"
+              canvas-bounds="1200x800"
+              canvas-zoom="locked"
+              light-canvas
+              voice-enabled
+              snap-grid
+            ></agentable-whiteboard>
+          </div>
+
+          <div class="trust-row">
+            <span>Caribbean-owned hospitality since 1981</span>
+            <span>158,000+ ACU certificates issued</span>
+            <span>Cross-island career mobility</span>
+            <span>Live open roles updated daily</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">A</span>
+            <span class="brand-text">Archipelago Careers</span>
+          </div>
+          <p>
+            The Caribbean's first corporate university. 20 campuses. 158,000+ certificates. Real
+            careers that span decades and islands.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">Ig</a>
+            <a href="#" aria-label="Facebook">Fb</a>
+            <a href="#" aria-label="LinkedIn">In</a>
+            <a href="#" aria-label="YouTube">Yt</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Archipelago</a></li>
+            <li><a href="#">Our Resorts</a></li>
+            <li><a href="#">Foundation</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Press Center</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Careers</h4>
+          <ul>
+            <li><a href="#agent">Search Jobs</a></li>
+            <li><a href="#growth">Career Paths</a></li>
+            <li><a href="#scu">ACU Programs</a></li>
+            <li><a href="#testimonials">Employee Stories</a></li>
+            <li><a href="#">Benefits</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Accessibility</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Cookie Settings</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bar">
+        <div class="container footer-bar-inner">
+          <p>© 2026 Archipelago Resorts International. All rights reserved.</p>
+          <button id="back-to-top" type="button" class="back-top">Back to top ↑</button>
+        </div>
+      </div>
+    </footer>
+
+    <details class="gallery-telemetry">
+      <summary>Gallery telemetry</summary>
+      <pre id="telemetry">waiting…</pre>
+    </details>
+
+    <script defer src="main.js"></script>
+    <script type="module" src="/embed/career-whiteboard.js"></script>
+    <script type="module">
+      const JOB_TITLES = [
+        'Guest Experience Lead',
+        'Culinary Innovation Chef',
+        'Resort Operations Manager',
+        'Senior Software Developer',
+        'Guest Services Agent',
+        'Spa Therapist',
+        'Marine Sustainability Specialist',
+        'ACU Learning Facilitator',
+        'Evening Duty Manager',
+        'Environmental Programs Coordinator',
+      ];
+
+      window.__galleryExample = '04-zero-js-marketing';
+
+      const telemetry = document.getElementById('telemetry');
+
+      function whiteboardShadowRoot {
+        const host = document.querySelector('agentable-whiteboard');
+        return host?.shadowRoot ?? null;
+      }
+
+      function collectJobTitles {
+        const root = whiteboardShadowRoot;
+        if (!root) {
+          return [];
+        }
+        const text = root.textContent ?? '';
+        return JOB_TITLES.filter((title) => text.includes(title));
+      }
+
+      function hasSearchAndFilters {
+        const root = whiteboardShadowRoot;
+        if (!root) {
+          return false;
+        }
+        const panel = root.querySelector('[data-testid="open-positions-panel"]');
+        const search = root.querySelector(
+          '[data-testid="open-positions-panel"] input, [role="searchbox"]');
+        return Boolean(panel && search);
+      }
+
+      function refreshGalleryReady {
+        const host = document.querySelector('agentable-whiteboard');
+        const theme = host?.hasAttribute('light-canvas') ? 'career-light': null;
+        const themeCareerLight = theme === 'career-light' || theme === null;
+        const jobTitlesFound = collectJobTitles;
+        const searchAndFilters = hasSearchAndFilters;
+        const mounted = Boolean(host);
+
+        window.__galleryReady = {
+          example: '04-zero-js-marketing',
+          ok:
+            mounted &&
+            themeCareerLight &&
+            searchAndFilters &&
+            jobTitlesFound.length >= 8,
+          embedKind: 'career-whiteboard',
+          panelId: 'open-positions',
+          theme,
+          themeCareerLight,
+          jobTitlesFound,
+          jobTitleCount: jobTitlesFound.length,
+          searchAndFilters,
+          autoMounted: mounted,
+        };
+
+        if (telemetry) {
+          telemetry.textContent = JSON.stringify(window.__galleryReady, null, 2);
+        }
+
+        return window.__galleryReady;
+      }
+
+      function openGalleryOpenPositions {
+        window.dispatchEvent(
+          new CustomEvent('landi-whiteboard-open-panel', {
+            detail: { panelId: 'open-positions', focus: true, preserveZoom: true },
+            bubbles: true,
+            composed: true,
+          }));
+      }
+
+      function waitForWhiteboardShell(timeoutMs = 20000) {
+        return new Promise((resolve) => {
+          const started = Date.now;
+          const tick = => {
+            const root = whiteboardShadowRoot;
+            const ready = Boolean(root?.querySelector('[data-testid="whiteboard-shell"]'));
+            if (ready || Date.now - started >= timeoutMs) {
+              resolve(ready);
+              return;
+            }
+            requestAnimationFrame(tick);
+          };
+          tick;
+        });
+      }
+
+      async function seedGalleryOpenPositions {
+        const shellReady = await waitForWhiteboardShell;
+        if (!shellReady) {
+          return refreshGalleryReady;
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 600));
+        openGalleryOpenPositions;
+        const started = Date.now;
+        while (Date.now - started < 20000) {
+          const state = refreshGalleryReady;
+          if (state.ok) {
+            return state;
+          }
+          await new Promise((resolve) => window.setTimeout(resolve, 500));
+        }
+        return refreshGalleryReady;
+      }
+
+      window.__refreshGalleryReady = refreshGalleryReady;
+
+      customElements.whenDefined('agentable-whiteboard').then( => {
+        refreshGalleryReady;
+        void seedGalleryOpenPositions;
+      });
+    </script>
+  </body>
+</html>

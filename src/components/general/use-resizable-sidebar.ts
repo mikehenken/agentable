@@ -137,8 +137,7 @@ export function useResizableSidebar(opts: UseResizableSidebarOpts): UseResizable
     (next: number) => {
       setExpandedWidth(Math.min(opts.maxWidth, Math.max(opts.minWidth, next)));
     },
-    [opts.minWidth, opts.maxWidth],
-  );
+    [opts.minWidth, opts.maxWidth]);
 
   const onPointerDown: React.PointerEventHandler<HTMLElement> = (e) => {
     // Only respond to primary button / single touch.

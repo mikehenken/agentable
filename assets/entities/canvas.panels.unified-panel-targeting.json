@@ -1,0 +1,46 @@
+{
+  "entity_id": "canvas.panels.unified-panel-targeting",
+  "entity_type": "feature",
+  "parent_id": "canvas.panels",
+  "name": "Unified panel targeting",
+  "description": "Engine-agnostic open_panel resolver for page-session slots, app-shell regions, and canvas coordinates.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "panels",
+    "open_panel",
+    "targeting",
+    "resolver",
+    "dom",
+    "tldraw"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.unified-panel-targeting::feature",
+    "source_files": [
+      "src/engine/openPanelResolver.ts",
+      "src/panels/tools.ts",
+      "src/panels/panelToolRuntime.ts",
+      "src/mcp/toolSchemas.ts",
+      "src/engines/dom/layoutCodec.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": false
+  }
+}

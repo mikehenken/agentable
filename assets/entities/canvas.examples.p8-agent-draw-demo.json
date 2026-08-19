@@ -1,0 +1,65 @@
+{
+  "entity_id": "canvas.examples.p8-agent-draw-demo",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents",
+  "name": "P8 agent draw & see try-it demo",
+  "description": "Interactive Northstar Atelier demo: scripted draw_shapes and read_canvas on a live whiteboard with agent provenance — no LLM required.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "drawing",
+    "perception",
+    "demo",
+    "p8",
+    "examples"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.p8-agent-draw-demo::feature",
+    "source_files": [
+      "examples/p8-agent-draw-demo/index.html",
+      "examples/p8-agent-draw-demo/gallery-demo.mjs",
+      "examples/p8-agent-draw-demo/config.example.json",
+      "examples/p8-agent-draw-demo/index.dev.html",
+      "examples/p8-agent-draw-demo/fixtures/northstarBrand.ts",
+      "src/embed/galleryScriptedDemo.ts",
+      "src/embed/agentable-whiteboard.ts",
+      "tests/e2e/harness/p8AgentDrawDemoHarness.tsx",
+      "tests/e2e/p8-agent-draw-demo.spec.ts"
+    ]
+  },
+  "routes": [
+    {
+      "path": "/examples/p8-agent-draw-demo/index.html",
+      "methods": [
+        "GET"
+      ],
+      "description": "Production gallery page: 08-style embed + sidebar controller (gallery-demo.mjs)"
+    },
+    {
+      "path": "/examples/p8-agent-draw-demo/index.dev.html",
+      "methods": [
+        "GET"
+      ],
+      "description": "Vite dev demo entry (npm run dev:p8-demo, port 3018)"
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

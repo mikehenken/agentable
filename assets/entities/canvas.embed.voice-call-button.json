@@ -1,0 +1,41 @@
+{
+  "entity_id": "canvas.embed.voice-call-button",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.embed.widgets-family",
+  "name": "VoiceCallButtonElement",
+  "description": "Lit voice-call trigger subscribing to window.__voiceKernel__; first member of the widgets family.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "widget",
+    "voice",
+    "lit"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.voice-call-button::component",
+    "source_file": "src/embed/widgets/voice-call-button.ts",
+    "export": "./embed/voice-call-button"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/embed-widgets-family.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

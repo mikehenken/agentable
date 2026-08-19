@@ -111,8 +111,7 @@ describe('legacy document load', () => {
     for (const [index, legacy] of LEGACY_RECORDS.entries()) {
       const typed = TYPED_RECORDS[index]!;
       expect(resolvePanelChrome(legacy.props.data)).toEqual(
-        resolvePanelChrome(typed.props.data),
-      );
+        resolvePanelChrome(typed.props.data));
     }
   });
 
@@ -120,8 +119,7 @@ describe('legacy document load', () => {
     for (const [index, legacy] of LEGACY_RECORDS.entries()) {
       const typed = TYPED_RECORDS[index]!;
       expect(resolveSiteIdFromPanelData(legacy.props.data)).toBe(
-        resolveSiteIdFromPanelData(typed.props.data),
-      );
+        resolveSiteIdFromPanelData(typed.props.data));
     }
     expect(resolveSiteIdFromPanelData(LEGACY_RECORDS[0]!.props.data)).toBe('site-1');
   });
@@ -131,15 +129,12 @@ describe('legacy document load', () => {
     for (const [index, legacy] of LEGACY_RECORDS.entries()) {
       const typed = TYPED_RECORDS[index]!;
       expect(getShapeLabel(editor, legacy as unknown as TLShape)).toBe(
-        getShapeLabel(editor, typed as unknown as TLShape),
-      );
+        getShapeLabel(editor, typed as unknown as TLShape));
       expect(getShapeSearchText(editor, legacy as unknown as TLShape)).toBe(
-        getShapeSearchText(editor, typed as unknown as TLShape),
-      );
+        getShapeSearchText(editor, typed as unknown as TLShape));
     }
     expect(getShapeLabel(editor, LEGACY_RECORDS[0] as unknown as TLShape)).toBe('Chat');
     expect(
-      getShapeSearchText(editor, LEGACY_RECORDS[1] as unknown as TLShape),
-    ).toContain('Acme Landing');
+      getShapeSearchText(editor, LEGACY_RECORDS[1] as unknown as TLShape)).toContain('Acme Landing');
   });
 });

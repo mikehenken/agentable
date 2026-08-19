@@ -94,8 +94,7 @@ describe('resolveDockTree admin preset', () => {
     const editor = makeDockEditor();
     const placements = computeInitialSiteContextLayout(
       { x: 20, y: 20, maxWidth: 1160, maxHeight: 860 },
-      { includeChat: false, includeBrief: true, includePreview: true, includeFiles: true },
-    );
+      { includeChat: false, includeBrief: true, includePreview: true, includeFiles: true });
     const sizes = sizesFromPlacements(placements);
     const tree = buildAdminSiteDockTree(
       {
@@ -105,8 +104,7 @@ describe('resolveDockTree admin preset', () => {
         includeFiles: true,
         frameId: FRAME_ID,
       },
-      sizes,
-    );
+      sizes);
 
     const resolved = resolveDockTree(editor, FRAME_ID, tree);
     expect(resolved.map((r) => r.panelId)).toEqual([

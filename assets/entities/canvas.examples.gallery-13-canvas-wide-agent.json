@@ -1,0 +1,64 @@
+{
+  "entity_id": "canvas.examples.gallery-13-canvas-wide-agent",
+  "entity_type": "feature",
+  "parent_id": "canvas.examples.gallery-d47",
+  "name": "Canvas-wide operator gallery example (13)",
+  "description": " gallery example 13 (Meridian Labs): open agent canvas with P13 operator surface — dock-inside rail + floating placement, shared page session, voice off-by-default.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "examples",
+    "gallery",
+    "operator-surface",
+    "open-canvas"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.canvas-wide-operator-gallery::feature",
+    "source_files": [
+      "examples/13-canvas-wide-agent/index.html",
+      "examples/13-canvas-wide-agent/README.md",
+      "examples/13-canvas-wide-agent/gallery-demo.mjs",
+      "src/embed/gallery/mountCanvasWideAgentChrome.tsx",
+      "src/embed/agentable-whiteboard.ts",
+      "src/agents/surface/operatorChatBridge.ts",
+      "src/agents/surface/operatorDrawVerification.ts",
+      "examples/shared/meridian-labs-open-config.json",
+      "examples/shared/meridian-labs-open-data.json",
+      "src/embed/agentable-operator-surface.ts",
+      "src/embed/agentable-operator-surface-placement.ts",
+      "vite.embed-operator-surface.config.ts",
+      "vite.embed-operator-surface-placement.config.ts",
+      "tests/e2e/gallery.spec.ts",
+      "tests/e2e/helpers/galleryHelpers.ts",
+      "tests/component/agentable-operator-surface.test.ts",
+      "tests/component/operator-surface-placement.test.ts"
+    ],
+    "decision": ""
+  },
+  "routes": [
+    {
+      "path": "/examples/13-canvas-wide-agent/index.html",
+      "methods": [
+        "GET"
+      ]
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

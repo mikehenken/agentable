@@ -1,0 +1,150 @@
+{
+  "visualSystem": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening.",
+  "negative": "Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses.",
+  "assets": [
+    {
+      "id": "hero-team-collage",
+      "outputFile": "hero-team-collage.jpg",
+      "aspectRatio": "16:9",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Create a single seamless cinematic collage banner (16:9) for Archipelago Resorts careers. LEFT (largest panel): Caribbean male executive chef in crisp white jacket and tall toque, carefully plating a gourmet dish with a small sauce pot; soft focus luxury kitchen behind; NO logos on the coat — plain white fabric only. TOP RIGHT: Caribbean female guest-services associate in navy blazer warmly greeting a young family at an open-air stone resort entrance at golden hour; genuine candid smiles. BOTTOM RIGHT: Caribbean female groundskeeper in straw sun hat and green apron tending vibrant pink hibiscus among lush tropical foliage. Blend the three scenes with a wide warm amber/brown soft-focus transition band in the center (space for headline text later, but DO NOT render any text). Consistent warm color grade across all panels. Editorial Caribbean hospitality. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "hero-caribbean",
+      "outputFile": "hero-caribbean.jpg",
+      "aspectRatio": "16:9",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Wide cinematic landscape (16:9) of crystal-clear shallow turquoise Caribbean water over white sand, soft clouds, distant palm-lined shoreline of a fictional Archipelago Resorts island property. Elevated travel-editorial drone/coastal perspective, serene luxury mood. No boats with readable names, no buildings with signage. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "hero-cinematic",
+      "outputFile": "hero-cinematic.jpg",
+      "aspectRatio": "16:9",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Cinematic 16:9 twilight long-exposure of an Archipelago Resorts infinity pool terrace overlooking a dark teal Caribbean sea; warm lantern light on limestone architecture, silhouetted palms, luxurious quiet atmosphere. Photorealistic, no people, no signage. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "hero-dramatic",
+      "outputFile": "hero-dramatic.jpg",
+      "aspectRatio": "16:9",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Dramatic 16:9 storm-clearing sky over a fictional Archipelago Resorts cliffside villa with turquoise cove below; shafts of golden light through clouds, high-contrast editorial travel photography. No readable text or logos on buildings. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "resort-jamaica",
+      "outputFile": "resort-jamaica.jpg",
+      "aspectRatio": "4:3",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Aerial drone photograph (4:3) of a fictional Archipelago Resorts property on a Jamaican Caribbean peninsula: crescent white-sand beach, cream buildings with terracotta roofs among dense palms, multiple turquoise resort pools, two white catamarans in calm bay, golden-hour warm light skimmed across water. High-end travel editorial, no signage. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "resort-stlucia",
+      "outputFile": "resort-stlucia.jpg",
+      "aspectRatio": "4:3",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Elevated 4:3 view of a fictional Archipelago Resorts hillside property in Saint Lucia: lush rainforest slopes, iconic twin volcanic piton silhouettes in soft haze (generic, not labeled), infinity pools terracing toward emerald water, warm late-afternoon light. Luxury travel magazine quality, no logos or text. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "resort-barbados",
+      "outputFile": "resort-barbados.jpg",
+      "aspectRatio": "4:3",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 4:3 coastal photograph of a fictional Archipelago Resorts Barbados property: pale coral stone villas, manicured lawns meeting powder sand, bright aquamarine Atlantic swell, soft morning light, refined British-Caribbean architectural cues without named landmarks or signage. Editorial hospitality photography. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "mission-people",
+      "outputFile": "mission-people.jpg",
+      "aspectRatio": "4:3",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 4:3 candid editorial photo of a diverse Archipelago Resorts leadership huddle on a sunlit open-air terrace overlooking turquoise water: three Caribbean hospitality professionals reviewing a tablet together, warm smiles, navy and cream uniforms without brand logos. Natural golden light, shallow depth of field, people-first culture vibe. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "mission-craft",
+      "outputFile": "mission-craft.jpg",
+      "aspectRatio": "4:3",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 4:3 close editorial of craft excellence at Archipelago Resorts: Caribbean bartender precisely garnishing a crystal cocktail at a polished teak beach bar, fresh citrus and mint in soft focus, warm sidelight, teal sea bokeh behind. No brand names on glassware or uniforms. Photorealistic luxury hospitality. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "mission-continuity",
+      "outputFile": "mission-continuity.jpg",
+      "aspectRatio": "4:3",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 4:3 portrait-adjacent scene of long-tenure pride: older Caribbean male housekeeper in immaculate cream uniform standing proudly beside a freshly prepared luxury suite balcony with ocean view; soft morning light, dignified expression, no logos on attire. Continuity and craftsmanship mood. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "role-instructor",
+      "outputFile": "role-instructor.jpg",
+      "aspectRatio": "1:1",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Square 1:1 photo of a Caribbean woman teaching hospitality skills in a bright Archipelago Corporate University classroom on property: whiteboard behind her (blank, NO text), students listening out of focus, warm natural window light, professional instructor polo without logos. Confident, approachable educator. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "role-manager",
+      "outputFile": "role-manager.jpg",
+      "aspectRatio": "3:2",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 3:2 landscape of a Caribbean male resort manager in tailored navy blazer walking through a sunlit Archipelago Resorts lobby with soaring timber ceilings and tropical courtyard visible beyond glass; purposeful stride, warm hospitality leadership presence, blank name tag (no readable text). Editorial luxury interiors photography. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "role-marine",
+      "outputFile": "role-marine.jpg",
+      "aspectRatio": "1:1",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Square 1:1 photo of a Caribbean marine biologist in a light field shirt kneeling at a coral restoration nursery table beside clear turquoise shallows at an Archipelago Resorts property; scientific trays and soft coral fragments visible, no logos on clothing or equipment labels. Bright natural sun, sustainability-forward editorial. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "role-developer",
+      "outputFile": "role-developer.jpg",
+      "aspectRatio": "3:2",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 3:2 modern tech workplace photo for Archipelago Resorts innovation hub: young Latino software developer at a clean dual-monitor desk (screens show abstract dashboards with NO readable text or logos), warm wood and teal accent interior, soft daylight, professional but island-relaxed dress code. Photorealistic corporate lifestyle. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "role-chef",
+      "outputFile": "role-chef.jpg",
+      "aspectRatio": "3:2",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. 3:2 portrait of a Caribbean female executive chef in white jacket and tall toque, arms crossed, confident smile, standing behind a marble prep island with fresh pineapple and whole fish; floor-to-ceiling glass opens to a wooden deck and turquoise Archipelago Resorts beach. NO embroidery or logos on coat. Golden-hour back light, luxury kitchen. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "team-maya",
+      "outputFile": "team-maya.jpg",
+      "aspectRatio": "3:4",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Vertical 3:4 waist-up portrait of Maya Ortega, fictional Archipelago Resorts Director of Guest Services: Caribbean woman late 20s/early 30s, warm genuine smile, navy waistcoat with gold buttons over white shirt, blank gold name tag (no readable text). Bright lobby with large windows showing palms, white sand, and turquoise sea behind. Soft natural daylight, shallow depth of field, editorial hospitality portrait. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "team-elena",
+      "outputFile": "team-elena.jpg",
+      "aspectRatio": "3:4",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Vertical 3:4 portrait of Elena Ruiz, fictional Archipelago Resorts Assistant Concierge Manager: Caribbean Latina woman mid-30s, poised smile, cream blazer over soft teal blouse, standing near a concierge desk with tropical floral arrangement; ocean-view lobby bokeh. Blank name tag only. Soft natural light, editorial quality. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "team-marcus",
+      "outputFile": "team-marcus.jpg",
+      "aspectRatio": "3:4",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Vertical 3:4 portrait of Marcus Chen, fictional Archipelago Resorts Evening Duty Manager: East Asian Caribbean man early 30s, calm confident expression, charcoal suit jacket, evening lobby lighting with warm brass lamps and soft teal ambient accents; blank name tag. Photorealistic hospitality leadership portrait. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "team-julian",
+      "outputFile": "team-julian.jpg",
+      "aspectRatio": "3:4",
+      "prompt": "Photorealistic editorial luxury hospitality photography for Archipelago Resorts, a fictional Caribbean-island resort company. Warm golden-hour color grade with amber highlights and natural teal ocean accents, soft directional natural light, shallow depth of field where appropriate, magazine travel-editorial quality, sharp subject focus, believable skin tones, no plastic AI look, no oversharpening. Vertical 3:4 portrait of Julian Brooks, fictional long-tenured Archipelago Resorts housekeeping star: older Caribbean man with silver-flecked hair, kind proud smile, immaculate cream uniform vest, outdoor covered walkway with tropical gardens behind. Morning light, dignified continuity vibe, blank name tag, no logos. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "logo-harbor-institute",
+      "outputFile": "logo-harbor-institute.png",
+      "aspectRatio": "1:1",
+      "prompt": "Minimal flat vector-style emblem on a pure white background for \"Harbor Institute of Hospitality\" — a fictional university partner of Archipelago Resorts. Simple teal (#0E7490) circular seal with a stylized lighthouse and wave line; clean geometric shapes, professional academic look. If any letters appear, only the initials \"HIH\" in a modern sans-serif — no other words. No gradients, no photorealism, no 3D, no Sandals/FIU/UWI marks. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "logo-coral-cay",
+      "outputFile": "logo-coral-cay.png",
+      "aspectRatio": "1:1",
+      "prompt": "Minimal flat vector-style emblem on pure white background for \"Coral Cay University\", a fictional Caribbean university partner of Archipelago Resorts. Gold (#C9A227) shield with a simple coral branch and open book icon; clean academic heraldry, geometric, no photorealism. If letters appear, only \"CCU\". No other text. No real university seals. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "logo-tide-trust",
+      "outputFile": "logo-tide-trust.png",
+      "aspectRatio": "1:1",
+      "prompt": "Minimal flat vector-style emblem on pure white background for \"Tide Workforce Trust\", a fictional Caribbean skills partnership with Archipelago Resorts. Warm coral/orange (#F4A261) circular mark with interlocking wave and handshake icons; friendly NGO aesthetic, flat design, no photorealism. If letters appear, only \"TWT\". No HEART/NSTA or government seals. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "brand-wordmark",
+      "outputFile": "brand-wordmark.png",
+      "aspectRatio": "21:9",
+      "prompt": "Clean luxury wordmark logo on pure white background for \"Archipelago Resorts\". Elegant modern serif or refined geometric sans-serif lettering in deep navy (#1A1A2E) with a small teal (#0E7490) wave accent under the word Archipelago. Wide horizontal lockup (ultrawide 21:9 framing), generous padding, no tagline, no extra icons beyond the subtle wave. No Sandals script style, no palm-tree clichés stacked on letters. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    },
+    {
+      "id": "paper-texture",
+      "outputFile": "paper-texture.jpg",
+      "aspectRatio": "1:1",
+      "prompt": "Seamless square high-resolution fine paper texture: warm off-white fiber grain, very subtle, even lighting, no stains, no text, no logos, no photographs of objects. Suitable as a barely-visible CSS overlay for a luxury dark hospitality site. Do NOT include: Sandals, Beaches, Moss, Sandy, any real Sandals or Beaches property names, readable brand logos, embroidered brand wordmarks on uniforms, watermarks, captions, UI chrome, stock-photo watermarks, deformed hands, extra fingers, melted faces, text overlays, typography burned into the image, QR codes, or celebrity likenesses."
+    }
+  ]
+}

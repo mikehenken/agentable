@@ -1,0 +1,361 @@
+/**
+ * Vibe dark canvas — matches landibuild landi-canvas-studio (#121212).
+ * Import from host or whiteboard barrel when `darkCanvas` is enabled.
+ *
+ * tldraw UI + canvas use native dark mode via TLUserPreferences.colorScheme.
+ * Landi shell tokens and canvas background alignment use theme CSS variables.
+ */.whiteboard-shell--vibe-dark {
+  --landi-color-background: #121212;
+  --landi-color-surface: #1f1f1f;
+  --landi-color-border: #3a3a3a;
+  --landi-color-text: #fafafa;
+  --landi-color-text-muted: #a1a1aa;
+  --landi-color-hover: rgb(255 255 255 / 0.06);
+  --vibe-background: #121212;
+  --vibe-surface: #1a1a1a;
+  --vibe-composer-bg: #141414;
+  --vibe-border: rgb(255 255 255 / 0.09);
+  --vibe-text: #ececec;
+  --vibe-text-muted: #9a9a9a;
+  --vibe-text-faint: #6f6f6f;
+  --vibe-hover-bg: rgb(255 255 255 / 0.06);
+  --vibe-code-inline-bg: rgb(255 255 255 / 0.08);
+  --vibe-code-block-bg: #0d0d0d;
+  --vibe-disabled-bg: #3a3a3a;
+  --vibe-scrollbar-thumb: rgb(255 255 255 / 0.22);
+  background: #121212;
+  color: #fafafa;
+}
+
+/* Align tldraw native dark canvas with Landi vibe background. */.whiteboard-shell--vibe-dark.tl-theme__dark {
+  --tl-color-background: #121212;
+  --tl-color-selection-stroke: rgb(255 140 122 / 0.55);
+  --tl-color-selection-fill: rgb(255 140 122 / 0.08);
+  --tl-color-hint: rgb(147 197 253 / 0.45);
+}
+
+/* Softer selection chrome for panel manipulation in vibe-dark. */.whiteboard-shell--vibe-dark.tl-selection__fg__outline {
+  stroke: rgb(255 140 122 / 0.45);
+  stroke-width: calc(1px * var(--tl-scale));
+}.whiteboard-shell--vibe-dark.tl-corner-handle,.whiteboard-shell--vibe-dark.tl-text-handle {
+  stroke: rgb(255 140 122 / 0.5);
+  stroke-width: calc(1px * var(--tl-scale));
+}.whiteboard-shell--vibe-dark.tl-watermark_SEE-LICENSE {
+  opacity: 0.35;
+}
+
+/*
+ * P2 — Move the tldraw top-left menu zone (MainMenu + page/menu cluster) to
+ * top-center of the canvas, giving it a floating-toolbar feel. Scoped to the
+ * vibe-dark shell so it never leaks into other tldraw hosts. The `.tl-container`
+ * is `position: relative`, so absolute centering anchors to the canvas.
+ */.whiteboard-shell--vibe-dark.tlui-menu-zone {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  border-radius: 0.625rem;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.4);
+}
+
+/* PanelShape — stretch hosted panel bodies to fill available height. */.panel-shape__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}.panel-shape__body {
+  overscroll-behavior: contain;
+}.panel-shape__body[data-full-bleed='true'] {
+  overflow: hidden;
+}.whiteboard-shell--vibe-dark.panel-shape__body {
+  background: #121212;
+}.whiteboard-shell--vibe-dark.panel-shape--full-bleed {
+  background: #121212;
+  border-radius: 0;
+  box-shadow: none;
+}.whiteboard-shell--vibe-dark.panel-shape--full-bleed.panel-shape__body {
+  background: transparent;
+}
+
+/* PanelChrome — theme-aware title bar (light default; dark under vibe-dark). */.panel-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  padding-block: 0;
+  padding-inline: 12px 8px;
+  border-bottom: 1px solid var(--landi-color-border, #E5E5E0);
+  background: var(--landi-color-surface-subtle, #F7F9F9);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--landi-color-text, #1A1A1A);
+  user-select: none;
+  cursor: grab;
+}.whiteboard-shell--vibe-dark.panel-chrome {
+  border-bottom-color: var(--landi-color-border, #3a3a3a);
+  background: #1a1a1a;
+  color: var(--landi-color-text, #fafafa);
+}.panel-chrome__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}.panel-chrome__leading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}.panel-provenance-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(56 189 248);
+  background: rgb(56 189 248 / 0.12);
+  border: 1px solid rgb(56 189 248 / 0.35);
+}.panel-chrome__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}.panel-chrome__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--landi-color-text-muted, #9CA3AF);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}.panel-chrome__btn:hover {
+  background: var(--landi-color-hover, rgb(0 0 0 / 0.04));
+  color: var(--landi-color-text, #1A1A1A);
+}.whiteboard-shell--vibe-dark.panel-chrome__btn {
+  color: var(--landi-color-text-muted, #a1a1aa);
+}.whiteboard-shell--vibe-dark.panel-chrome__btn:hover {
+  background: var(--landi-color-hover, rgb(255 255 255 / 0.06));
+  color: var(--landi-color-text, #fafafa);
+}.panel-chrome__btn:focus-visible {
+  outline: 2px solid var(--landi-color-primary, #ff6b57);
+  outline-offset: 1px;
+}
+
+/* HITL approval card (02 section 7) — chrome layer, not spec body. */.panel-approval-card {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--landi-color-border, #E5E5E0);
+  background: linear-gradient(180deg, rgb(255 107 87 / 0.08) 0%, var(--landi-color-surface-subtle, #F7F9F9) 100%);
+  color: var(--landi-color-text, #1A1A1A);
+  font-size: 12px;
+  line-height: 1.45;
+  pointer-events: all;
+}.panel-approval-card--destructive {
+  background: linear-gradient(180deg, rgb(239 68 68 / 0.12) 0%, var(--landi-color-surface-subtle, #F7F9F9) 100%);
+}.whiteboard-shell--vibe-dark.panel-approval-card {
+  border-bottom-color: var(--landi-color-border, #3a3a3a);
+  background: linear-gradient(180deg, rgb(255 107 87 / 0.12) 0%, rgb(26 26 26 / 0.96) 100%);
+  color: var(--landi-color-text, #fafafa);
+}.whiteboard-shell--vibe-dark.panel-approval-card--destructive {
+  background: linear-gradient(180deg, rgb(239 68 68 / 0.16) 0%, rgb(26 26 26 / 0.96) 100%);
+}.panel-approval-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}.panel-approval-card__badge {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgb(255 107 87 / 0.2);
+  color: var(--landi-color-primary, #ff6b57);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}.panel-approval-card--destructive.panel-approval-card__badge {
+  background: rgb(239 68 68 / 0.22);
+  color: #f87171;
+}.panel-approval-card__title {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+}.panel-approval-card__meta,.panel-approval-card__summary,.panel-approval-card__warning,.panel-approval-card__diff-empty {
+  margin: 0 0 8px;
+  color: var(--landi-color-text-muted, #a1a1aa);
+}.panel-approval-card__warning {
+  color: #fbbf24;
+}.panel-approval-card__diff {
+  margin-bottom: 10px;
+  overflow: auto;
+  max-height: 160px;
+  border: 1px solid var(--landi-color-border, #E5E5E0);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.03);
+}.whiteboard-shell--vibe-dark.panel-approval-card__diff {
+  border-color: var(--landi-color-border, #3a3a3a);
+  background: rgb(0 0 0 / 0.25);
+}.panel-approval-card__diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}.panel-approval-card__diff-table th,.panel-approval-card__diff-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--landi-color-border, #E5E5E0);
+  vertical-align: top;
+  text-align: left;
+}.whiteboard-shell--vibe-dark.panel-approval-card__diff-table th,.whiteboard-shell--vibe-dark.panel-approval-card__diff-table td {
+  border-bottom-color: rgb(255 255 255 / 0.06);
+}.panel-approval-card__diff-value {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #b91c1c;
+}.panel-approval-card__diff-value--after {
+  color: #047857;
+}.whiteboard-shell--vibe-dark.panel-approval-card__diff-value {
+  color: #fca5a5;
+}.whiteboard-shell--vibe-dark.panel-approval-card__diff-value--after {
+  color: #86efac;
+}.panel-approval-card__actions {
+  display: flex;
+  gap: 6px;
+}.panel-approval-card__btn {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}.panel-approval-card__btn--primary {
+  background: var(--landi-color-primary, #ff6b57);
+  color: #111;
+}.panel-approval-card__btn--danger {
+  background: #ef4444;
+  color: #fff;
+}.panel-approval-card__btn--ghost {
+  background: transparent;
+  border: 1px solid var(--landi-color-border, #E5E5E0);
+  color: var(--landi-color-text-muted, #9CA3AF);
+}.whiteboard-shell--vibe-dark.panel-approval-card__btn--ghost {
+  border-color: var(--landi-color-border, #3a3a3a);
+  color: var(--landi-color-text-muted, #a1a1aa);
+}.panel-field--agent-filled {
+  outline: 1px solid rgb(56 189 248 / 0.45);
+  outline-offset: 1px;
+  background: rgb(56 189 248 / 0.08);
+}.panel-field--user-dirty {
+  outline: 1px solid rgb(251 191 36 / 0.5);
+  outline-offset: 1px;
+  background: rgb(251 191 36 / 0.08);
+}
+
+/* Full-bleed panels — expanded invisible grab zone above the visible rail. */.panel-shape__drag-rail {
+  position: relative;
+  z-index: 12;
+  flex-shrink: 0;
+  width: 100%;
+  height: 16px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.06) 0%,
+    rgb(255 255 255 / 0.02) 100%
+  );
+  transition: background 0.15s ease;
+}.panel-shape__drag-rail::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6px;
+  height: calc(100% + 12px);
+  pointer-events: auto;
+}.panel-shape__drag-rail:hover,.panel-shape__drag-rail:active {
+  cursor: grab;
+  background: linear-gradient(
+    180deg,
+    rgb(255 107 87 / 0.22) 0%,
+    rgb(255 107 87 / 0.06) 100%
+  );
+}.panel-shape__drag-rail:active {
+  cursor: grabbing;
+}.panel-shape__drag-handle,.draft-preview-panel__header.panel-shape__drag-handle {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}.panel-shape__drag-handle:active,.draft-preview-panel__header.panel-shape__drag-handle:active {
+  cursor: grabbing;
+}.whiteboard-shell--vibe-dark.panel-shape:not(.panel-shape--full-bleed) {
+  background: var(--landi-color-surface, #1f1f1f);
+  border-color: var(--landi-color-border, #3a3a3a);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
+/* Responsive chrome — compact TopBar + prevent bottom toolbar overflow on narrow embeds. */.whiteboard-shell--compact.tlui-toolbar,.whiteboard-shell--compact.tlui-main-toolbar {
+  max-width: min(100vw, 100%);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}.whiteboard-shell--compact.tlui-toolbar__tools,.whiteboard-shell--compact.tlui-main-toolbar__tools {
+  flex-wrap: nowrap;
+}.whiteboard-tldraw-viewport.tlui-layout__bottom {
+  max-width: 100%;
+}.whiteboard-tldraw-viewport {
+  overflow: hidden;
+}.whiteboard-tldraw-viewport >.tl-container {
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0;
+}
+
+/* Career light canvas — dot grid + warm workspace surface (Sandals/Moss ref). */.whiteboard-tldraw-viewport.tl-background {
+  background-color: var(--landi-color-background, #f0f0ec) !important;
+}.whiteboard-shell:not(.whiteboard-shell--vibe-dark).whiteboard-tldraw-viewport.tl-grid {
+  opacity: 0.55;
+}
+
+/* Panel body scrollbars — subtle thumb, visible while scrolling. */.panel-shape__body.landi-overlay-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}.panel-shape__body.landi-overlay-scroll:hover,.panel-shape__body.landi-overlay-scroll:focus-within {
+  scrollbar-color: var(--vibe-scrollbar-thumb, color-mix(in srgb, var(--landi-color-text-muted, #9ca3af) 42%, transparent))
+    transparent;
+}.panel-shape__body.landi-overlay-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}.panel-shape__body.landi-overlay-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}.panel-shape__body.landi-overlay-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}.panel-shape__body.landi-overlay-scroll:hover::-webkit-scrollbar-thumb,.panel-shape__body.landi-overlay-scroll:focus-within::-webkit-scrollbar-thumb {
+  background: var(
+    --vibe-scrollbar-thumb,
+    color-mix(in srgb, var(--landi-color-text-muted, #9ca3af) 42%, transparent)
+  );
+}
+
+/* Bottom toolbar — ensure native title tooltips from tldraw labels remain readable. */.whiteboard-tldraw-viewport.tlui-button[title] {
+  cursor: pointer;
+}

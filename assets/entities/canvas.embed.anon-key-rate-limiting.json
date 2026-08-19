@@ -1,0 +1,60 @@
+{
+  "entity_id": "canvas.embed.anon-key-rate-limiting",
+  "entity_type": "feature",
+  "parent_id": "canvas.embed.anon-key-tenant-lookup",
+  "name": "AnonKeyRateLimiting",
+  "description": "Host-supplied anon-key rate limit resolver with structured rate_limited refusal and embed telemetry RATE_LIMITED frozen error code.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "white-label",
+    "anon-key",
+    "rate-limit",
+    "telemetry",
+    "observability"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.anon-key-rate-limiting::feature",
+    "source_files": [
+      "src/embed/rateLimit/anonKeyRateLimitResolver.ts",
+      "src/embed/rateLimit/rateLimitedRefusal.ts",
+      "src/embed/rateLimit/inMemoryAnonKeyLimiter.ts",
+      "src/embed/configReloadDetail.ts",
+      "src/telemetry/embedBridge.ts",
+      "src/telemetry/frozenErrorCodes.ts"
+    ],
+    "frozen_telemetry_code": "RATE_LIMITED",
+    "refusal_code": "rate_limited"
+  },
+  "routes": [],
+  "links": [
+    {
+      "rel": "parent",
+      "entity_id": "canvas.embed.anon-key-tenant-lookup"
+    },
+    {
+      "rel": "telemetry",
+      "entity_id": "canvas.telemetry.event-coverage"
+    }
+  ],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [
+    "anon-key"
+  ],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

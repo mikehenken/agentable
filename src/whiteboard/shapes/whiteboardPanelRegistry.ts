@@ -96,8 +96,7 @@ const loaderMapByDefinitions = new WeakMap<
  * memoisation keeps holding across shell remounts.
  */
 export function whiteboardLoadersForDefinitions(
-  definitions: readonly PanelDefinition[],
-): WhiteboardPanelRegistry {
+  definitions: readonly PanelDefinition[]): WhiteboardPanelRegistry {
   const cached = loaderMapByDefinitions.get(definitions);
   if (cached) return cached;
   const map: WhiteboardPanelRegistry = {};
@@ -120,10 +119,8 @@ export function whiteboardLoadersForDefinitions(
  */
 export function resolveWhiteboardPanelLoaders(
   host: CanvasHost | undefined,
-  loaders: WhiteboardPanelRegistry,
-): WhiteboardPanelRegistry {
+  loaders: WhiteboardPanelRegistry): WhiteboardPanelRegistry {
   const definitions = host
-    ? host.panels.definitions()
-    : reactPanelDefinitions(loaders);
+    ? host.panels.definitions() : reactPanelDefinitions(loaders);
   return whiteboardLoadersForDefinitions(definitions);
 }

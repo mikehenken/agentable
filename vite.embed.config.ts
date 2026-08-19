@@ -10,7 +10,7 @@
  *
  * Both formats self-register the `<agentable-canvas>` custom element and
  * bundle React + Tailwind + all canvas logic. Side-effect import in a React
- * module (preferred), or one script tag for vanilla / Vue / Angular hosts.
+ * module (preferred), or one script tag for vanilla Vue Angular hosts.
  *
  * Kept separate from `vite.config.ts` (the standalone app build) so the two
  * outputs don't collide.
@@ -47,8 +47,7 @@ export default defineConfig({
         inlineDynamicImports: true,
         assetFileNames: (assetInfo) =>
           assetInfo.name && assetInfo.name.endsWith('.css')
-            ? 'agentable-canvas.css'
-            : assetInfo.name || 'asset-[hash]',
+            ? 'agentable-canvas.css': assetInfo.name || 'asset-[hash]',
       },
     },
   },

@@ -16,14 +16,11 @@ describe('formatIcuMessage', () => {
 
   it('interpolates simple arguments and stringifies ids verbatim', () => {
     expect(formatIcuMessage('Unsupported block ({type})', 'en', { type: 'chart' })).toBe(
-      'Unsupported block (chart)',
-    );
+      'Unsupported block (chart)');
     expect(formatIcuMessage('Spec has {count} nodes', 'en', { count: 1234 })).toBe(
-      'Spec has 1234 nodes',
-    );
+      'Spec has 1234 nodes');
     expect(formatIcuMessage('At {path}', 'en', { path: 'props.items[0].label' })).toBe(
-      'At props.items[0].label',
-    );
+      'At props.items[0].label');
   });
 
   it('renders missing/null simple args as empty string', () => {
@@ -51,11 +48,9 @@ describe('formatIcuMessage', () => {
     expect(enOut).toContain('July');
     expect(esOut).toContain('julio');
     expect(formatIcuMessage('{d, date}', 'en-US', { d: date })).toBe(
-      new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(date),
-    );
+      new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(date));
     expect(formatIcuMessage('{d, time, short}', 'en-US', { d: date })).toBe(
-      new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(date),
-    );
+      new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(date));
   });
 
   it('selects plural branches per locale with exact matches and #', () => {
@@ -94,22 +89,18 @@ describe('formatIcuMessage', () => {
     expect(() => formatIcuMessage('{unclosed', 'en')).toThrow('[i18n]');
     expect(() => formatIcuMessage('unmatched }', 'en')).toThrow('[i18n]');
     expect(() => formatIcuMessage('{n, plural, one {x}}', 'en', { n: 1 })).toThrow(
-      'requires an "other" branch',
-    );
+      'requires an "other" branch');
     expect(() => formatIcuMessage('{x, spellout}', 'en', { x: 1 })).toThrow(
-      'unsupported argument type',
-    );
+      'unsupported argument type');
     expect(() => formatIcuMessage('{n, plural, offset:1 one {x} other {y}}', 'en', { n: 1 })).toThrow(
-      '[i18n]',
-    );
+      '[i18n]');
   });
 
   it('throws loudly on wrong value types for number/date/plural args', () => {
     expect(() => formatIcuMessage('{n, number}', 'en', { n: 'five' })).toThrow('finite number');
     expect(() => formatIcuMessage('{d, date}', 'en', { d: 'today' })).toThrow('Date or timestamp');
     expect(() => formatIcuMessage('{n, plural, other {#}}', 'en', { n: Number.NaN })).toThrow(
-      'finite number',
-    );
+      'finite number');
   });
 
   it('parses and formats every message in the shipped English catalog', () => {

@@ -1,0 +1,47 @@
+{
+  "entity_id": "canvas.panels.document-persistence",
+  "entity_type": "feature",
+  "parent_id": "canvas.panels.document-block-model",
+  "name": "Document panel persistence ",
+  "description": "localStorage-backed workspace.documents store with SpecRenderer save round-trip through DocumentView FormBus wiring.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "document",
+    "persistence",
+    "open-canvas",
+    ""
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.document-persistence::feature",
+    "source_files": [
+      "src/panels/document/documentPersistence.ts",
+      "src/panels/document/documentAdapter.ts",
+      "src/panels/document/DocumentView.tsx",
+      "src/panels/catalog/formRuntime.tsx",
+      "src/agents/panels/documentPanel.ts",
+      "tests/unit/documentPersistence.test.ts"
+    ],
+    "decision": ""
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

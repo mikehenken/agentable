@@ -1,0 +1,181 @@
+/**
+ * DOM app-shell panel interiors — Cursor IDE agent-window density.
+ * Scoped to the DOM workspace shell; dark-in-dark spec blocks (no #fff cards).
+ */.dom-workspace-shell.app-shell--gallery-dark {
+  --dom-panel-main-surface: #181818;
+  --dom-panel-sidebar-surface: #141414;
+  --dom-panel-body-text: #ececec;
+  --dom-panel-body-muted: #9ca3af;
+  --dom-panel-body-faint: #6b7280;
+  --dom-panel-row-bg: rgb(255 255 255 / 0.03);
+  --dom-panel-row-border: rgb(255 255 255 / 0.08);
+  --dom-panel-row-hover: rgb(255 255 255 / 0.06);
+  --dom-panel-accent: var(--landi-color-primary, #0e7490);
+
+  --landi-color-surface: #1f1f1f;
+  --landi-color-surface-subtle: #181818;
+  --landi-color-background: #121212;
+  --landi-color-border: rgb(255 255 255 / 0.09);
+  --landi-color-text: #ececec;
+  --landi-color-text-muted: #9ca3af;
+  --landi-color-text-secondary: #a1a1aa;
+  --landi-color-hover: rgb(255 255 255 / 0.06);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-body--main {
+  background: var(--dom-panel-main-surface);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-region-body--sidebar {
+  background: var(--dom-panel-sidebar-surface);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  color: var(--dom-panel-body-text);
+  font-family: var(--landi-font-family, 'Inter', system-ui, sans-serif);
+  font-size: 12px;
+  line-height: 1.45;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body.panel-shape__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  background: transparent;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  [data-testid='spec-renderer-root'] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  color: inherit;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  [data-testid='panel-body'] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 12px 14px;
+}
+
+/* --- Header block --- */.dom-workspace-shell.app-shell--gallery-dark.spec-block--header {
+  flex-shrink: 0;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--dom-panel-row-border);
+  background: rgb(255 255 255 / 0.02);
+}.dom-workspace-shell.app-shell--gallery-dark.spec-block__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--dom-panel-body-text);
+}.dom-workspace-shell.app-shell--gallery-dark.spec-block__subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--dom-panel-body-muted);
+}
+
+/* --- List block --- */.dom-workspace-shell.app-shell--gallery-dark.spec-block--list,.dom-workspace-shell.app-shell--gallery-dark [data-testid='list'] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  agentable-virtual-list::part(viewport) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  padding: 8px 10px 12px;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  agentable-virtual-list::part(row) {
+  padding: 10px 12px;
+  border: 1px solid var(--dom-panel-row-border);
+  border-radius: 6px;
+  background: var(--dom-panel-row-bg);
+  cursor: default;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  agentable-virtual-list::part(row):hover {
+  background: var(--dom-panel-row-hover);
+  border-color: rgb(255 255 255 / 0.12);
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  agentable-virtual-list::part(row-title) {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--dom-panel-body-text);
+  line-height: 1.35;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  agentable-virtual-list::part(row-subtitle) {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: var(--dom-panel-body-muted);
+}
+
+/* --- Table block --- */.dom-workspace-shell.app-shell--gallery-dark.spec-block--table {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 4px 10px 12px;
+  overflow: auto;
+}.dom-workspace-shell.app-shell--gallery-dark.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}.dom-workspace-shell.app-shell--gallery-dark.spec-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--dom-panel-row-border);
+  background: rgb(20 20 20 / 0.98);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: start;
+  text-transform: uppercase;
+  color: var(--dom-panel-body-muted);
+}.dom-workspace-shell.app-shell--gallery-dark.spec-table tbody td {
+  padding: 9px 10px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.05);
+  color: var(--dom-panel-body-text);
+  vertical-align: middle;
+}.dom-workspace-shell.app-shell--gallery-dark.spec-table tbody tr:hover td {
+  background: var(--dom-panel-row-hover);
+}.dom-workspace-shell.app-shell--gallery-dark.spec-table__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgb(14 116 144 / 0.45);
+  background: rgb(14 116 144 / 0.14);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5eead4;
+  text-transform: capitalize;
+}
+
+/* --- State placeholders --- */.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  [data-testid='loading-skeleton'],.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  [data-testid='empty-placeholder'],.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  [data-testid='error-card'] {
+  margin: 16px 14px;
+  padding: 16px;
+  border: 1px dashed var(--dom-panel-row-border);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.02);
+  color: var(--dom-panel-body-muted);
+  font-size: 12px;
+  text-align: center;
+}.dom-workspace-shell.app-shell--gallery-dark.dom-app-shell-panel-body
+  [data-testid='error-card'] {
+  border-color: rgb(239 68 68 / 0.35);
+  color: #fca5a5;
+}

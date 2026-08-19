@@ -91,7 +91,7 @@ export function prefetchWhiteboardShell(): Promise<unknown> {
   });
 }
 
-// Engine SPI implementation (src/engine/types, D37). The one engine
+// Engine SPI implementation (src/engine/types). The one engine
 // handle factory this package ships; hosts pass the handle to
 // `createCanvasHost` and attach the editor on shell mount.
 export {

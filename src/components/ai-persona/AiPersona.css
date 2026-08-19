@@ -1,0 +1,148 @@
+/**
+ * AiPersona — halo visual presence (CSS/SVG, Landi tokens).
+ * Inspired by shadcn.io/ai Persona states without licensed Rive assets.
+ */.agentable-persona {
+  --ap-size: 40px;
+  --ap-core: var(--landi-color-primary, #0d7377);
+  --ap-core-2: var(--landi-color-primary-light, #14b8a6);
+  --ap-glow: color-mix(in srgb, var(--ap-core) 55%, transparent);
+  --ap-ring: color-mix(in srgb, var(--ap-core) 35%, transparent);
+  --ap-level: 0;
+  position: relative;
+  width: var(--ap-size);
+  height: var(--ap-size);
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  isolation: isolate;
+}.agentable-persona--xs {
+  --ap-size: 22px;
+}.agentable-persona--sm {
+  --ap-size: 30px;
+}.agentable-persona--md {
+  --ap-size: 40px;
+}.agentable-persona--lg {
+  --ap-size: 72px;
+}.agentable-persona__rings,.agentable-persona__core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}.agentable-persona__rings::before,.agentable-persona__rings::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ap-ring);
+  opacity: 0.35;
+}.agentable-persona__rings::after {
+  inset: -18%;
+  opacity: 0.2;
+}.agentable-persona__core {
+  inset: 18%;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      color-mix(in srgb, #fff 55%, var(--ap-core-2)) 0%,
+      var(--ap-core-2) 42%,
+      var(--ap-core) 100%
+    );
+  box-shadow:
+    0 0 12px var(--ap-glow),
+    0 0 28px color-mix(in srgb, var(--ap-glow) 50%, transparent),
+    inset 0 1px 2px color-mix(in srgb, #fff 35%, transparent);
+}.agentable-persona__initial {
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  font-size: calc(var(--ap-size) * 0.34);
+  line-height: 1;
+  color: var(--landi-color-on-primary, #fff);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+/* —— States —— */.agentable-persona[data-state='idle'].agentable-persona__core {
+  animation: ap-breathe 3.2s ease-in-out infinite;
+}.agentable-persona[data-state='asleep'] {
+  opacity: 0.55;
+  filter: saturate(0.65);
+}.agentable-persona[data-state='asleep'].agentable-persona__rings::before,.agentable-persona[data-state='asleep'].agentable-persona__rings::after {
+  opacity: 0.08;
+  animation: none;
+}.agentable-persona[data-state='asleep'].agentable-persona__core {
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ap-glow) 40%, transparent);
+  animation: none;
+}.agentable-persona[data-state='listening'] {
+  --ap-core: var(--landi-color-primary, #0d7377);
+  --ap-core-2: var(--landi-color-primary-light, #14b8a6);
+}.agentable-persona[data-state='listening'].agentable-persona__rings::before {
+  animation: ap-ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.55;
+}.agentable-persona[data-state='listening'].agentable-persona__rings::after {
+  animation: ap-ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite 0.25s;
+  transform: scale(calc(1 + var(--ap-level) * 0.35));
+}.agentable-persona[data-state='speaking'] {
+  --ap-core: var(--landi-color-accent, #c9a227);
+  --ap-core-2: color-mix(in srgb, var(--landi-color-accent, #c9a227) 70%, #fff);
+  --ap-glow: color-mix(in srgb, var(--landi-color-accent, #c9a227) 55%, transparent);
+  --ap-ring: color-mix(in srgb, var(--landi-color-accent, #c9a227) 40%, transparent);
+}.agentable-persona[data-state='speaking'].agentable-persona__rings::before {
+  animation: ap-ping 0.9s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.65;
+}.agentable-persona[data-state='speaking'].agentable-persona__core {
+  transform: scale(calc(1 + var(--ap-level) * 0.08));
+  transition: transform 0.08s linear;
+}.agentable-persona[data-state='thinking'].agentable-persona__rings::before {
+  animation: ap-orbit 1.8s linear infinite;
+  border-style: dashed;
+  opacity: 0.55;
+}.agentable-persona[data-state='thinking'].agentable-persona__rings::after {
+  animation: ap-orbit 2.4s linear infinite reverse;
+  border-style: dotted;
+  opacity: 0.35;
+}.agentable-persona[data-state='thinking'].agentable-persona__core {
+  animation: ap-breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes ap-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.04);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes ap-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+@keyframes ap-orbit {
+  from {
+    transform: rotate(0deg) scale(1.05);
+  }
+  to {
+    transform: rotate(360deg) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {.agentable-persona__core,.agentable-persona__rings::before,.agentable-persona__rings::after {
+    animation: none !important;
+  }
+}

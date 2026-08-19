@@ -1,0 +1,63 @@
+{
+  "entity_id": "canvas.examples.gallery-12-open-agent-canvas",
+  "entity_type": "feature",
+  "parent_id": "canvas.examples.gallery-d47",
+  "name": "Open agent canvas gallery example (12)",
+  "description": " gallery example 12 (Meridian Labs): wireframe set + structured document under canvasPolicy open, PDF export, host-data save still HITL.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "examples",
+    "gallery",
+    "open-canvas",
+    "document",
+    "wireframe"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.open-agent-canvas-gallery::feature",
+    "source_files": [
+      "examples/12-open-agent-canvas/index.html",
+      "examples/12-open-agent-canvas/README.md",
+      "examples/12-open-agent-canvas/fixtures/meridianLabs.ts",
+      "examples/shared/meridian-labs-open-config.json",
+      "examples/shared/meridian-labs-open-data.json",
+      "examples/12-open-agent-canvas/gallery-demo.mjs",
+      "src/embed/galleryScriptedDemo.ts",
+      "src/embed/meridian/meridianGalleryHost.ts",
+      "src/embed/meridian/MeridianDocumentPanelHost.tsx",
+      "src/panels/document/browserNodeCryptoShim.ts",
+      "vite.embed-whiteboard.config.ts",
+      "tests/e2e/harness/openAgentCanvasHarness.ts",
+      "tests/integration/openAgentCanvasE2e.test.ts",
+      "tests/unit/openAgentCanvasFixtures.test.ts",
+      "tests/e2e/gallery.spec.ts"
+    ],
+    "decision": ""
+  },
+  "routes": [
+    {
+      "path": "/examples/12-open-agent-canvas/index.html",
+      "methods": [
+        "GET"
+      ]
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

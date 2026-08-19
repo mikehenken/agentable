@@ -1,0 +1,52 @@
+{
+  "entity_id": "canvas.examples.gallery-11-app-shell",
+  "entity_type": "feature",
+  "parent_id": "canvas.examples",
+  "name": "Gallery 11 app shell (DOM engine)",
+  "description": "Archipelago Resorts career workspace gallery example on engine=dom: main/sidebar split, per-region tabs, layout survives reload. Bundle is tldraw-free.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "examples",
+    "gallery",
+    "app-shell",
+    "dom-engine",
+    "e2e"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.gallery-11-app-shell::feature",
+    "source_files": [
+      "examples/11-app-shell/index.html",
+      "examples/11-app-shell/README.md",
+      "src/embed/agentable-app-shell.ts",
+      "src/embed/appShell/AppShellWorkspace.tsx",
+      "src/embed/appShell/appShellLayout.ts",
+      "vite.embed-app-shell.config.ts",
+      "tests/unit/appShellLayout.test.ts",
+      "tests/component/agentable-app-shell.test.ts",
+      "tests/e2e/gallery.spec.ts"
+    ],
+    "gallery_path": "/examples/11-app-shell/index.html"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [
+      "docs/features/dom-workspace-engine.md"
+    ],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": true
+  }
+}

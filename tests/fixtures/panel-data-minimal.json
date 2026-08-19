@@ -1,0 +1,21 @@
+{
+  "jobs": [
+    {
+      "id": 1,
+      "title": "Safety Manager",
+      "department": "Environmental, Health & Safety",
+      "track": "Professionals (Salaried)",
+      "location": "FORT LAUDERDALE, FL",
+      "property": "Moss & Associates"
+    }
+  ],
+  "agentJobsGuide": "Use concise job summaries.",
+  "roleTaxonomy": [
+    {
+      "id": "electrical",
+      "label": "Electrical",
+      "departments": ["Electrical"],
+      "synonyms": ["electrician"]
+    }
+  ]
+}

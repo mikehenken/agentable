@@ -1,6 +1,5 @@
 // Public re-exports for the orchestration component subpath.
 // Consumed via `agentable-canvas/orchestration` from sibling apps.
-
 export * from "./types";
 export * from "./chips";
 export * from "./shell";

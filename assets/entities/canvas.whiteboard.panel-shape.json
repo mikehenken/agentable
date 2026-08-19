@@ -1,0 +1,37 @@
+{
+  "entity_id": "canvas.whiteboard.panel-shape",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.whiteboard",
+  "name": "PanelShape",
+  "description": "tldraw custom shape for embeddable workspace panels; controlled via panelShapeApi.",
+  "version": "0.1.9",
+  "status": "stable",
+  "tags": [
+    "whiteboard",
+    "panel",
+    "tldraw-shape"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.ui.panel-shape::component",
+    "source_file": "src/whiteboard/shapes/PanelShape.tsx"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

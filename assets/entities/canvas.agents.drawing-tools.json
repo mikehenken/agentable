@@ -1,0 +1,44 @@
+{
+  "entity_id": "canvas.agents.drawing-tools",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents",
+  "name": "Agent drawing tools",
+  "description": "Capability-gated draw_shapes (explicit shapes or auto-layout diagrams), annotate_panel, and clear_agent_drawings tools with agent provenance on tldraw marks.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "drawing",
+    "provenance",
+    "tldraw"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.drawing-tools-provenance::feature",
+    "source_files": [
+      "src/agents/tools/drawingTools.ts",
+      "src/engines/tldraw/agentDrawing/agentDrawingApi.ts",
+      "src/engines/tldraw/agentDrawing/communicativeVisualLayout.ts",
+      "src/engines/tldraw/agentDrawing/diagramToDrawShapes.ts",
+      "src/engine/agentDrawingTypes.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

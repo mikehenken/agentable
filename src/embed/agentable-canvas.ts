@@ -144,16 +144,14 @@ export class AgentableCanvasElement extends LitElement {
   // last so they win where they overlap (`:host` block, mount sizing).
   static styles = [
     unsafeCSS(canvasStyles),
-    css`
-      :host {
+    css`:host {
         display: block;
         position: relative;
         width: 100%;
         min-height: 600px;
         contain: layout paint;
         background: var(--landi-color-background, #f0f0ec);
-      }
-      .agentable-canvas-mount {
+      }.agentable-canvas-mount {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -291,8 +289,7 @@ export class AgentableCanvasElement extends LitElement {
           null,
           createElement<CanvasShellProps>(CanvasShell, {
             config: {
-              tenant: this.tenant,
-              ...(Object.keys(persona).length > 0 ? { persona } : {}),
+              tenant: this.tenant,...(Object.keys(persona).length > 0 ? { persona }: {}),
             },
           })
         )

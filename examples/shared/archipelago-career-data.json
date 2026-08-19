@@ -1,0 +1,205 @@
+{
+  "jobs": [
+    {
+      "id": "arch-job-1",
+      "slug": "guest-experience-lead",
+      "title": "Guest Experience Lead",
+      "department": "Guest Services",
+      "track": "Full-time · Salary",
+      "location": "Azure Atoll, Meridian Sea",
+      "compensation": "$62,000 – $78,000",
+      "description": "Lead daily guest rituals and mentor associates across Archipelago Resorts island properties.",
+      "tags": ["Hospitality", "Leadership", "Guest Services"],
+      "postedAt": "2026-04-01T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-1",
+      "applyUrl": "https://careers.example.test/archipelago/guest-experience-lead"
+    },
+    {
+      "id": "arch-job-2",
+      "slug": "culinary-innovation-chef",
+      "title": "Culinary Innovation Chef",
+      "department": "Food & Beverage",
+      "track": "Full-time · Salary",
+      "location": "Mistral Key, Meridian Sea",
+      "compensation": "$70,000 – $92,000",
+      "description": "Design tasting menus and train kitchen teams for Archipelago Resorts signature dining.",
+      "tags": ["Culinary", "Innovation", "Food & Beverage"],
+      "postedAt": "2026-03-28T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-2",
+      "applyUrl": "https://careers.example.test/archipelago/culinary-innovation-chef"
+    },
+    {
+      "id": "arch-job-3",
+      "slug": "resort-operations-manager",
+      "title": "Resort Operations Manager",
+      "department": "Operations",
+      "track": "Full-time · Salary",
+      "location": "Coral Harbor, Meridian Sea",
+      "compensation": "$85,000 – $118,000",
+      "description": "Oversee island operations, staffing plans, and guest readiness across a flagship Archipelago property.",
+      "tags": ["Operations", "Leadership", "Budgeting"],
+      "postedAt": "2026-03-25T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-3",
+      "applyUrl": "https://careers.example.test/archipelago/resort-operations-manager"
+    },
+    {
+      "id": "arch-job-4",
+      "slug": "senior-software-developer",
+      "title": "Senior Software Developer",
+      "department": "Information Technology",
+      "track": "Full-time · Salary",
+      "location": "Meridian Tech Hub, Meridian Sea",
+      "compensation": "$78,000 – $98,000",
+      "description": "Build guest-facing tools and internal platforms that power Archipelago's island portfolio.",
+      "tags": ["React", "TypeScript", "Cloud", "Information Technology"],
+      "postedAt": "2026-03-22T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-4",
+      "applyUrl": "https://careers.example.test/archipelago/senior-software-developer"
+    },
+    {
+      "id": "arch-job-5",
+      "slug": "guest-services-agent",
+      "title": "Guest Services Agent",
+      "department": "Guest Services",
+      "track": "Full-time · Hourly",
+      "location": "Coral Harbor, Meridian Sea",
+      "compensation": "$19 – $25 hr",
+      "description": "Create memorable arrivals, resolve guest requests, and represent Archipelago hospitality on the island floor.",
+      "tags": ["Hospitality", "Communication", "Guest Services"],
+      "postedAt": "2026-03-20T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-5",
+      "applyUrl": "https://careers.example.test/archipelago/guest-services-agent"
+    },
+    {
+      "id": "arch-job-6",
+      "slug": "spa-therapist",
+      "title": "Spa Therapist",
+      "department": "Spa & Wellness",
+      "track": "Full-time · Hourly",
+      "location": "Azure Atoll, Meridian Sea",
+      "compensation": "$17 – $23 hr",
+      "description": "Deliver restorative treatments in a five-star island spa setting with ACU wellness certifications.",
+      "tags": ["Wellness", "Guest Care", "Spa & Wellness"],
+      "postedAt": "2026-03-18T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-6",
+      "applyUrl": "https://careers.example.test/archipelago/spa-therapist"
+    },
+    {
+      "id": "arch-job-7",
+      "slug": "marine-sustainability-specialist",
+      "title": "Marine Sustainability Specialist",
+      "department": "Environmental",
+      "track": "Full-time · Salary",
+      "location": "Mistral Key, Meridian Sea",
+      "compensation": "$58,000 – $72,000",
+      "description": "Lead coral restoration, reef monitoring, and guest education programs across Archipelago marine sites.",
+      "tags": ["Marine Biology", "Sustainability", "Environmental"],
+      "postedAt": "2026-03-15T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-7",
+      "applyUrl": "https://careers.example.test/archipelago/marine-sustainability-specialist"
+    },
+    {
+      "id": "arch-job-8",
+      "slug": "acu-learning-facilitator",
+      "title": "ACU Learning Facilitator",
+      "department": "Operations",
+      "track": "Full-time · Salary",
+      "location": "Coral Harbor, Meridian Sea",
+      "compensation": "$52,000 – $64,000",
+      "description": "Facilitate Archipelago Corporate University cohorts and mentor associates through certification pathways.",
+      "tags": ["Learning", "Facilitation", "Operations"],
+      "postedAt": "2026-03-12T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-8",
+      "applyUrl": "https://careers.example.test/archipelago/acu-learning-facilitator"
+    },
+    {
+      "id": "arch-job-9",
+      "slug": "evening-duty-manager",
+      "title": "Evening Duty Manager",
+      "department": "Guest Services",
+      "track": "Full-time · Salary",
+      "location": "Azure Atoll, Meridian Sea",
+      "compensation": "$48,000 – $58,000",
+      "description": "Run evening operations, coordinate departments, and resolve escalations for overnight guest experience.",
+      "tags": ["Leadership", "Operations", "Guest Services"],
+      "postedAt": "2026-03-10T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-9",
+      "applyUrl": "https://careers.example.test/archipelago/evening-duty-manager"
+    },
+    {
+      "id": "arch-job-10",
+      "slug": "environmental-programs-coordinator",
+      "title": "Environmental Programs Coordinator",
+      "department": "Environmental",
+      "track": "Full-time · Salary",
+      "location": "Coral Harbor, Meridian Sea",
+      "compensation": "$54,000 – $68,000",
+      "description": "Coordinate island conservation projects, local sourcing audits, and associate volunteer programs.",
+      "tags": ["Sustainability", "Program Management", "Environmental"],
+      "postedAt": "2026-03-08T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-job-10",
+      "applyUrl": "https://careers.example.test/archipelago/environmental-programs-coordinator"
+    }
+  ],
+  "growthPaths": [
+    {
+      "id": "arch-path-front-office",
+      "fromRole": "Guest Experience Associate",
+      "toRole": "Regional Director",
+      "fitScore": 89,
+      "summary": "The signature Archipelago Resorts path from island floor roles into regional leadership.",
+      "steps": [
+        "Guest Experience Associate",
+        "Experience Lead",
+        "Island Operations Manager",
+        "Regional Director"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "arch-res-1",
+      "title": "Island onboarding compass",
+      "category": "Learning",
+      "description": "Week-one guide for associates rotating across Archipelago Resorts islands.",
+      "url": "https://learn.example.test/archipelago/onboarding",
+      "featured": true
+    }
+  ],
+  "applications": [
+    {
+      "id": "arch-app-1",
+      "jobId": "arch-job-1",
+      "candidate": {
+        "name": "Jordan Ellis",
+        "email": "jordan.ellis@example.test"
+      },
+      "status": "Submitted",
+      "submittedAt": "2026-03-18T14:22:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-app-1"
+    },
+    {
+      "id": "arch-app-2",
+      "jobId": "arch-job-2",
+      "candidate": {
+        "name": "Sam Rivera",
+        "email": "sam.rivera@example.test"
+      },
+      "status": "In review",
+      "submittedAt": "2026-03-22T09:05:00.000Z",
+      "source": "fixture",
+      "sourceId": "archipelago-app-2"
+    }
+  ]
+}

@@ -86,8 +86,7 @@ function jobsSpec(overrides: Partial<PanelSpec> = {}): PanelSpec {
     },
     actions: {
       save: { kind: 'mutate', source: 'career.jobs', op: 'update' },
-    },
-    ...overrides,
+    },...overrides,
   };
 }
 
@@ -100,8 +99,7 @@ interface Harness {
 
 function harness(
   adapterOptions: MockAdapterOptions = {},
-  spec: PanelSpec = jobsSpec(),
-): Harness {
+  spec: PanelSpec = jobsSpec()): Harness {
   const adapter = createMockDataAdapter(adapterOptions);
   const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
   const catalog = testCatalog();
@@ -110,8 +108,7 @@ function harness(
 
 function renderSpec(h: Harness): ReturnType<typeof render> {
   return render(
-    <SpecRenderer spec={h.spec} scope={SCOPE} lifecycle={h.lifecycle} catalog={h.catalog} />,
-  );
+    <SpecRenderer spec={h.spec} scope={SCOPE} lifecycle={h.lifecycle} catalog={h.catalog} />);
 }
 
 describe('renderer data lifecycle: fetch and cache', () => {
@@ -187,8 +184,7 @@ describe('renderer data lifecycle: abort', () => {
     // Let the rejected promise settle; nothing may write after unmount.
     await h.adapter.whenIdle();
     expect(h.lifecycle.peek({ source: 'career.jobs', params: { track: 'page-1' } }, SCOPE).status).toBe(
-      'idle',
-    );
+      'idle');
     h.lifecycle.dispose();
   });
 
@@ -237,8 +233,7 @@ describe('renderer data lifecycle: invalidate', () => {
       <>
         <SpecRenderer spec={h.spec} scope={SCOPE} lifecycle={h.lifecycle} catalog={h.catalog} />
         <SpecRenderer spec={h.spec} scope={otherScope} lifecycle={h.lifecycle} catalog={h.catalog} />
-      </>,
-    );
+      </>);
     await act(async () => {
       await h.adapter.whenIdle();
     });
@@ -313,8 +308,7 @@ describe('renderer data lifecycle: errors and retry', () => {
     const h = harness({
       plan: (ref, _scope, callIndex) =>
         callIndex === 0
-          ? { error: { code: 'not_found', message: 'missing dataset' } }
-          : { data: `${ref.source}-recovered` },
+          ? { error: { code: 'not_found', message: 'missing dataset' } }: { data: `${ref.source}-recovered` },
     });
     renderSpec(h);
 
@@ -337,8 +331,7 @@ describe('renderer data lifecycle: errors and retry', () => {
     const h = harness({
       plan: (ref, _scope, callIndex) =>
         callIndex === 0
-          ? { error: { code: 'unavailable', message: 'warming up' } }
-          : { data: `${ref.source}-warm` },
+          ? { error: { code: 'unavailable', message: 'warming up' } }: { data: `${ref.source}-warm` },
     });
     renderSpec(h);
 
@@ -382,8 +375,7 @@ describe('renderer data lifecycle: save lifecycle', () => {
       () => {
         expect(screen.getByTestId('viewer-jobs-data').textContent).toBe('"career.jobs-v1"');
       },
-      { timeout: 3000 },
-    );
+      { timeout: 3000 });
     expect(screen.getByTestId('viewer-jobs-state').textContent).toBe('populated');
     expect(h.adapter.queryCount('career.jobs')).toBe(2);
     h.lifecycle.dispose();

@@ -47,8 +47,7 @@ export function CanvasChromeProvider({
   // shell's parent re-renders without changing chrome props.
   const value = useMemo(
     () => ({ panels, navItems }),
-    [panels, navItems],
-  );
+    [panels, navItems]);
   return (
     <CanvasChromeContext.Provider value={value}>
       {children}
@@ -67,8 +66,7 @@ export function useCanvasChrome(): CanvasChromeContextValue {
     console.warn(
       '[CanvasChrome] useCanvasChrome() called outside <CanvasShell>. ' +
         'Falling back to default career-themed registry — likely a misuse. ' +
-        'Wrap your tree in <CanvasShell panels={...} navItems={...}>.',
-    );
+        'Wrap your tree in <CanvasShell panels={...} navItems={...}>.');
   }
   return value;
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05 — Bounded demo kiosk · Archipelago Resorts</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #020617;
+        color: #e2e8f0;
+        font-family: system-ui, sans-serif;
+      }.kiosk-chrome {
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #94a3b8;
+      }
+      agentable-canvas {
+        display: block;
+        width: min(1200px, 100vw);
+        height: min(800px, calc(100vh - 48px));
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="kiosk-chrome">Archipelago Resorts · bounded kiosk · config-url only</div>
+    <agentable-canvas
+      tenant="archipelago-resorts"
+      config-url="/examples/shared/archipelago-career-config.json"
+      dark-canvas
+      data-skip-react-mount
+    ></agentable-canvas>
+    <script type="module" src="/embed/agentable-canvas.js"></script>
+    <script type="module">
+      window.__galleryExample = '05-bounded-demo-kiosk';
+      customElements.whenDefined('agentable-canvas').then(async => {
+        const el = document.querySelector('agentable-canvas');
+        window.__galleryReady = {
+          example: '05-bounded-demo-kiosk',
+          ok: el instanceof HTMLElement,
+          canvasMode: el?.getAttribute('config-url'),
+        };
+      });
+    </script>
+  </body>
+</html>

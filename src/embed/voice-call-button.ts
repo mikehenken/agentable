@@ -86,8 +86,7 @@ export class VoiceCallButtonElement extends LitElement {
     this._errorMessage = '';
   }
 
-  static styles = css`
-    :host {
+  static styles = css`:host {
       display: inline-flex;
       box-sizing: border-box;
       /* Brand tokens — host page can override any of these. All raw values
@@ -155,43 +154,33 @@ export class VoiceCallButtonElement extends LitElement {
       opacity: 0.5;
     }
 
-    /* Variant: nav — compact pill */
-    :host([variant='nav']) button {
+    /* Variant: nav — compact pill */:host([variant='nav']) button {
       padding: 0.625rem 1rem;
       border-radius: var(--landi-vcb-radius);
       font-size: 0.875rem;
     }
 
     /* Variant: hero — larger CTA, deeper padding, drop shadow.
-       Token-driven: accent-on-primary by default. */
-    :host([variant='hero']) button {
+       Token-driven: accent-on-primary by default. */:host([variant='hero']) button {
       padding: 1rem 2rem;
       border-radius: var(--landi-vcb-radius-hero);
       font-size: 1rem;
       box-shadow: var(--landi-vcb-shadow-hero);
       background: var(--landi-vcb-cta-bg);
       border-color: var(--landi-vcb-cta-border);
-    }
-
-    :host([variant='hero']) button:hover:not(:disabled) {
+    }:host([variant='hero']) button:hover:not(:disabled) {
       background: var(--landi-vcb-cta-bg-hover);
-    }
-
-    .icon-wrap {
+    }.icon-wrap {
       position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 1rem;
       height: 1rem;
-    }
-
-    :host([variant='hero']) .icon-wrap {
+    }:host([variant='hero']).icon-wrap {
       width: 1.25rem;
       height: 1.25rem;
-    }
-
-    .icon {
+    }.icon {
       color: var(--landi-vcb-color-accent);
       width: 100%;
       height: 100%;
@@ -199,8 +188,7 @@ export class VoiceCallButtonElement extends LitElement {
 
     /* Pulse halo. Reserved for *active* states only — idle is static, per
        the "premium, calm" brand identity. A perpetual idle pulse on a
-       marketing nav burns battery and undermines tone. */
-    .halo {
+       marketing nav burns battery and undermines tone. */.halo {
       position: absolute;
       inset: 0;
       border-radius: var(--landi-vcb-radius);
@@ -208,20 +196,14 @@ export class VoiceCallButtonElement extends LitElement {
       opacity: 0;
       transform: scale(0.6);
       pointer-events: none;
-    }
-
-    .halo.listening {
+    }.halo.listening {
       background: var(--landi-vcb-color-primary);
       opacity: 0.4;
       animation: halo-ping var(--landi-vcb-halo-duration-listening) cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    .halo.speaking {
+    }.halo.speaking {
       opacity: 0.5;
       animation: halo-ping var(--landi-vcb-halo-duration-speaking) cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    .halo.error {
+    }.halo.error {
       background: var(--landi-vcb-color-error);
       opacity: 0.4;
     }
@@ -238,17 +220,14 @@ export class VoiceCallButtonElement extends LitElement {
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .halo {
+    @media (prefers-reduced-motion: reduce) {.halo {
         animation: none !important;
         opacity: 0.4;
       }
       button {
         transition: none;
       }
-    }
-
-    .chip {
+    }.chip {
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
@@ -260,22 +239,15 @@ export class VoiceCallButtonElement extends LitElement {
       text-transform: uppercase;
       background: var(--landi-vcb-chip-surface);
       color: var(--landi-vcb-color-text);
-    }
-
-    .chip.listening {
+    }.chip.listening {
       background: color-mix(in srgb, var(--landi-vcb-color-primary) 30%, transparent);
-    }
-
-    .chip.speaking {
+    }.chip.speaking {
       background: color-mix(in srgb, var(--landi-vcb-color-accent) 30%, transparent);
-    }
-
-    .chip.error {
+    }.chip.error {
       background: color-mix(in srgb, var(--landi-vcb-color-error) 30%, transparent);
     }
 
-    /* Spinner for connecting state */
-    .spinner {
+    /* Spinner for connecting state */.spinner {
       width: 0.875rem;
       height: 0.875rem;
       border: 2px solid currentColor;
@@ -290,21 +262,16 @@ export class VoiceCallButtonElement extends LitElement {
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .spinner {
+    @media (prefers-reduced-motion: reduce) {.spinner {
         animation-duration: 2s;
       }
-    }
-
-    .level-dot {
+    }.level-dot {
       width: 0.375rem;
       height: 0.375rem;
       border-radius: var(--landi-vcb-radius);
       background: var(--landi-vcb-color-primary);
       transition: transform 80ms ease-out;
-    }
-
-    .visually-hidden {
+    }.visually-hidden {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -448,8 +415,7 @@ export class VoiceCallButtonElement extends LitElement {
       >
         <span class="icon-wrap" part="icon-wrap" aria-hidden="true">
           ${this._state === 'connecting'
-            ? html`<span class="spinner" part="spinner"></span>`
-            : html`
+            ? html`<span class="spinner" part="spinner"></span>`: html`
                 <span class=${haloClasses} part="halo"></span>
                 <svg
                   class="icon"
@@ -473,12 +439,10 @@ export class VoiceCallButtonElement extends LitElement {
                       class="level-dot"
                       part="level-dot"
                       style=${styleMap({ transform: `scale(${levelToScale(this._level).toFixed(2)})` })}
-                    ></span>`
-                  : null}
+                    ></span>`: null}
                 ${statusLabel}
               </span>
-            `
-          : null}
+            `: null}
         <span class="visually-hidden" aria-live="polite">
           ${this._state === 'error' && this._errorMessage ? this._errorMessage : ''}
         </span>

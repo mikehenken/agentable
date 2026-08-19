@@ -7,8 +7,7 @@ import { GRID_GUTTER } from '../../src/canvas/gridLayout';
 
 vi.mock('../../src/whiteboard/context/contextGroupApi', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../src/whiteboard/context/contextGroupApi')>();
-  return {
-    ...actual,
+  return {...actual,
     fitContextGroupFrameToContent: vi.fn(() => true),
   };
 });
@@ -18,8 +17,7 @@ const applyPanelDock = vi.fn(() => true);
 
 vi.mock('../../src/whiteboard/context/panelDockEngine', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../src/whiteboard/context/panelDockEngine')>();
-  return {
-    ...actual,
+  return {...actual,
     setPanelDock: (...args: unknown[]) => setPanelDock(...args),
     applyPanelDock: (...args: unknown[]) => applyPanelDock(...args),
   };
@@ -102,11 +100,9 @@ describe('autoArrangeSiteContextPanels', () => {
     expect(arranged).toBe(true);
 
     const briefUpdate = updateShape.mock.calls.find(
-      (call) => call[0]?.id === 'shape:panel:project-brief',
-    );
+      (call) => call[0]?.id === 'shape:panel:project-brief');
     const previewUpdate = updateShape.mock.calls.find(
-      (call) => call[0]?.id === 'shape:panel:web-preview',
-    );
+      (call) => call[0]?.id === 'shape:panel:web-preview');
     expect(briefUpdate).toBeDefined();
     expect(previewUpdate).toBeDefined();
 
@@ -123,13 +119,11 @@ describe('autoArrangeSiteContextPanels', () => {
     });
 
     const briefDock = setPanelDock.mock.calls.find(
-      (call) => call[1] === 'shape:panel:project-brief',
-    );
+      (call) => call[1] === 'shape:panel:project-brief');
     expect(briefDock?.[2]).toBeNull();
 
     const previewDock = setPanelDock.mock.calls.find(
-      (call) => call[1] === 'shape:panel:web-preview',
-    );
+      (call) => call[1] === 'shape:panel:web-preview');
     expect(previewDock?.[2]).toBeNull();
   });
 
@@ -187,11 +181,9 @@ describe('autoArrangeSiteContextPanels', () => {
     expect(updateShape).toHaveBeenCalled();
 
     const briefUpdate = updateShape.mock.calls.find(
-      (call) => call[0]?.id === 'shape:panel:project-brief',
-    );
+      (call) => call[0]?.id === 'shape:panel:project-brief');
     const previewUpdate = updateShape.mock.calls.find(
-      (call) => call[0]?.id === 'shape:panel:web-preview',
-    );
+      (call) => call[0]?.id === 'shape:panel:web-preview');
     expect(briefUpdate).toBeDefined();
     expect(previewUpdate).toBeDefined();
 
@@ -253,16 +245,14 @@ describe('autoArrangeSiteContextPanels', () => {
     const editor = makeEditor();
     autoArrangeSiteContextPanels(editor as never, SITE_ID);
     const firstPreviewW = updateShape.mock.calls.find(
-      (call) => call[0]?.id === 'shape:panel:web-preview',
-    )?.[0]?.props?.w;
+      (call) => call[0]?.id === 'shape:panel:web-preview')?.[0]?.props?.w;
 
     updateShape.mockClear();
     frameBounds.w = 700;
     frameBounds.h = 500;
     autoArrangeSiteContextPanels(editor as never, SITE_ID);
     const secondPreviewW = updateShape.mock.calls.find(
-      (call) => call[0]?.id === 'shape:panel:web-preview',
-    )?.[0]?.props?.w;
+      (call) => call[0]?.id === 'shape:panel:web-preview')?.[0]?.props?.w;
 
     expect(firstPreviewW).toBeDefined();
     expect(secondPreviewW).toBeDefined();

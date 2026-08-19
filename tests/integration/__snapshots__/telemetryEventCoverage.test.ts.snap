@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`telemetry event coverage > observes compose, HITL, tool, voice, and cost families with frozen error codes > event-error-codes 1`] = `
+[
+  "SCOPE_DENIED",
+  "SPEC_ACTION_REF_MISSING",
+  "VOICE_CONNECT_FAILED",
+]
+`;

@@ -76,8 +76,7 @@ function hasLetters(text: string): boolean {
 }
 
 function isStringLike(
-  node: ts.Node,
-): node is ts.StringLiteral | ts.NoSubstitutionTemplateLiteral | ts.TemplateExpression {
+  node: ts.Node): node is ts.StringLiteral | ts.NoSubstitutionTemplateLiteral | ts.TemplateExpression {
   return (
     ts.isStringLiteral(node) ||
     ts.isNoSubstitutionTemplateLiteral(node) ||
@@ -129,12 +128,10 @@ function collectViolations(fileName: string, sourceText: string): Violation[] {
       node.initializer !== undefined
     ) {
       const value = ts.isStringLiteral(node.initializer)
-        ? node.initializer
-        : ts.isJsxExpression(node.initializer) &&
+        ? node.initializer: ts.isJsxExpression(node.initializer) &&
             node.initializer.expression !== undefined &&
             isStringLike(node.initializer.expression)
-          ? node.initializer.expression
-          : undefined;
+          ? node.initializer.expression: undefined;
       if (value !== undefined && hasLetters(stringLikeText(value))) {
         record('jsx-attribute', node, stringLikeText(value));
       }
@@ -193,15 +190,10 @@ describe('D42 hardcoded user-facing strings gate', () => {
   it('reports no hardcoded user-facing strings outside the English catalog', () => {
     const root = repoRoot();
     const offending = SCANNED_DIRS.flatMap((dir) =>
-      listModules(resolve(root, dir))
-        .filter((file) => !isExcluded(file, root))
-        .flatMap((file) =>
+      listModules(resolve(root, dir)).filter((file) => !isExcluded(file, root)).flatMap((file) =>
           collectViolations(file, readFileSync(file, 'utf8')).map(
             (violation) =>
-              `${relative(root, file).replaceAll(sep, '/')}:${violation.line} [${violation.kind}] "${violation.text}"`,
-          ),
-        ),
-    );
+              `${relative(root, file).replaceAll(sep, '/')}:${violation.line} [${violation.kind}] "${violation.text}"`)));
     expect(offending).toEqual([]);
   });
 

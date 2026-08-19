@@ -1,0 +1,43 @@
+{
+  "entity_id": "canvas.agents.perception-tools",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents",
+  "name": "Agent canvas perception tools",
+  "description": "read_canvas structured shape graph and screenshot_canvas raster capture with vision degradation.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "perception",
+    "vision",
+    "tldraw"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.perception-read-screenshot-canvas::feature",
+    "source_files": [
+      "src/agents/tools/perceptionTools.ts",
+      "src/engines/tldraw/perception/canvasPerceptionApi.ts",
+      "src/engines/tldraw/perception/shapeGraphSerializer.ts",
+      "src/engine/canvasPerceptionTypes.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

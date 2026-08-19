@@ -1,0 +1,59 @@
+{
+  "entity_id": "canvas.panels.devtools-spec-playground",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "Panel devtools spec playground",
+  "description": "Dockable spec inspector debug panel (validation trace, bindings, HITL/repair history) and read-only spec playground harness.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "panels",
+    "devtools",
+    "spec",
+    "playground",
+    "debug"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.panel-devtools-spec-playground::feature",
+    "source_files": [
+      "src/devtools/index.ts",
+      "src/devtools/specDevtoolsSession.ts",
+      "src/devtools/specDevtoolsAdapter.ts",
+      "src/devtools/specDevtoolsRows.ts",
+      "src/devtools/specDevtoolsBridge.ts",
+      "src/devtools/panels/specInspectorPanel.ts",
+      "src/devtools/playground/SpecPlayground.tsx",
+      "examples/spec-playground/App.tsx",
+      "tests/unit/specDevtoolsSession.test.ts",
+      "tests/unit/specInspectorPanel.test.tsx",
+      "tests/unit/specPlayground.test.tsx"
+    ]
+  },
+  "routes": [
+    {
+      "path": "/examples/spec-playground/index.html",
+      "methods": [
+        "GET"
+      ],
+      "description": "Read-only spec playground docs harness (dev server)"
+    }
+  ],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

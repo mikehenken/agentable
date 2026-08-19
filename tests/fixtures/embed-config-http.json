@@ -1,0 +1,7 @@
+{
+  "tenant": "http-fixture",
+  "adapter": {
+    "kind": "http",
+    "baseUrl": "/fixtures/panel-data-minimal.json"
+  }
+}

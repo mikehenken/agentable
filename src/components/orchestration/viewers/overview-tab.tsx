@@ -121,11 +121,7 @@ export interface OverviewTabProps {
 
 const SmallStat: React.FC<{ label: string; value: string; sub?: string; tone?: "neutral" | "positive" | "warn" | "info" | "negative" }> = ({ label, value, sub, tone = "neutral" }) => {
   const color =
-    tone === "positive" ? "var(--positive-fg)"
-    : tone === "warn" ? "var(--warn-fg)"
-    : tone === "info" ? "var(--info-fg)"
-    : tone === "negative" ? "var(--negative-fg)"
-    : "var(--fg-strong)";
+    tone === "positive" ? "var(--positive-fg)": tone === "warn" ? "var(--warn-fg)": tone === "info" ? "var(--info-fg)": tone === "negative" ? "var(--negative-fg)": "var(--fg-strong)";
   return (
     <div
       style={{
@@ -222,10 +218,7 @@ const ToolbarButton: React.FC<{
   tone?: "accent" | "warn" | "danger" | "default";
 }> = ({ icon, label, onClick, title, tone = "default" }) => {
   const bg =
-    tone === "accent" ? "var(--accent)"
-    : tone === "warn" ? "var(--warn)"
-    : tone === "danger" ? "var(--negative)"
-    : "var(--bg-sunken)";
+    tone === "accent" ? "var(--accent)": tone === "warn" ? "var(--warn)": tone === "danger" ? "var(--negative)": "var(--bg-sunken)";
   const fg = tone === "default" ? "var(--fg-strong)" : "var(--fg-on-accent)";
   return (
     <button
@@ -446,10 +439,7 @@ const RunStateView: React.FC<{
                     height: 8,
                     borderRadius: 4,
                     background:
-                      h.state === "approved" ? "var(--positive)"
-                      : h.state === "blocked" ? "var(--warn)"
-                      : h.state === "skipped" ? "var(--fg-ghost)"
-                      : "var(--border-base)",
+                      h.state === "approved" ? "var(--positive)": h.state === "blocked" ? "var(--warn)": h.state === "skipped" ? "var(--fg-ghost)": "var(--border-base)",
                     justifySelf: "center",
                   }}
                 />
@@ -474,8 +464,7 @@ const RunStateView: React.FC<{
           <SectionCard title="Completion gates">
             {Object.entries(rs.gates as Record<string, unknown>).map(([k, v]) => {
               const passed = typeof v === "object" && v && "passed" in (v as Record<string, unknown>)
-                ? Boolean((v as { passed: boolean }).passed)
-                : Boolean(v);
+                ? Boolean((v as { passed: boolean }).passed): Boolean(v);
               return (
                 <div
                   key={k}
@@ -523,11 +512,7 @@ const RunStateView: React.FC<{
           {phases.map((p) => {
             const tone = statusTone(p.status);
             const dotColor =
-              tone === "positive" ? "var(--positive)"
-              : tone === "info" ? "var(--accent)"
-              : tone === "warn" ? "var(--warn)"
-              : tone === "negative" ? "var(--negative)"
-              : "var(--border-base)";
+              tone === "positive" ? "var(--positive)": tone === "info" ? "var(--accent)": tone === "warn" ? "var(--warn)": tone === "negative" ? "var(--negative)": "var(--border-base)";
             const detailable = !!rs.onPhaseClick;
             const canRerun = !!rs.onRerunPhase && p.status !== "running" && p.status !== "queued" && p.status !== "awaiting_hitm";
             return (
@@ -1046,13 +1031,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                           height: 14,
                           borderRadius: 7,
                           background:
-                            s.status === "ok" ? "var(--positive)"
-                            : s.status === "warn" ? "var(--warn)"
-                            : "var(--negative)",
+                            s.status === "ok" ? "var(--positive)": s.status === "warn" ? "var(--warn)": "var(--negative)",
                           boxShadow: `0 0 0 3px var(--bg-panel), 0 0 0 4px ${
-                            s.status === "ok" ? "var(--positive-soft)"
-                            : s.status === "warn" ? "var(--warn-soft)"
-                            : "var(--negative-soft)"
+                            s.status === "ok" ? "var(--positive-soft)": s.status === "warn" ? "var(--warn-soft)": "var(--negative-soft)"
                           }`,
                           marginTop: 4,
                         }}

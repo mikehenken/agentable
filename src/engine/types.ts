@@ -43,7 +43,7 @@ export interface CameraState {
 }
 
 /**
- * Camera behavior contract (spec section 9, D27). `infinite` is the
+ * Camera behavior contract (spec section 9). `infinite` is the
  * default free canvas; `bounded` constrains the camera to a fixed page
  * area; `fixed` disables pan and zoom entirely while panels inside stay
  * interactive.
@@ -108,7 +108,7 @@ export interface EngineEventMap {
 /**
  * Flags for engine-only features. Hosts and packs gate on these and must
  * degrade sensibly when a flag is false; nothing above the SPI may assume
- * a capability (D37, D41).
+ * a capability ( ).
  */
 export interface EngineCapabilities {
   /** Context frames that group panels and move together. */
@@ -195,8 +195,7 @@ export interface EngineHandle extends EngineLifecycleHandle {
   /** Subscribe to any engine event. Returns an unsubscribe function. */
   on<E extends keyof EngineEventMap>(
     event: E,
-    listener: (payload: EngineEventMap[E]) => void,
-  ): () => void;
+    listener: (payload: EngineEventMap[E]) => void): () => void;
 
   placePanel(id: PanelInstanceId, rect: Rect, opts?: PlaceOptions): void;
   resizePanel(id: PanelInstanceId, rect: Rect): void;

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Meridian Labs · Canvas-wide operator</title>
+
+    <link rel="stylesheet" href="/embed/agentable-whiteboard.css" />
+
+    <link rel="stylesheet" href="/embed/agentable-operator-surface-placement.css" />
+
+    <link rel="stylesheet" href="/embed/agentable-gallery-13-chrome.css" />
+
+    <style>:root {
+
+        color-scheme: dark;
+
+      }
+
+      html,
+
+      body {
+
+        margin: 0;
+
+        height: 100%;
+
+      }
+
+      body {
+
+        display: flex;
+
+        flex-direction: column;
+
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+        background: #121212;
+
+        color: #ececec;
+
+      }
+
+      #gallery-demo-header-root {
+
+        flex: 0 0 auto;
+
+      }
+
+      main {
+
+        position: relative;
+
+        flex: 1;
+
+        min-height: 0;
+
+        display: flex;
+
+        flex-direction: column;
+
+      }.canvas-chrome {
+
+        display: flex;
+
+        flex: 1;
+
+        min-height: 0;
+
+        background: #121212;
+
+        position: relative;
+
+      }.gallery-chrome-root,.gallery-resizable-mounted {
+
+        flex: 1;
+
+        min-height: 0;
+
+        width: 100%;
+
+      }.canvas-pane {
+
+        position: relative;
+
+        flex: 1;
+
+        min-width: 0;
+
+        min-height: 0;
+
+      }
+
+      agentable-whiteboard {
+
+        display: block;
+
+        width: 100%;
+
+        height: 100%;
+
+        min-height: 480px;
+
+      }
+
+      /* Fallback layout before React chrome mounts */.operator-rail {
+
+        display: flex;
+
+        flex-direction: column;
+
+        flex: 0 0 min(420px, 36vw);
+
+        min-height: 0;
+
+        border-left: 1px solid rgb(255 255 255 0.09);
+
+        background: #1a1a1a;
+
+        padding: 0.75rem;
+
+      }
+
+      /* When resizable chrome mounts, seam is the handle — no duplicate rail border */.gallery-resizable-mounted.operator-rail,.gallery-resizable-mounted.operator-rail-inner {
+
+        flex: 1;
+
+        border-left: none;
+
+        background: #1a1a1a;
+
+        padding: 0.75rem;
+
+      }.operator-rail-label {
+
+        flex: 0 0 auto;
+
+        margin: 0 0 0.55rem;
+
+        font-size: 0.68rem;
+
+        font-weight: 600;
+
+        letter-spacing: 0.08em;
+
+        text-transform: uppercase;
+
+        color: #64748b;
+
+      }
+
+      agentable-operator-surface-placement[placement='dock-inside'] {
+
+        flex: 1;
+
+        min-height: 0;
+
+        --vibe-background: #121212;
+
+        --vibe-surface: #1a1a1a;
+
+        --vibe-composer-bg: #141414;
+
+        --vibe-border: rgb(255 255 255 0.09);
+
+        --vibe-text: #ececec;
+
+        --vibe-text-muted: #9a9a9a;
+
+        --vibe-text-faint: #6f6f6f;
+
+      }
+
+      agentable-operator-surface-placement[placement='floating'] {
+
+        --vibe-background: #121212;
+
+        --vibe-surface: #1a1a1a;
+
+        --vibe-composer-bg: #141414;
+
+        --vibe-border: rgb(255 255 255 0.09);
+
+        --vibe-text: #ececec;
+
+        --vibe-text-muted: #9a9a9a;
+
+        --vibe-text-faint: #6f6f6f;
+
+        display: none;
+
+      }
+
+      agentable-operator-surface-placement[placement='floating'].floating-visible {
+
+        display: flex;
+
+      }
+
+      details.gallery-telemetry {
+
+        position: absolute;
+
+        left: 12px;
+
+        bottom: 12px;
+
+        z-index: 3;
+
+        max-width: min(420px, calc(100vw - 24px));
+
+        border-radius: 8px;
+
+        border: 1px solid rgb(255 255 255 0.09);
+
+        background: rgba(18, 18, 18, 0.92);
+
+        font-size: 0.72rem;
+
+        color: #9a9a9a;
+
+      }
+
+      details.gallery-telemetry summary {
+
+        cursor: pointer;
+
+        padding: 0.35rem 0.65rem;
+
+        user-select: none;
+
+      }
+
+      details.gallery-telemetry pre#status {
+
+        margin: 0;
+
+        padding: 0.5rem 0.65rem 0.65rem;
+
+        max-height: 8rem;
+
+        overflow: auto;
+
+        color: #cbd5e1;
+
+        font-size: 0.68rem;
+
+        border-top: 1px solid rgb(255 255 255 0.09);
+
+      }
+
+      @media (max-width: 960px) {.operator-rail {
+
+          display: none;
+
+        }
+
+      }
+
+      @media (max-width: 720px) {
+
+        agentable-whiteboard {
+
+          min-height: 45dvh;
+
+        }
+
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div id="gallery-demo-header-root" aria-label="Gallery demo header"></div>
+
+    <main>
+
+      <div class="canvas-chrome">
+
+        <section class="canvas-pane" aria-label="Open agent canvas">
+
+          <agentable-whiteboard
+
+            tenant="meridian-labs"
+
+            config-url="/examples/shared/meridian-labs-open-config.json"
+
+            dark-canvas
+
+            open-chat-on-mount="false"
+
+            suppress-canvas-chat
+
+          ></agentable-whiteboard>
+
+        </section>
+
+        <aside class="operator-rail" aria-label="Operator dock">
+
+          <p class="operator-rail-label">Operator · dock-inside</p>
+
+          <agentable-operator-surface-placement
+
+            placement="dock-inside"
+
+            placement-id="operator-main"
+
+            default-mode="auto"
+
+          ></agentable-operator-surface-placement>
+
+        </aside>
+
+      </div>
+
+      <agentable-operator-surface-placement
+
+        id="operator-floating"
+
+        placement="floating"
+
+        placement-id="operator-floating"
+
+      ></agentable-operator-surface-placement>
+
+      <details class="gallery-telemetry">
+
+        <summary>Telemetry</summary>
+
+        <pre id="status">waiting for operator + canvas…</pre>
+
+      </details>
+
+    </main>
+
+
+
+    <script type="module" src="/embed/agentable-whiteboard.js"></script>
+
+    <script type="module" src="/embed/agentable-operator-surface-placement.js"></script>
+
+    <script type="module" src="/embed/agentable-gallery-13-chrome.js"></script>
+
+    <script type="module" src="./gallery-demo.mjs"></script>
+
+  </body>
+
+</html>
+

@@ -93,10 +93,8 @@ export function VoiceWidget() {
                   // to canonical hexes so embeds without token overrides
                   // still render correctly.
                   background: isError
-                    ? 'var(--landi-color-error, #EF4444)'
-                    : isSpeaking
-                    ? 'var(--landi-color-accent, #C9A227)'
-                    : 'var(--landi-color-primary, #0D7377)',
+                    ? 'var(--landi-color-error, #EF4444)': isSpeaking
+                    ? 'var(--landi-color-accent, #C9A227)': 'var(--landi-color-primary, #0D7377)',
                 }}
               />
             );

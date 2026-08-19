@@ -1,0 +1,51 @@
+# Release conformance report — v{{VERSION}}
+
+> **Publish status:** {{PUBLISH_STATUS}} 
+> **Generated:** {{GENERATED_AT_ISO}} 
+> **Package:** agentable-canvas
+
+Per-release conformance scaffold. Under deployment freeze, this file is generated locally and checked into the repo as a **scaffold** only. Public docs-site pages and `llms.txt` HTTP serving defer until `deploy_allowed` lifts.
+
+## Engine SPI conformance 
+
+| Engine | Suite | Status | Passed | Total |
+|--------|-------|--------|--------|-------|
+| tldraw | engine-spi-conformance-kit | {{ENGINE_STATUS}} | {{ENGINE_PASSED}} | {{ENGINE_TOTAL}} |
+
+Source: `tests/unit/engineConformanceTldraw.test.ts` + `src/engine/testing/conformanceSuite.ts`.
+
+## Accessibility — axe smoke (WCAG 2.1 AA)
+
+| Suite | Runner | Status | Passed | Total | Critical+serious |
+|-------|--------|--------|--------|-------|------------------|
+| lit-embed-a11y-axe-smoke | web-test-runner | {{A11Y_STATUS}} | {{A11Y_PASSED}} | {{A11Y_TOTAL}} | {{A11Y_VIOLATIONS}} |
+
+Source: `tests/component/a11y.test.ts` — `@open-wc/testing` accessible assertion (axe-core).
+
+Components:
+
+- `agentable-canvas`
+- `voice-call-button`
+- `agentable-starter-chip`
+- `ask-about-this-button`
+- `agent-status-pill`
+
+## Agent integration artifacts 
+
+| Artifact | Path |
+|----------|------|
+| Framework skill | `.cursor/skills/agentable-framework/SKILL.md` |
+| llms.txt | `llms.txt` (package root; docs site URL TBD post-freeze) |
+| References | `.cursor/skills/agentable-framework/references/` |
+
+## CI commands
+
+```bash
+npm run test:release-conformance
+node scripts/run-release-conformance.mjs --write-log
+node scripts/run-release-conformance.mjs --write-report
+```
+
+## Freeze publish deferral
+
+ `deploy_allowed: false` — do not publish conformance pages or serve `llms.txt` from production docs until freeze lifts and deploy authorization passes. CI gate artifacts and local markdown scaffolds satisfy release conformance acceptance under freeze.

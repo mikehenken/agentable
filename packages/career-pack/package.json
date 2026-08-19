@@ -1,0 +1,18 @@
+{
+  "name": "@agentable/career-pack",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Shared career domain pack for Agentable canvas hosts — Tier 2 panel definitions, generated tools, persona scaffold, and documented extension points.",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./extension-points": "./src/extension-points.ts",
+    "./fixtures/minimal": "./src/fixtures/minimal-dataset.ts",
+    "./fixtures/moss": "./src/fixtures/moss-dataset.ts",
+    "./fixtures/sandals": "./src/fixtures/sandals-dataset.ts"
+  },
+  "peerDependencies": {
+    "agentable-canvas": ">=0.2.0"
+  }
+}

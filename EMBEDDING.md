@@ -27,7 +27,7 @@ Add the script tag to any HTML page:
 </html>
 ```
 
-React / npm
+React npm
 
 ```bash
 npm install agentable-canvas
@@ -215,14 +215,10 @@ agentable-canvas, .agentable-canvas-root {
   --landi-color-background: #F0F0EC;       /* Page background SURROUNDING the canvas */
   --landi-color-workspace-bg: #F5F5F2;     /* Canvas working surface (under the dot grid) */
   --landi-color-workspace-dot: #D0D0CC;    /* Dot-grid color */
-  --landi-color-border: #E5E5E5;           /* Panel borders, dividers, separators, toggle off-state */
-
-  /* --- Text --- */
+  --landi-color-border: #E5E5E5; /* Panel borders, dividers, separators, toggle off-state ** --- Text --- */
   --landi-color-text: #1A1A1A;             /* Primary text (headlines, body) */
   --landi-color-text-secondary: #4B5563;   /* Sub-headlines, supporting copy (WCAG AA 7.6:1) */
-  --landi-color-text-muted: #9CA3AF;       /* Labels, timestamps, hints */
-
-  /* --- Status --- */
+  --landi-color-text-muted: #9CA3AF; /* Labels, timestamps, hints ** --- Status --- */
   --landi-color-success: #10B981;          /* Success toasts, valid states */
   --landi-color-warning: #F59E0B;          /* Caution states */
   --landi-color-error: #EF4444;            /* Error text, error visualizer, destructive actions */
@@ -251,17 +247,15 @@ agentable-canvas, .agentable-canvas-root {
   --canvas-elev-alpha-soft: 0.08;     /* hover-tint, light cards */
   --canvas-elev-alpha-rich: 0.12;     /* featured-card hover */
   --canvas-elev-alpha-active: 0.18;   /* selected/active state */
-  --canvas-elev-alpha-intense: 0.35;  /* avatar, hero accent */
-
-  /* Altitude 3 — keep geometry + alphas, swap the brand hue only.
+  --canvas-elev-alpha-intense: 0.35; /* avatar, hero accent ** Altitude 3 — keep geometry + alphas, swap the brand hue only.
      Cascades to all four primary-tinted elevations at once. */
   --landi-color-primary-hsl: 182 80% 26%;
 }
 ```
 
 Tailwind utility classes wired to these tokens:
-- `shadow-canvas-primary-soft` / `hover:shadow-canvas-primary-soft`
-- `shadow-canvas-primary-rich` / `hover:shadow-canvas-primary-rich`
+- `shadow-canvas-primary-soft` `hover:shadow-canvas-primary-soft`
+- `shadow-canvas-primary-rich` `hover:shadow-canvas-primary-rich`
 - `shadow-canvas-primary-active`
 - `shadow-canvas-primary-intense`
 
@@ -293,7 +287,7 @@ agentable-canvas, .agentable-canvas-root {
 }
 ```
 
-Consumed via the `TONE_GRADIENT` and `TONE_GLOW` maps in `src/canvas/toneTokens.ts`. To inject your own palette without forking, set the `-from` / `-to` and `-glow` variables for whichever tones your panels reference.
+Consumed via the `TONE_GRADIENT` and `TONE_GLOW` maps in `src/canvas/toneTokens.ts`. To inject your own palette without forking, set the `-from` `-to` and `-glow` variables for whichever tones your panels reference.
 
 ### Token namespace contract
 
@@ -301,7 +295,7 @@ Three distinct token namespaces, each with its own altitude of override:
 
 | Namespace | Purpose | Cascade source |
 |---|---|---|
-| `--landi-color-*` (+ `-hsl` companions) | Brand colors (primary / accent / surfaces / text / borders / status). The "color" tier. | Tenant override — all elevation/tone tokens that reference brand HSL recompose. |
+| `--landi-color-*` (+ `-hsl` companions) | Brand colors (primary accent surfaces text borders status). The "color" tier. | Tenant override — all elevation/tone tokens that reference brand HSL recompose. |
 | `--canvas-elev-*` (+ `-alpha-*` companions) | Brand-primary box-shadows (4 intensity tiers). The "elevation" tier. | Cascades from `--landi-color-primary-hsl`. Set elev or alpha tokens to override per-tier. |
 | `--canvas-tone-*` (`-from`/`-to`/`-glow`) | Per-department tone palette (gradients + glows for multi-tone panels). The "semantic accent" tier. | Independent of brand primary — set per-tone. Adding a new tone is one row in `toneTokens.ts` + 3 new CSS variables. |
 
@@ -336,7 +330,7 @@ agentable-canvas[tenant="acme"] {
 
 Set BOTH the hex and HSL forms together — the hex powers solid `bg-canvas-primary`, the HSL powers alpha-modified `bg-canvas-primary/30`, `border-canvas-primary/10`, etc. **Don't eyeball HSL** — a wrong-by-10-lightness companion silently makes alpha-modified shades look darker than solid ones, the exact split-brand bug the dual-form contract exists to prevent. Derive from the hex either in code via the bundled helper (`import { hexToHslComponents } from 'agentable-canvas/utils/hex-to-hsl'`) or via any reliable hex→HSL converter.
 
-> **Dark-theme groundwork — usable, with caveats.** As of Track F.7.2 (2026-04-25), 241 Tailwind grayscale utility sites across 15 panel files have been migrated to consume the canvas's `--landi-color-text*` / `--landi-color-surface*` / `--landi-color-border` tokens. Setting `--landi-color-text: #F9FAFB` + `--landi-color-surface: #111827` etc. now correctly inverts the canvas chrome AND the panel internals.
+> **Dark-theme groundwork — usable, with caveats.** As of Track F.7.2 (2026-04-25), 241 Tailwind grayscale utility sites across 15 panel files have been migrated to consume the canvas's `--landi-color-text*` `--landi-color-surface*` `--landi-color-border` tokens. Setting `--landi-color-text: #F9FAFB` + `--landi-color-surface: #111827` etc. now correctly inverts the canvas chrome AND the panel internals.
 >
 > Caveats that remain:
 > - **Role palettes** (`bg-blue-50`, `text-amber-700`, etc. on application-status badges, growth-path icons, etc.) are NOT tokenized — they retain the light Tailwind palette regardless of theme. Tracked for a future "role-palette token" decision.

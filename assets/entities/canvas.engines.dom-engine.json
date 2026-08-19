@@ -1,0 +1,49 @@
+{
+  "entity_id": "canvas.engines.dom-engine",
+  "entity_type": "feature",
+  "parent_id": "canvas.engines",
+  "name": "DOM workspace engine",
+  "description": "Second CanvasEngine with camera:none — CSS grid/flex regions, react-resizable-panels splits, tab strips, and responsive sidebar drawer collapse.",
+  "version": "0.1.0",
+  "status": "experimental",
+  "tags": [
+    "engine",
+    "dom",
+    "workspace",
+    "panels",
+    "responsive"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.dom-workspace-engine::feature",
+    "source_files": [
+      "src/engines/dom/engine.ts",
+      "src/engines/dom/domCanvasEngine.tsx",
+      "src/engines/dom/DomWorkspaceShell.tsx",
+      "src/engines/dom/components/DomRegionLayout.tsx",
+      "src/engines/dom/components/DomTabStrip.tsx",
+      "src/engines/dom/components/DomDrawer.tsx",
+      "src/engines/dom/layoutCodec.ts",
+      "src/engine/layoutRecordMigrate.ts"
+    ],
+    "export": "./engines/dom"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": true,
+    "highlight_in_search": false
+  }
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01 — Career homepage · Archipelago Resorts</title>
+    <link rel="stylesheet" href="/embed/agentable-panel.css" />
+    <style>:root {
+        font-family: system-ui, sans-serif;
+        color: #0f172a;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header.site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.75rem 1.25rem;
+        border-block-end: 1px solid #e2e8f0;
+        background: #fff;
+      }.brand {
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      main {
+        flex: 1;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 0;
+      }.hero {
+        padding: 2rem 1.25rem 1rem;
+        max-width: 56rem;
+      }.hero h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.75rem;
+      }.hero p {
+        margin: 0;
+        color: #475569;
+      }
+      agentable-canvas {
+        display: block;
+        width: 100%;
+        min-height: 520px;
+        flex: 1;
+      }
+      voice-call-button {
+        --voice-btn-bg: #0e7490;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">Archipelago Resorts</div>
+      <voice-call-button variant="nav">Talk with Meridian</voice-call-button>
+    </header>
+    <main>
+      <section class="hero">
+        <h1>Island careers, one concierge</h1>
+        <p>
+          Voice in the header, agent-first greeting on engage, and a bounded canvas — the sandals
+          career homepage shape on mock fixtures.
+        </p>
+      </section>
+      <agentable-canvas
+        id="career-canvas"
+        tenant="archipelago-resorts"
+        config-url="/examples/shared/archipelago-career-config.json"
+        voice-greeting-mode="agent-first"
+        dark-canvas
+        data-skip-react-mount
+      ></agentable-canvas>
+    </main>
+    <script type="module" src="/embed/voice-call-button.js"></script>
+    <script type="module" src="/embed/agentable-canvas.js"></script>
+    <script type="module">
+      window.__galleryExample = '01-career-homepage';
+      customElements.whenDefined('agentable-canvas').then( => {
+        window.__galleryReady = { example: '01-career-homepage', ok: true };
+      });
+    </script>
+  </body>
+</html>

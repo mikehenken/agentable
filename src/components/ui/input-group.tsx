@@ -59,8 +59,7 @@ const inputGroupAddonVariants = cva(
 
 function InputGroupAddon({
   className,
-  align = "inline-start",
-  ...props
+  align = "inline-start",...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
   return (
     <div
@@ -101,8 +100,7 @@ function InputGroupButton({
   className,
   type = "button",
   variant = "ghost",
-  size = "xs",
-  ...props
+  size = "xs",...props
 }: Omit<React.ComponentProps<typeof Button>, "size"> &
   VariantProps<typeof inputGroupButtonVariants>) {
   return (
@@ -129,8 +127,7 @@ function InputGroupText({ className, ...props }: React.ComponentProps<"span">) {
 }
 
 function InputGroupInput({
-  className,
-  ...props
+  className,...props
 }: React.ComponentProps<"input">) {
   return (
     <Input
@@ -145,8 +142,7 @@ function InputGroupInput({
 }
 
 function InputGroupTextarea({
-  className,
-  ...props
+  className,...props
 }: React.ComponentProps<"textarea">) {
   return (
     <Textarea

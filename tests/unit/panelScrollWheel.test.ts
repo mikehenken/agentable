@@ -11,8 +11,7 @@ function makeScrollable(
   scrollHeight: number,
   scrollTop = 0,
   width = 200,
-  scrollWidth = 200,
-): HTMLDivElement {
+  scrollWidth = 200): HTMLDivElement {
   const el = document.createElement('div');
   Object.defineProperty(el, 'clientHeight', { value: height, configurable: true });
   Object.defineProperty(el, 'scrollHeight', { value: scrollHeight, configurable: true });

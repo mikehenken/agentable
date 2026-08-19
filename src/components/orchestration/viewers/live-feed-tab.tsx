@@ -115,19 +115,15 @@ export const LiveFeedTab: React.FC<LiveFeedTabProps> = ({
             height: 6,
             borderRadius: "50%",
             background: terminal
-              ? "var(--fg-faint)"
-              : connected
-                ? "var(--positive)"
-                : "var(--warn)",
+              ? "var(--fg-faint)": connected
+                ? "var(--positive)": "var(--warn)",
             flexShrink: 0,
           }}
         />
         <span>
           {terminal
-            ? "Run complete"
-            : connected
-              ? "Streaming live events"
-              : "Connecting..."}
+            ? "Run complete": connected
+              ? "Streaming live events": "Connecting..."}
         </span>
         <span style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: 10.5 }}>
           {visible.length} event{visible.length === 1 ? "" : "s"}

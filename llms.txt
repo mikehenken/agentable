@@ -1,0 +1,41 @@
+# agentable-canvas
+
+> Embeddable AI canvas framework — Lit embed, tldraw whiteboard, panel IR, six generic agent tools, HITL mutations, and domain packs.
+
+Embeddable AI canvas: chat panel, draggable workspace, voice transport (Gemini Live), and panel registry with spec IR validation. Drop one tag into any page — React, Vue, or plain HTML.
+
+## Package
+
+- [README](README.md): quick start, exports, development commands
+- [Architecture](docs/development/ARCHITECTURE.md): whiteboard substrate, PanelShape, registry
+- [Adopter quickstart](docs/setup/ADOPTER_QUICKSTART.md): two-panel React from git pin
+- [Release process](docs/setup/RELEASE.md): semver, GitHub Packages, consumer SHA pinning
+- [Interop matrix](docs/development/INTEROP_MATRIX.md): embed + React smoke commands
+
+## Agent integration 
+
+- [Framework skill](.cursor/skills/agentable-framework/SKILL.md): panel tools, spec IR, safety invariants, workflows
+- [Panel tools reference](.cursor/skills/agentable-framework/references/panel-tools.md): list/open/fill/compose/patch/run_panel_action
+- [Spec IR reference](.cursor/skills/agentable-framework/references/spec-ir.md): flat node map, bindings, validation
+- [Safety invariants](.cursor/skills/agentable-framework/references/safety-invariants.md): HITL, provenance, no trusted HTML
+- [Adopt embed workflow](.cursor/skills/agentable-framework/references/workflows/adopt-embed.md)
+
+## Features (P10 ecosystem wave)
+
+- [A2UI ingestion](docs/features/a2ui-ingestion-adapter.md): A2UI v1.0 → native IR
+- [Panel devtools](docs/features/panel-devtools-spec-playground.md): spec inspector + read-only playground
+- [Compose eval harness](docs/features/compose-eval-harness.md): CI regression metrics
+- [Canvas-over-MCP](docs/features/canvas-over-mcp.md): MCP over live workspace
+- [Support inbox pack](docs/features/support-inbox-pack.md): second example pack adopter tutorial
+- [Published conformance + a11y + skill](docs/features/published-conformance-a11y-skill.md): per-release gate scaffold
+
+## Conformance
+
+- [Release report template](docs/conformance/RELEASE_REPORT.template.md): engine kit + axe results scaffold
+- Engine SPI kit: `src/engine/testing/` (tldraw harness in CI)
+- Accessibility: `tests/component/a11y.test.ts` (axe smoke, WCAG 2.1 AA critical/serious = 0)
+
+## Optional
+
+- [Embedding guide](EMBEDDING.md): theming, Shadow DOM
+- [Changelog](CHANGELOG.md): version history

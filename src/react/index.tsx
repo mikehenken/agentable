@@ -40,7 +40,6 @@ import type { AgentableCanvasElement } from '../embed/agentable-canvas';
 // ---------------------------------------------------------------------------
 // AgentableCanvas
 // ---------------------------------------------------------------------------
-
 export interface AgentableCanvasProps {
   tenant?: string;
   primaryColor?: string;
@@ -73,7 +72,6 @@ export function AgentableCanvas(props: AgentableCanvasProps) {
 // ---------------------------------------------------------------------------
 // VoiceCallButton
 // ---------------------------------------------------------------------------
-
 export interface VoiceCallButtonProps {
   variant?: 'nav' | 'hero';
   disabled?: boolean;

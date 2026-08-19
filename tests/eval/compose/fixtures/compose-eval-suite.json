@@ -1,0 +1,53 @@
+{
+  "seed": 180018,
+  "clockIso": "2026-07-21T17:00:00.000Z",
+  "models": [
+    { "id": "mock-model-alpha", "label": "Mock Alpha (valid-first)" },
+    { "id": "mock-model-beta", "label": "Mock Beta (terminal invalid)" },
+    { "id": "mock-model-gamma", "label": "Mock Gamma (repair path)" }
+  ],
+  "cases": [
+    {
+      "id": "alpha-valid-first-attempt",
+      "modelId": "mock-model-alpha",
+      "responses": [{ "phase": "compose", "specRef": "valid-seo" }]
+    },
+    {
+      "id": "alpha-terminal-invalid",
+      "modelId": "mock-model-alpha",
+      "responses": [
+        { "phase": "compose", "specRef": "invalid-seo-missing-action" },
+        { "phase": "repair", "specRef": "invalid-seo-missing-action" }
+      ]
+    },
+    {
+      "id": "beta-terminal-invalid",
+      "modelId": "mock-model-beta",
+      "responses": [
+        { "phase": "compose", "specRef": "invalid-seo-missing-action" },
+        { "phase": "repair", "specRef": "invalid-seo-missing-action" }
+      ]
+    },
+    {
+      "id": "beta-non-object-spec",
+      "modelId": "mock-model-beta",
+      "responses": [{ "phase": "compose", "specRef": "non-object" }]
+    },
+    {
+      "id": "gamma-repair-then-valid",
+      "modelId": "mock-model-gamma",
+      "responses": [
+        { "phase": "compose", "specRef": "invalid-seo-missing-action" },
+        { "phase": "repair", "specRef": "valid-seo" }
+      ]
+    },
+    {
+      "id": "gamma-repair-failed",
+      "modelId": "mock-model-gamma",
+      "responses": [
+        { "phase": "compose", "specRef": "invalid-seo-missing-action" },
+        { "phase": "repair", "specRef": "invalid-seo-missing-action" }
+      ]
+    }
+  ]
+}

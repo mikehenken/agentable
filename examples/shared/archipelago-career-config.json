@@ -1,0 +1,25 @@
+{
+  "tenant": "archipelago-resorts",
+  "locale": "en",
+  "primaryColor": "#0E7490",
+  "welcomeMessage": "Welcome to Archipelago Resorts — explore island careers with Meridian, your concierge.",
+  "voiceEnabled": true,
+  "greetingMode": "agent-first",
+  "canvasMode": "bounded",
+  "canvasBounds": "1200x800",
+  "persona": {
+    "assistantName": "Meridian",
+    "tenantTitle": "Island Career Concierge",
+    "systemPrompt": "You are Meridian, the Archipelago Resorts career concierge. Share fictional island hospitality roles only.",
+    "voiceGreeting": "Welcome — I'm Meridian, your Archipelago Resorts career guide. Ask about island roles, growth paths, or hospitality tracks.",
+    "greetingMode": "agent-first",
+    "starterPrompts": [
+      { "emoji": "🌴", "label": "Island roles", "text": "Show open island hospitality roles." },
+      { "emoji": "📈", "label": "Growth paths", "text": "Where can a guest associate grow in five years?" }
+    ]
+  },
+  "adapter": {
+    "kind": "static",
+    "dataUrl": "/examples/shared/archipelago-career-data.json"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.career-forward-compat.tsbuildinfo",
+    "noEmit": true,
+    "types": []
+  },
+  "include": ["packages/career-pack/src/schema/**/*.ts"]
+}

@@ -1,0 +1,47 @@
+{
+  "entity_id": "canvas.config.canvas-policy-merge",
+  "entity_type": "feature",
+  "parent_id": "canvas.config",
+  "name": "Canvas policy merge + open indicator",
+  "description": "canvasPolicy (guarded default open opt-in + per-gate overrides) merged through src/config/merge.ts; persistent open-canvas chrome indicator when open.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "config",
+    "canvas-policy",
+    "open-canvas",
+    "chrome"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.canvas-policy-merge::feature",
+    "source_files": [
+      "src/config/canvasPolicyTypes.ts",
+      "src/config/merge.ts",
+      "src/config/CanvasContext.tsx",
+      "src/components/chrome/OpenCanvasIndicator.tsx",
+      "src/engines/tldraw/WhiteboardShell.tsx",
+      "tests/unit/canvasPolicyMerge.test.ts",
+      "tests/unit/openCanvasIndicator.test.tsx"
+    ],
+    "decision": ""
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

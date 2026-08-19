@@ -1,0 +1,40 @@
+{
+  "entity_id": "canvas.embed.agentable-panel",
+  "entity_type": "ui_component",
+  "parent_id": "canvas.embed",
+  "name": "AgentablePanelElement",
+  "description": "Lit embed web component for a single panel surface with chrome, adapter lifecycle, and HITL — no canvas.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "embed",
+    "panel",
+    "web-component",
+    "lit",
+    "hitl"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.embed.agentable-panel::component",
+    "source_file": "src/embed/agentable-panel.ts",
+    "export": "./embed/panel"
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

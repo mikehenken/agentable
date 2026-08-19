@@ -39,16 +39,14 @@ export type TweakSetter<T> = {
  */
 export function useTweaks<T extends object>(
   defaults: T,
-  storageKey = "default",
-): [T, TweakSetter<T>] {
+  storageKey = "default"): [T, TweakSetter<T>] {
   const [values, setValues] = React.useState<T>(() => loadFromStorage(storageKey, defaults));
 
   const setTweak = React.useCallback<TweakSetter<T>>(
     (keyOrEdits: any, val?: any) => {
       const edits =
         typeof keyOrEdits === "object" && keyOrEdits !== null
-          ? keyOrEdits
-          : ({ [keyOrEdits]: val } as Partial<T>);
+          ? keyOrEdits: ({ [keyOrEdits]: val } as Partial<T>);
       setValues((prev) => {
         const next = { ...prev, ...edits } as T;
         saveToStorage(storageKey, next);
@@ -62,8 +60,7 @@ export function useTweaks<T extends object>(
         return next;
       });
     },
-    [storageKey],
-  ) as TweakSetter<T>;
+    [storageKey]) as TweakSetter<T>;
 
   return [values, setTweak];
 }

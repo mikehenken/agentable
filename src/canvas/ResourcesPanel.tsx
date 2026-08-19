@@ -143,8 +143,7 @@ export function ResourcesPanel({
           r.title.toLowerCase().includes(q) ||
           r.description.toLowerCase().includes(q) ||
           r.type.toLowerCase().includes(q)
-      )
-    : resources;
+      ): resources;
 
   const featuredTone = toneStyles[featuredResource.tone];
 

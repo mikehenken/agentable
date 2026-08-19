@@ -1,0 +1,45 @@
+{
+  "entity_id": "canvas.agents.digest-drawing-integration",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents",
+  "name": "Digest drawing integration",
+  "description": "Workspace digest shape slice with delta tracking for agent and user canvas drawings.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "digest",
+    "drawing",
+    "world-model"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.digest-drawing-integration::feature",
+    "source_files": [
+      "src/agents/digest.ts",
+      "src/agents/digestShapes.ts",
+      "src/agents/engineBridge.ts",
+      "src/agents/drawingActivity.ts",
+      "src/engines/tldraw/digest/digestShapeCollector.ts",
+      "src/engines/tldraw/digest/digestShapeBridge.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

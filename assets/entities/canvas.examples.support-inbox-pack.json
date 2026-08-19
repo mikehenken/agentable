@@ -1,0 +1,51 @@
+{
+  "entity_id": "canvas.examples.support-inbox-pack",
+  "entity_type": "feature",
+  "parent_id": "canvas.examples",
+  "name": "Support inbox example pack ",
+  "description": "Second adopter example pack with inbox, ticket-detail, and macros Tier 2 panels, static fixture adapter, extension points, and support-inbox quickstart embed tutorial.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "examples",
+    "support-inbox",
+    "adopter",
+    "pack",
+    ""
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.support-inbox-pack::feature",
+    "source_files": [
+      "packages/support-inbox-pack/src/index.ts",
+      "packages/support-inbox-pack/README.md",
+      "examples/support-inbox-quickstart/index.html",
+      "examples/support-inbox-quickstart/README.md",
+      "examples/shared/northwind-support-config.json",
+      "examples/shared/northwind-support-data.json",
+      "tests/unit/supportInboxPack.test.ts",
+      "tests/unit/supportInboxPackInterop.test.ts",
+      "tests/unit/staticSupportInboxAdapter.test.ts",
+      "tests/e2e/support-inbox-quickstart.spec.ts",
+      "src/embed/panel/resolveEmbedPanelHost.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

@@ -136,8 +136,7 @@ export function createChatClient(options: ChatClientOptions) {
       if (!res.ok) {
         const detail = await res.text().catch(() => '');
         throw new Error(
-          `Chat proxy responded ${res.status}${detail ? `: ${detail}` : ''}`,
-        );
+          `Chat proxy responded ${res.status}${detail ? `: ${detail}`: ''}`);
       }
       return (await res.json()) as GenerateResult;
     }
@@ -147,8 +146,7 @@ export function createChatClient(options: ChatClientOptions) {
     }
     const apiKey =
       typeof options.apiKeySource === 'function'
-        ? await options.apiKeySource()
-        : options.apiKeySource;
+        ? await options.apiKeySource() : options.apiKeySource;
     const ai = new GoogleGenAI({ apiKey, apiVersion: 'v1beta' });
     return ai.models.generateContent({
       model,
@@ -159,12 +157,10 @@ export function createChatClient(options: ChatClientOptions) {
 
   async function send(
     history: ChatMessage[],
-    userMessage: string,
-  ): Promise<ChatTurnResult> {
+    userMessage: string): Promise<ChatTurnResult> {
     // Working contents: history → user message, then we may append model
     // turns + tool responses across the round-trip loop.
-    const contents: Content[] = [
-      ...buildContents(history),
+    const contents: Content[] = [...buildContents(history),
       { role: 'user', parts: [{ text: userMessage }] },
     ];
 
@@ -221,15 +217,13 @@ export function createChatClient(options: ChatClientOptions) {
             detail: { name: fc.name, args: fc.args, ok: result.ok, source: 'chat' },
             bubbles: true,
             composed: true,
-          }),
-        );
+          }));
         responseParts.push({
           functionResponse: {
             id: fc.id,
             name: fc.name,
             response: result.ok
-              ? { output: result.result }
-              : { error: result.error },
+              ? { output: result.result }: { error: result.error },
           },
         });
       }

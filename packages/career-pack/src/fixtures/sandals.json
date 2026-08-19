@@ -1,0 +1,225 @@
+{
+  "jobs": [
+    {
+      "id": "1",
+      "slug": "resort-manager-1",
+      "title": "Resort Manager",
+      "department": "Operations",
+      "track": "Full-time · Salary",
+      "location": "Montego Bay, Jamaica",
+      "compensation": "$85,000 – $120,000",
+      "description": "Lead a team of 200+ at our flagship property undergoing a $120M transformation.",
+      "tags": [
+        "Leadership",
+        "Operations",
+        "Budgeting",
+        "Guest Relations",
+        "Operations"
+      ],
+      "postedAt": "2026-03-01T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "sandals-job-1",
+      "applyUrl": "https://careers.sandals.com/"
+    },
+    {
+      "id": "2",
+      "slug": "senior-software-developer-2",
+      "title": "Senior Software Developer",
+      "department": "Information Technology",
+      "track": "Full-time · Salary",
+      "location": "San Pedro Sula, Honduras",
+      "compensation": "$75,000 – $95,000",
+      "description": "Build with Copilot, ship daily, and help every Sandals guest feel seen — before they arrive.",
+      "tags": [
+        "React",
+        "TypeScript",
+        "AI/ML",
+        "Cloud",
+        "Information Technology"
+      ],
+      "postedAt": "2026-03-01T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "sandals-job-2",
+      "applyUrl": "https://careers.sandals.com/"
+    },
+    {
+      "id": "3",
+      "slug": "executive-chef-3",
+      "title": "Executive Chef",
+      "department": "Food & Beverage",
+      "track": "Full-time · Salary",
+      "location": "Gros Islet, St. Lucia",
+      "compensation": "$70,000 – $90,000",
+      "description": "Lead culinary operations across 11 restaurants at one of our most celebrated properties.",
+      "tags": [
+        "Culinary Arts",
+        "Menu Design",
+        "Team Leadership",
+        "Food & Beverage"
+      ],
+      "postedAt": "2026-03-01T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "sandals-job-3",
+      "applyUrl": "https://careers.sandals.com/"
+    },
+    {
+      "id": "4",
+      "slug": "guest-services-agent-4",
+      "title": "Guest Services Agent",
+      "department": "Guest Services",
+      "track": "Full-time · Hourly",
+      "location": "Nassau, Bahamas",
+      "compensation": "$18 – $24 hr",
+      "description": "Create unforgettable guest experiences from the moment they arrive to the moment they leave.",
+      "tags": [
+        "Hospitality",
+        "Communication",
+        "Problem Solving",
+        "Guest Services"
+      ],
+      "postedAt": "2026-03-01T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "sandals-job-4",
+      "applyUrl": "https://careers.sandals.com/"
+    },
+    {
+      "id": "5",
+      "slug": "spa-therapist-5",
+      "title": "Spa Therapist",
+      "department": "Spa & Wellness",
+      "track": "Full-time · Hourly",
+      "location": "Ocho Rios, Jamaica",
+      "compensation": "$16 – $22 hr",
+      "description": "Deliver restorative treatments in a five-star Caribbean spa setting.",
+      "tags": [
+        "Massage Therapy",
+        "Guest Care",
+        "Wellness",
+        "Spa & Wellness"
+      ],
+      "postedAt": "2026-03-01T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "sandals-job-5",
+      "applyUrl": "https://careers.sandals.com/"
+    }
+  ],
+  "growthPaths": [
+    {
+      "id": "path-front-office",
+      "fromRole": "Front desk",
+      "toRole": "Front Office Manager",
+      "fitScore": 91,
+      "summary": "The most-walked path at Sandals — 60% of current FOMs started here.",
+      "steps": [
+        "Front Desk Agent",
+        "Guest Services Coordinator",
+        "Front Office Supervisor",
+        "Asst. Front Office Manager",
+        "Front Office Manager"
+      ]
+    },
+    {
+      "id": "path-fnb",
+      "fromRole": "Line cook",
+      "toRole": "Executive Chef",
+      "fitScore": 88,
+      "summary": "Long but legendary — the culinary climb at our flagship properties.",
+      "steps": [
+        "Line Cook",
+        "Demi-Chef",
+        "Sous Chef",
+        "Chef de Cuisine",
+        "Executive Chef"
+      ]
+    },
+    {
+      "id": "path-it",
+      "fromRole": "IT Analyst",
+      "toRole": "Engineering Lead",
+      "fitScore": 85,
+      "summary": "The newest career ladder at Sandals — and the one with the most room.",
+      "steps": [
+        "IT Analyst",
+        "Software Developer",
+        "Senior Developer",
+        "Staff Engineer",
+        "Engineering Lead"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "res-1",
+      "title": "SCU onboarding guide",
+      "category": "Guide",
+      "description": "The A→Z primer for every new Sandals team member entering the Corporate University program.",
+      "featured": false
+    },
+    {
+      "id": "res-2",
+      "title": "Leadership pathways video",
+      "category": "Video",
+      "description": "Five SCU fellows walk through how they moved from line roles into leadership.",
+      "featured": false
+    },
+    {
+      "id": "res-3",
+      "title": "Benefits overview 2026",
+      "category": "Portal",
+      "description": "Health, travel, property-stay perks, and the relocation program in plain English.",
+      "featured": false
+    },
+    {
+      "id": "res-4",
+      "title": "Property culture handbook",
+      "category": "Guide",
+      "description": "How each resort operates day-to-day, the rhythms of high season, and what guests expect.",
+      "featured": false
+    },
+    {
+      "id": "res-5",
+      "title": "Meet the leadership",
+      "category": "Video",
+      "description": "A short intro from our GMs and SCU deans across the Caribbean.",
+      "featured": false
+    }
+  ],
+  "applications": [
+    {
+      "id": "app-1",
+      "jobId": "1",
+      "candidate": {
+        "name": "Candidate",
+        "email": "candidate@example.com"
+      },
+      "status": "Interview scheduled",
+      "submittedAt": "2026-03-12T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "app-1"
+    },
+    {
+      "id": "app-2",
+      "jobId": "4",
+      "candidate": {
+        "name": "Candidate",
+        "email": "candidate@example.com"
+      },
+      "status": "Under review",
+      "submittedAt": "2026-03-12T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "app-2"
+    },
+    {
+      "id": "app-3",
+      "jobId": "2",
+      "candidate": {
+        "name": "Candidate",
+        "email": "candidate@example.com"
+      },
+      "status": "Draft",
+      "submittedAt": "2026-03-12T00:00:00.000Z",
+      "source": "fixture",
+      "sourceId": "app-3"
+    }
+  ]
+}

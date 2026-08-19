@@ -1,9 +1,8 @@
 /**
- * P1-T8 automated check (D56, 06 P1 item 8): a catalog list bound to the
+ * Automated check: a catalog list bound to the
  * 117-job moss reference fixture keeps its rendered DOM node count
  * bounded. The spec flows through `validateSpec` and `SpecRenderer`
- * against the instrumented mock adapter, so this exercises the real P1
- * pipeline; the windowing itself happens inside
+ * against the instrumented mock adapter through the full catalog pipeline;
  * `<agentable-virtual-list>` (Lit `repeat`, stable keys).
  *
  * The counterfactual is proven in-suite: the same 117 rows rendered with
@@ -44,8 +43,7 @@ const SCOPE: PanelScope = { contextId: 'moss', entityId: 'careers' };
 const WINDOW_ROW_BOUND = maxWindowRowCount(
   DEFAULT_VIEWPORT_HEIGHT_PX,
   DEFAULT_ROW_HEIGHT_PX,
-  DEFAULT_OVERSCAN_ROWS,
-);
+  DEFAULT_OVERSCAN_ROWS);
 
 function jobsListSpec(extraListProps: Record<string, unknown> = {}): NormalizedPanelSpec {
   const spec: PanelSpec = {
@@ -61,8 +59,7 @@ function jobsListSpec(extraListProps: Record<string, unknown> = {}): NormalizedP
         type: 'list',
         props: {
           bind: 'jobs',
-          row: { title: 'title', subtitle: 'department' },
-          ...extraListProps,
+          row: { title: 'title', subtitle: 'department' },...extraListProps,
         },
       },
     },
@@ -92,8 +89,7 @@ async function mountJobsList(extraListProps: Record<string, unknown> = {}): Prom
   });
   const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
   const view = render(
-    <SpecRenderer spec={jobsListSpec(extraListProps)} scope={SCOPE} lifecycle={lifecycle} />,
-  );
+    <SpecRenderer spec={jobsListSpec(extraListProps)} scope={SCOPE} lifecycle={lifecycle} />);
   await waitFor(() => {
     expect(screen.getByTestId('virtual-list')).toBeInTheDocument();
   });
@@ -191,8 +187,7 @@ describe('D56 list virtualization: 117-job moss fixture keeps DOM bounded', () =
     const padTop = Number.parseFloat(spacer?.style.paddingTop ?? '0');
     const padBottom = Number.parseFloat(spacer?.style.paddingBottom ?? '0');
     expect(padTop + padBottom + after.length * DEFAULT_ROW_HEIGHT_PX).toBe(
-      117 * DEFAULT_ROW_HEIGHT_PX,
-    );
+      117 * DEFAULT_ROW_HEIGHT_PX);
     mounted.unmount();
   });
 
@@ -211,8 +206,7 @@ describe('D56 list virtualization: 117-job moss fixture keeps DOM bounded', () =
     await element.updateComplete;
 
     const reused = shadowRows(element).find(
-      (row) => row.dataset.rowKey === String(JOBS[10]?.id),
-    );
+      (row) => row.dataset.rowKey === String(JOBS[10]?.id));
     expect(reused).toBe(target);
     mounted.unmount();
   });
@@ -221,8 +215,7 @@ describe('D56 list virtualization: 117-job moss fixture keeps DOM bounded', () =
     const adapter = createMockDataAdapter({ latencyMs: 5 });
     const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
     const view = render(
-      <SpecRenderer spec={jobsListSpec()} scope={SCOPE} lifecycle={lifecycle} />,
-    );
+      <SpecRenderer spec={jobsListSpec()} scope={SCOPE} lifecycle={lifecycle} />);
     await waitFor(() => {
       expect(screen.getByTestId('list').textContent).toContain('jobs');
     });

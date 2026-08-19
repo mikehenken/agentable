@@ -44,11 +44,9 @@ describe('<agentable-canvas>', () => {
       await elementUpdated(el);
       // Lit emits styles via adoptedStyleSheets where supported, falling back
       // to a <style> tag. Check both surfaces.
-      const sheets = (el.shadowRoot as ShadowRoot & { adoptedStyleSheets?: CSSStyleSheet[] })
-        .adoptedStyleSheets ?? [];
+      const sheets = (el.shadowRoot as ShadowRoot & { adoptedStyleSheets?: CSSStyleSheet[] }).adoptedStyleSheets ?? [];
       const styleTag = el.shadowRoot!.querySelector('style');
-      const allCss = [
-        ...sheets.flatMap((s) => Array.from(s.cssRules ?? []).map((r) => r.cssText)),
+      const allCss = [...sheets.flatMap((s) => Array.from(s.cssRules ?? []).map((r) => r.cssText)),
         styleTag?.textContent ?? '',
       ].join('\n');
       expect(allCss).to.include('display: block');
@@ -231,8 +229,7 @@ describe('<agentable-canvas>', () => {
         const matched = warnings.some((args) =>
           String(args[0] ?? '').includes('not a valid hex')
         );
-        expect(matched, 'console.warn fired about invalid hex during firstUpdated')
-          .to.equal(true);
+        expect(matched, 'console.warn fired about invalid hex during firstUpdated').to.equal(true);
       } finally {
         console.warn = origWarn;
       }

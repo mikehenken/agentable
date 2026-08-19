@@ -46,8 +46,7 @@ export function hasSiteContextPanels(editor: Editor, siteId: string): boolean {
 
 function collectSiteContextPanels(
   editor: Editor,
-  frameId: TLShapeId,
-): SiteContextPanelRecord[] {
+  frameId: TLShapeId): SiteContextPanelRecord[] {
   const panels: SiteContextPanelRecord[] = [];
   for (const childId of editor.getSortedChildIdsForParent(frameId)) {
     const shape = editor.getShape(childId);
@@ -94,8 +93,7 @@ function applyGridPlacements(
   frameId: TLShapeId,
   panels: SiteContextPanelRecord[],
   gridPlacements: SiteContextPanelPlacement[],
-  options: ApplyGridOptions,
-): void {
+  options: ApplyGridOptions): void {
   const { dockChatLeft, dockFilesRight, rowHeight } = options;
   const byPanelId = new Map(gridPlacements.map((p) => [p.panelId, p]));
   const frame = editor.getShape(frameId);
@@ -111,15 +109,13 @@ function applyGridPlacements(
     // which then inflates the frame in a fillHeight ↔ frame-fit runaway.
     const local =
       existing.parentId === frameId && frame
-        ? editor.getPointInShapeSpace(frame, { x: target.x, y: target.y })
-        : { x: target.x, y: target.y };
+        ? editor.getPointInShapeSpace(frame, { x: target.x, y: target.y }): { x: target.x, y: target.y };
     editor.updateShape({
       id: panel.shapeId,
       type: 'panel',
       x: local.x,
       y: local.y,
-      props: {
-        ...(existing.props as Record<string, unknown>),
+      props: {...(existing.props as Record<string, unknown>),
         w: target.w,
         // Uniform height: every panel spans the full group inner height so the
         // row is cleanly aligned (chat/preview/files equal height).
@@ -175,8 +171,7 @@ export interface SiteContextArrangeOptions {
 export function autoArrangeSiteContextPanels(
   editor: Editor,
   siteId: string,
-  options: SiteContextArrangeOptions = {},
-): boolean {
+  options: SiteContextArrangeOptions = {}): boolean {
   const { dockChatLeft = true } = options;
   const frameId = contextGroupFrameId({ kind: 'site', id: siteId });
   const frame = editor.getShape(frameId);
@@ -200,8 +195,7 @@ export function autoArrangeSiteContextPanels(
   const flags = layoutFlagsFromPanels(panels);
   const gridPlacements: SiteContextPanelPlacement[] = computeInitialSiteContextLayout(
     anchor,
-    { ...flags, dockChatLeft: dockChatLeft && flags.includeChat },
-  );
+    {...flags, dockChatLeft: dockChatLeft && flags.includeChat });
 
   // One clean row: every panel spans the same (full) height so chat, preview
   // and files align cleanly. Use the tallest grid placement as the row height.
@@ -225,8 +219,7 @@ export function autoArrangeSiteContextPanels(
 /** Resolve site frame id and arrange — convenience for toolbar / host bridges. */
 export function autoArrangeSiteContextPanelsByFrameId(
   editor: Editor,
-  frameId: TLShapeId,
-): boolean {
+  frameId: TLShapeId): boolean {
   const frame = editor.getShape(frameId);
   if (!frame) return false;
   const meta = getContextGroupMeta(frame);

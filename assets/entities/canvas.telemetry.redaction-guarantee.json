@@ -1,0 +1,57 @@
+{
+  "entity_id": "canvas.telemetry.redaction-guarantee",
+  "entity_type": "feature",
+  "parent_id": "canvas.telemetry.sink-boundary",
+  "name": "Telemetry redaction guarantee",
+  "description": "Emit-boundary redaction middleware on host.telemetry.emit that strips PII and credential-shaped values from telemetry payloads before host sink dispatch.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "telemetry",
+    "observability",
+    "security",
+    "redaction",
+    "PII"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.telemetry-redaction-guarantee::feature",
+    "source_files": [
+      "src/telemetry/redactTelemetryEvent.ts",
+      "src/telemetry/hostTelemetry.ts",
+      "tests/fixtures/telemetry-redaction-pii-keys.json",
+      "tests/unit/telemetryRedaction.test.ts"
+    ]
+  },
+  "routes": [],
+  "links": [
+    {
+      "rel": "parent",
+      "entity_id": "canvas.telemetry.sink-boundary"
+    },
+    {
+      "rel": "related",
+      "entity_id": "canvas.telemetry.event-coverage"
+    },
+    {
+      "rel": "related",
+      "entity_id": "canvas.embed.anon-key-rate-limiting"
+    }
+  ],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

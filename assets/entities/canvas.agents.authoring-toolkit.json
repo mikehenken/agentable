@@ -1,0 +1,45 @@
+{
+  "entity_id": "canvas.agents.authoring-toolkit",
+  "entity_type": "feature",
+  "parent_id": "canvas.agents",
+  "name": "Open agent canvas authoring toolkit",
+  "description": "Capability-gated insert_image, connect_shapes, group_shapes, frame_shapes, arrange tools plus draw_shapes wireframe stencils for open canvas authoring.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "agents",
+    "authoring",
+    "open-canvas",
+    "tldraw",
+    "wireframe"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.authoring-toolkit::feature",
+    "source_files": [
+      "src/agents/tools/authoringToolkitTools.ts",
+      "src/agents/authoringAssetBridge.ts",
+      "src/engines/tldraw/agentDrawing/authoringToolkitApi.ts",
+      "src/engines/tldraw/agentDrawing/wireframeStencils.ts",
+      "src/engine/authoringToolkitTypes.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

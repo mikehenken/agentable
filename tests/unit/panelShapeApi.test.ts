@@ -91,9 +91,7 @@ function makeStubEditor(): StubEditor {
     updateShape: vi.fn((patch: StubShape & { id: string }) => {
       const existing = shapes.get(patch.id);
       if (!existing) return;
-      shapes.set(patch.id, {
-        ...existing,
-        ...patch,
+      shapes.set(patch.id, {...existing,...patch,
         props: { ...existing.props, ...patch.props },
       });
     }),
@@ -325,8 +323,7 @@ describe('openPanelInCanvas — create + idempotency', () => {
     openPanelInCanvas('c');
 
     const xs = editor.createShape.mock.calls.map(
-      (c) => (c[0] as StubShape).x,
-    );
+      (c) => (c[0] as StubShape).x);
     // Cascading inset means later shapes don't sit exactly on top of #1.
     expect(new Set(xs).size).toBeGreaterThan(1);
   });
@@ -365,8 +362,7 @@ describe('openPanelInCanvas — create + idempotency', () => {
     // User minimised the shape via the chrome button.
     const id = 'shape:panel:open-positions';
     const existing = editor.__shapes.get(id)!;
-    editor.__shapes.set(id, {
-      ...existing,
+    editor.__shapes.set(id, {...existing,
       props: { ...existing.props, minimized: true },
     });
 
@@ -458,8 +454,7 @@ describe('updatePanelProps', () => {
     });
 
     expect(updatePanelProps('open-positions', { selectedJobId: 9 })).toBe(
-      true,
-    );
+      true);
 
     const final = editor.__shapes.get('shape:panel:open-positions');
     expect(final?.props.data).toEqual({

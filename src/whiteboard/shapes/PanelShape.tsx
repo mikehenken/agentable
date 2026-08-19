@@ -90,8 +90,7 @@ function panelBodyShouldCapturePointer(target: EventTarget | null): boolean {
         '.panel-shape__drag-handle',
         '.draft-preview-panel__header',
         '.panel-chrome',
-      ].join(', '),
-    )
+      ].join(', '))
   ) {
     return false;
   }
@@ -110,9 +109,7 @@ function panelBodyShouldCapturePointer(target: EventTarget | null): boolean {
         '.draft-preview-panel__add-tab',
         '.draft-preview-panel__body',
         '.panel-shape__content',
-      ].join(', '),
-    ),
-  );
+      ].join(', ')));
 }
 
 /**
@@ -127,8 +124,7 @@ function panelBodyShouldCapturePointer(target: EventTarget | null): boolean {
  * to `<Tldraw shapeUtils={[...]}>`.
  */
 export function createPanelShapeUtil(
-  registry: WhiteboardPanelRegistry = DEFAULT_WHITEBOARD_PANEL_REGISTRY,
-) {
+  registry: WhiteboardPanelRegistry = DEFAULT_WHITEBOARD_PANEL_REGISTRY) {
   class PanelShapeUtil extends BaseBoxShapeUtil<PanelShape> {
     static override type = 'panel' as const;
     static override props: RecordProps<PanelShape> = {
@@ -156,8 +152,7 @@ export function createPanelShapeUtil(
 
     /** Whether tldraw can resize this shape. Day 1: yes — the user expects
      *  to grab corners and stretch panels. Day 3 may pin specific shapes
-     *  (e.g. the voice shape) by overriding via shape data. */
-    /** Wheel scroll is handled selectively via panelScrollWheel capture — never block canvas pan/zoom globally. */
+     * (e.g. the voice shape) by overriding via shape data. *** Wheel scroll is handled selectively via panelScrollWheel capture — never block canvas pan/zoom globally. */
     override canScroll(_shape: PanelShape): boolean {
       return false;
     }
@@ -247,8 +242,7 @@ const PanelShapeIndicator = track(function PanelShapeIndicator({
       const toolId = editor.getCurrentToolId();
       return toolId === 'select' || toolId.startsWith('select.');
     },
-    [editor, shape.id],
-  );
+    [editor, shape.id]);
 
   if (!showOutline) {
     return <g />;
@@ -309,17 +303,14 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
       className={[
         'panel-shape',
         fullBleed ? 'panel-shape--full-bleed' : 'panel-shape--chrome',
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      ].filter(Boolean).join(' ')}
       style={{
         width: shape.props.w,
         height: isMinimized ? TITLE_BAR_HEIGHT : shape.props.h,
         display: 'flex',
         flexDirection: 'column',
         background: fullBleed
-          ? 'var(--landi-color-background, #121212)'
-          : 'var(--landi-color-surface, #1f1f1f)',
+          ? 'var(--landi-color-background, #121212)': 'var(--landi-color-surface, #1f1f1f)',
         border: edgeToEdge ? 'none' : '1px solid var(--landi-color-border, #3a3a3a)',
         borderRadius: edgeToEdge ? 0 : 12,
         boxShadow: edgeToEdge ? 'none' : '0 8px 24px rgb(0 0 0 / 0.35)',
@@ -437,8 +428,5 @@ function PanelMissingPlaceholder({ panelId }: { panelId: string }): ReactElement
 
 function friendlyTitle(panelId: string): string {
   if (!panelId) return 'Panel';
-  return panelId
-    .split(/[-_]/)
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(' ');
+  return panelId.split(/[-_]/).map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
 }

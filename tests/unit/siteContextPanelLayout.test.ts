@@ -202,8 +202,7 @@ function makeLayoutEditor(): StubEditor {
     getShape: vi.fn((id: string) => panels.get(id) ?? frames.get(id)),
     getSelectedShapeIds: vi.fn(() => ['shape:panel:chat']),
     getSortedChildIdsForParent: vi.fn((parentId: string) =>
-      [...panels.values()].filter((p) => p.parentId === parentId).map((p) => p.id),
-    ),
+      [...panels.values()].filter((p) => p.parentId === parentId).map((p) => p.id)),
     getShapePageBounds: vi.fn((id: string) => {
       const shape = panels.get(id) ?? frames.get(id);
       if (!shape) return undefined;
@@ -249,8 +248,7 @@ describe('computePanelPlacementInSiteContext', () => {
       editor as never,
       { siteId: 'site-abc', frameId, label: 'Site' },
       size,
-      { panelId: 'project-brief' },
-    );
+      { panelId: 'project-brief' });
 
     const existing = editor.getShapePageBounds('shape:panel:chat');
     expect(existing).toBeDefined();

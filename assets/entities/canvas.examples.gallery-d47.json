@@ -1,0 +1,53 @@
+{
+  "entity_id": "canvas.examples.gallery-d47",
+  "entity_type": "feature",
+  "parent_id": "canvas.examples",
+  "name": " embed example gallery",
+  "description": "Ten self-contained gallery examples (01-career-homepage through 10-locale-rtl) with Playwright e2e, mock static adapters, and published-entry-point import guard.",
+  "version": "0.1.0",
+  "status": "stable",
+  "tags": [
+    "examples",
+    "gallery",
+    "embed",
+    "e2e",
+    "interop",
+    ""
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.gallery-d47::feature",
+    "source_files": [
+      "examples/01-career-homepage/index.html",
+      "examples/02-job-board-inline/index.html",
+      "examples/03-multi-surface-dashboard/index.html",
+      "examples/04-zero-js-marketing/index.html",
+      "examples/05-bounded-demo-kiosk/index.html",
+      "examples/06-react-host-deep/App.tsx",
+      "examples/07-iframe-cms/index.html",
+      "examples/08-agent-presents/index.html",
+      "examples/09-multi-agent-page/index.html",
+      "examples/10-locale-rtl/index.html",
+      "tests/e2e/gallery.spec.ts",
+      "scripts/check-gallery-imports.mjs"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": true
+  }
+}

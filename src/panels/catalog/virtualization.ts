@@ -1,14 +1,12 @@
 /**
- * D56 list virtualization (02 section 21, 06 P1 item 8): any catalog
+ * List virtualization (catalog spec section 21): any catalog
  * list/collection view windows above a declared item threshold. This
  * module owns that declared threshold and the pure windowing math; the
  * `agentable-virtual-list` element applies it with Lit `repeat` and
  * stable keys (the Lit performance rule). The 117-job moss fixture is
  * the reference load; the automated check asserts the rendered DOM node
  * count stays bounded for 117 rows.
- */
-
-/**
+ ***
  * The declared virtualization threshold. A list with more items than
  * this windows its rows; at or below it, every row renders (still via
  * `repeat` with stable keys). Hosts may override per element instance
@@ -53,8 +51,7 @@ export function shouldVirtualize(itemCount: number, threshold: number): boolean 
 export function maxWindowRowCount(
   viewportHeightPx: number,
   rowHeightPx: number,
-  overscanRows: number,
-): number {
+  overscanRows: number): number {
   if (rowHeightPx <= 0) {
     throw new Error(`maxWindowRowCount requires a positive row height, got ${rowHeightPx}`);
   }
@@ -102,8 +99,7 @@ function templateFieldName(templateValue: unknown): string | null {
   if (typeof templateValue !== 'string' || templateValue.length === 0) return null;
   const ROW_PREFIX = '$row.';
   const name = templateValue.startsWith(ROW_PREFIX)
-    ? templateValue.slice(ROW_PREFIX.length)
-    : templateValue;
+    ? templateValue.slice(ROW_PREFIX.length): templateValue;
   return name.length > 0 ? name : null;
 }
 
@@ -126,8 +122,7 @@ function primitiveText(value: unknown): string | null {
 export function extractListRows(
   data: unknown,
   rowTemplate: Record<string, unknown> | undefined,
-  rowKeyField: string | undefined,
-): VirtualListRow[] | null {
+  rowKeyField: string | undefined): VirtualListRow[] | null {
   if (!Array.isArray(data) || data.length === 0) return null;
   if (!data.every(isPlainRecord)) return null;
 

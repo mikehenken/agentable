@@ -42,8 +42,7 @@ export interface PanelRegistry {
 }
 
 export function createPanelRegistry(
-  definitions: Iterable<PanelDefinition>,
-): PanelRegistry {
+  definitions: Iterable<PanelDefinition>): PanelRegistry {
   // On id collision the later definition wins, matching how hosts
   // override entries today by spreading one loader map over another.
   const byId = new Map<string, PanelDefinition>();
@@ -74,8 +73,7 @@ const wrappedByLoaderMap = new WeakMap<
  * definition objects.
  */
 export function reactPanelDefinitions(
-  loaders: ReactPanelLoaderMap,
-): readonly PanelDefinition[] {
+  loaders: ReactPanelLoaderMap): readonly PanelDefinition[] {
   const cached = wrappedByLoaderMap.get(loaders);
   if (cached) return cached;
   const definitions = Object.freeze(
@@ -85,18 +83,13 @@ export function reactPanelDefinitions(
         id,
         meta: derivedMeta(id),
         loader: loader as ReactPanelLoader,
-      }),
-    ),
+      })),
   );
   wrappedByLoaderMap.set(loaders, definitions);
   return definitions;
 }
 
 function derivedMeta(id: string): PanelMeta {
-  const title = id
-    .split(/[-_]/)
-    .filter((part) => part.length > 0)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
+  const title = id.split(/[-_]/).filter((part) => part.length > 0).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
   return { title: title || 'Panel', schemaVersion: 1 };
 }

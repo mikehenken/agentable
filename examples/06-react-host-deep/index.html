@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>06 · React host deep · Archipelago Resorts</title>
+    <style>:root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      #root {
+        min-height: 100vh;
+      }.react-host-page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }.react-host-workspace {
+        display: grid;
+        grid-template-columns: minmax(240px, 280px) 1fr;
+        flex: 1;
+        min-height: 0;
+      }.react-host-tagline {
+        max-width: 440px;
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        color: #94a3b8;
+        text-align: right;
+      }
+      @media (max-width: 720px) {.react-host-workspace {
+          grid-template-columns: 1fr;
+        }.react-host-tagline {
+          display: none;
+        }
+        [data-panel-host] > div:first-child {
+          min-height: 40vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/gallery/06-react-host-deep.js"></script>
+    <script type="module">
+      window.__galleryExample = '06-react-host-deep';
+    </script>
+  </body>
+</html>

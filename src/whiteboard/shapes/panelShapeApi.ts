@@ -169,8 +169,7 @@ export function loadWhiteboardSnapshot(snapshot: unknown): boolean {
  */
 export function openPanelInCanvas(
   panelId: string,
-  options: OpenPanelOptions = {},
-): boolean {
+  options: OpenPanelOptions = {}): boolean {
   if (!editorRef) {
     pendingQueue.push({ panelId, options });
     return true;
@@ -221,8 +220,7 @@ function focusPanelShape(editor: Editor, shapeId: ReturnType<typeof createShapeI
       const dy = shapeCenterY - vpCenterY;
       editor.setCamera(
         { x: camera.x - dx * camera.z, y: camera.y - dy * camera.z, z: camera.z },
-        { animation: { duration: 350 } },
-      );
+        { animation: { duration: 350 } });
     }
     return;
   }
@@ -239,8 +237,7 @@ export function groupPanelsInCanvas(
     siteId?: string;
     agencyId?: string | null;
     siteLabel?: string;
-  } = {},
-): boolean {
+  } = {}): boolean {
   const editor = editorRef;
   if (!editor || panelIds.length === 0) return false;
   const scopedIds = filterSiteContextPanelIds(panelIds);
@@ -250,8 +247,7 @@ export function groupPanelsInCanvas(
 
 export function updatePanelProps(
   panelId: string,
-  patch: Record<string, unknown>,
-): boolean {
+  patch: Record<string, unknown>): boolean {
   const editor = editorRef;
   if (!editor) return false;
   const id = createShapeId(`panel:${panelId}`);
@@ -261,8 +257,7 @@ export function updatePanelProps(
   editor.updateShape({
     id,
     type: 'panel',
-    props: {
-      ...(existing.props as Record<string, unknown>),
+    props: {...(existing.props as Record<string, unknown>),
       data: { ...prev, ...patch },
     },
   });
@@ -276,8 +271,7 @@ export function updatePanelProps(
  */
 export function updatePanelChrome(
   panelId: string,
-  patch: PanelChromeOptions,
-): boolean {
+  patch: PanelChromeOptions): boolean {
   const editor = editorRef;
   if (!editor) return false;
   const existing = editor.getShape(createShapeId(`panel:${panelId}`));
@@ -310,8 +304,7 @@ function getPanelShapeBounds(editor: Editor): LayoutRect[] {
 function computePlacement(
   editor: Editor,
   panelId: string,
-  options: OpenPanelOptions,
-): { x: number; y: number; w: number; h: number } {
+  options: OpenPanelOptions): { x: number; y: number; w: number; h: number } {
   const snapGrid = options.snapGrid ?? DEFAULT_SNAP_GRID;
   const defaults = defaultSitePanelSize(panelId);
   const w = options.size?.w ?? defaults.w;
@@ -381,9 +374,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
     const place = computePlacement(editor, panelId, options);
     const contextRef =
       (options.panelProps?.contextRef as string | undefined) ?? getActiveContextRef() ?? undefined;
-    const baseData = {
-      ...(options.panelProps ?? {}),
-      ...(contextRef ? { contextRef } : {}),
+    const baseData = {...(options.panelProps ?? {}),...(contextRef ? { contextRef }: {}),
     };
     const panelData = options.chrome ? withPanelChrome(baseData, options.chrome) : baseData;
     editor.createShape({
@@ -423,8 +414,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
         type: 'panel',
         x: place.x,
         y: place.y,
-        props: {
-          ...(existing.props as Record<string, unknown>),
+        props: {...(existing.props as Record<string, unknown>),
           w: place.w,
           h: place.h,
           minimized: false,
@@ -436,8 +426,7 @@ function doOpenPanel(panelId: string, options: OpenPanelOptions): boolean {
       editor.updateShape({
         id,
         type: 'panel',
-        props: {
-          ...(existing.props as Record<string, unknown>),
+        props: {...(existing.props as Record<string, unknown>),
           minimized: false,
           data: mergedData,
         },

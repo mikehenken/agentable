@@ -23,9 +23,52 @@ import { fromRollup } from '@web/dev-server-rollup';
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import rollupReplace from '@rollup/plugin-replace';
 import rollupCommonjs from '@rollup/plugin-commonjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const replace = fromRollup(rollupReplace);
 const commonjs = fromRollup(rollupCommonjs);
+
+// `@` alias resolver for the dev server — mirrors `resolve.alias['@']` in
+// vite.config.ts / the vite.embed-*.config.ts files (`@` -> `src/`). Vite's
+// own alias never runs here; @web/test-runner uses its own dev server, so
+// any first-party module reached from a component test that imports via
+// `@/...` (e.g. src/engines/dom/components/DomRegionLayout.tsx importing
+// `@/components/ui/resizable`) needs this to resolve at all. No new
+// dependency: a minimal Rollup-shaped `resolveId` hook, adapted the same
+// way `commonjs`/`replace` above already are.
+const ALIAS_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'src');
+const TEST_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'tests/component');
+const ALIAS_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js'];
+
+function resolveAtAlias(source) {
+  if (source === 'react') {
+    return path.join(TEST_ROOT, 'react-shim.js');
+  }
+  if (source === 'react/jsx-runtime' || source === 'react/jsx-dev-runtime') {
+    return path.join(TEST_ROOT, 'react-jsx-runtime-shim.js');
+  }
+  if (source === 'react-dom/client') {
+    return path.join(TEST_ROOT, 'react-dom-client-shim.js');
+  }
+  if (!source.startsWith('@/')) return null;
+  const base = path.join(ALIAS_ROOT, source.slice(2));
+  const candidates = [
+    ...ALIAS_EXTENSIONS.map((ext) => `${base}${ext}`),
+    ...ALIAS_EXTENSIONS.map((ext) => path.join(base, `index${ext}`)),
+  ];
+  return candidates.find((candidate) => fs.existsSync(candidate)) ?? null;
+}
+
+const atAlias = fromRollup(function atAliasPlugin() {
+  return {
+    name: 'at-alias',
+    resolveId(source) {
+      return resolveAtAlias(source);
+    },
+  };
+});
 
 export default {
   // Serve from workspace root so workspace-hoisted node_modules (React,
@@ -65,6 +108,9 @@ export default {
   // test tree (and the Lit-element source they import) get compiled to
   // browser-runnable JS before the dev server serves them.
   plugins: [
+    // `@/...` alias, tried first so it wins before nodeResolve/commonjs
+    // ever see the bare specifier and fail to resolve it as a package.
+    atAlias(),
     // tsconfig: 'tsconfig.app.json' so esbuild picks up
     // `experimentalDecorators: true` — Lit's @customElement / @property
     // decorators fail to parse without it.
@@ -75,6 +121,8 @@ export default {
     // Limited to .js to avoid clobbering esbuild's TS handling.
     commonjs({
       include: [/node_modules/],
+      requireReturnsDefault: 'auto',
+      transformMixedEsModules: true,
     }),
     esbuildPlugin({
       ts: true,
@@ -92,13 +140,14 @@ export default {
     {
       name: 'css-stub',
       serve(context) {
-        if (context.path.endsWith('.css')) {
+        if (context.path.includes('.css')) {
           return { body: 'export default "";', type: 'js' };
         }
       },
     },
     replace({
       preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('development'),
       'import.meta.env.MODE': JSON.stringify('test'),
       'import.meta.env.NODE_ENV': JSON.stringify('test'),
       'import.meta.env.DEV': JSON.stringify(false),

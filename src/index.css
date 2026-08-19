@@ -13,8 +13,7 @@
    *     shadow tree and tokens would silently fall through to their inline
    *     `var(--token, #fallback)` defaults — losing tenant overrides.
    * Shadow-DOM correctness flagged by architect-reviewer 2026-04-25.
-   */
-  :root, :host {
+   */:root,:host {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -41,9 +40,7 @@
      * Override any of these on the host page (`agentable-canvas { ... }`)
      * or on `:root` to retheme the entire canvas. See EMBEDDING.md for a
      * full theming reference.
-     * ------------------------------------------------------------------ */
-
-    /* --- Brand --- *
+     * ------------------------------------------------------------------ ** --- Brand --- *
      *
      * Two forms per token: solid hex (legacy + non-Tailwind consumers) AND
      * HSL components (`H S% L%` triplet, no `hsl(...)` wrapper, NO commas).
@@ -131,8 +128,7 @@
 }
 
 /* Infinite-canvas pan: stop viewport rubber-band when gestures overshoot edges
-   (macOS / iOS / fullscreen). Scoped to the shell root only — no html/body. */
-.agentable-canvas-root {
+   (macOS / iOS / fullscreen). Scoped to the shell root only — no html/body. */.agentable-canvas-root {
   overscroll-behavior: none;
 }
 

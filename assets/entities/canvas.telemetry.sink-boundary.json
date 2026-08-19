@@ -1,0 +1,54 @@
+{
+  "entity_id": "canvas.telemetry.sink-boundary",
+  "entity_type": "feature",
+  "parent_id": "canvas.whiteboard.panel-shape",
+  "name": "Runtime telemetry sink boundary",
+  "description": "Host-supplied telemetry sink on createCanvasHost (host.telemetry.emit) for structured compose/HITL/tool/voice/cost runtime observability with frozen error codes per.",
+  "version": "0.2.0",
+  "status": "stable",
+  "tags": [
+    "telemetry",
+    "observability",
+    "host",
+    "compose",
+    "hitl",
+    "tool",
+    "voice",
+    "cost"
+  ],
+  "maintainers": [],
+  "visibility": "internal",
+  "metadata": {
+    "lrn": "lrn::en:platform:agentable-canvas.feature.telemetry-sink-boundary::feature",
+    "source_files": [
+      "src/telemetry/types.ts",
+      "src/telemetry/frozenErrorCodes.ts",
+      "src/telemetry/extractToolErrorCodes.ts",
+      "src/telemetry/hostTelemetry.ts",
+      "src/telemetry/emit.ts",
+      "src/telemetry/budgetBridge.ts",
+      "src/telemetry/voiceBridge.ts",
+      "src/panels/host.ts",
+      "src/agents/toolExecutor.ts",
+      "src/agents/runtime.ts",
+      "src/panels/panelToolRuntime.ts"
+    ]
+  },
+  "routes": [],
+  "links": [],
+  "artifacts": [],
+  "assets": {
+    "screenshots": [],
+    "videos": [],
+    "documentation": [],
+    "icon_url": null
+  },
+  "pricing": null,
+  "permissions_required": [],
+  "auth_methods": [],
+  "discovery_flags": {
+    "is_deprecated": false,
+    "is_experimental": false,
+    "highlight_in_search": false
+  }
+}

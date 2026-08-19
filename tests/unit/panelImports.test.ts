@@ -121,8 +121,7 @@ describe('prefetchAllPanelsIdle', () => {
   });
 
   it('fires each loader in the registry exactly once when the idle window elapses', async () => {
-    const origRic = (globalThis as { requestIdleCallback?: unknown })
-      .requestIdleCallback;
+    const origRic = (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback;
     delete (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback;
 
     vi.useFakeTimers();
@@ -147,8 +146,7 @@ describe('prefetchAllPanelsIdle', () => {
   });
 
   it('cancel() actually cancels — loaders never fire if cancel runs before the window elapses', () => {
-    const origRic = (globalThis as { requestIdleCallback?: unknown })
-      .requestIdleCallback;
+    const origRic = (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback;
     delete (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback;
 
     vi.useFakeTimers();
@@ -175,10 +173,8 @@ describe('prefetchAllPanelsIdle', () => {
       return 42;
     });
     const cicSpy = vi.fn();
-    const origRic = (globalThis as { requestIdleCallback?: unknown })
-      .requestIdleCallback;
-    const origCic = (globalThis as { cancelIdleCallback?: unknown })
-      .cancelIdleCallback;
+    const origRic = (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback;
+    const origCic = (globalThis as { cancelIdleCallback?: unknown }).cancelIdleCallback;
     (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback =
       ricSpy;
     (globalThis as { cancelIdleCallback?: unknown }).cancelIdleCallback =
@@ -194,15 +190,13 @@ describe('prefetchAllPanelsIdle', () => {
         (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback =
           origRic;
       } else {
-        delete (globalThis as { requestIdleCallback?: unknown })
-          .requestIdleCallback;
+        delete (globalThis as { requestIdleCallback?: unknown }).requestIdleCallback;
       }
       if (origCic) {
         (globalThis as { cancelIdleCallback?: unknown }).cancelIdleCallback =
           origCic;
       } else {
-        delete (globalThis as { cancelIdleCallback?: unknown })
-          .cancelIdleCallback;
+        delete (globalThis as { cancelIdleCallback?: unknown }).cancelIdleCallback;
       }
     }
   });

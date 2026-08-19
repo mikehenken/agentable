@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support inbox quickstart · Northwind Support</title>
+    <link rel="stylesheet" href="/embed/agentable-panel.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+      }.page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 3rem;
+      }
+      h1 {
+        margin: 0 0 0.5rem;
+      }.lede {
+        color: #475569;
+        margin: 0 0 2rem;
+      }.panel-region {
+        min-height: 520px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+      agentable-panel {
+        display: block;
+        min-height: 520px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>Northwind support inbox</h1>
+      <p class="lede">
+         adopter tutorial: one <code>&lt;agentable-panel&gt;</code> for the
+        <strong>inbox</strong> panel, loaded from a published-pack config-url on mock fixtures only.
+      </p>
+      <div class="panel-region">
+        <agentable-panel
+          panel="inbox"
+          config-url="/examples/shared/northwind-support-config.json"
+          primary-color="#2563EB"
+          data-skip-react-mount
+        ></agentable-panel>
+      </div>
+    </div>
+    <script type="module" src="/embed/agentable-panel.js"></script>
+    <script type="module">
+      window.__supportInboxQuickstart = 'support-inbox-quickstart';
+      customElements.whenDefined('agentable-panel').then( => {
+        window.__supportInboxReady = { example: 'support-inbox-quickstart', ok: true };
+      });
+    </script>
+  </body>
+</html>

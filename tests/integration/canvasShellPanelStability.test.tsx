@@ -80,8 +80,7 @@ describe('<CanvasShell panels=...> reference stability', () => {
 
     // No "panels prop reference changed" error on stable references.
     const warnings = consoleErrorSpy.mock.calls.filter((args) =>
-      String(args[0] ?? '').includes('`panels` prop reference changed'),
-    );
+      String(args[0] ?? '').includes('`panels` prop reference changed'));
     expect(warnings).toHaveLength(0);
   });
 
@@ -112,8 +111,7 @@ describe('<CanvasShell panels=...> reference stability', () => {
     fireEvent.click(getByTestId('rerender'));
 
     const warnings = consoleErrorSpy.mock.calls.filter((args) =>
-      String(args[0] ?? '').includes('`panels` prop reference changed'),
-    );
+      String(args[0] ?? '').includes('`panels` prop reference changed'));
     expect(warnings.length).toBeGreaterThanOrEqual(1);
   });
 });

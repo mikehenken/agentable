@@ -28,8 +28,7 @@ const lazyCache = new WeakMap<
 
 export function useLazyPanel(
   registry: WhiteboardPanelRegistry,
-  panelId: string,
-): LazyExoticComponent<ComponentType<WhiteboardPanelProps>> | null {
+  panelId: string): LazyExoticComponent<ComponentType<WhiteboardPanelProps>> | null {
   return useMemo(() => {
     const loader = registry[panelId];
     if (!loader) return null;
