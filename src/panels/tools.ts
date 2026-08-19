@@ -94,7 +94,18 @@ export const PANEL_TOOL_COST_CLASS: Record<PanelToolName, ToolCostClass> = {
   run_panel_action: 'cheap',
 };
 
-const registrations: (readonly ToolDefinition[])[] = [];
+/** Vite may load `panels/tools` twice (alias + relative); share one registry. */
+const HOST_ACTION_REGISTRATIONS_KEY = '__agentable_host_action_registrations__';
+
+function hostActionRegistrations(): (readonly ToolDefinition[])[] {
+  const globalRecord = globalThis as typeof globalThis & {
+    [HOST_ACTION_REGISTRATIONS_KEY]?: (readonly ToolDefinition[])[];
+  };
+  if (globalRecord[HOST_ACTION_REGISTRATIONS_KEY] === undefined) {
+    globalRecord[HOST_ACTION_REGISTRATIONS_KEY] = [];
+  }
+  return globalRecord[HOST_ACTION_REGISTRATIONS_KEY];
+}
 
 /**
  * Register host-supplied tools. Returns the matching unregister function;
@@ -102,6 +113,7 @@ const registrations: (readonly ToolDefinition[])[] = [];
  * outlive the host that contributed them.
  */
 export function registerHostActions(actions: readonly ToolDefinition[]): () => void {
+  const registrations = hostActionRegistrations();
   const registration = Object.freeze([...actions]);
   registrations.push(registration);
   return () => {
@@ -117,7 +129,7 @@ export function registerHostActions(actions: readonly ToolDefinition[]): () => v
  * name-keyed merge lets the most recent registration win.
  */
 export function getHostActions(): readonly ToolDefinition[] {
-  return registrations.flat();
+  return hostActionRegistrations().flat();
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

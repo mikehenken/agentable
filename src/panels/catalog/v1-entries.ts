@@ -1,6 +1,19 @@
 import { z } from 'zod';
 import type { CatalogEntry } from '../types';
 import * as Components from './components';
+import { DocumentView } from '../document/DocumentView';
+
+const fieldDefSchema = z.object({
+  bind: z.string().optional(),
+  type: z.string().optional(),
+  label: z.string().optional(),
+  placeholder: z.string().optional(),
+  rowKey: z.string().optional(),
+  defaultItem: z.record(z.string(), z.unknown()).optional(),
+  minItems: z.number().int().nonnegative().optional(),
+  maxItems: z.number().int().positive().optional(),
+  fields: z.lazy(() => z.array(fieldDefSchema)).optional(),
+}).catchall(z.unknown());
 
 export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
   [
@@ -32,12 +45,7 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
       name: 'field-form',
       props: z.object({
         bind: z.string(),
-        fields: z.array(z.object({
-          bind: z.string().optional(),
-          type: z.string().optional(),
-          label: z.string().optional(),
-          placeholder: z.string().optional(),
-        }).catchall(z.unknown())), // tightened from z.any()
+        fields: z.array(fieldDefSchema),
       }),
       component: Components.FieldForm,
       agentHint: 'Typed fields bound to a source',
@@ -183,9 +191,10 @@ export const v1CatalogEntries: ReadonlyMap<string, CatalogEntry> = new Map([
       name: 'document-view',
       props: z.object({
         bind: z.string(),
+        virtualizeThreshold: z.number().int().positive().optional(),
       }),
-      component: Components.DocumentView,
-      agentHint: 'Multi-block document editor bound to a document source',
+      component: DocumentView,
+      agentHint: 'Portable block-model document renderer with D53 pre-save undo and D56 virtualization',
     },
   ],
 ]);
