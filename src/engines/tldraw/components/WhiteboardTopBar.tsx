@@ -72,8 +72,8 @@ export function WhiteboardTopBar({
   const showHeaderPersona = persona.visual?.showInHeader === true && brandLogo === undefined;
   const headerPersonaType = persona.visual?.type ?? 'halo';
   const hostChrome = useWhiteboardHostChrome();
-  const isCanvasExpanded = hostChrome?.().isCanvasExpanded ?? false;
-  const useCanvasExpand = hostChrome?.().chrome.fullscreenMode === 'canvas-expand';
+  const isCanvasExpanded = hostChrome?.isCanvasExpanded ?? false;
+  const useCanvasExpand = hostChrome?.chrome.fullscreenMode === 'canvas-expand';
   const isFullscreen = useCanvasExpand ? isCanvasExpanded : useDocumentFullscreenState();
   const { state: personaState, level: personaLevel } = useAiPersonaState({
     preferAsleepWhenIdle: true,

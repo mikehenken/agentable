@@ -25,5 +25,5 @@ export function editableTargetShouldCaptureKey(target: EventTarget | null): bool
  * host page input) takes focus so tool shortcuts do not intercept keystrokes.
  */
 export function blurCanvasEditorForExternalComposer(): void {
-  getEditor?.().blur();
+  getEditor()?.blur();
 }

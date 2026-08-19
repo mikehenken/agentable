@@ -571,12 +571,12 @@ function WhiteboardShellInner({
       const sized = defaultWhiteboardPanelSize(editor, panelId);
       const viewport = getFreeCanvasViewportConfig(editor);
       const placed = computeBesideChatPlacement(
-        editor,
+            editor,
         panelId,
         sized.w,
         sized.h,
         viewport,
-        snapGrid,
+  snapGrid,
       );
       openOptions = {...openOptions,
         position: placed,

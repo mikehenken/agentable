@@ -17,7 +17,7 @@ export function EmbedPanelApprovalLayer({
 }: EmbedPanelApprovalLayerProps): ReactElement | null {
   const controller = getActiveApprovalController();
   const [pending, setPending] = useState<readonly PendingApprovalRequest[]>(() =>
-    controller?.().getPendingForPanel(panelId) ?? []);
+    controller?.getPendingForPanel(panelId) ?? []);
 
   useEffect(() => {
     if (controller === null) {

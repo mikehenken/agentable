@@ -28,7 +28,7 @@ export function useEmbedReactPanelData(
   panelId: string,
   panelData: Record<string, unknown> | undefined): Record<string, unknown> {
   const ctx = useOptionalPanelEmbedHost();
-  const host = ctx?.().host ?? useWhiteboardPanelHost;
+  const host = ctx?.host ?? useWhiteboardPanelHost();
   const lifecycle = host?.data.lifecycle ?? null;
   const { panelData: tenantPanelData } = useCanvasConfig();
 
