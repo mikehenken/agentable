@@ -60,7 +60,7 @@ interface StubEditor {
 
 class FakeEngine implements EngineHandle {
   openRequests: string[] = [];
-  readonly capabilities: EngineCapabilities = makeCapabilities;
+  readonly capabilities: EngineCapabilities = makeCapabilities();
   private ready = true;
   private listeners: Record<EngineLifecycleEvent, Set<() => void>> = {
     ready: new Set(),

@@ -26,7 +26,7 @@ function collectFiles(dir: string, acc: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     const full = path.join(dir, entry);
     const stats = statSync(full);
-    if (stats.isDirectory) {
+    if (stats.isDirectory()) {
       if (entry === 'node_modules' || entry === 'dist') continue;
       collectFiles(full, acc);
       continue;

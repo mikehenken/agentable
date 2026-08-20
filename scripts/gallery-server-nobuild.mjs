@@ -35,7 +35,7 @@ const port = Number(process.env.E2E_EMBED_PORT ?? 5199);
 async function fileExists(filePath) {
   try {
     const info = await stat(filePath);
-    return info.isFile;
+    return info.isFile();
   } catch {
     return false;
   }

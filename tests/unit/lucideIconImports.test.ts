@@ -29,7 +29,7 @@ function listTsx(dir: string): string[] {
   const files: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
-    if (entry.isDirectory && entry.name !== 'node_modules') {
+    if (entry.isDirectory() && entry.name !== 'node_modules') {
       files.push(...listTsx(full));
     } else if (/\.tsx$/.test(entry.name) && !/\.(test|spec)\.tsx$/.test(entry.name)) {
       files.push(full);

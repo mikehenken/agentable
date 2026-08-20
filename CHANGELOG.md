@@ -5,6 +5,39 @@ All notable changes to `agentable-canvas` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-08-19
+
+### Changed
+
+**BREAKING** — career-pack tenant ids are now generic fictional brands. Hosts
+passing `tenant="sandals"` or `tenant="moss"` must switch to `"archipelago"` and
+`"helios"`. The tenant modules, fixtures, prompts, and exported constants were
+renamed to match.
+
+### Fixed
+
+- **Panel and whiteboard embed surfaces render again.** `createCanvasHost` had
+  lost four of its ten returned members (`agents`, `telemetry`, `approvals`,
+  `undo`). `<agentable-panel>` and `<agentable-whiteboard>` mounted an empty
+  shadow root with no console error, because `host.approvals.subscribe` threw
+  inside an effect and React unmounted the tree.
+- Restored the panel builder's `document-view` block, the i18n chrome catalog
+  keys, and the v1 catalog component table.
+- Test fixtures no longer read from sibling repositories, so the suite runs for
+  external contributors.
+
+### Added
+
+- The examples gallery publishes to Cloudflare Pages on pushes to `main` and
+  after a successful release. `npm run build:examples-site` assembles
+  `dist/site` locally in the same layout.
+
+### Removed
+
+- Internal orchestration material: review and status docs, 67 QA driver
+  scripts, the unreferenced orchestration review UI, and scripts that embedded
+  absolute local filesystem paths.
+
 ## [0.2.0] — 2026-07-13
 
 ### Added

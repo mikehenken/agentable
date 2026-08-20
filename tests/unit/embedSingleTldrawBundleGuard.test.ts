@@ -26,7 +26,7 @@ function listHtmlFiles(dir: string): string[] {
   const files: string[] = [];
   for (const entry of entries) {
     const fullPath = join(dir, entry.name);
-    if (entry.isDirectory) {
+    if (entry.isDirectory()) {
       files.push(...listHtmlFiles(fullPath));
     } else if (entry.name.endsWith('.html')) {
       files.push(fullPath);
@@ -54,11 +54,11 @@ function collectHostHtmlPages(root: string): string[] {
 
   const websiteEmbed = join(root, '..', 'archipelago', 'website', 'public', 'embed');
   try {
-    if (statSync(websiteEmbed).isDirectory) {
+    if (statSync(websiteEmbed).isDirectory()) {
       pages.push(...listHtmlFiles(websiteEmbed));
     }
   } catch {
-     website / checkout / optional in CI
+    // website checkout optional in CI
   }
 
   return pages.sort();

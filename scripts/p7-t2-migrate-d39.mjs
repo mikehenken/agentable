@@ -105,7 +105,7 @@ const REPLACEMENTS = [
 function walk(dir, files = []) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
-    if (statSync(full).isDirectory) {
+    if (statSync(full).isDirectory()) {
       if (name === 'canvas' || name === 'react-canvas') continue;
       walk(full, files);
     } else if (/\.(ts|tsx|mjs|json)$/.test(name)) {

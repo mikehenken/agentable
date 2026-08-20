@@ -110,7 +110,7 @@ describe('skill artifact gate ', () => {
     function walk(dir: string): void {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory) walk(full);
+        if (entry.isDirectory()) walk(full);
         else if (entry.name.endsWith('.md')) referencePaths.push(full);
       }
     }

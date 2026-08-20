@@ -132,7 +132,7 @@ afterEach(() => {
   while (cleanups.length > 0) {
     cleanups.pop?.();
   }
-  expect(getHostActions).toEqual([]);
+  expect(getHostActions()).toEqual([]);
 });
 
 describe('createPanelToolsFromRegistry', () => {
@@ -163,7 +163,7 @@ describe('createPanelToolsFromRegistry', () => {
     expect(result.ok).toBe(true);
 
     host.dispose();
-    expect(getHostActions).toEqual([]);
+    expect(getHostActions()).toEqual([]);
   });
 });
 

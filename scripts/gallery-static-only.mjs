@@ -18,7 +18,7 @@ const MIME = {
 
 async function fileExists(filePath) {
   try {
-    return (await stat(filePath)).isFile;
+    return (await stat(filePath)).isFile();
   } catch {
     return false;
   }

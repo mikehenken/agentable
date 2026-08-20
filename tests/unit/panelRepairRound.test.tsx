@@ -129,7 +129,7 @@ afterEach(() => {
   while (cleanups.length > 0) {
     cleanups.pop?.();
   }
-  expect(getHostActions).toEqual([]);
+  expect(getHostActions()).toEqual([]);
 });
 
 describe('compose_panel repair round', () => {

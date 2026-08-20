@@ -44,7 +44,7 @@ function listScanTargets(): string[] {
       const stat = readdirSync(full, { withFileTypes: true });
       for (const child of stat) {
         const childPath = join(full, child.name);
-        if (child.isDirectory) {
+        if (child.isDirectory()) {
           files.push(...listDirRecursive(childPath));
         } else if (/\.(tsx?|css)$/.test(child.name)) {
           files.push(childPath);
@@ -63,7 +63,7 @@ function listDirRecursive(dir: string): string[] {
   const out: string[] = [];
   for (const child of readdirSync(dir, { withFileTypes: true })) {
     const childPath = join(dir, child.name);
-    if (child.isDirectory) {
+    if (child.isDirectory()) {
       out.push(...listDirRecursive(childPath));
     } else if (/\.(tsx?|css)$/.test(child.name)) {
       out.push(childPath);

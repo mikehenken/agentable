@@ -114,10 +114,10 @@ describe('chart catalog components (smoke)', () => {
 });
 
 describe('series colors', () => {
-   Regression: CHART_COLORS / once / referenced --/ chart-N / custom / properties / that
-   no / stylesheet / defined, so / every / series / resolved / to / the / same / fallback
-   color in the / browser. Each / palette / entry / must / carry / a / literal / color / that
-   renders / without / any / host / CSS, and / entries / must / stay / distinct.
+  // Regression: CHART_COLORS once referenced --chart-N custom properties that
+  // no stylesheet defined, so every series resolved to the same fallback
+  // color in the browser. Each palette entry must carry a literal color that
+  // renders without any host CSS, and entries must stay distinct.
   it('gives every palette slot a self-contained literal fallback, all distinct', () => {
     const fallbacks = CHART_COLORS.map((entry) => {
       expect(entry).toMatch(/^var\(--chart-[1-5], #[0-9a-f]{6}\)$/);

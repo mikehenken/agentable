@@ -26,7 +26,7 @@ export function createDomConformanceHarness(): EngineConformanceHarness {
     name: 'dom',
     layoutModel: 'region',
     createContext(): EngineConformanceContext {
-      const engine: DomEngineHandle = createDomEngine;
+      const engine: DomEngineHandle = createDomEngine();
 
       return {
         engine,
@@ -47,8 +47,8 @@ export function createDomConformanceHarness(): EngineConformanceHarness {
           engine.setSidebarDrawerOpen(!engine.getDomLayout().sidebarDrawerOpen);
         },
         emitCameraMotion: () => {
-           camera: none: no / camera / to / move, kept as a / no-op / so
-           // shared tests can call it unconditionally.
+          // camera: none - no camera to move, kept as a no-op so the
+          // shared tests can call it unconditionally.
         },
         emitSelectionChange: (panelId) => {
           engine.placePanel(panelId, { x: 0, y: 0, w: 1, h: 1 }, { focus: true });

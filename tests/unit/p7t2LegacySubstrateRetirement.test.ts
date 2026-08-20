@@ -22,7 +22,7 @@ describe(' legacy substrate retirement ', () => {
 
   it('ships exactly one engine implementation under src/engines/', () => {
     const enginesDir = join(srcDir(), 'engines');
-    const entries = readdirSync(enginesDir, { withFileTypes: true }).filter((e) => e.isDirectory).map((e) => e.name);
+    const entries = readdirSync(enginesDir, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name);
     expect(entries).toEqual(['tldraw']);
   });
 

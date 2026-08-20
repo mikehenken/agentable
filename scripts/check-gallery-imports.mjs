@@ -19,7 +19,7 @@ function walk(dir) {
   for (const entry of readdirSync(dir)) {
     const full = path.join(dir, entry);
     const stat = statSync(full);
-    if (stat.isDirectory) {
+    if (stat.isDirectory()) {
       files.push(...walk(full));
     } else if (SOURCE_EXT.has(path.extname(entry))) {
       files.push(full);

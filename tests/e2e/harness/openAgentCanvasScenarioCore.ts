@@ -76,7 +76,7 @@ function createStubFn<T extends (...args: never[]) => unknown>(impl: T): T {
 }
 
 class FakeEngine implements EngineHandle {
-  readonly capabilities: EngineCapabilities = makeCapabilities;
+  readonly capabilities: EngineCapabilities = makeCapabilities();
   private ready = true;
   private listeners: Record<EngineLifecycleEvent, Set<() => void>> = {
     ready: new Set(),

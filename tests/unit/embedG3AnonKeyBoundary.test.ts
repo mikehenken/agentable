@@ -31,7 +31,7 @@ function listModules(dir: string): string[] {
   const files: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
-    if (entry.isDirectory) {
+    if (entry.isDirectory()) {
       files.push(...listModules(full));
     } else if (/\.(ts|tsx)$/.test(entry.name)) {
       files.push(full);
