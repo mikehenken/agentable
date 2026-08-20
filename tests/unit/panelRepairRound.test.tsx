@@ -29,7 +29,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -102,7 +102,7 @@ function buildRuntime(): {
     panels: [SEO_SPEC_PANEL],
   });
   cleanups.push(() => host.dispose);
-  const registry = createPanelRegistry(host.panels.definitions);
+  const registry = createPanelRegistry(host.panels.definitions());
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },
     registry,
@@ -127,14 +127,14 @@ const cleanups: Array<() => void> = [];
 
 afterEach(() => {
   while (cleanups.length > 0) {
-    cleanups.pop?.();
+    cleanups.pop()?.();
   }
   expect(getHostActions()).toEqual([]);
 });
 
 describe('compose_panel repair round', () => {
   it('returns repair-eligible structured errors with hints on first validation failure', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
     const result = await composePanel.handler({ spec: invalidSeoSpec });
@@ -156,7 +156,7 @@ describe('compose_panel repair round', () => {
   });
 
   it('returns terminal failure without repair eligibility on the second compose attempt', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
     await composePanel.handler({ spec: invalidSeoSpec });
@@ -170,7 +170,7 @@ describe('compose_panel repair round', () => {
   });
 
   it('accepts a repaired spec after an initial repair-eligible failure', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
     const first = await composePanel.handler({ spec: invalidSeoSpec });
@@ -193,7 +193,7 @@ describe('compose_panel repair round', () => {
 
 describe('patch_panel repair round', () => {
   it('returns repair-eligible errors when a patch leaves the spec invalid', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
     const patchPanel = toolByName(tools, 'patch_panel');
 
@@ -215,7 +215,7 @@ describe('patch_panel repair round', () => {
   });
 
   it('applies a repair patch and leaves a valid composed spec on the instance', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
     const patchPanel = toolByName(tools, 'patch_panel');
 
@@ -240,7 +240,7 @@ describe('patch_panel repair round', () => {
   });
 
   it('returns terminal patch failure after a second invalid patch', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
     const patchPanel = toolByName(tools, 'patch_panel');
 
@@ -271,7 +271,7 @@ describe('compose repair render path', () => {
       },
     };
 
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
     await composePanel.handler({ spec: invalidSeoSpec });

@@ -54,7 +54,7 @@ function rectsOverlap(
 
 describe('autoArrangeWhiteboardPanels', () => {
   it('repositions chat left and other panels without overlapping origin', () => {
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     const chatId = createShapeId('panel:chat');
     const appsId = createShapeId('panel:applications');
     shapes.set(String(chatId), {
@@ -84,7 +84,7 @@ describe('autoArrangeWhiteboardPanels', () => {
   });
 
   it('starts further right when Menu is expanded', () => {
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     const chatId = createShapeId('panel:chat');
     shapes.set(String(chatId), {
       id: String(chatId),
@@ -156,7 +156,7 @@ describe('autoArrangeWhiteboardPanels', () => {
 describe('resetWhiteboardLayout', () => {
   it('closes panels, resets camera, and reopens chat at default placement', () => {
     __resetPanelShapeApiForTests__();
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     bindEditor(editor as never);
 
     openPanelInCanvas('applications', {
@@ -182,7 +182,7 @@ describe('resetWhiteboardLayout', () => {
 
   it('deletes drawn content by default (a reset that keeps old sketches is not a reset)', () => {
     __resetPanelShapeApiForTests__();
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     bindEditor(editor as never);
 
     const drawingId = String(createShapeId('old-drawing'));
@@ -208,7 +208,7 @@ describe('resetWhiteboardLayout', () => {
 
   it('keeps drawn content when clearContent is false', () => {
     __resetPanelShapeApiForTests__();
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     bindEditor(editor as never);
 
     const drawingId = String(createShapeId('kept-drawing'));

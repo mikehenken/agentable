@@ -27,7 +27,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -134,7 +134,7 @@ describe(' multi-agent defaults ', () => {
 
   afterEach(() => {
     while (cleanups.length > 0) {
-      cleanups.pop?.();
+      cleanups.pop()?.();
     }
   });
 

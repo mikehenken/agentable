@@ -44,7 +44,7 @@ class RecordingEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return true;
   }
 
@@ -81,7 +81,7 @@ describe('unified panel targeting — same open_panel call', () => {
 
   afterEach(() => {
     while (cleanups.length > 0) {
-      cleanups.pop?.();
+      cleanups.pop()?.();
     }
   });
 

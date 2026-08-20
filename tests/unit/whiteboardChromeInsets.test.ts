@@ -90,7 +90,7 @@ describe('whiteboard chrome insets — expanded vs collapsed Menu', () => {
 
   it('getFreeCanvasViewportConfig left edge clears expanded Menu', () => {
     useNavChromeStore.setState({ navSidebarExpanded: true });
-    const { editor } = makeEditor;
+    const { editor } = makeEditor();
     const free = getFreeCanvasViewportConfig(editor as never);
     expect(free.left).toBe(234);
     expect(free.top).toBe(24);
@@ -98,7 +98,7 @@ describe('whiteboard chrome insets — expanded vs collapsed Menu', () => {
 
   it('openPanelInCanvas places new panels beside expanded Menu', () => {
     useNavChromeStore.setState({ navSidebarExpanded: true });
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     bindEditor(editor as never);
 
     openPanelInCanvas('chat', {
@@ -117,7 +117,7 @@ describe('whiteboard chrome insets — expanded vs collapsed Menu', () => {
 
   it('openPanelInCanvas uses narrower inset when Menu is collapsed', () => {
     useNavChromeStore.setState({ navSidebarExpanded: false });
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     bindEditor(editor as never);
 
     openPanelInCanvas('applications', {
@@ -135,7 +135,7 @@ describe('whiteboard chrome insets — expanded vs collapsed Menu', () => {
   });
 
   it('autoArrangeWhiteboardPanels origin respects expanded Menu override', () => {
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     const chatId = createShapeId('panel:chat');
     shapes.set(String(chatId), {
       id: String(chatId),
@@ -157,7 +157,7 @@ describe('whiteboard chrome insets — expanded vs collapsed Menu', () => {
 
   it('openPanelInCanvas places sequential career panels without overlap beside expanded Menu', () => {
     useNavChromeStore.setState({ navSidebarExpanded: true });
-    const { editor, shapes } = makeEditor;
+    const { editor, shapes } = makeEditor();
     bindEditor(editor as never);
 
     const panelIds = [

@@ -35,7 +35,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -99,7 +99,7 @@ function buildLiveWorkspaceBridge(options?: {
     engine,
     panels: [SEO_SPEC_PANEL],
   });
-  const registry = createPanelRegistry(host.panels.definitions);
+  const registry = createPanelRegistry(host.panels.definitions());
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },
     registry,
@@ -160,7 +160,7 @@ const cleanups: Array<() => void> = [];
 afterEach(() => {
   resetTestTokenCounterForTests();
   while (cleanups.length > 0) {
-    cleanups.pop?.();
+    cleanups.pop()?.();
   }
 });
 
@@ -189,7 +189,7 @@ describe('canvas MCP scopes', () => {
 
 describe('canvas MCP client fixture', () => {
   it('lists panels from a live workspace bridge', async () => {
-    const { bridge, cleanup } = buildLiveWorkspaceBridge;
+    const { bridge, cleanup } = buildLiveWorkspaceBridge();
     cleanups.push(cleanup);
 
     const fixture = await createCanvasMcpFixture({ bridge });
@@ -204,7 +204,7 @@ describe('canvas MCP client fixture', () => {
   });
 
   it('opens and fills a panel under full act scope', async () => {
-    const { bridge, engine, cleanup } = buildLiveWorkspaceBridge;
+    const { bridge, engine, cleanup } = buildLiveWorkspaceBridge();
     cleanups.push(cleanup);
 
     const fixture = await createCanvasMcpFixture({
@@ -229,7 +229,7 @@ describe('canvas MCP client fixture', () => {
   });
 
   it('denies open_panel when token lacks workspace:act scope', async () => {
-    const { bridge, cleanup } = buildLiveWorkspaceBridge;
+    const { bridge, cleanup } = buildLiveWorkspaceBridge();
     cleanups.push(cleanup);
 
     const authStore = createInMemoryCanvasMcpAuthStore();
@@ -275,7 +275,7 @@ describe('canvas MCP client fixture', () => {
   });
 
   it('returns workspace digest for digest-scoped tokens', async () => {
-    const { bridge, cleanup } = buildLiveWorkspaceBridge;
+    const { bridge, cleanup } = buildLiveWorkspaceBridge();
     cleanups.push(cleanup);
 
     const fixture = await createCanvasMcpFixture({

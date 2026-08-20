@@ -23,7 +23,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -76,7 +76,7 @@ function buildRuntime(): {
     panels: [SEO_SPEC_PANEL],
   });
   cleanups.push(() => host.dispose);
-  const registry = createPanelRegistry(host.panels.definitions);
+  const registry = createPanelRegistry(host.panels.definitions());
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },
     registry,
@@ -99,14 +99,14 @@ const cleanups: Array<() => void> = [];
 
 afterEach(() => {
   while (cleanups.length > 0) {
-    cleanups.pop?.();
+    cleanups.pop()?.();
   }
   expect(getHostActions()).toEqual([]);
 });
 
 describe('describe_panel tool registration', () => {
   it('registers describe_panel as the seventh read-only tool', () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     cleanup();
     expect(tools.map((tool) => tool.declaration.name)).toEqual([...PANEL_TOOL_NAMES]);
     expect(PANEL_INTROSPECTION_TOOL_NAMES).toEqual(['describe_panel']);
@@ -116,7 +116,7 @@ describe('describe_panel tool registration', () => {
 
 describe('describe_panel handler', () => {
   it('describes a registered panel with metadata and curated examples', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const describePanel = toolByName(tools, 'describe_panel');
 
     const result = await describePanel.handler({ panelId: 'site-seo' });
@@ -141,7 +141,7 @@ describe('describe_panel handler', () => {
   });
 
   it('describes a catalog entry with props schema and curated examples', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const describePanel = toolByName(tools, 'describe_panel');
 
     const result = await describePanel.handler({ catalogEntry: 'field-form' });
@@ -163,7 +163,7 @@ describe('describe_panel handler', () => {
   });
 
   it('rejects missing target, unknown panel, unknown catalog, and both args', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const describePanel = toolByName(tools, 'describe_panel');
 
     expect(await describePanel.handler({})).toEqual({

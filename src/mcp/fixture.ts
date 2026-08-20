@@ -29,7 +29,7 @@ export interface CanvasMcpFixture {
 
 export async function createCanvasMcpFixture(
   options: CanvasMcpFixtureOptions): Promise<CanvasMcpFixture> {
-  const authStore = options.authStore ?? createInMemoryCanvasMcpAuthStore;
+  const authStore = options.authStore ?? createInMemoryCanvasMcpAuthStore();
   const accessToken =
     options.accessToken ??
     mintTestAccessToken(authStore, {

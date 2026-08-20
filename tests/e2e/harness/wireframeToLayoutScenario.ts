@@ -67,7 +67,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 

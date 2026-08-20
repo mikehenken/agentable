@@ -29,7 +29,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -101,9 +101,9 @@ function buildRuntime(options?: {
     engine,
     panels: [SEO_SPEC_PANEL],
   });
-  cleanups.push(() => host.dispose);
-  const registry = createPanelRegistry(host.panels.definitions);
-  const controller = options?.approvalController ?? createApprovalController;
+  cleanups.push(() => host.dispose());
+  const registry = createPanelRegistry(host.panels.definitions());
+  const controller = options?.approvalController ?? createApprovalController();
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },
     registry,
@@ -130,14 +130,14 @@ const cleanups: Array<() => void> = [];
 
 afterEach(() => {
   while (cleanups.length > 0) {
-    cleanups.pop?.();
+    cleanups.pop()?.();
   }
   expect(getHostActions()).toEqual([]);
 });
 
 describe('createPanelToolsFromRegistry', () => {
   it('emits all panel tools including read-only describe_panel with registry-derived ids', () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     cleanup();
     expect(tools.map((tool) => tool.declaration.name)).toEqual([...PANEL_TOOL_NAMES]);
     const openPanel = toolByName(tools, 'open_panel');
@@ -151,7 +151,7 @@ describe('createPanelToolsFromRegistry', () => {
       engine,
       panels: [SEO_SPEC_PANEL],
     });
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     const names = getHostActions().map((tool) => tool.declaration.name);
     expect(names).toEqual(expect.arrayContaining([...PANEL_TOOL_NAMES]));
@@ -169,7 +169,7 @@ describe('createPanelToolsFromRegistry', () => {
 
 describe('panel tool arg validation', () => {
   it('rejects open_panel without a string id', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const openPanel = toolByName(tools, 'open_panel');
     const result = await openPanel.handler({});
     cleanup();
@@ -177,7 +177,7 @@ describe('panel tool arg validation', () => {
   });
 
   it('rejects fill_panel without an object patch', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const fillPanel = toolByName(tools, 'fill_panel');
     const result = await fillPanel.handler({ id: 'site-seo', patch: 'nope' });
     cleanup();
@@ -185,7 +185,7 @@ describe('panel tool arg validation', () => {
   });
 
   it('rejects fill_panel for unknown panel ids and undeclared field paths', async () => {
-    const { tools, runtime, cleanup } = buildRuntime;
+    const { tools, runtime, cleanup } = buildRuntime();
     const fillPanel = toolByName(tools, 'fill_panel');
 
     const unknownPanel = await fillPanel.handler({
@@ -212,7 +212,7 @@ describe('panel tool arg validation', () => {
   });
 
   it('rejects patch_panel for registered (non-composed) instances', async () => {
-    const { tools, runtime, cleanup } = buildRuntime;
+    const { tools, runtime, cleanup } = buildRuntime();
     const patchPanel = toolByName(tools, 'patch_panel');
     const opened = await runtime.openPanel('site-seo');
     expect(opened.ok).toBe(true);
@@ -287,7 +287,7 @@ describe('fill_panel skip logic', () => {
   });
 
   it('routes fill_panel through the runtime dirty set', async () => {
-    const { tools, runtime, cleanup } = buildRuntime;
+    const { tools, runtime, cleanup } = buildRuntime();
     const fillPanel = toolByName(tools, 'fill_panel');
     const opened = await runtime.openPanel('site-seo');
     expect(opened.ok).toBe(true);
@@ -313,7 +313,7 @@ describe('fill_panel skip logic', () => {
 
 describe('list_panels grounding', () => {
   it('includes registry-derived fields, actions, and open instances', async () => {
-    const { tools, runtime, cleanup } = buildRuntime;
+    const { tools, runtime, cleanup } = buildRuntime();
     const listPanels = toolByName(tools, 'list_panels');
     await runtime.openPanel('site-seo', { entityId: 'page-1' });
 
@@ -330,7 +330,7 @@ describe('list_panels grounding', () => {
 
 describe('compose_panel validation', () => {
   it('forces agent origin and rejects invalid specs', async () => {
-    const { tools, cleanup } = buildRuntime;
+    const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
     const invalid = await composePanel.handler({ spec: { v: 1 } });

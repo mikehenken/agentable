@@ -37,7 +37,7 @@ class FakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -113,7 +113,7 @@ describe('operator multi-agent registration ', () => {
     resetOperatorRegistrationBridgeForTests();
     resetOperatorModeBridgeForTests();
     while (cleanups.length > 0) {
-      cleanups.pop?.();
+      cleanups.pop()?.();
     }
   });
 

@@ -184,7 +184,7 @@ describe('dirty field protection', () => {
   });
 
   it('exposes field marker sets for chrome tinting', async () => {
-    const { runtime } = buildRuntime;
+    const { runtime } = buildRuntime();
     const opened = await runtime.openPanel('site-seo');
     if (!opened.ok) return;
 

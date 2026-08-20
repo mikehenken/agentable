@@ -47,7 +47,7 @@ class EvalFakeEngine implements EngineHandle {
     change: new Set(),
   };
 
-  get isReady(): boolean {
+  isReady(): boolean {
     return this.ready;
   }
 
@@ -136,7 +136,7 @@ function createEvalRuntime(seed: number): { runtime: PanelToolRuntime; dispose: 
     panels: [EVAL_SEO_PANEL],
     adapter,
   });
-  const registry = createPanelRegistry(host.panels.definitions);
+  const registry = createPanelRegistry(host.panels.definitions());
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },
     registry,
