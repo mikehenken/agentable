@@ -102,7 +102,7 @@ describe('unified panel targeting — same open_panel call', () => {
         catalog: defaultCatalog,
       },
       registry);
-    cleanups.push(() => runtime.dispose);
+    cleanups.push(() => runtime.dispose());
 
     const tools = createPanelToolsFromRegistry(registry, runtime);
     const openPanel = toolByName(tools, 'open_panel');
@@ -199,7 +199,7 @@ describe('unified panel targeting — same open_panel call', () => {
         catalog: defaultCatalog,
       },
       registry);
-    cleanups.push(() => runtime.dispose);
+    cleanups.push(() => runtime.dispose());
 
     const tools = createPanelToolsFromRegistry(registry, runtime);
     const openPanel = toolByName(tools, 'open_panel');
@@ -239,7 +239,7 @@ describe('unified panel targeting — same open_panel call', () => {
         catalog: defaultCatalog,
       },
       registry);
-    cleanups.push(() => runtime.dispose);
+    cleanups.push(() => runtime.dispose());
 
     const tools = createPanelToolsFromRegistry(registry, runtime);
     const openPanel = toolByName(tools, 'open_panel');
@@ -277,7 +277,7 @@ describe('unified panel targeting — same open_panel call', () => {
         catalog: defaultCatalog,
       },
       registry);
-    cleanups.push(() => runtime.dispose);
+    cleanups.push(() => runtime.dispose());
 
     const tools = createPanelToolsFromRegistry(registry, runtime);
     const openPanel = toolByName(tools, 'open_panel');

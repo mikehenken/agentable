@@ -75,7 +75,7 @@ function buildRuntime(): {
     engine: new FakeEngine,
     panels: [SEO_SPEC_PANEL],
   });
-  cleanups.push(() => host.dispose);
+  cleanups.push(() => host.dispose());
   const registry = createPanelRegistry(host.panels.definitions());
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },

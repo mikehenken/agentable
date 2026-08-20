@@ -122,7 +122,7 @@ describe('telemetry event coverage', () => {
         events.push(event);
       },
     });
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     host.agents.register({
       id: 'editor',

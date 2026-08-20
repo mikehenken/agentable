@@ -103,7 +103,7 @@ describe(' telemetry sink boundary ', () => {
         events.push(event);
       },
     });
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     host.agents.register({
       id: 'editor',
@@ -217,7 +217,7 @@ describe(' telemetry sink boundary ', () => {
       engine,
       panels: [SEO_PANEL],
     });
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     expect(() => {
       host.telemetry.emit({
@@ -238,7 +238,7 @@ describe(' telemetry sink boundary ', () => {
       engine,
       panels: [SEO_PANEL],
     });
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
     const unregister = host.telemetry.registerSink((event) => {
       events.push(event);
     });

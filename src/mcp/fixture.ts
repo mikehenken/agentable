@@ -51,7 +51,7 @@ export async function createCanvasMcpFixture(
     accessToken,
   });
 
-  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair;
+  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: 'canvas-mcp-test-client', version: '0.1.0' });
 
   await server.connect(serverTransport);

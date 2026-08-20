@@ -119,7 +119,7 @@ describe('operator multi-agent registration ', () => {
 
   it('coexists with a scoped agent: operator ask denies operator mutations, scoped agent unaffected', async () => {
     const { host } = buildCoexistenceHost;
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     bindOperatorModeEnforcement('ask');
     bindOperatorRegistration('ask');
@@ -166,7 +166,7 @@ describe('operator multi-agent registration ', () => {
 
   it('attributes HITL pending approvals to the originating agent while operator is registered', async () => {
     const { host } = buildCoexistenceHost;
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     bindOperatorModeEnforcement('build');
     bindOperatorRegistration('build');
@@ -221,7 +221,7 @@ describe('operator multi-agent registration ', () => {
 
   it('keeps operator canvas lease separate from scoped panel leases', () => {
     const { host } = buildCoexistenceHost;
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     bindOperatorRegistration('ask');
 
@@ -242,7 +242,7 @@ describe('operator multi-agent registration ', () => {
 
   it('unregisters operator without removing scoped agents', () => {
     const { host } = buildCoexistenceHost;
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     bindOperatorRegistration('ask');
     expect(host.agents.registry.get(OPERATOR_AGENT_ID)?.id).toBe(OPERATOR_AGENT_ID);
@@ -255,7 +255,7 @@ describe('operator multi-agent registration ', () => {
 
   it('wires runtime from createCanvasHost for surface registration', () => {
     const { host } = buildCoexistenceHost;
-    cleanups.push(() => host.dispose);
+    cleanups.push(() => host.dispose());
 
     setOperatorRegistrationRuntime(host.agents);
     bindOperatorRegistration('ask');
