@@ -48,7 +48,7 @@ describe('operator gallery chat endpoint ', () => {
 
     const activeThreadId = DEFAULT_OPERATOR_THREADS[0]?.id ?? 'thread-main';
 
-    const fetchMock = vi.fn.mockRejectedValue(new Error('network blocked in test'));
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network blocked in test'));
     vi.stubGlobal('fetch', fetchMock);
 
     const result = await submitOperatorComposerMessage({

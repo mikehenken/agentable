@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { v1CatalogEntries } from '../../src/panels/catalog/v1-entries';
+import { FormRuntimeProvider } from '../../src/panels/catalog/formRuntime';
+import { FormBus } from '../../src/panels/catalog/formBus';
 import type { SpecNodeContextValue } from '../../src/panels/types';
 
 describe('catalog component state matrix', () => {
@@ -41,7 +43,11 @@ describe('catalog component state matrix', () => {
             name: 'custom',
           };
 
-          render(<Component {...props}>Children</Component>);
+          render(
+            <FormRuntimeProvider
+              value={{ formBus: new FormBus(), sources: undefined, actions: undefined }}>
+              <Component {...props}>Children</Component>
+            </FormRuntimeProvider>);
 
           // The root container always has the component's test ID
           expect(screen.getByTestId(entry.name)).toBeInTheDocument();

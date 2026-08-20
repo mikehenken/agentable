@@ -21,7 +21,7 @@ class MockIntersectionObserver {
   readonly observe = vi.fn();
   readonly unobserve = vi.fn();
   readonly disconnect = vi.fn();
-  readonly takeRecords = vi.fn.mockReturnValue([]);
+  readonly takeRecords = vi.fn().mockReturnValue([]);
   readonly root = null;
   readonly rootMargin = '';
   readonly thresholds: number[] = [];
@@ -103,7 +103,7 @@ describe('lazyHydration — observeLazyVisibility', () => {
       observe = vi.fn();
       unobserve = vi.fn();
       disconnect = vi.fn();
-      takeRecords = vi.fn.mockReturnValue([]);
+      takeRecords = vi.fn().mockReturnValue([]);
       root = null;
       rootMargin = '';
       thresholds: number[] = [];
