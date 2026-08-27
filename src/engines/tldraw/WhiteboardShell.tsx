@@ -258,11 +258,17 @@ const DEFAULT_CHAT_COLUMN_WIDTH = '360px';
 const VIBE_CANVAS_BG = '#121212';
 
 /**
- * Build-time public tldraw license key (removes the watermark when present).
- * Read from `VITE_TLDRAW_LICENSE_KEY` so it never needs to be hardcoded or
- * committed. tldraw's own `licenseKey` prop is optional and degrades to the
- * unlicensed watermark, not an error, when this is undefined, so local dev
- * and OSS consumers without a key keep working unmodified.
+ * Build-time public tldraw license key. Read from `VITE_TLDRAW_LICENSE_KEY` so
+ * it never needs to be hardcoded or committed.
+ *
+ * Unset is only safe in development. tldraw's `LicenseProvider` treats an https
+ * non-localhost origin built with `NODE_ENV=production` as `unlicensed-production`
+ * and, after `LICENSE_TIMEOUT` (5s), replaces the entire editor subtree with a
+ * hidden `data-testid="tl-license-expired"` div — canvas, UI, and chat composer
+ * all disappear with no thrown error. Local dev escapes this via the localhost
+ * check, which is why the failure only ever shows up on a deployed host.
+ *
+ * Any build that ships to a public origin MUST supply this key.
  */
 const TLDRAW_LICENSE_KEY =
   (import.meta.env.VITE_TLDRAW_LICENSE_KEY as string | undefined)?.trim() || undefined;
@@ -502,7 +508,11 @@ function WhiteboardShellInner({
   usePanelDocking(boundEditor);
   usePanelStacking(boundEditor);
 
+  /* The BEM base class is load-bearing, not decorative: light-canvas rules are
+     written as `.whiteboard-shell:not(.whiteboard-shell--vibe-dark) ...`, so a
+     modifier-only class list silently drops them. */
   const shellClassName = [
+    'whiteboard-shell',
     darkCanvas ? 'whiteboard-shell--vibe-dark' : undefined,
     viewportChrome.compactChrome ? 'whiteboard-shell--compact' : undefined,
   ].filter(Boolean).join(' ');
