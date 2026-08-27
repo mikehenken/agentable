@@ -68,7 +68,7 @@ function notifyToolCall(name, summary, ok) {
 }
 
 /** @returns {Promise<HTMLElement & { runNorthstarDemo: Function; whenReady: Function }>} */
-async function getWhiteboard {
+async function getWhiteboard() {
   await customElements.whenDefined('agentable-whiteboard');
   if (!(whiteboard instanceof HTMLElement)) {
     throw new Error('agentable-whiteboard element missing');
@@ -78,11 +78,11 @@ async function getWhiteboard {
 
 /** @param {'clear' | 'draw-flow' | 'draw-batch' | 'read-canvas' | 'full'} step */
 async function runStep(step) {
-  const board = await getWhiteboard;
+  const board = await getWhiteboard();
   return board.runNorthstarDemo(step);
 }
 
-async function onDrawFlow {
+async function onDrawFlow() {
   if (busy) return;
   setBusy(true);
   try {
@@ -102,7 +102,7 @@ async function onDrawFlow {
   }
 }
 
-async function onDrawBatch {
+async function onDrawBatch() {
   if (busy) return;
   setBusy(true);
   try {
@@ -122,7 +122,7 @@ async function onDrawBatch {
   }
 }
 
-async function onReadCanvas {
+async function onReadCanvas() {
   if (busy) return;
   setBusy(true);
   try {
@@ -147,7 +147,7 @@ async function onReadCanvas {
   }
 }
 
-async function onClear {
+async function onClear() {
   if (busy) return;
   setBusy(true);
   try {
@@ -168,7 +168,7 @@ async function onClear {
   }
 }
 
-async function onRunFullDemo {
+async function onRunFullDemo() {
   if (busy) return;
   setBusy(true);
   if (logEl) logEl.replaceChildren;
@@ -176,8 +176,8 @@ async function onRunFullDemo {
   pushLog({ title: 'Demo started', detail: 'Scripted agent turn (no LLM)' });
 
   try {
-    const board = await getWhiteboard;
-    const ready = await board.whenReady;
+    const board = await getWhiteboard();
+    const ready = await board.whenReady(45_000);
     if (!ready) {
       pushLog({
         title: 'Demo aborted',
@@ -232,7 +232,7 @@ async function onRunFullDemo {
   }
 }
 
-function wireControls {
+function wireControls() {
   const byTestId = (id) => document.querySelector(`[data-testid="${id}"]`);
   byTestId('p8-run-full-demo')?.addEventListener('click', () => void onRunFullDemo);
   byTestId('p8-draw-flow')?.addEventListener('click', () => void onDrawFlow);
@@ -251,7 +251,7 @@ window.__p8AgentDrawDemoResult = {
 
 customElements.whenDefined('agentable-whiteboard').then(async () => {
   wireControls;
-  const board = await getWhiteboard;
+  const board = await getWhiteboard();
   const ready = await board.whenReady(45_000);
   window.__galleryReady = { example: 'p8-agent-draw-demo', ok: ready };
   window.__runP8AgentDrawDemo = async () => {

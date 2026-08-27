@@ -14,7 +14,7 @@ const whiteboard = document.querySelector('agentable-whiteboard');
 
 /** @returns {Promise<HTMLElement & { runMeridianDemo: Function; whenReady: Function }>} */
 
-async function getWhiteboard {
+async function getWhiteboard() {
 
   await customElements.whenDefined('agentable-whiteboard');
 
@@ -84,7 +84,7 @@ customElements.whenDefined('agentable-whiteboard').then(async () => {
 
   try {
 
-    const board = await getWhiteboard;
+    const board = await getWhiteboard();
 
     const ready = await board.whenReady(45_000);
 

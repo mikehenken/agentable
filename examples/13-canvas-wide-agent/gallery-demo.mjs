@@ -109,7 +109,7 @@ async function waitForPlacement(placementId) {
     throw new Error(`placement ${placementId} missing`);
   }
   await new Promise((resolve) => {
-    const surface = /** @type {{ getOperatorSurface?: => HTMLElement | null }} */ (el).getOperatorSurface?.;
+    const surface = /** @type {{ getOperatorSurface?: () => HTMLElement | null }} */ (el).getOperatorSurface?.();
     if (surface) {
       resolve(undefined);
       return;
@@ -132,7 +132,7 @@ async function waitForWhiteboard(whiteboard) {
   return whiteboard.whenReady(45_000);
 }
 
-function mountGalleryHeader {
+function mountGalleryHeader() {
   if (!(headerRoot instanceof HTMLElement)) {
     return false;
   }
@@ -207,7 +207,7 @@ customElements.whenDefined('agentable-operator-surface-placement').then(async ()
 
     /** @param {HTMLElement & { getOperatorSurface?: => HTMLElement | null; placement?: string; placementId?: string }} placement */
     function summarizePlacement(placement) {
-      const surface = placement.getOperatorSurface?. ?? null;
+      const surface = placement.getOperatorSurface?.() ?? null;
       return {
         placement: placement.placement ?? placement.getAttribute('placement') ?? '',
         placementId: placement.placementId ?? placement.getAttribute('placement-id') ?? '',

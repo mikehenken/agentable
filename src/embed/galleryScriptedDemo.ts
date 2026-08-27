@@ -263,7 +263,7 @@ export async function runGalleryScriptedTool(
   const runDraw = (): Promise<{ ok: boolean; error?: string; result?: unknown }> =>
     withAgentToolContextAsync(agentContext, () => drawTool.handler(args));
   const result = await (options.drawIntentUserText !== undefined
-    ? withDrawUserMessageAsync(options.drawIntentUserText, runDraw): runDraw);
+    ? withDrawUserMessageAsync(options.drawIntentUserText, runDraw): runDraw());
   if (!result.ok) {
     return { ok: false, toolName, error: String(result.error ?? 'tool failed') };
   }
@@ -617,7 +617,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
   const editor = getEditor();
   const geoShapeIds =
     editor === null
-      ? []: editor().getCurrentPageShapes().filter((shape) => shape.type === 'geo').slice(0, 2).map((shape) => shape.id);
+      ? []: editor.getCurrentPageShapes().filter((shape) => shape.type === 'geo').slice(0, 2).map((shape) => shape.id);
 
   if (geoShapeIds.length >= 2) {
     const connectResult = await withAgentToolContextAsync(MERIDIAN_AGENT, () =>
@@ -650,7 +650,7 @@ async function runMeridianWireframeGalleryStep(): Promise<{
     ok: flowOk && stencilOk && totalShapes >= flowBoxCount + 2,
     flowBoxCount,
     stencilCount: MERIDIAN_WIREFRAME_STENCILS.length,
-    totalShapes: totalShapes(),
+    totalShapes,
   };
 
   const ok = summary.ok && steps.every((entry) => entry.ok);

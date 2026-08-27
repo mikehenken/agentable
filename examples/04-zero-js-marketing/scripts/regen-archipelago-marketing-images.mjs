@@ -594,7 +594,7 @@ function parseEnvFile(filePath) {
 /**
  * @returns {{ key: string, source: string } | null}
  */
-function resolveApiKey {
+function resolveApiKey() {
   const envKeys = [
     'GEMINI_API_KEY',
     'GOOGLE_API_KEY',
@@ -777,7 +777,7 @@ function writeManifest(assets, meta) {
 /**
  * Remove obsolete Archipelago-named files once Archipelago replacements exist.
  */
-function cleanupLegacyFiles {
+function cleanupLegacyFiles() {
   const legacy = [
     'archipelago-logo.png',
     'team-kerone.jpg',
@@ -797,7 +797,7 @@ function cleanupLegacyFiles {
   }
 }
 
-async function main {
+async function main() {
   const opts = parseArgs(process.argv.slice(2));
   fs.mkdirSync(ASSETS_DIR, { recursive: true });
 
@@ -937,13 +937,13 @@ async function main {
       errors,
     });
 
-     Pace requests to reduce transient fetch rate-limit failures.
+    // Pace requests to reduce transient fetch rate-limit failures.
     if (generated + failed < selected.length) {
       await sleep(1200);
     }
   }
 
-   Cleanup legacy only when replacements exist
+  // Cleanup legacy only when replacements exist
   const replacementsReady = [
     'team-maya.jpg',
     'team-elena.jpg',

@@ -16,7 +16,7 @@ export function OperatorVoiceMount(): ReactElement | null {
       typeof navigator.mediaDevices?.getUserMedia !== 'function');
 
   useGeminiLive({
-    persona: persona(),
+    persona,
     tokenEndpoint: creds.tokenEndpoint.length > 0 ? creds.tokenEndpoint : undefined,
     forceMock,
     mockScenario: forceMock
