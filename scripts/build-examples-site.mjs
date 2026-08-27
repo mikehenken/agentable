@@ -41,13 +41,18 @@ async function main() {
   await rm(siteDir, { recursive: true, force: true });
   await mkdir(siteDir, { recursive: true });
 
-  await cp(embedDir, path.join(siteDir, 'embed'), { recursive: true });
+  // Sourcemaps are debug artifacts, and the largest one is well past the
+  // 25 MiB per-file ceiling Cloudflare Pages enforces, which fails the whole
+  // upload. Ship the bundles without them.
+  const withoutSourcemaps = { recursive: true, filter: (src) => !src.endsWith('.map') };
+
+  await cp(embedDir, path.join(siteDir, 'embed'), withoutSourcemaps);
 
   // Examples 06 and 09 load their React harness from `/gallery/*.js`. Those
   // bundles build to dist/gallery, so the deployed site needs them at its
   // root too or the pages 404 and render an empty body.
   if (await exists(galleryDir)) {
-    await cp(galleryDir, path.join(siteDir, 'gallery'), { recursive: true });
+    await cp(galleryDir, path.join(siteDir, 'gallery'), withoutSourcemaps);
   }
 
   const entries = await readdir(examplesDir, { withFileTypes: true });
