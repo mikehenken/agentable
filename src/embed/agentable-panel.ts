@@ -287,6 +287,11 @@ export class AgentablePanelElement extends LitElement {
         width: 100%;
         min-height: inherit;
         height: 100%;
+        /* The mount's used height comes from min-height: inherit, not from a
+           definite height, so a child's height: 100% is indeterminate and
+           collapses to content. Flex column lets the surface grow instead. */
+        display: flex;
+        flex-direction: column;
       }
     `,
   ];
