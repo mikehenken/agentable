@@ -19,6 +19,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.join(root, 'dist/site');
 const embedDir = path.join(root, 'dist/embed');
 const galleryDir = path.join(root, 'dist/gallery');
+const functionsDir = path.join(root, 'functions');
 const examplesDir = path.join(root, 'examples');
 
 async function exists(p) {
@@ -53,6 +54,13 @@ async function main() {
   // root too or the pages 404 and render an empty body.
   if (await exists(galleryDir)) {
     await cp(galleryDir, path.join(siteDir, 'gallery'), withoutSourcemaps);
+  }
+
+  // Cloudflare Pages picks up `functions/` from the deploy root and serves it
+  // on the same origin as the gallery, which is how the examples reach the
+  // token mint without CORS or a per-environment URL.
+  if (await exists(functionsDir)) {
+    await cp(functionsDir, path.join(siteDir, 'functions'), { recursive: true });
   }
 
   const entries = await readdir(examplesDir, { withFileTypes: true });
