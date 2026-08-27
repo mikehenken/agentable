@@ -86,4 +86,65 @@ describe('resolveWhiteboardEmbedWiring (core)', () => {
     first.wiring.dispose();
     second.wiring.dispose();
   });
+
+  it('leaves renderNavFooter unset for a pack that has nav items but supplies no footer', () => {
+    registerWhiteboardWiringProvider((): WhiteboardWiringProviderResult | null => ({
+      host: {} as never,
+      navItems: [
+        { id: 'a', label: 'A', icon: (() => null) as never, panelId: 'chat' },
+        { id: 'b', label: 'B', icon: (() => null) as never, panelId: 'inventory' },
+      ],
+      panels: { chat: () => Promise.resolve({ default: (() => null) as never }) },
+      dispose: () => {},
+    }));
+
+    const { wiring } = resolveWhiteboardEmbedWiring({
+      configDocument: null,
+      tenantConfig: { tenant: 'acme-demo' },
+      panelDataRaw: null,
+      tenant: 'acme-demo',
+    });
+
+    expect(wiring.navItems).toHaveLength(2);
+    expect(wiring.renderNavFooter).toBeUndefined();
+    wiring.dispose();
+  });
+
+  it('carries a provider-supplied renderNavFooter through to the wiring', () => {
+    const renderNavFooter = (): null => null;
+    registerWhiteboardWiringProvider((): WhiteboardWiringProviderResult | null => ({
+      host: {} as never,
+      navItems: [{ id: 'a', label: 'A', icon: (() => null) as never, panelId: 'chat' }],
+      panels: { chat: () => Promise.resolve({ default: (() => null) as never }) },
+      renderNavFooter,
+      dispose: () => {},
+    }));
+
+    const { wiring } = resolveWhiteboardEmbedWiring({
+      configDocument: null,
+      tenantConfig: { tenant: 'acme-demo' },
+      panelDataRaw: null,
+      tenant: 'acme-demo',
+    });
+
+    expect(wiring.renderNavFooter).toBe(renderNavFooter);
+    wiring.dispose();
+  });
+
+  it('carries an injected renderNavFooter through to the wiring', () => {
+    const renderNavFooter = (): null => null;
+    const { wiring } = resolveWhiteboardEmbedWiring({
+      configDocument: null,
+      tenantConfig: { tenant: 'acme-demo' },
+      panelDataRaw: null,
+      tenant: 'acme-demo',
+      injected: {
+        navItems: [{ id: 'injected', label: 'Injected', icon: (() => null) as never, panelId: 'chat' }],
+        renderNavFooter,
+      },
+    });
+
+    expect(wiring.renderNavFooter).toBe(renderNavFooter);
+    wiring.dispose();
+  });
 });

@@ -104,7 +104,6 @@ import {
   resolveWhiteboardEmbedWiring,
   type ResolveWhiteboardEmbedWiringState,
 } from './whiteboard/resolveWhiteboardEmbedWiring';
-import { createCareerNavFooterRenderer } from '../../packages/career-pack/src/whiteboard/createCareerNavFooterRenderer';
 import type { WhiteboardWiringProviderResult } from './whiteboard/whiteboardWiringProviderRegistry';
 import { onWhiteboardWiringProvidersChanged } from './whiteboard/whiteboardWiringProviderRegistry';
 import { applyHostHeaderHeight } from './whiteboard/embedHostChrome';
@@ -803,8 +802,8 @@ export class AgentableWhiteboardElement extends LitElement {
               document: createMeridianDocumentPanelLoader(),
             },
           }: packWiring !== null
-          ? {...(packWiring.host !== undefined ? { host: packWiring.host }: {}),...(packWiring.navItems.length > 0 ? { navItems: packWiring.navItems }: {}),...(packWiring.navItems.length > 0
-                ? { renderNavFooter: createCareerNavFooterRenderer }: {}),...(packWiring.adapterSources.length > 0
+          ? {...(packWiring.host !== undefined ? { host: packWiring.host }: {}),...(packWiring.navItems.length > 0 ? { navItems: packWiring.navItems }: {}),...(packWiring.renderNavFooter !== undefined
+                ? { renderNavFooter: packWiring.renderNavFooter }: {}),...(packWiring.adapterSources.length > 0
                 ? { adapterSources: packWiring.adapterSources }: {}),
               panels: packWiring.panelLoaders,
             }: {}),

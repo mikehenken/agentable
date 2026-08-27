@@ -7,8 +7,15 @@ import {
   type WhiteboardWiringProviderResult,
 } from '../../../../src/embed/whiteboard/whiteboardWiringProviderRegistry';
 import { registerCareerWhiteboard } from '../whiteboard/registerCareerWhiteboard';
+import { createCareerNavFooterRenderer } from '../whiteboard/createCareerNavFooterRenderer';
 
 let unregisterProvider: (() => void) | null = null;
+
+/**
+ * Career nav footer, owned by the pack rather than by core. Built once so the
+ * renderer identity stays stable across resolves and the shell can memoize it.
+ */
+const renderCareerNavFooter = createCareerNavFooterRenderer();
 
 function resolveCareerEmbedWiring(
   input: WhiteboardWiringProviderInput,
@@ -29,6 +36,7 @@ function resolveCareerEmbedWiring(
     navItems: result.navItems,
     panels: result.panels,
     adapterSources: result.adapterSources,
+    renderNavFooter: renderCareerNavFooter,
     dispose: result.dispose,
   };
 }

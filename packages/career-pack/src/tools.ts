@@ -2,6 +2,13 @@ import type { ToolDefinition, ToolResult } from '../../../src/panels/tools';
 import { CAREER_PANEL_IDS, CAREER_TOOL_NAMES, type CareerPanelId, type CareerToolName } from './constants';
 import type { CareerPack } from './types';
 
+/**
+ * The career tool that claims job routing. Core suppresses its default set of
+ * competing generic canvas tools while this tool is registered, so a job
+ * question routes here rather than to share_artifact.
+ */
+export const CAREER_DOMAIN_ROUTING_TOOL: CareerToolName = 'open_positions';
+
 /** Runtime seam for generated career tools (legacy canvas + createCanvasHost). */
 export interface CareerToolRuntime {
   openPanel: (panelId: CareerPanelId | string) => ToolResult;
@@ -87,6 +94,7 @@ export function createCareerTools(
   return CAREER_TOOL_NAMES.map((name) => ({
     declaration: careerToolDeclaration(name),
     handler: handlers[name],
+    ...(name === CAREER_DOMAIN_ROUTING_TOOL ? { domainRouting: true as const } : {}),
   }));
 }
 

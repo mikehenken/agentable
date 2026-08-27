@@ -18,6 +18,8 @@ import type { WhiteboardPanelRegistry } from '../../engines/tldraw/shapes/whiteb
 
 import type { EmbedConfigDocument } from '../types/embedConfig';
 
+import type { WhiteboardShellProps } from '../../engines/tldraw/WhiteboardShell';
+
 
 
 export interface WhiteboardWiringProviderInput {
@@ -45,6 +47,16 @@ export interface WhiteboardWiringProviderResult {
   panels: WhiteboardPanelRegistry;
 
   adapterSources?: readonly string[];
+
+  /**
+
+   * Optional nav footer renderer owned by the pack. Core never supplies one,
+
+   * so a pack with nav items and no footer renders no footer.
+
+   */
+
+  renderNavFooter?: WhiteboardShellProps['renderNavFooter'];
 
   dispose: () => void;
 
