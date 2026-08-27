@@ -15,9 +15,7 @@ tests/integration/telemetryEventCoverage.test.ts
 tests/integration/telemetrySinkBoundary.test.ts
 tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
-tests/unit/AgentablePanelReact.test.tsx
 tests/unit/agentActivityPanel.test.tsx
-tests/unit/agentablePanelWrapperCore.test.ts
 tests/unit/anonKeyTenantLookup.test.ts
 tests/unit/approvalCard.test.tsx
 tests/unit/approvalRuntime.test.ts
