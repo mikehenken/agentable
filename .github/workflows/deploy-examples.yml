@@ -77,6 +77,23 @@ jobs:
           path: dist/site
           retention-days: 14
 
+      - name: Ensure the Pages project exists
+        if: steps.creds.outputs.configured == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'agentable-examples' }}
+        # `pages deploy` fails with "Project not found" rather than creating the
+        # project, so a first-time deploy needs it to exist up front.
+        run: |
+          set -euo pipefail
+          if npx --yes wrangler@3 pages project list 2>/dev/null | grep -qE "(^|[[:space:]])${PROJECT}([[:space:]]|$)"; then
+            echo "Pages project ${PROJECT} already exists"
+          else
+            echo "creating Pages project ${PROJECT}"
+            npx --yes wrangler@3 pages project create "${PROJECT}" --production-branch=main
+          fi
+
       - name: Publish to Cloudflare Pages
         if: steps.creds.outputs.configured == 'true'
         uses: cloudflare/wrangler-action@v3
