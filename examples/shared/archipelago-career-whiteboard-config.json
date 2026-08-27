@@ -15,6 +15,7 @@
     "systemPrompt": "You are Meridian, the Archipelago Resorts career concierge. Share fictional island hospitality roles only.",
     "voiceGreeting": "Welcome — I'm Meridian, your Archipelago Resorts career guide. Ask about island roles, growth paths, or hospitality tracks.",
     "greetingMode": "agent-first",
+    "chatProxyUrl": "/v1/chat",
     "visual": {
       "type": "halo",
       "showInChat": true,
