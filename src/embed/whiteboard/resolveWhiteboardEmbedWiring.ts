@@ -8,6 +8,7 @@ import {
 } from '../../engines/tldraw/shapes/whiteboardPanelRegistry';
 import type { CanvasHost } from '../../panels/host';
 import type { NavItemConfig } from '../../components/chrome/navItems';
+import type { WhiteboardShellProps } from '../../engines/tldraw/WhiteboardShell';
 import type { PartialCanvasTenantConfig } from '../../config/CanvasContext';
 import type { RawPanelDataPayload } from '../../config/panelDataNormalize';
 import type { EmbedConfigDocument } from '../types/embedConfig';
@@ -22,6 +23,7 @@ export interface InjectedWhiteboardWiring {
   navItems?: NavItemConfig[];
   panels?: WhiteboardPanelRegistry;
   adapterSources?: readonly string[];
+  renderNavFooter?: WhiteboardShellProps['renderNavFooter'];
   dispose?: () => void;
 }
 
@@ -40,6 +42,8 @@ export interface WhiteboardEmbedWiring {
   navItems: NavItemConfig[];
   panelLoaders: WhiteboardPanelRegistry;
   adapterSources: readonly string[];
+  /** Pack-owned nav footer renderer; undefined when the pack supplies none. */
+  renderNavFooter?: WhiteboardShellProps['renderNavFooter'];
   /** Dispose any allocated host bundle. */
   dispose: () => void;
 }
@@ -57,6 +61,7 @@ function mergeInjectedWiring(
     navItems: injected.navItems ?? [],
     panelLoaders: injected.panels ?? DEFAULT_WHITEBOARD_PANEL_REGISTRY,
     adapterSources: injected.adapterSources ?? [],
+    renderNavFooter: injected.renderNavFooter,
     dispose: injected.dispose ?? (() => {}),
   };
 }
@@ -79,6 +84,7 @@ function providerResultToWiring(
     navItems: result.navItems,
     panelLoaders: result.panels,
     adapterSources: result.adapterSources ?? [],
+    renderNavFooter: result.renderNavFooter,
     dispose: result.dispose,
   };
 }

@@ -74,6 +74,8 @@ describe('career whiteboard wiring (pack)', () => {
     expect(Object.keys(wiring.panelLoaders).sort()).toEqual(['chat', 'open-positions']);
     expect(wiring.navItems.map((item) => item.panelId).sort()).toEqual(
       ['chat', 'open-positions'].sort());
+    // The pack owns its nav footer now; core supplies none of its own.
+    expect(wiring.renderNavFooter).toBeTypeOf('function');
     wiring.dispose();
   });
 });
