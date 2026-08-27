@@ -17,7 +17,7 @@ import {
 } from './registerCareerWhiteboard';
 import { resolveCareerWhiteboardShellDefaults } from './careerCanvasDefaults';
 import { getHostActions } from '../../../../src/panels/tools';
-import { CAREER_ROUTING_SENTINEL_TOOL } from '../../../../src/agents/tools/careerToolOfferFilter';
+import { CAREER_DOMAIN_ROUTING_TOOL } from '../tools';
 
 export interface UseCareerWhiteboardWiringInput {
   tenantConfig: PartialCanvasTenantConfig;
@@ -76,7 +76,7 @@ function resolveSessionTenant(input: UseCareerWhiteboardWiringInput): string {
 }
 
 function careerToolsAreRegistered(): boolean {
-  return getHostActions().some((tool) => tool.declaration.name === CAREER_ROUTING_SENTINEL_TOOL);
+  return getHostActions().some((tool) => tool.declaration.name === CAREER_DOMAIN_ROUTING_TOOL);
 }
 
 function getOrCreateCareerWiringSession(input: UseCareerWhiteboardWiringInput): StoredCareerWiring {

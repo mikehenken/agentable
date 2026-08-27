@@ -54,9 +54,19 @@ export type ToolResult =
 
 export type ToolHandler = (args: Record<string, unknown>) => ToolResult | Promise<ToolResult>;
 
+/**
+ * Pack claim that a tool owns domain routing for its subject area. `true` asks
+ * core to suppress its default set of competing generic tools; an object names
+ * the exact core tools to suppress. Core reads the claim off the tools a pack
+ * already registers, so no pack tool name is ever hardcoded in core.
+ */
+export type DomainRoutingClaim = true | { readonly suppressCoreTools: readonly string[] };
+
 export interface ToolDefinition {
   declaration: ToolDeclaration;
   handler: ToolHandler;
+  /** Optional routing claim; omit it and every core tool stays on offer. */
+  domainRouting?: DomainRoutingClaim;
 }
 
 /** Stable names for the six acting panel tools. */

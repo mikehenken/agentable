@@ -6,7 +6,7 @@
  *
  * Enable: `import.meta.env.DEV`, or `VITE_LOG_TOOL_CALLS=1`, or `LOG_TOOL_CALLS=1`.
  */
-import { inferPanelOpenedByTool } from './tools/careerToolOfferFilter';
+import { inferPanelOpenedByTool } from './tools/domainRoutingToolFilter';
 
 export interface ToolCallLogEntry {
   timestamp: string;

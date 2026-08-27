@@ -13,8 +13,8 @@ import {
 import { emitAgUiStatePatch } from '../../protocol/ag-ui';
 import { getHostActions } from '../../panels/tools';
 import {
-  filterCoreToolsForCareerRouting,
-} from './careerToolOfferFilter';
+  filterCoreToolsForDomainRouting,
+} from './domainRoutingToolFilter';
 import { isCanvasChatSuppressed } from '../../engines/tldraw/layout/suppressCanvasChat';
 import {
   gateToolsForEngineCapabilities,
@@ -219,7 +219,7 @@ function resolveActiveTools(): readonly ToolDefinition[] {
     byName.set(tool.declaration.name, tool);
   }
   const merged = [...byName.values()];
-  return filterCoreToolsForCareerRouting(merged);
+  return filterCoreToolsForDomainRouting(merged);
 }
 
 /** Tools offered to models and voice/chat clients (engine draw gate). */
