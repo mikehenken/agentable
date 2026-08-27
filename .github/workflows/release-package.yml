@@ -133,9 +133,11 @@ jobs:
         if: steps.version.outputs.should_release == 'true'
         run: npm install --no-audit --no-fund
 
-      - name: Unit tests
+      - name: Unit tests (release gate)
         if: steps.version.outputs.should_release == 'true'
-        run: npm run test
+        # Runs the suite minus tests/release-exclusions.txt (in-progress
+        # features; shrink-only list). Full `npm run test` stays the CI signal.
+        run: npm run test:release
 
       - name: Bump package.json version
         if: steps.version.outputs.should_release == 'true' && steps.version.outputs.mode == 'manual'

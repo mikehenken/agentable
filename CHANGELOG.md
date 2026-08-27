@@ -5,7 +5,7 @@ All notable changes to `agentable-canvas` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.0] — 2026-08-19
+## [0.3.0] — 2026-08-26
 
 ### Changed
 
@@ -31,6 +31,12 @@ renamed to match.
 - The examples gallery publishes to Cloudflare Pages on pushes to `main` and
   after a successful release. `npm run build:examples-site` assembles
   `dist/site` locally in the same layout.
+
+### Known issues
+
+- Test files covering in-progress features are excluded from the release gate
+  and listed in `tests/release-exclusions.txt` (shrink-only). The full suite
+  runs in CI.
 
 ### Removed
 

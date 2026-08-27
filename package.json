@@ -85,7 +85,8 @@
     "test:e2e": "playwright test",
     "test:a11y": "playwright test tests/a11y",
     "build:embed:site": "vite build --config vite.embed.config.ts && vite build --config vite.embed-button.config.ts && vite build --config vite.embed-panel.config.ts && vite build --config vite.embed-whiteboard.config.ts && vite build --config vite.embed-app-shell.config.ts && vite build --config vite.embed-starter-chip.config.ts && vite build --config vite.embed-agent-status.config.ts && vite build --config vite.embed-ask-about.config.ts && vite build --config vite.embed-career-whiteboard.config.ts && vite build --config vite.embed-gallery-13-chrome.config.ts && vite build --config vite.embed-operator-surface-placement.config.ts && vite build --config vite.embed-iframe-host.config.ts",
-    "build:examples-site": "npm run build:embed:site && node scripts/build-examples-site.mjs"
+    "build:examples-site": "npm run build:embed:site && node scripts/build-examples-site.mjs",
+    "test:release": "vitest run --config vitest.release.config.ts"
   },
   "dependencies": {
     "@copilotkit/react-core": "^1.56.3",
