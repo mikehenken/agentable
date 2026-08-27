@@ -45,7 +45,17 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Build embed bundles and assemble the gallery
-        run: npm run build:examples-site
+        # VITE_TLDRAW_LICENSE_KEY is compiled into the embed bundles. Without it,
+        # tldraw classifies any https non-localhost origin as unlicensed-production
+        # and blanks the whole editor 5s after mount, so the deployed gallery looks
+        # like it loads and then silently empties itself.
+        env:
+          VITE_TLDRAW_LICENSE_KEY: ${{ secrets.TLDRAW_LICENSE_KEY }}
+        run: |
+          if [ -z "$VITE_TLDRAW_LICENSE_KEY" ]; then
+            echo "::warning::TLDRAW_LICENSE_KEY secret is not set. The published gallery will render for ~5 seconds and then blank out (tldraw unlicensed-production gate). Set the secret to fix."
+          fi
+          npm run build:examples-site
 
       - name: Verify the assembled site
         # Fail before publishing if the artifact is missing its entry points.

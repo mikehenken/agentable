@@ -74,7 +74,6 @@ tests/unit/starterChips.test.tsx
 tests/unit/storyModeWalkthrough.test.ts
 tests/unit/toolCallDevLogger.test.ts
 tests/unit/undoReversalModel.test.ts
-tests/unit/whiteboardChatCredentials.test.ts
 tests/unit/whiteboardChromeInsets.test.ts
 tests/unit/whiteboardLayoutChrome.test.ts
 tests/unit/widgetBundleBudgets.test.ts
