@@ -191,14 +191,14 @@
 }
 
 .panel-shape__drag-handle,
-.draft-preview-panel__header.panel-shape__drag-handle {
+.draft-preview-panel__header .panel-shape__drag-handle {
   cursor: grab;
   touch-action: none;
   user-select: none;
 }
 
 .panel-shape__drag-handle:active,
-.draft-preview-panel__header.panel-shape__drag-handle:active {
+.draft-preview-panel__header .panel-shape__drag-handle:active {
   cursor: grabbing;
 }
 

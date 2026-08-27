@@ -13,7 +13,7 @@
     <script type="module">
       window.__galleryExample = '09-multi-agent-page';
       const status = document.getElementById('status');
-      const poll = => {
+      const poll = () => {
         const result = window.__multiAgentE2eResult;
         if (result === undefined) {
           window.setTimeout(poll, 50);
@@ -22,7 +22,7 @@
         status.textContent = JSON.stringify(result, null, 2);
         window.__galleryReady = { example: '09-multi-agent-page', ok: result.ok };
       };
-      poll;
+      poll();
     </script>
   </body>
 </html>

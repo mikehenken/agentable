@@ -38,7 +38,7 @@ export function DomWorkspaceShell({
 
   useEffect(() => engine.subscribe(() => bump((value) => value + 1)), [engine]);
 
-  const snapshot = engine.getDomLayout;
+  const snapshot = engine.getDomLayout();
 
   const onActiveTabChange = useCallback(
     (regionId: 'main' | 'sidebar', tabIndex: number) => {
@@ -66,9 +66,9 @@ export function DomWorkspaceShell({
     >
       <DomRegionLayout
         snapshot={snapshot}
-        activeTab={snapshot().activeTab}
+        activeTab={snapshot.activeTab}
         onActiveTabChange={onActiveTabChange}
-        sidebarDrawerOpen={snapshot().sidebarDrawerOpen}
+        sidebarDrawerOpen={snapshot.sidebarDrawerOpen}
         onSidebarDrawerOpenChange={onSidebarDrawerOpenChange}
         onSidebarSplitChange={onSidebarSplitChange}
         renderPanel={renderPanel}

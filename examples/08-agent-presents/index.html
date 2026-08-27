@@ -100,41 +100,41 @@
     </main>
 
     <script type="module">
-       Resolve config-url before the whiteboard bundle defines the custom
-       element: prefer a coordinator-provided config.local.json (real
-       chatProxyUrl tokenEndpoint, gitignored, never committed here);
-       fall back to the committed config.example.json (placeholder
-       endpoints, offline chat-to-draw demo) when the local file is
-       absent. The top-level await makes this a blocking step in module
-       execution order, so the attribute is always set before the next
-       module script below runs and upgrades the element - no second
-       script imports engine code, so there is only ever one tldraw
-       instance on this page.
+      // Resolve config-url before the whiteboard bundle defines the custom
+      // element: prefer a coordinator-provided config.local.json (real
+      // chatProxyUrl tokenEndpoint, gitignored, never committed here);
+      // fall back to the committed config.example.json (placeholder
+      // endpoints, offline chat-to-draw demo) when the local file is
+      // absent. The top-level await makes this a blocking step in module
+      // execution order, so the attribute is always set before the next
+      // module script below runs and upgrades the element - no second
+      // script imports engine code, so there is only ever one tldraw
+      // instance on this page.
       const CONFIG_CANDIDATES = ['./config.local.json', './config.example.json'];
       const whiteboardEl = document.querySelector('agentable-whiteboard');
 
-      async function resolveConfigUrl {
+      async function resolveConfigUrl() {
         for (const url of CONFIG_CANDIDATES) {
           try {
             const response = await fetch(url);
             if (response.ok) return url;
           } catch {
-             Network-level failure (offline, blocked request): try the
-             next candidate instead of throwing.
+            // Network-level failure (offline, blocked request): try the
+            // next candidate instead of throwing.
           }
         }
         return CONFIG_CANDIDATES[CONFIG_CANDIDATES.length - 1];
       }
 
       window.__galleryExample = '08-agent-presents';
-      const resolvedConfigUrl = await resolveConfigUrl;
+      const resolvedConfigUrl = await resolveConfigUrl();
       whiteboardEl.setAttribute('config-url', resolvedConfigUrl);
 
-       Test-observability hook only (mirrors window.__galleryReady
-       window.__p8AgentDrawDemoResult elsewhere in this gallery): both the
-       live and offline chat-to-draw paths dispatch this event per tool
-       call, so recording it lets Playwright confirm a prompt actually
-       drew shapes without depending on tldraw's internal DOM structure.
+      // Test-observability hook only (mirrors window.__galleryReady
+      // window.__p8AgentDrawDemoResult elsewhere in this gallery): both the
+      // live and offline chat-to-draw paths dispatch this event per tool
+      // call, so recording it lets Playwright confirm a prompt actually
+      // drew shapes without depending on tldraw's internal DOM structure.
       window.__agentPresentsToolCalls = [];
       window.addEventListener('landi:tool-call', (e) => {
         window.__agentPresentsToolCalls.push(e.detail);

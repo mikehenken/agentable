@@ -294,9 +294,31 @@ export class AgentableWhiteboardElement extends LitElement {
         display: block;
         position: relative;
         width: 100%;
-        min-height: 600px;
+        /* Fill the viewport the host gives us instead of sitting at a fixed
+           600px. The max() keeps a usable floor on short viewports and in
+           tests; hosts can still override height/min-height from the page. */
+        min-height: max(600px, min(82vh, 960px));
         contain: layout paint;
         background: var(--landi-color-background, #f0f0ec);
+      }/* Light-canvas chat palette. The --vibe-* tokens are otherwise only
+         defined dark, so a light-canvas embed rendered the chat transcript
+         and composer dark-on-light. Custom properties inherit from :host
+         into the shadow tree, so this re-themes chat without touching any
+         component, and it keys off the public attribute rather than an
+         internal shell class that not every canvas mode renders. */
+      :host([light-canvas]) {
+        --vibe-background: #f7f9fb;
+        --vibe-surface: #ffffff;
+        --vibe-composer-bg: #ffffff;
+        --vibe-border: rgb(15 23 42 / 0.12);
+        --vibe-text: #16283c;
+        --vibe-text-muted: #5b6b7c;
+        --vibe-text-faint: #8497a8;
+        --vibe-hover-bg: rgb(15 23 42 / 0.05);
+        --vibe-code-inline-bg: rgb(15 23 42 / 0.06);
+        --vibe-code-block-bg: #eef2f6;
+        --vibe-disabled-bg: #dde3e9;
+        --vibe-scrollbar-thumb: rgb(15 23 42 / 0.22);
       }:host(.agentable-canvas-host-fullpage) {
         width: 100%;
         height: 100%;

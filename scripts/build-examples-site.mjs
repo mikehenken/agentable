@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.join(root, 'dist/site');
 const embedDir = path.join(root, 'dist/embed');
+const galleryDir = path.join(root, 'dist/gallery');
 const examplesDir = path.join(root, 'examples');
 
 async function exists(p) {
@@ -41,6 +42,13 @@ async function main() {
   await mkdir(siteDir, { recursive: true });
 
   await cp(embedDir, path.join(siteDir, 'embed'), { recursive: true });
+
+  // Examples 06 and 09 load their React harness from `/gallery/*.js`. Those
+  // bundles build to dist/gallery, so the deployed site needs them at its
+  // root too or the pages 404 and render an empty body.
+  if (await exists(galleryDir)) {
+    await cp(galleryDir, path.join(siteDir, 'gallery'), { recursive: true });
+  }
 
   const entries = await readdir(examplesDir, { withFileTypes: true });
   const shipped = [];

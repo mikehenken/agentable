@@ -63,8 +63,16 @@ export function resolveWhiteboardChatCredentials(): WhiteboardChatCredentials {
   const tokenEndpoint = isConfiguredEndpoint(tokenEndpointRaw) ? tokenEndpointRaw : '';
   const chatProxyUrl = isConfiguredEndpoint(chatProxyUrlRaw) ? chatProxyUrlRaw : '';
 
+  // Hosts that ship without a backend on purpose (the public examples
+  // gallery) opt in explicitly. Without this a production build with no
+  // credentials attempts an unauthenticated Gemini request and renders the
+  // raw 401 into the chat transcript. Real deployments that merely forgot to
+  // configure a key still fail loudly, which is the documented intent.
+  const mockAttr = whiteboard?.hasAttribute('mock-chat') ?? false;
+
   const isProd = (import.meta.env.MODE ?? import.meta.env.NODE_ENV) === 'production';
   const useMock =
+    mockAttr ||
     (import.meta.env.VITE_LANDI_MOCK ?? '') === '1' ||
     (!apiKey && !chatProxyUrl && !tokenEndpoint && !isProd);
 

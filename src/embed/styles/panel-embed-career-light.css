@@ -12,17 +12,17 @@
   --landi-color-primary: #0e7490;
   --landi-color-primary-hsl: 192 85% 31%;
   background: transparent;
-}:host([data-theme='career-light']).agentable-panel-surface {
+}:host([data-theme='career-light']) .agentable-panel-surface {
   background: var(--landi-color-surface);
   border-color: var(--landi-color-border);
   box-shadow: 0 8px 32px rgb(15 23 42 / 0.06);
-}:host([data-theme='career-light']).panel-chrome {
+}:host([data-theme='career-light']) .panel-chrome {
   background: var(--landi-color-surface);
   border-bottom: 1px solid var(--landi-color-border);
   color: var(--landi-color-text);
-}:host([data-theme='career-light']).panel-chrome__title {
+}:host([data-theme='career-light']) .panel-chrome__title {
   color: var(--landi-color-text);
-}:host([data-theme='career-light']).panel-shape__body {
+}:host([data-theme='career-light']) .panel-shape__body {
   background: var(--landi-color-surface);
 }:host([data-theme='career-light']) [part='body-content'] {
   background: var(--landi-color-surface);

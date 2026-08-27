@@ -223,20 +223,20 @@
       const CONFIG_CANDIDATES = ['./config.local.json', './config.example.json'];
       const whiteboardEl = document.querySelector('agentable-whiteboard');
 
-      async function resolveConfigUrl {
+      async function resolveConfigUrl() {
         for (const url of CONFIG_CANDIDATES) {
           try {
             const response = await fetch(url);
             if (response.ok) return url;
           } catch {
-             try next candidate
+            // try next candidate
           }
         }
         return CONFIG_CANDIDATES[CONFIG_CANDIDATES.length - 1];
       }
 
       window.__galleryExample = 'p8-agent-draw-demo';
-      const resolvedConfigUrl = await resolveConfigUrl;
+      const resolvedConfigUrl = await resolveConfigUrl();
       whiteboardEl.setAttribute('config-url', resolvedConfigUrl);
     </script>
     <script type="module" src="/embed/agentable-whiteboard.js"></script>

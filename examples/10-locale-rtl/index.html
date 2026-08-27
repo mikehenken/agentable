@@ -99,8 +99,8 @@
         overflow: hidden;
         background: #141414;
         box-shadow:
-          0 0 0 1px rgb(0 0 0 0.35),
-          inset 0 1px 0 rgb(255 255 255 0.04);
+          0 0 0 1px rgb(0 0 0 / 0.35),
+          inset 0 1px 0 rgb(255 255 255 / 0.04);
       }.panel-band--dark {
         --panel-band-surface: #141414;
       }
@@ -212,21 +212,21 @@
       const telemetry = document.getElementById('telemetry');
       const localeButtons = document.querySelectorAll('[data-locale]');
 
-      function panelWorkspaceDir {
+      function panelWorkspaceDir() {
         const root = panel?.shadowRoot;
         return root?.querySelector('[dir]')?.getAttribute('dir') ?? null;
       }
 
-      function panelThemeDark {
+      function panelThemeDark() {
         return panel?.getAttribute('data-theme') === 'gallery-dark';
       }
 
-      function refreshTelemetry {
+      function refreshTelemetry() {
         const docDir = document.documentElement.getAttribute('dir');
-        const panelDir = panelWorkspaceDir;
+        const panelDir = panelWorkspaceDir();
         const locale = panel?.getAttribute('locale') ?? '';
         const expectedDir = locale === 'ar' ? 'rtl': 'ltr';
-        const themeDark = panelThemeDark;
+        const themeDark = panelThemeDark();
         const ok =
           Boolean(panel) &&
           docDir === expectedDir &&
@@ -263,8 +263,8 @@
         });
 
         panel.setAttribute('locale', nextLocale);
-        refreshTelemetry;
-        requestAnimationFrame(() => refreshTelemetry);
+        refreshTelemetry();
+        requestAnimationFrame(() => refreshTelemetry());
         setTimeout(refreshTelemetry, 400);
         setTimeout(refreshTelemetry, 1200);
       }
@@ -279,8 +279,8 @@
       });
 
       customElements.whenDefined('agentable-panel').then(() => {
-        panel?.addEventListener('agentable:panel-ready', () => refreshTelemetry);
-        const observer = new MutationObserver(() => refreshTelemetry);
+        panel?.addEventListener('agentable:panel-ready', () => refreshTelemetry());
+        const observer = new MutationObserver(() => refreshTelemetry());
         if (panel?.shadowRoot) {
           observer.observe(panel.shadowRoot, {
             attributes: true,
@@ -292,8 +292,8 @@
           attributes: true,
           attributeFilter: ['locale', 'data-theme'],
         });
-        refreshTelemetry;
-        requestAnimationFrame(() => refreshTelemetry);
+        refreshTelemetry();
+        requestAnimationFrame(() => refreshTelemetry());
         setTimeout(refreshTelemetry, 800);
         setTimeout(refreshTelemetry, 2000);
       });

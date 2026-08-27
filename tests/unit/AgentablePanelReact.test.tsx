@@ -59,7 +59,7 @@ describe('AgentablePanel React wrapper', () => {
     });
 
     const reloadSpy = vi.spyOn(ref.current!.element!, 'reload').mockResolvedValue(undefined);
-    await ref.current!.reload;
+    await ref.current!.reload();
     expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 });

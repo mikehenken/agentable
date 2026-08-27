@@ -60,7 +60,25 @@ export function WhiteboardCanvasFrame({
       }: {};
 
   if (chrome.fullscreenMode !== 'canvas-expand' && chrome.frameWidthPercent >= 100 && !chrome.frameBorder) {
-    return <div data-testid="whiteboard-canvas-frame">{children}</div>;
+    // Transparent pass-through, but it is still a flex child of the shell
+    // column and the parent of the tldraw viewport. Without the same flex
+    // contract the styled branch below declares, the viewport's `flex: 1`
+    // has no growing parent and the canvas collapses to toolbar height.
+    return (
+      <div
+        data-testid="whiteboard-canvas-frame"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+          height: '100%',
+        }}
+      >
+        {children}
+      </div>
+    );
   }
 
   return (

@@ -4,7 +4,7 @@ import {
   useState,
   type ReactElement,
 } from 'react';
-import { t } from '../../i18n';
+import { en, t } from '../../i18n';
 import { bootstrapSessionLocale } from '../../i18n/bootstrapSessionLocale';
 import { EmbedPanelApprovalLayer } from './EmbedPanelApprovalLayer';
 import { createCanvasHost, type CanvasHost } from '../../panels/host';
@@ -51,11 +51,11 @@ function resolvePanelTitle(
     return titleOverride.trim();
   }
   const metaTitle = resolved.definition.meta.title;
-  if (
-    metaTitle.startsWith('career.') ||
-    metaTitle.startsWith('agents.') ||
-    metaTitle.startsWith('chrome.')
-  ) {
+  // Translate anything that is a real catalog key. The previous hardcoded
+  // prefix allowlist (career./agents./chrome.) silently leaked raw keys for
+  // packs added later — the support pack rendered the literal string
+  // `support.panels.inbox.title` as its panel title.
+  if (Object.prototype.hasOwnProperty.call(en, metaTitle)) {
     return t(metaTitle as Parameters<typeof t>[0]);
   }
   return metaTitle;

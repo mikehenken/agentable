@@ -45,7 +45,10 @@ function applyPanelAttributes(
     panel.setAttribute('config-url', params.configUrl);
     panel.configUrl = params.configUrl;
   }
-  panel.setAttribute('data-skip-react-mount', '');
+  // NOTE: `data-skip-react-mount` is a test-only escape hatch that loads
+  // config but never renders. Setting it here left the iframe surface
+  // permanently blank (example 07), which is the opposite of this module's
+  // job — mounting the panel. Nothing downstream removes it or mounts later.
   if (params.panelDataUrl) {
     panel.panelDataUrl = params.panelDataUrl;
   }

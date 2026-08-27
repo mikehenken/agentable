@@ -15,7 +15,7 @@ const embedRoot = path.resolve(repoRoot, 'embed');
 export default defineConfig({
   root: embedRoot,
   base: './',
-  plugins: [react],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(repoRoot, './src'),

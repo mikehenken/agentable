@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Agentable iframe embed host</title>
-    <link rel="stylesheet" href="./agentable-panel.css" />
+    <!-- agentable-panel ships its styles inside the bundle (Lit static
+         styles), so there is no sibling stylesheet to load. Linking one
+         only produced a 404 in the deployed gallery. -->
   </head>
   <body>
     <script type="module" src="../src/embed/iframe/iframeHostEntry.ts"></script>

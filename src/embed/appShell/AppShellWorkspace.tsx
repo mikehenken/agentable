@@ -104,7 +104,7 @@ export function AppShellWorkspace({
   useEffect(() => () => engine.destroy(), [engine]);
 
   const adapterSources = useMemo(() => new Set<string>(CAREER_SOURCE_NAMES), []);
-  const registeredPanelIds = useMemo(() => new Set(registry.ids), [registry]);
+  const registeredPanelIds = useMemo(() => new Set(registry.ids()), [registry]);
 
   /** Validated once per definition set; specs are static, so this never needs to re-run. */
   const normalizedSpecs = useMemo(() => {

@@ -33,6 +33,7 @@
         </nav>
 
         <div class="nav-actions">
+          <a class="nav-cta nav-cta--link" href="./career-canvas.html">Open career canvas</a>
           <button type="button" class="nav-cta" data-scroll-agent>Explore open roles</button>
           <button
             id="menu-toggle"
@@ -757,6 +758,7 @@
               canvas-bounds="1200x800"
               canvas-zoom="locked"
               light-canvas
+              mock-chat
               voice-enabled
               snap-grid
             ></agentable-whiteboard>
@@ -854,13 +856,13 @@
 
       const telemetry = document.getElementById('telemetry');
 
-      function whiteboardShadowRoot {
+      function whiteboardShadowRoot() {
         const host = document.querySelector('agentable-whiteboard');
         return host?.shadowRoot ?? null;
       }
 
-      function collectJobTitles {
-        const root = whiteboardShadowRoot;
+      function collectJobTitles() {
+        const root = whiteboardShadowRoot();
         if (!root) {
           return [];
         }
@@ -868,8 +870,8 @@
         return JOB_TITLES.filter((title) => text.includes(title));
       }
 
-      function hasSearchAndFilters {
-        const root = whiteboardShadowRoot;
+      function hasSearchAndFilters() {
+        const root = whiteboardShadowRoot();
         if (!root) {
           return false;
         }
@@ -879,12 +881,12 @@
         return Boolean(panel && search);
       }
 
-      function refreshGalleryReady {
+      function refreshGalleryReady() {
         const host = document.querySelector('agentable-whiteboard');
         const theme = host?.hasAttribute('light-canvas') ? 'career-light': null;
         const themeCareerLight = theme === 'career-light' || theme === null;
-        const jobTitlesFound = collectJobTitles;
-        const searchAndFilters = hasSearchAndFilters;
+        const jobTitlesFound = collectJobTitles();
+        const searchAndFilters = hasSearchAndFilters();
         const mounted = Boolean(host);
 
         window.__galleryReady = {
@@ -911,7 +913,7 @@
         return window.__galleryReady;
       }
 
-      function openGalleryOpenPositions {
+      function openGalleryOpenPositions() {
         window.dispatchEvent(
           new CustomEvent('landi-whiteboard-open-panel', {
             detail: { panelId: 'open-positions', focus: true, preserveZoom: true },
@@ -922,43 +924,43 @@
 
       function waitForWhiteboardShell(timeoutMs = 20000) {
         return new Promise((resolve) => {
-          const started = Date.now;
-          const tick = => {
-            const root = whiteboardShadowRoot;
+          const started = Date.now();
+          const tick = () => {
+            const root = whiteboardShadowRoot();
             const ready = Boolean(root?.querySelector('[data-testid="whiteboard-shell"]'));
-            if (ready || Date.now - started >= timeoutMs) {
+            if (ready || Date.now() - started >= timeoutMs) {
               resolve(ready);
               return;
             }
             requestAnimationFrame(tick);
           };
-          tick;
+          tick();
         });
       }
 
-      async function seedGalleryOpenPositions {
-        const shellReady = await waitForWhiteboardShell;
+      async function seedGalleryOpenPositions() {
+        const shellReady = await waitForWhiteboardShell();
         if (!shellReady) {
-          return refreshGalleryReady;
+          return refreshGalleryReady();
         }
         await new Promise((resolve) => window.setTimeout(resolve, 600));
-        openGalleryOpenPositions;
-        const started = Date.now;
-        while (Date.now - started < 20000) {
-          const state = refreshGalleryReady;
+        openGalleryOpenPositions();
+        const started = Date.now();
+        while (Date.now() - started < 20000) {
+          const state = refreshGalleryReady();
           if (state.ok) {
             return state;
           }
           await new Promise((resolve) => window.setTimeout(resolve, 500));
         }
-        return refreshGalleryReady;
+        return refreshGalleryReady();
       }
 
       window.__refreshGalleryReady = refreshGalleryReady;
 
       customElements.whenDefined('agentable-whiteboard').then(() => {
-        refreshGalleryReady;
-        void seedGalleryOpenPositions;
+        refreshGalleryReady();
+        void seedGalleryOpenPositions();
       });
     </script>
   </body>

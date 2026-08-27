@@ -884,7 +884,7 @@ export async function runMeridianGalleryStep(
     }
 
     if (step === 'document') {
-      const document = await runMeridianDocumentGalleryStep(bundle());
+      const document = await runMeridianDocumentGalleryStep(bundle);
       return {
         ok: document.ok,
         steps: [{ ok: document.ok, toolName: 'document', result: document }],
@@ -924,13 +924,13 @@ export async function runMeridianGalleryStep(
   if (bundle === null) {
     return {...wireframe,
       ok: false,
-      steps: [...wireframe().steps,
+      steps: [...wireframe.steps,
         { ok: false, toolName: 'full', error: 'Meridian gallery host unavailable' },
       ],
     };
   }
 
-  const document = await runMeridianDocumentGalleryStep(bundle());
+  const document = await runMeridianDocumentGalleryStep(bundle);
   const exportResult = await runMeridianExportGalleryStep(document.panelId, bundle);
   const builtDocument = buildMeridianDocumentPayload();
   const hitl = await runMeridianHitlGalleryStep(document.panelId, builtDocument, bundle);

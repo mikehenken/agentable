@@ -186,7 +186,7 @@ export function createAgentablePanelEventBindings(
   return PANEL_EVENT_BINDINGS.map(({ event, handler }) => ({
     event,
     listener: ((nativeEvent: Event) => {
-      const callback = readHandlers[handler];
+      const callback = readHandlers()[handler];
       if (callback) {
         (callback as (event: Event) => void)(nativeEvent);
       }

@@ -355,18 +355,21 @@ export function ChatPanel({ chromeless = false }: ChatPanelProps = {}) {
     <div
       style={
         {
-          // Dark vibe theme surface — shared `--vibe-*` tokens drive the
-          // ui-ai primitives (prompt input, suggestions, reasoning, persona).
+          // Shared `--vibe-*` tokens drive the ui-ai primitives (prompt
+          // input, suggestions, reasoning, persona). They default to the dark
+          // vibe surface but resolve through `--landi-chat-*`, which the
+          // light canvas defines, so an embed with `light-canvas` does not
+          // get a dark composer floating on a light board.
           '--vibe-accent': 'var(--landi-color-primary, #ff6b57)',
           '--vibe-accent-2': 'var(--landi-color-primary-light, #ff8f6b)',
-          '--vibe-surface': '#1a1a1a',
-          '--vibe-border': 'rgba(255,255,255,0.09)',
-          '--vibe-text': '#ececec',
-          '--vibe-text-muted': '#9a9a9a',
+          '--vibe-surface': 'var(--landi-chat-surface, #1a1a1a)',
+          '--vibe-border': 'var(--landi-chat-border, rgba(255,255,255,0.09))',
+          '--vibe-text': 'var(--landi-chat-text, #ececec)',
+          '--vibe-text-muted': 'var(--landi-chat-text-muted, #9a9a9a)',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          background: '#121212',
+          background: 'var(--landi-chat-background, #121212)',
           color: 'var(--vibe-text)',
         } as React.CSSProperties
       }

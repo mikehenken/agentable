@@ -9,7 +9,7 @@ const repoRoot = path.resolve(__dirname);
 
 export default defineConfig({
   base: './',
-  plugins: [react],
+  plugins: [react()],
   root: repoRoot,
   resolve: {
     alias: {

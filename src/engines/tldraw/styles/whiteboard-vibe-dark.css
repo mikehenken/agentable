@@ -27,20 +27,20 @@
   color: #fafafa;
 }
 
-/* Align tldraw native dark canvas with Landi vibe background. */.whiteboard-shell--vibe-dark.tl-theme__dark {
+/* Align tldraw native dark canvas with Landi vibe background. */.whiteboard-shell--vibe-dark .tl-theme__dark {
   --tl-color-background: #121212;
   --tl-color-selection-stroke: rgb(255 140 122 / 0.55);
   --tl-color-selection-fill: rgb(255 140 122 / 0.08);
   --tl-color-hint: rgb(147 197 253 / 0.45);
 }
 
-/* Softer selection chrome for panel manipulation in vibe-dark. */.whiteboard-shell--vibe-dark.tl-selection__fg__outline {
+/* Softer selection chrome for panel manipulation in vibe-dark. */.whiteboard-shell--vibe-dark .tl-selection__fg__outline {
   stroke: rgb(255 140 122 / 0.45);
   stroke-width: calc(1px * var(--tl-scale));
-}.whiteboard-shell--vibe-dark.tl-corner-handle,.whiteboard-shell--vibe-dark.tl-text-handle {
+}.whiteboard-shell--vibe-dark .tl-corner-handle,.whiteboard-shell--vibe-dark .tl-text-handle {
   stroke: rgb(255 140 122 / 0.5);
   stroke-width: calc(1px * var(--tl-scale));
-}.whiteboard-shell--vibe-dark.tl-watermark_SEE-LICENSE {
+}.whiteboard-shell--vibe-dark .tl-watermark_SEE-LICENSE {
   opacity: 0.35;
 }
 
@@ -49,7 +49,7 @@
  * top-center of the canvas, giving it a floating-toolbar feel. Scoped to the
  * vibe-dark shell so it never leaks into other tldraw hosts. The `.tl-container`
  * is `position: relative`, so absolute centering anchors to the canvas.
- */.whiteboard-shell--vibe-dark.tlui-menu-zone {
+ */.whiteboard-shell--vibe-dark .tlui-menu-zone {
   position: absolute;
   top: 8px;
   left: 50%;
@@ -72,13 +72,13 @@
   overscroll-behavior: contain;
 }.panel-shape__body[data-full-bleed='true'] {
   overflow: hidden;
-}.whiteboard-shell--vibe-dark.panel-shape__body {
+}.whiteboard-shell--vibe-dark .panel-shape__body {
   background: #121212;
-}.whiteboard-shell--vibe-dark.panel-shape--full-bleed {
+}.whiteboard-shell--vibe-dark .panel-shape--full-bleed {
   background: #121212;
   border-radius: 0;
   box-shadow: none;
-}.whiteboard-shell--vibe-dark.panel-shape--full-bleed.panel-shape__body {
+}.whiteboard-shell--vibe-dark .panel-shape--full-bleed .panel-shape__body {
   background: transparent;
 }
 
@@ -100,7 +100,7 @@
   color: var(--landi-color-text, #1A1A1A);
   user-select: none;
   cursor: grab;
-}.whiteboard-shell--vibe-dark.panel-chrome {
+}.whiteboard-shell--vibe-dark .panel-chrome {
   border-bottom-color: var(--landi-color-border, #3a3a3a);
   background: #1a1a1a;
   color: var(--landi-color-text, #fafafa);
@@ -148,9 +148,9 @@
 }.panel-chrome__btn:hover {
   background: var(--landi-color-hover, rgb(0 0 0 / 0.04));
   color: var(--landi-color-text, #1A1A1A);
-}.whiteboard-shell--vibe-dark.panel-chrome__btn {
+}.whiteboard-shell--vibe-dark .panel-chrome__btn {
   color: var(--landi-color-text-muted, #a1a1aa);
-}.whiteboard-shell--vibe-dark.panel-chrome__btn:hover {
+}.whiteboard-shell--vibe-dark .panel-chrome__btn:hover {
   background: var(--landi-color-hover, rgb(255 255 255 / 0.06));
   color: var(--landi-color-text, #fafafa);
 }.panel-chrome__btn:focus-visible {
@@ -170,11 +170,11 @@
   pointer-events: all;
 }.panel-approval-card--destructive {
   background: linear-gradient(180deg, rgb(239 68 68 / 0.12) 0%, var(--landi-color-surface-subtle, #F7F9F9) 100%);
-}.whiteboard-shell--vibe-dark.panel-approval-card {
+}.whiteboard-shell--vibe-dark .panel-approval-card {
   border-bottom-color: var(--landi-color-border, #3a3a3a);
   background: linear-gradient(180deg, rgb(255 107 87 / 0.12) 0%, rgb(26 26 26 / 0.96) 100%);
   color: var(--landi-color-text, #fafafa);
-}.whiteboard-shell--vibe-dark.panel-approval-card--destructive {
+}.whiteboard-shell--vibe-dark .panel-approval-card--destructive {
   background: linear-gradient(180deg, rgb(239 68 68 / 0.16) 0%, rgb(26 26 26 / 0.96) 100%);
 }.panel-approval-card__header {
   display: flex;
@@ -191,7 +191,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-}.panel-approval-card--destructive.panel-approval-card__badge {
+}.panel-approval-card--destructive .panel-approval-card__badge {
   background: rgb(239 68 68 / 0.22);
   color: #f87171;
 }.panel-approval-card__title {
@@ -210,7 +210,7 @@
   border: 1px solid var(--landi-color-border, #E5E5E0);
   border-radius: 6px;
   background: rgb(0 0 0 / 0.03);
-}.whiteboard-shell--vibe-dark.panel-approval-card__diff {
+}.whiteboard-shell--vibe-dark .panel-approval-card__diff {
   border-color: var(--landi-color-border, #3a3a3a);
   background: rgb(0 0 0 / 0.25);
 }.panel-approval-card__diff-table {
@@ -222,7 +222,7 @@
   border-bottom: 1px solid var(--landi-color-border, #E5E5E0);
   vertical-align: top;
   text-align: left;
-}.whiteboard-shell--vibe-dark.panel-approval-card__diff-table th,.whiteboard-shell--vibe-dark.panel-approval-card__diff-table td {
+}.whiteboard-shell--vibe-dark .panel-approval-card__diff-table th,.whiteboard-shell--vibe-dark .panel-approval-card__diff-table td {
   border-bottom-color: rgb(255 255 255 / 0.06);
 }.panel-approval-card__diff-value {
   margin: 0;
@@ -232,9 +232,9 @@
   color: #b91c1c;
 }.panel-approval-card__diff-value--after {
   color: #047857;
-}.whiteboard-shell--vibe-dark.panel-approval-card__diff-value {
+}.whiteboard-shell--vibe-dark .panel-approval-card__diff-value {
   color: #fca5a5;
-}.whiteboard-shell--vibe-dark.panel-approval-card__diff-value--after {
+}.whiteboard-shell--vibe-dark .panel-approval-card__diff-value--after {
   color: #86efac;
 }.panel-approval-card__actions {
   display: flex;
@@ -256,7 +256,7 @@
   background: transparent;
   border: 1px solid var(--landi-color-border, #E5E5E0);
   color: var(--landi-color-text-muted, #9CA3AF);
-}.whiteboard-shell--vibe-dark.panel-approval-card__btn--ghost {
+}.whiteboard-shell--vibe-dark .panel-approval-card__btn--ghost {
   border-color: var(--landi-color-border, #3a3a3a);
   color: var(--landi-color-text-muted, #a1a1aa);
 }.panel-field--agent-filled {
@@ -301,25 +301,25 @@
   );
 }.panel-shape__drag-rail:active {
   cursor: grabbing;
-}.panel-shape__drag-handle,.draft-preview-panel__header.panel-shape__drag-handle {
+}.panel-shape__drag-handle,.draft-preview-panel__header .panel-shape__drag-handle {
   cursor: grab;
   touch-action: none;
   user-select: none;
-}.panel-shape__drag-handle:active,.draft-preview-panel__header.panel-shape__drag-handle:active {
+}.panel-shape__drag-handle:active,.draft-preview-panel__header .panel-shape__drag-handle:active {
   cursor: grabbing;
-}.whiteboard-shell--vibe-dark.panel-shape:not(.panel-shape--full-bleed) {
+}.whiteboard-shell--vibe-dark .panel-shape:not(.panel-shape--full-bleed) {
   background: var(--landi-color-surface, #1f1f1f);
   border-color: var(--landi-color-border, #3a3a3a);
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
 }
 
-/* Responsive chrome — compact TopBar + prevent bottom toolbar overflow on narrow embeds. */.whiteboard-shell--compact.tlui-toolbar,.whiteboard-shell--compact.tlui-main-toolbar {
+/* Responsive chrome — compact TopBar + prevent bottom toolbar overflow on narrow embeds. */.whiteboard-shell--compact .tlui-toolbar,.whiteboard-shell--compact .tlui-main-toolbar {
   max-width: min(100vw, 100%);
   overflow-x: auto;
   scrollbar-width: thin;
-}.whiteboard-shell--compact.tlui-toolbar__tools,.whiteboard-shell--compact.tlui-main-toolbar__tools {
+}.whiteboard-shell--compact .tlui-toolbar__tools,.whiteboard-shell--compact .tlui-main-toolbar__tools {
   flex-wrap: nowrap;
-}.whiteboard-tldraw-viewport.tlui-layout__bottom {
+}.whiteboard-tldraw-viewport .tlui-layout__bottom {
   max-width: 100%;
 }.whiteboard-tldraw-viewport {
   overflow: hidden;
@@ -329,9 +329,9 @@
   min-height: 0;
 }
 
-/* Career light canvas — dot grid + warm workspace surface (Archipelago/Helios ref). */.whiteboard-tldraw-viewport.tl-background {
+/* Career light canvas — dot grid + warm workspace surface (Archipelago/Helios ref). */.whiteboard-tldraw-viewport .tl-background {
   background-color: var(--landi-color-background, #f0f0ec) !important;
-}.whiteboard-shell:not(.whiteboard-shell--vibe-dark).whiteboard-tldraw-viewport.tl-grid {
+}.whiteboard-shell:not(.whiteboard-shell--vibe-dark) .whiteboard-tldraw-viewport .tl-grid {
   opacity: 0.55;
 }
 
@@ -356,6 +356,6 @@
   );
 }
 
-/* Bottom toolbar — ensure native title tooltips from tldraw labels remain readable. */.whiteboard-tldraw-viewport.tlui-button[title] {
+/* Bottom toolbar — ensure native title tooltips from tldraw labels remain readable. */.whiteboard-tldraw-viewport .tlui-button[title] {
   cursor: pointer;
 }

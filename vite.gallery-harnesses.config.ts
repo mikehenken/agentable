@@ -9,7 +9,7 @@ const repoRoot = path.resolve(__dirname);
 
 export default defineConfig({
   base: '/gallery/',
-  plugins: [react],
+  plugins: [react()],
   resolve: {
     alias: {
       'agentable-canvas/react/panel': path.resolve(repoRoot, './src/react/AgentablePanel.tsx'),
