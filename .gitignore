@@ -27,7 +27,10 @@ dist-ssr
 *.sln
 *.sw?
 .playwright-mcp/
-.cursor/
+.cursor/*
+!.cursor/skills/
+.cursor/skills/*
+!.cursor/skills/agentable-framework/
 vitest.config.ts.timestamp-*
 
 # Never commit env files or their backups (real API keys)
