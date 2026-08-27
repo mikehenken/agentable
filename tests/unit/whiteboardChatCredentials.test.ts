@@ -27,13 +27,21 @@ describe('whiteboardChatCredentials ', () => {
     const whiteboard = document.querySelector('agentable-whiteboard');
     whiteboard?.setAttribute('api-endpoint', 'https://chat.example.test/proxy');
 
-    expect(resolveWhiteboardLiveChatEnabled).toBe(true);
+    expect(resolveWhiteboardLiveChatEnabled()).toBe(true);
     const options = createWhiteboardChatClientOptions({ systemInstruction: 'test' });
     expect(options?.proxyUrl).toBe('https://chat.example.test/proxy');
   });
 
   it('returns null client options when no credentials are configured', () => {
-    expect(resolveWhiteboardLiveChatEnabled).toBe(false);
-    expect(createWhiteboardChatClientOptions).toBeNull();
+    expect(resolveWhiteboardLiveChatEnabled()).toBe(false);
+    expect(createWhiteboardChatClientOptions()).toBeNull();
+  });
+
+  it('passes a configured api key straight through as the api key source', () => {
+    vi.stubEnv('VITE_LANDI_MOCK', '');
+    vi.stubEnv('VITE_GEMINI_API_KEY', 'test-key-123');
+
+    const options = createWhiteboardChatClientOptions({ systemInstruction: 'test' });
+    expect(options?.apiKeySource).toBe('test-key-123');
   });
 });

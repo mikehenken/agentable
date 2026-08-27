@@ -160,7 +160,7 @@ export function createWhiteboardChatClientOptions(
             throw new Error('token mint missing token field');
           }
           return data.token;
-        }: creds().apiKey,
+        }: creds.apiKey,
     systemInstruction,
     toolContext: input.toolContext,
     maxToolRoundTrips,
