@@ -5,6 +5,40 @@ All notable changes to `agentable-canvas` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] — 2026-08-27
+
+### Fixed
+
+- **Embedded canvases fill their host again.** `WhiteboardCanvasFrame`'s
+  pass-through branch rendered an unstyled wrapper, so the tldraw viewport had
+  no flex parent and collapsed to toolbar height. Embeds also take more of the
+  available screen space by default.
+- **Panel chrome is styled on untyped panels.** Every chrome rule was gated
+  behind a `data-theme`, so panels embedded without one rendered raw titles
+  and unstyled minimise/close controls. Added a base layer, and the panel
+  surface now fills the host height.
+- **Examples that never ran.** The deployed gallery never received
+  `dist/gallery`, so examples 06 and 09 failed to load their harness. The
+  iframe host set a test-only flag that loads config but never renders,
+  leaving example 07 blank. The app shell spread a method instead of calling
+  it. Panel titles were translated only for three hardcoded key prefixes, so
+  packs added later rendered raw message keys.
+- **Invalid CSS restored.** Descendant combinators, `:host(...)` glued to
+  descendant classes, and missing slashes in `rgb()` alpha and `aspect-ratio`
+  values — each of which voided the whole declaration, producing unstyled
+  chrome, transparent surfaces and uneven grid tiles.
+- **Chat no longer renders provider errors.** The examples ship without
+  credentials by design and now opt into mock explicitly via `mock-chat`;
+  deployments that simply forgot a key still fail loudly. Light-canvas embeds
+  define the chat palette, so the composer is no longer dark on a light board.
+
+### Added
+
+- Standalone `career-canvas.html` route in example 04 — the canvas as a full
+  page, without the surrounding marketing chrome.
+- Restored the `dev:p8-demo` and `build:gallery-harnesses` scripts referenced
+  by the example READMEs.
+
 ## [0.3.0] — 2026-08-26
 
 ### Changed
