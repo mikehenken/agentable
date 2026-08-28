@@ -66,12 +66,16 @@ describe('catalog-charts bundle boundary', () => {
     }
   });
 
-  it('documents PASS_WITH_GAPS evidence when embed bundle is over legacy budget', () => {
+  it('keeps the core embed bundle under an enforced size budget', () => {
+    // The charts add-on stays out of the core import graph (cases above);
+    // the companion invariant is that the core embed bundle itself remains
+    // budget-gated, so a boundary regression cannot hide inside an ungated
+    // bundle. Previously this case pinned the stale legacy "950" KB literal,
+    // which documented a bypassed budget rather than guarding anything.
     const bundleScript = readFileSync(
       path.join(ROOT, 'scripts/check-bundle-size.mjs'),
       'utf8');
-    expect(bundleScript).toContain('950');
-     // Charts add-on is excluded from core import graph; legacy embed budget remains a separate track.
-    expect(FORBIDDEN_IMPORT_PATTERNS.length).toBeGreaterThan(0);
+    expect(bundleScript).toContain("'embed/agentable-canvas.js'");
+    expect(bundleScript).toContain("'embed/agentable-canvas.umd.js'");
   });
 });

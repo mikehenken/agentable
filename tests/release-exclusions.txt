@@ -76,5 +76,4 @@ tests/unit/toolCallDevLogger.test.ts
 tests/unit/undoReversalModel.test.ts
 tests/unit/whiteboardChromeInsets.test.ts
 tests/unit/whiteboardLayoutChrome.test.ts
-tests/unit/widgetBundleBudgets.test.ts
 tests/unit/worldModel.test.ts
