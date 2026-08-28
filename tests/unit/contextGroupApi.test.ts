@@ -8,12 +8,12 @@ import {
   collectContextGroupFrameIdsFromStoreDiff,
   collectPanelShapeIdsFromStoreDiff,
   contextGroupFrameId,
-  ensurePanelInSiteContextFrame,
+  ensurePanelInContextFrame,
   fitContextGroupFrameToContent,
-  fitSiteContextGroupForShape,
+  fitContextFrameGroupForShape,
   groupPanelsWithContext,
-  resolveSiteIdFromPanelData,
-} from '../../src/whiteboard/context/contextGroupApi';
+  resolveContextIdFromPanelData,
+} from '../../src/engines/tldraw/context/contextGroupApi';
 
 vi.mock('tldraw', async (importOriginal) => {
   const actual = await importOriginal<typeof import('tldraw')>();
@@ -128,11 +128,11 @@ function seedSitePanels(editor: StubEditor): void {
   });
 }
 
-describe('resolveSiteIdFromPanelData', () => {
+describe('resolveContextIdFromPanelData', () => {
   it('reads __siteId and siteId', () => {
-    expect(resolveSiteIdFromPanelData({ __siteId: 'a' })).toBe('a');
-    expect(resolveSiteIdFromPanelData({ siteId: 'b' })).toBe('b');
-    expect(resolveSiteIdFromPanelData({})).toBeNull();
+    expect(resolveContextIdFromPanelData({ __siteId: 'a' })).toBe('a');
+    expect(resolveContextIdFromPanelData({ siteId: 'b' })).toBe('b');
+    expect(resolveContextIdFromPanelData({})).toBeNull();
   });
 });
 
@@ -203,7 +203,7 @@ describe('groupPanelsWithContext', () => {
   });
 });
 
-describe('ensurePanelInSiteContextFrame', () => {
+describe('ensurePanelInContextFrame', () => {
   it('reparents a site panel into the site frame when it drifted to the page', () => {
     const editor = makeStubEditor();
     seedSitePanels(editor);
@@ -217,7 +217,7 @@ describe('ensurePanelInSiteContextFrame', () => {
       props: { w: 400, h: 500, panelId: 'chat', data: { __siteId: 'site-1' } },
     });
 
-    ensurePanelInSiteContextFrame(editor as never, 'shape:panel:chat', frameId);
+    ensurePanelInContextFrame(editor as never, 'shape:panel:chat', frameId);
     expect(editor.reparentShapes).toHaveBeenCalledWith(['shape:panel:chat'], frameId);
   });
 });
@@ -241,7 +241,7 @@ describe('fitContextGroupFrameToContent', () => {
   });
 });
 
-describe('fitSiteContextGroupForShape', () => {
+describe('fitContextFrameGroupForShape', () => {
   it('fits the site frame for a site-scoped panel', () => {
     const editor = makeStubEditor();
     seedSitePanels(editor);
@@ -256,7 +256,7 @@ describe('fitSiteContextGroupForShape', () => {
       meta: { landiContextGroup: { kind: 'site', id: 'site-1' } },
     });
 
-    expect(fitSiteContextGroupForShape(editor as never, 'shape:panel:chat')).toBe(true);
+    expect(fitContextFrameGroupForShape(editor as never, 'shape:panel:chat')).toBe(true);
   });
 });
 

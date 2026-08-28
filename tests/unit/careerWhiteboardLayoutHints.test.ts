@@ -33,8 +33,8 @@ describe('career whiteboard layout hints', () => {
 
   it('list panel ids and arrange order match legacy career hardcoding', () => {
     applyCareerWhiteboardLayoutHints();
-    expect([...getWhiteboardListPanelIds].sort()).toEqual([...CAREER_PANEL_IDS].sort());
-    expect(getWhiteboardPanelArrangeOrder).toEqual(LEGACY_CAREER_ARRANGE_ORDER);
+    expect([...getWhiteboardListPanelIds()].sort()).toEqual([...CAREER_PANEL_IDS].sort());
+    expect(getWhiteboardPanelArrangeOrder()).toEqual(LEGACY_CAREER_ARRANGE_ORDER);
 
     expect(compareWhiteboardPanelArrangeOrder('chat', 'open-positions')).toBeLessThan(0);
     expect(compareWhiteboardPanelArrangeOrder('open-positions', 'applications')).toBeLessThan(0);
@@ -50,11 +50,11 @@ describe('career whiteboard layout hints', () => {
       tenant: 'archipelago',
     });
 
-    expect(getWhiteboardPanelArrangeOrder).toEqual(LEGACY_CAREER_ARRANGE_ORDER);
+    expect(getWhiteboardPanelArrangeOrder()).toEqual(LEGACY_CAREER_ARRANGE_ORDER);
 
     disposeCareerWhiteboardHostBundle(bundle);
 
-    expect(getWhiteboardPanelArrangeOrder).toEqual(['chat']);
+    expect(getWhiteboardPanelArrangeOrder()).toEqual(['chat']);
     expect(getWhiteboardListPanelIds().size).toBe(0);
   });
 });

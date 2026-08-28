@@ -2,11 +2,11 @@
  * Unit tests for site context auto-arrange.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
-import { GRID_GUTTER } from '../../src/canvas/gridLayout';
+import { contextGroupFrameId } from '../../src/engines/tldraw/context/contextGroupApi';
+import { GRID_GUTTER } from '../../src/layout/gridLayout';
 
-vi.mock('../../src/whiteboard/context/contextGroupApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../src/whiteboard/context/contextGroupApi')>();
+vi.mock('../../src/engines/tldraw/context/contextGroupApi', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/engines/tldraw/context/contextGroupApi')>();
   return {...actual,
     fitContextGroupFrameToContent: vi.fn(() => true),
   };
@@ -15,20 +15,20 @@ vi.mock('../../src/whiteboard/context/contextGroupApi', async (importOriginal) =
 const setPanelDock = vi.fn();
 const applyPanelDock = vi.fn(() => true);
 
-vi.mock('../../src/whiteboard/context/panelDockEngine', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../src/whiteboard/context/panelDockEngine')>();
+vi.mock('../../src/engines/tldraw/context/panelDockEngine', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/engines/tldraw/context/panelDockEngine')>();
   return {...actual,
     setPanelDock: (...args: unknown[]) => setPanelDock(...args),
     applyPanelDock: (...args: unknown[]) => applyPanelDock(...args),
   };
 });
 
-import { autoArrangeSiteContextPanels } from '../../src/whiteboard/context/siteContextAutoArrange';
+import { autoArrangeContextFramePanels } from '../../src/engines/tldraw/context/contextFrameAutoArrange';
 
 const SITE_ID = 'site-abc';
 const FRAME_ID = contextGroupFrameId({ kind: 'site', id: SITE_ID });
 
-describe('autoArrangeSiteContextPanels', () => {
+describe('autoArrangeContextFramePanels', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -96,7 +96,7 @@ describe('autoArrangeSiteContextPanels', () => {
       updateShape,
     };
 
-    const arranged = autoArrangeSiteContextPanels(editor as never, SITE_ID);
+    const arranged = autoArrangeContextFramePanels(editor as never, SITE_ID);
     expect(arranged).toBe(true);
 
     const briefUpdate = updateShape.mock.calls.find(
@@ -176,7 +176,7 @@ describe('autoArrangeSiteContextPanels', () => {
       updateShape,
     };
 
-    const arranged = autoArrangeSiteContextPanels(editor as never, SITE_ID);
+    const arranged = autoArrangeContextFramePanels(editor as never, SITE_ID);
     expect(arranged).toBe(true);
     expect(updateShape).toHaveBeenCalled();
 
@@ -243,14 +243,14 @@ describe('autoArrangeSiteContextPanels', () => {
     });
 
     const editor = makeEditor();
-    autoArrangeSiteContextPanels(editor as never, SITE_ID);
+    autoArrangeContextFramePanels(editor as never, SITE_ID);
     const firstPreviewW = updateShape.mock.calls.find(
       (call) => call[0]?.id === 'shape:panel:web-preview')?.[0]?.props?.w;
 
     updateShape.mockClear();
     frameBounds.w = 700;
     frameBounds.h = 500;
-    autoArrangeSiteContextPanels(editor as never, SITE_ID);
+    autoArrangeContextFramePanels(editor as never, SITE_ID);
     const secondPreviewW = updateShape.mock.calls.find(
       (call) => call[0]?.id === 'shape:panel:web-preview')?.[0]?.props?.w;
 

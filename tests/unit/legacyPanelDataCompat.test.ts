@@ -3,7 +3,7 @@
  * reserved `__*` panel data keys, must load with chrome behavior
  * identical to its typed-options twin. The whiteboard derives all chrome
  * rendering from `resolvePanelChrome`, labels and search text from
- * `shapeTextUtils`, and site grouping from `resolveSiteIdFromPanelData`,
+ * `shapeTextUtils`, and site grouping from `resolveContextIdFromPanelData`,
  * so equal outputs across those seams for both documents proves the
  * legacy document behaves exactly like the typed one.
  */
@@ -13,13 +13,13 @@ import {
   __resetPanelShapeApiForTests__,
   bindEditor,
   loadWhiteboardSnapshot,
-} from '../../src/whiteboard/shapes/panelShapeApi';
+} from '../../src/engines/tldraw/shapes/panelShapeApi';
 import { resolvePanelChrome } from '../../src/panels/chrome';
-import { resolveSiteIdFromPanelData } from '../../src/whiteboard/context/contextGroupApi';
+import { resolveContextIdFromPanelData } from '../../src/engines/tldraw/context/contextGroupApi';
 import {
   getShapeLabel,
   getShapeSearchText,
-} from '../../src/whiteboard/utils/shapeTextUtils';
+} from '../../src/engines/tldraw/utils/shapeTextUtils';
 
 interface PanelRecord {
   id: string;
@@ -118,10 +118,10 @@ describe('legacy document load', () => {
   it('resolves identical site grouping for every legacy record and its typed twin', () => {
     for (const [index, legacy] of LEGACY_RECORDS.entries()) {
       const typed = TYPED_RECORDS[index]!;
-      expect(resolveSiteIdFromPanelData(legacy.props.data)).toBe(
-        resolveSiteIdFromPanelData(typed.props.data));
+      expect(resolveContextIdFromPanelData(legacy.props.data)).toBe(
+        resolveContextIdFromPanelData(typed.props.data));
     }
-    expect(resolveSiteIdFromPanelData(LEGACY_RECORDS[0]!.props.data)).toBe('site-1');
+    expect(resolveContextIdFromPanelData(LEGACY_RECORDS[0]!.props.data)).toBe('site-1');
   });
 
   it('produces identical labels and search text for both documents', () => {

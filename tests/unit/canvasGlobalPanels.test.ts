@@ -6,10 +6,10 @@ import { createShapeId } from 'tldraw';
 import {
   CANVAS_GLOBAL_PANEL_IDS,
   ejectGlobalPanelsFromSiteFrames,
-  filterSiteContextPanelIds,
+  filterContextFramePanelIds,
   isCanvasGlobalPanel,
-} from '../../src/whiteboard/context/canvasGlobalPanels';
-import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
+} from '../../src/engines/tldraw/context/canvasGlobalPanels';
+import { contextGroupFrameId } from '../../src/engines/tldraw/context/contextGroupApi';
 
 describe('canvasGlobalPanels', () => {
   it('identifies all-sites as a canvas-global panel', () => {
@@ -19,7 +19,7 @@ describe('canvasGlobalPanels', () => {
   });
 
   it('filters global panels from site grouping lists', () => {
-    expect(filterSiteContextPanelIds(['chat', 'all-sites', 'web-preview'])).toEqual([
+    expect(filterContextFramePanelIds(['chat', 'all-sites', 'web-preview'])).toEqual([
       'chat',
       'web-preview',
     ]);

@@ -14,7 +14,7 @@ describe('bindCareerToolbarCustomActions', () => {
   });
 
   it('maps dock-menu to journey open-panel intent', () => {
-    const dispose = bindCareerToolbarCustomActions;
+    const dispose = bindCareerToolbarCustomActions();
     const handler = vi.fn();
     window.addEventListener(WHITEBOARD_OPEN_PANEL_EVENT, handler);
 
@@ -35,7 +35,7 @@ describe('bindCareerToolbarCustomActions', () => {
   });
 
   it('maps recent-activity to recent-activity panel intent', () => {
-    const dispose = bindCareerToolbarCustomActions;
+    const dispose = bindCareerToolbarCustomActions();
     const handler = vi.fn();
     window.addEventListener(WHITEBOARD_OPEN_PANEL_EVENT, handler);
 
@@ -56,7 +56,7 @@ describe('bindCareerToolbarCustomActions', () => {
   });
 
   it('maps screenshot to screenshot canvas intent', () => {
-    const dispose = bindCareerToolbarCustomActions;
+    const dispose = bindCareerToolbarCustomActions();
     const handler = vi.fn();
     window.addEventListener(WHITEBOARD_SCREENSHOT_CANVAS_EVENT, handler);
 

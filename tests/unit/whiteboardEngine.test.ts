@@ -23,11 +23,11 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import type { Editor } from 'tldraw';
-import { createWhiteboardEngine } from '../../src/whiteboard/engine';
+import { createWhiteboardEngine } from '../../src/engines/tldraw/engine';
 import {
   bindEditor,
   __resetPanelShapeApiForTests__,
-} from '../../src/whiteboard/shapes/panelShapeApi';
+} from '../../src/engines/tldraw/shapes/panelShapeApi';
 import { createCanvasHost } from '../../src/panels/host';
 import type { WorkspaceLayoutRecord } from '../../src/engine/types';
 
@@ -62,6 +62,7 @@ interface StubEditor {
   deleteShapes: Mock;
   getShapePageBounds: Mock;
   getViewportPageBounds: Mock;
+  getViewportScreenBounds: Mock;
   getCurrentPageShapes: Mock;
   getSelectedShapeIds: Mock;
   select: Mock;
@@ -111,6 +112,9 @@ function makeStubEditor(): StubEditor {
       return { x: shape.x, y: shape.y, w: shape.props.w, h: shape.props.h };
     }),
     getViewportPageBounds: vi.fn(() => ({ x: 0, y: 0, w: 1440, h: 900 })),
+    // Live engine's setCamera clamps via clampCameraForMode, which reads
+    // the screen viewport (no-op clamp in the default infinite mode).
+    getViewportScreenBounds: vi.fn(() => ({ x: 0, y: 0, w: 1440, h: 900 })),
     getCurrentPageShapes: vi.fn(() => Array.from(shapes.values())),
     getSelectedShapeIds: vi.fn(() => [] as string[]),
     select: vi.fn(),

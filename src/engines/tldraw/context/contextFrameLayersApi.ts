@@ -75,7 +75,7 @@ export function resolveSelectedContextFrameLayerId(
     listContextFrameLayers(editor, siteId).map((layer) => layer.shapeId));
   if (layerIds.size === 0) return null;
 
-  for (const shapeId of editor.getSelectedShapeIds) {
+  for (const shapeId of editor.getSelectedShapeIds()) {
     if (layerIds.has(shapeId)) return shapeId;
   }
 

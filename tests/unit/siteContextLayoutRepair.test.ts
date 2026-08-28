@@ -3,12 +3,12 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
-  isSiteContextLayoutInvalid,
-  repairSiteContextFrameLayout,
-} from '../../src/whiteboard/context/siteContextLayoutRepair';
-import { GRID_GUTTER, getPanelGridSpan, GRID_ROW_HEIGHT } from '../../src/canvas/gridLayout';
-import { gridSpanToSize } from '../../src/canvas/gridLayout';
-import { computeInitialSiteContextLayout } from '../../src/whiteboard/context/siteContextPanelLayout';
+  isContextFrameLayoutInvalid,
+  repairContextFrameLayout,
+} from '../../src/engines/tldraw/context/contextFrameLayoutRepair';
+import { GRID_GUTTER, getPanelGridSpan, GRID_ROW_HEIGHT } from '../../src/layout/gridLayout';
+import { gridSpanToSize } from '../../src/layout/gridLayout';
+import { computeInitialContextFrameLayout } from '../../src/engines/tldraw/context/contextFramePanelLayout';
 
 function maxBriefHeight(): number {
   const span = getPanelGridSpan('project-brief');
@@ -19,9 +19,9 @@ function maxBriefHeight(): number {
   );
 }
 
-describe('isSiteContextLayoutInvalid', () => {
+describe('isContextFrameLayoutInvalid', () => {
   it('returns false for a valid non-overlapping grid layout', () => {
-    const placements = computeInitialSiteContextLayout(
+    const placements = computeInitialContextFrameLayout(
       { x: 0, y: 0, maxWidth: 1200, maxHeight: 900 },
       { includeChat: false, includeBrief: true, includePreview: true, includeFiles: true },
     );
@@ -30,7 +30,7 @@ describe('isSiteContextLayoutInvalid', () => {
       shapeId: `shape:panel:${i}` as never,
       rect: { x: p.x, y: p.y, w: p.w, h: p.h },
     }));
-    expect(isSiteContextLayoutInvalid(panels)).toBe(false);
+    expect(isContextFrameLayoutInvalid(panels)).toBe(false);
   });
 
   it('returns true when brief exceeds row-span height cap', () => {
@@ -40,7 +40,7 @@ describe('isSiteContextLayoutInvalid', () => {
       false,
     );
     expect(
-      isSiteContextLayoutInvalid([
+      isContextFrameLayoutInvalid([
         {
           panelId: 'project-brief',
           shapeId: 'shape:panel:brief' as never,
@@ -53,7 +53,7 @@ describe('isSiteContextLayoutInvalid', () => {
 
   it('returns true when two panels overlap', () => {
     expect(
-      isSiteContextLayoutInvalid([
+      isContextFrameLayoutInvalid([
         {
           panelId: 'project-brief',
           shapeId: 'shape:panel:brief' as never,
@@ -69,7 +69,7 @@ describe('isSiteContextLayoutInvalid', () => {
   });
 });
 
-describe('repairSiteContextFrameLayout', () => {
+describe('repairContextFrameLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -108,13 +108,13 @@ describe('repairSiteContextFrameLayout', () => {
       updateShape,
     };
 
-    const repaired = repairSiteContextFrameLayout(editor as never, 'shape:frame:site' as never);
+    const repaired = repairContextFrameLayout(editor as never, 'shape:frame:site' as never);
     expect(repaired).toBe(true);
     expect(updateShape).toHaveBeenCalled();
   });
 
   it('skips repair when layout is already valid', () => {
-    const placements = computeInitialSiteContextLayout(
+    const placements = computeInitialContextFrameLayout(
       { x: 40, y: 40, maxWidth: 1120, maxHeight: 820 },
       { includeChat: false, includeBrief: true, includePreview: true, includeFiles: false },
     );
@@ -146,7 +146,7 @@ describe('repairSiteContextFrameLayout', () => {
       updateShape,
     };
 
-    expect(repairSiteContextFrameLayout(editor as never, 'shape:frame:site' as never)).toBe(false);
+    expect(repairContextFrameLayout(editor as never, 'shape:frame:site' as never)).toBe(false);
     expect(updateShape).not.toHaveBeenCalled();
   });
 });

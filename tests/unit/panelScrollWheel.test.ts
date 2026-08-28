@@ -4,7 +4,7 @@ import {
   handlePanelWheelCapture,
   panelCapturesHorizontalWheel,
   resolvePanelWheelBlock,
-} from '../../src/whiteboard/shapes/panelScrollWheel';
+} from '../../src/engines/tldraw/shapes/panelScrollWheel';
 
 function makeScrollable(
   height: number,

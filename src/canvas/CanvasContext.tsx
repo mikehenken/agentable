@@ -1,6 +1,11 @@
 /**
  * CanvasContext — tenant configuration injection for the OSS canvas.
  *
+ * @deprecated Legacy substrate copy. Tenant configuration for the live
+ * engine flows through `src/embed/` config merge and `src/panels/` hosts;
+ * `src/canvas` retirement is a deferred owner decision. Fix bugs in the
+ * canonical path first.
+ *
  * The OSS canvas core ships zero tenant-specific defaults. Brand voice,
  * system prompt, scenarios, etc. are injected by the consuming tenant
  * wrapper at the React root via `<CanvasProvider>`.

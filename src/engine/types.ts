@@ -7,7 +7,7 @@
  * digest, and capability flags for engine-only features. Everything above
  * the engine (host, panels runtime, tools, chrome) consumes these types
  * and speaks plain data; no engine-specific type (tldraw or otherwise)
- * appears here. The tldraw implementation lives in src/whiteboard/, the
+ * appears here. The tldraw implementation lives in src/engines/tldraw/, the
  * only directory allowed to import tldraw (CI-enforced boundary rule).
  *
  * This module is types-only by design: it must be importable from any
