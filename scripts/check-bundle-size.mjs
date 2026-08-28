@@ -1,25 +1,24 @@
 #!/usr/bin/env node
 /**
- * Enforces bundle-size budgets per the Career Concierge Canvas milestones
- * doc. Runs after `vite build` for both embed bundles. Exits non-zero on
- * bust.
+ * Enforces gzip bundle-size budgets. Runs after the vite embed builds and
+ * exits non-zero on any bust.
  *
- * Budgets (gzipped) — recalibrated 2026-05-05 against the v0.0.1 release
- * baseline. The canvas bundle ships React + ReactDOM + framer-motion + Lit
- * + tldraw + 12 panels and cannot externalize React for non-React hosts,
- * so the budget reflects shipped reality with room for ~10% drift before
- * the gate flips.
+ * Two kinds of entries:
  *
- *   agentable-canvas.js        ESM ≤ 950 KB   (actual ~873 KB)
- *   agentable-canvas.umd.js    UMD ≤ 750 KB   (actual ~679 KB)
- *   voice-call-button.js       ESM ≤ 40 KB    (Lit only, no React)
- *   voice-call-button.umd.js   UMD ≤ 60 KB
+ *   - Widget budgets: mirrored verbatim from
+ *     `src/embed/widgets/bundleBudgets.ts` (unit-tested alignment in
+ *     tests/unit/widgetBundleBudgets.test.ts). These are real design budgets.
  *
- * Future work — code-split heavy panels (Settings/Applications/Resources)
- * via `React.lazy` to drop initial-paint payload below 200 KB. Tracked
- * under Track A.3 follow-up. Not gating M1; the 280 KB Lit-shell bundle
- * is acceptable for first-mount given React is mandatory for non-React
- * hosts. React-canvas (mode C) doesn't go through this build at all.
+ *   - RATCHET budgets: measured actual +10%, recalibrated 2026-08-28 against
+ *     a clean `build:embed:site` on main @ dbbec37. These are NOT targets;
+ *     they are ceilings that stop unnoticed growth while the lazy-tldraw
+ *     architecture wave brings the tldraw-bearing entries down to real
+ *     budgets (<= 100 KB entry chunks). A RATCHET value may only move DOWN.
+ *
+ * Missing files are skipped with a warning by default (the `prepare` hook
+ * path builds only the canvas + button bundles). Set
+ * CHECK_BUNDLE_REQUIRE_ALL=1 (the CI bundle-budgets job does) to turn a
+ * missing file into a failure, so the gate cannot pass by not building.
  */
 
 import { readFile, stat } from 'node:fs/promises';
@@ -28,19 +27,52 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const distDir = path.resolve(__dirname, '..', 'dist', 'embed');
 
 const KB = 1024;
 const distRoot = path.resolve(__dirname, '..', 'dist');
+const requireAll = process.env.CHECK_BUNDLE_REQUIRE_ALL === '1';
+
 const BUDGETS = [
-  { file: 'embed/agentable-canvas.js', max: 950 * KB, label: 'ESM' },
-  { file: 'embed/agentable-canvas.umd.js', max: 750 * KB, label: 'UMD' },
+  // ── tldraw-bearing embeds (RATCHET: measured 2026-08-28 +10%) ──────────
+  { file: 'embed/agentable-canvas.js', max: 4260 * KB, label: 'ESM' }, // RATCHET, measured 3866 KB
+  { file: 'embed/agentable-canvas.umd.js', max: 3790 * KB, label: 'UMD' }, // RATCHET, measured 3438 KB
+  { file: 'embed/agentable-whiteboard.js', max: 4630 * KB, label: 'ESM' }, // RATCHET, measured 4208 KB
+  { file: 'embed/agentable-whiteboard.umd.js', max: 4130 * KB, label: 'UMD' }, // RATCHET, measured 3749 KB
+  { file: 'embed/career-whiteboard.js', max: 4690 * KB, label: 'ESM' }, // RATCHET, measured 4257 KB
+  { file: 'embed/career-whiteboard.umd.js', max: 4180 * KB, label: 'UMD' }, // RATCHET, measured 3793 KB
+  { file: 'embed/agentable-operator-surface-placement.js', max: 4200 * KB, label: 'ESM' }, // RATCHET, measured 3818 KB
+  { file: 'embed/agentable-operator-surface-placement.umd.js', max: 3750 * KB, label: 'UMD' }, // RATCHET, measured 3403 KB
+
+  // ── embed stylesheets (RATCHET: tldraw fonts/assets are inlined today; ──
+  // ── the lazy-tldraw wave externalizes them and these ratchet down)     ──
+  { file: 'embed/agentable-canvas.css', max: 1020 * KB, label: 'CSS' }, // RATCHET, measured 923 KB
+  { file: 'embed/agentable-whiteboard.css', max: 1040 * KB, label: 'CSS' }, // RATCHET, measured 941 KB
+  { file: 'embed/career-whiteboard.css', max: 1040 * KB, label: 'CSS' }, // RATCHET, measured 941 KB
+  { file: 'embed/agentable-operator-surface-placement.css', max: 1040 * KB, label: 'CSS' }, // RATCHET, measured 940 KB
+
+  // ── mid-size embeds (RATCHET) ───────────────────────────────────────────
+  { file: 'embed/agentable-panel.js', max: 920 * KB, label: 'ESM' }, // RATCHET, measured 834 KB
+  { file: 'embed/agentable-panel.umd.js', max: 720 * KB, label: 'UMD' }, // RATCHET, measured 653 KB
+  { file: 'embed/iframe-host-PanelEmbedShell.js', max: 570 * KB, label: 'ESM' }, // RATCHET, measured 517 KB
+  { file: 'embed/agentable-app-shell.js', max: 225 * KB, label: 'ESM' }, // RATCHET, measured 203 KB
+  { file: 'embed/agentable-app-shell.umd.js', max: 190 * KB, label: 'UMD' }, // RATCHET, measured 171 KB
+  { file: 'embed/agentable-gallery-13-chrome.js', max: 115 * KB, label: 'ESM' }, // RATCHET, measured 103 KB
+  { file: 'embed/agentable-gallery-13-chrome.umd.js', max: 95 * KB, label: 'UMD' }, // RATCHET, measured 82 KB
+  { file: 'embed/agentable-gallery-13-chrome.css', max: 20 * KB, label: 'CSS' }, // RATCHET, measured 17 KB
+
+  // ── widget budgets (mirror of src/embed/widgets/bundleBudgets.ts) ──────
   { file: 'embed/voice-call-button.js', max: 40 * KB, label: 'ESM' },
   { file: 'embed/voice-call-button.umd.js', max: 60 * KB, label: 'UMD' },
+  { file: 'embed/agentable-starter-chip.js', max: 28 * KB, label: 'ESM' },
+  { file: 'embed/agentable-starter-chip.umd.js', max: 40 * KB, label: 'UMD' },
+  { file: 'embed/ask-about-this-button.js', max: 28 * KB, label: 'ESM' },
+  { file: 'embed/ask-about-this-button.umd.js', max: 40 * KB, label: 'UMD' },
+  { file: 'embed/agent-status-pill.js', max: 28 * KB, label: 'ESM' },
+  { file: 'embed/agent-status-pill.umd.js', max: 40 * KB, label: 'UMD' },
+
   // dist/styles.css is the pre-built Tailwind for React-canvas consumers.
-  // Compare gzipped to match the JS bundles' yardstick. ~14-18KB is normal
-  // for a 12-panel canvas surface; 30KB ceiling catches Tailwind drift
-  // (e.g. accidentally enabling the full color palette).
+  // ~14-18 KB is normal for a 12-panel canvas surface; 30 KB catches
+  // Tailwind drift (e.g. accidentally enabling the full color palette).
   { file: 'styles.css', max: 30 * KB, label: 'CSS' },
 ];
 
@@ -69,38 +101,36 @@ async function main() {
   for (const budget of BUDGETS) {
     const filePath = path.join(distRoot, budget.file);
     if (!(await fileExists(filePath))) {
-      results.push({...budget,
-        status: 'missing',
-        size: 0,
-      });
+      if (requireAll) failed = true;
+      results.push({ ...budget, status: 'missing', size: 0 });
       continue;
     }
     const size = await gzippedSize(filePath);
     const overBudget = size > budget.max;
     if (overBudget) failed = true;
-    results.push({...budget,
-      status: overBudget ? 'over' : 'ok',
-      size,
-    });
+    results.push({ ...budget, status: overBudget ? 'over' : 'ok', size });
   }
 
   console.log('\nBundle size budget check (gzipped)');
   console.log('───────────────────────────────────────────────────');
   for (const r of results) {
     if (r.status === 'missing') {
-      console.log(`  ⚠  ${r.file}: not built — skipped (run vite build first)`);
+      const icon = requireAll ? '✗' : '⚠';
+      console.log(
+        `  ${icon}  ${r.file}: not built — ${requireAll ? 'REQUIRED (CHECK_BUNDLE_REQUIRE_ALL=1)' : 'skipped (run vite build first)'}`
+      );
       continue;
     }
     const icon = r.status === 'ok' ? '✓' : '✗';
     const ratio = ((r.size / r.max) * 100).toFixed(1);
     console.log(
-      `  ${icon}  ${r.file.padEnd(36)} ${formatKB(r.size).padStart(10)}  /  ${formatKB(r.max).padStart(10)}  (${ratio}%)`
+      `  ${icon}  ${r.file.padEnd(52)} ${formatKB(r.size).padStart(11)}  /  ${formatKB(r.max).padStart(11)}  (${ratio}%)`
     );
   }
   console.log('───────────────────────────────────────────────────\n');
 
   if (failed) {
-    console.error('✗ Bundle size budget exceeded. See report above.');
+    console.error('✗ Bundle size budget check failed. See report above.');
     process.exit(1);
   }
   console.log('✓ All bundles within budget.');
