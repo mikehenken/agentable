@@ -1,10 +1,11 @@
 /**
- * Repo-wide tldraw import boundary: tldraw, in values or types, may
- * be imported only from the engine directory, `src/whiteboard/` at P0
- * (moving to `src/engines/tldraw/` with the P4 rename wave). Every other
- * module under `src/` must stay engine-agnostic, and `src/engine/` (the
- * SPI contract) additionally must not reach into the whiteboard
- * implementation.
+ * Repo-wide tldraw import boundary: tldraw, in values or types, may be
+ * imported only from the engine implementation directory,
+ * `src/engines/tldraw/` (the P4 rename wave's home; the pre-rename
+ * `src/whiteboard/` fork was deleted in the 2026-08 remediation Wave 3).
+ * Every other module under `src/` must stay engine-agnostic, and
+ * `src/engine/` (the SPI contract) additionally must not reach into the
+ * tldraw implementation.
  *
  * Same mechanics as panelsImportBoundary: walk the tree, collect each
  * import, export-from, dynamic import, and require specifier via the
@@ -25,7 +26,7 @@ function srcDir(): string {
 }
 
 function engineImplDir(): string {
- return resolve(srcDir(), 'whiteboard');
+ return resolve(srcDir(), 'engines', 'tldraw');
 }
 
 function engineSpiDir(): string {
@@ -89,9 +90,9 @@ function isTldrawSpecifier(specifier: string): boolean {
  return false;
 }
 
-function isWhiteboardSpecifier(specifier: string, importingFile: string): boolean {
+function isEngineImplSpecifier(specifier: string, importingFile: string): boolean {
  if (specifier.startsWith('@/')) {
- return specifier.startsWith('@/whiteboard');
+ return specifier.startsWith('@/engines/tldraw');
  }
  if (specifier.startsWith('.')) {
  const target = resolve(dirname(importingFile), specifier);
@@ -119,18 +120,18 @@ describe('src-wide tldraw engine boundary', () => {
  const moduleNames = listModules(srcDir()).map((file) => relative(srcDir(), file));
  expect(moduleNames).toContain(join('engine', 'types.ts'));
  expect(moduleNames).toContain(join('panels', 'host.ts'));
- expect(moduleNames).toContain(join('whiteboard', 'engine.ts'));
+ expect(moduleNames).toContain(join('engines', 'tldraw', 'engine.ts'));
  });
 
- it('keeps every module outside src/whiteboard free of tldraw imports', () => {
+ it('keeps every module outside src/engines/tldraw free of tldraw imports', () => {
  expect(collectTldrawViolations()).toEqual([]);
  });
 
- it('keeps the engine SPI directory free of whiteboard imports', () => {
+ it('keeps the engine SPI directory free of engine-impl imports', () => {
  const offending = listModules(engineSpiDir()).flatMap((file) => {
  const found = collectSpecifiers(file, readFileSync(file, 'utf8')).filter(
  (specifier) =>
- isTldrawSpecifier(specifier) || isWhiteboardSpecifier(specifier, file),
+ isTldrawSpecifier(specifier) || isEngineImplSpecifier(specifier, file),
  );
  return found.map((specifier) => `${relative(srcDir(), file)} -> ${specifier}`);
  });
@@ -164,28 +165,28 @@ describe('src-wide tldraw engine boundary', () => {
  expect(tldrawViolationsIn(nested, fixture)).toEqual(['tldraw']);
  });
 
- it('allows tldraw imports inside src/whiteboard only', () => {
+ it('allows tldraw imports inside src/engines/tldraw only', () => {
  const allowedFile = join(engineImplDir(), 'shapes', 'fixture.ts');
  expect(isInside(allowedFile, engineImplDir())).toBe(true);
- const outsideFile = join(srcDir(), 'whiteboard-lookalike', 'fixture.ts');
+ const outsideFile = join(srcDir(), 'engines', 'tldraw-lookalike', 'fixture.ts');
  expect(isInside(outsideFile, engineImplDir())).toBe(false);
  });
 
- it('detects whiteboard imports from the engine SPI directory', () => {
+ it('detects engine-impl imports from the engine SPI directory', () => {
  const fixturePath = join(engineSpiDir(), 'fixture.ts');
  const fixture = [
- "import { openPanelInCanvas } from '../whiteboard/shapes/panelShapeApi';",
- "import { createWhiteboardEngine } from '@/whiteboard/engine';",
+ "import { openPanelInCanvas } from '../engines/tldraw/shapes/panelShapeApi';",
+ "import { createWhiteboardEngine } from '@/engines/tldraw/engine';",
  "import type { JsonObject } from '../panels/types';",
  ].join('\n');
 
  const offending = collectSpecifiers(fixturePath, fixture).filter(
  (specifier) =>
- isTldrawSpecifier(specifier) || isWhiteboardSpecifier(specifier, fixturePath),
+ isTldrawSpecifier(specifier) || isEngineImplSpecifier(specifier, fixturePath),
  );
  expect(offending).toEqual([
- '../whiteboard/shapes/panelShapeApi',
- '@/whiteboard/engine',
+ '../engines/tldraw/shapes/panelShapeApi',
+ '@/engines/tldraw/engine',
  ]);
  });
 });

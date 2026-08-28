@@ -42,7 +42,7 @@ import {
   updatePanelProps,
   updatePanelChrome,
   __resetPanelShapeApiForTests__,
-} from '../../src/whiteboard/shapes/panelShapeApi';
+} from '../../src/engines/tldraw/shapes/panelShapeApi';
 import { resolvePanelChrome } from '../../src/panels/chrome';
 
 // ──────────────────────────────────────────────────────────────────────
@@ -75,6 +75,9 @@ interface StubEditor {
   getSelectedShapeIds: Mock;
   select: Mock;
   zoomToBounds: Mock;
+  bringToFront: Mock;
+  getCamera: Mock;
+  setCamera: Mock;
   // Test-only inspector
   __shapes: Map<string, StubShape>;
 }
@@ -118,6 +121,12 @@ function makeStubEditor(): StubEditor {
     getSelectedShapeIds: vi.fn(() => [] as string[]),
     select: vi.fn(),
     zoomToBounds: vi.fn(),
+    // Live openPanelInCanvas raises the panel via bringToFront and
+    // focuses with a zoom-preserving camera pan (the deleted
+    // src/whiteboard fork neither stacked nor read the camera).
+    bringToFront: vi.fn(),
+    getCamera: vi.fn(() => ({ x: 0, y: 0, z: 1 })),
+    setCamera: vi.fn(),
   };
 
   return editor;
@@ -280,11 +289,23 @@ describe('openPanelInCanvas — create + idempotency', () => {
     });
   });
 
-  it('focuses the shape via select + zoomToBounds when focus !== false', () => {
+  it('focuses the shape via select, preserving zoom by default', () => {
+    // Live contract: default focus selects the shape and pans the camera
+    // only if the panel sits outside the viewport; it never rezooms. The
+    // deleted src/whiteboard fork always called zoomToBounds instead.
     const editor = makeStubEditor();
     bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
 
     openPanelInCanvas('open-positions');
+    expect(editor.select).toHaveBeenCalledTimes(1);
+    expect(editor.zoomToBounds).not.toHaveBeenCalled();
+  });
+
+  it('rezooms to the shape when preserveZoom is explicitly disabled', () => {
+    const editor = makeStubEditor();
+    bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
+
+    openPanelInCanvas('open-positions', { preserveZoom: false });
     expect(editor.select).toHaveBeenCalledTimes(1);
     expect(editor.zoomToBounds).toHaveBeenCalledTimes(1);
   });
@@ -418,7 +439,9 @@ describe('focusPanelInCanvas', () => {
     expect(editor.select).not.toHaveBeenCalled();
   });
 
-  it('selects + zooms when the shape exists', () => {
+  it('selects the shape and preserves zoom by default when it exists', () => {
+    // Live contract mirrors openPanelInCanvas focus: select + raise, camera
+    // pan only when out of view. Explicit preserveZoom=false rezooms.
     const editor = makeStubEditor();
     bindEditor(editor as unknown as Parameters<typeof bindEditor>[0]);
     openPanelInCanvas('open-positions', { focus: false }); // create without focusing
@@ -427,6 +450,9 @@ describe('focusPanelInCanvas', () => {
 
     expect(focusPanelInCanvas('open-positions')).toBe(true);
     expect(editor.select).toHaveBeenCalledTimes(1);
+    expect(editor.zoomToBounds).not.toHaveBeenCalled();
+
+    expect(focusPanelInCanvas('open-positions', false)).toBe(true);
     expect(editor.zoomToBounds).toHaveBeenCalledTimes(1);
   });
 });

@@ -4,14 +4,14 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { createShapeId } from 'tldraw';
 import {
-  deleteSiteContextLayer,
-  isSiteContextLayerVisible,
-  listSiteContextLayers,
-  resolveSelectedSiteContextLayerId,
-  selectSiteContextLayer,
-  toggleSiteContextLayerVisibility,
-} from '../../src/whiteboard/context/siteContextLayersApi';
-import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
+  deleteContextFrameLayer,
+  isContextFrameLayerVisible,
+  listContextFrameLayers,
+  resolveSelectedContextFrameLayerId,
+  selectContextFrameLayer,
+  toggleContextFrameLayerVisibility,
+} from '../../src/engines/tldraw/context/contextFrameLayersApi';
+import { contextGroupFrameId } from '../../src/engines/tldraw/context/contextGroupApi';
 
 vi.mock('tldraw', async (importOriginal) => {
   const actual = await importOriginal<typeof import('tldraw')>();
@@ -99,14 +99,14 @@ describe('siteContextLayersApi', () => {
     });
   });
 
-  it('isSiteContextLayerVisible treats near-zero opacity as hidden', () => {
-    expect(isSiteContextLayerVisible({ opacity: 1 } as never)).toBe(true);
-    expect(isSiteContextLayerVisible({ opacity: 0 } as never)).toBe(false);
-    expect(isSiteContextLayerVisible({ opacity: 0.02 } as never)).toBe(false);
+  it('isContextFrameLayerVisible treats near-zero opacity as hidden', () => {
+    expect(isContextFrameLayerVisible({ opacity: 1 } as never)).toBe(true);
+    expect(isContextFrameLayerVisible({ opacity: 0 } as never)).toBe(false);
+    expect(isContextFrameLayerVisible({ opacity: 0.02 } as never)).toBe(false);
   });
 
   it('lists panel children of the site context frame', () => {
-    const layers = listSiteContextLayers(editor as never, siteId);
+    const layers = listContextFrameLayers(editor as never, siteId);
     expect(layers).toHaveLength(2);
     expect(layers[0]).toMatchObject({
       shapeId: 'shape:panel:chat',
@@ -124,7 +124,7 @@ describe('siteContextLayersApi', () => {
 
   it('returns empty list when site frame is missing', () => {
     editor.__shapes.delete(frameId);
-    expect(listSiteContextLayers(editor as never, siteId)).toEqual([]);
+    expect(listContextFrameLayers(editor as never, siteId)).toEqual([]);
   });
 
   it('toggles visibility via opacity', () => {
@@ -137,7 +137,7 @@ describe('siteContextLayersApi', () => {
       props: { panelId: 'chat', data: {} },
     });
 
-    toggleSiteContextLayerVisibility(editor as never, shapeId);
+    toggleContextFrameLayerVisibility(editor as never, shapeId);
     expect(editor.updateShape).toHaveBeenCalledWith({
       id: shapeId,
       type: 'panel',
@@ -152,7 +152,7 @@ describe('siteContextLayersApi', () => {
       props: { panelId: 'chat', data: {} },
     });
 
-    toggleSiteContextLayerVisibility(editor as never, shapeId);
+    toggleContextFrameLayerVisibility(editor as never, shapeId);
     expect(editor.updateShape).toHaveBeenLastCalledWith({
       id: shapeId,
       type: 'panel',
@@ -170,32 +170,35 @@ describe('siteContextLayersApi', () => {
       props: { panelId: 'chat', data: {} },
     });
 
-    const deleted = deleteSiteContextLayer(editor as never, shapeId, siteId);
+    const deleted = deleteContextFrameLayer(editor as never, shapeId, siteId);
     expect(deleted).toBe(true);
     expect(editor.deleteShapes).toHaveBeenCalledWith([shapeId]);
     expect(editor.__shapes.has(shapeId)).toBe(false);
   });
 
-  it('resolveSelectedSiteContextLayerId returns the first selected listed layer', () => {
+  // Regression (Wave 3): contextFrameLayersApi once iterated
+  // `editor.getSelectedShapeIds` without calling it, throwing
+  // "not iterable" at runtime. These two tests pin the fixed call.
+  it('resolveSelectedContextFrameLayerId returns the first selected listed layer', () => {
     editor.getSelectedShapeIds.mockReturnValue(['shape:panel:brief', 'shape:panel:chat']);
-    expect(resolveSelectedSiteContextLayerId(editor as never, siteId)).toBe('shape:panel:brief');
+    expect(resolveSelectedContextFrameLayerId(editor as never, siteId)).toBe('shape:panel:brief');
   });
 
-  it('resolveSelectedSiteContextLayerId returns null when selection is outside site layers', () => {
+  it('resolveSelectedContextFrameLayerId returns null when selection is outside site layers', () => {
     editor.getSelectedShapeIds.mockReturnValue(['shape:unrelated']);
-    expect(resolveSelectedSiteContextLayerId(editor as never, siteId)).toBeNull();
+    expect(resolveSelectedContextFrameLayerId(editor as never, siteId)).toBeNull();
   });
 
-  it('selectSiteContextLayer selects and focuses a listed layer', () => {
-    const selected = selectSiteContextLayer(editor as never, 'shape:panel:chat', siteId);
+  it('selectContextFrameLayer selects and focuses a listed layer', () => {
+    const selected = selectContextFrameLayer(editor as never, 'shape:panel:chat', siteId);
     expect(selected).toBe(true);
     expect(editor.setCurrentTool).toHaveBeenCalledWith('select');
     expect(editor.select).toHaveBeenCalledWith('shape:panel:chat');
     expect(editor.zoomToBounds).toHaveBeenCalled();
   });
 
-  it('selectSiteContextLayer rejects shapes that are not site context layers', () => {
-    const selected = selectSiteContextLayer(editor as never, 'shape:unrelated', siteId);
+  it('selectContextFrameLayer rejects shapes that are not site context layers', () => {
+    const selected = selectContextFrameLayer(editor as never, 'shape:unrelated', siteId);
     expect(selected).toBe(false);
     expect(editor.select).not.toHaveBeenCalled();
   });

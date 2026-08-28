@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createShapeId } from 'tldraw';
 import {
-  findSiteContextGroupForShape,
-  resolveSiteContextFromSelection,
+  findContextFrameGroupForShape,
+  resolveContextFrameFromSelection,
   contextGroupFrameId,
   CONTEXT_META_KEY,
-} from '../../src/whiteboard/context/contextGroupApi';
+} from '../../src/engines/tldraw/context/contextGroupApi';
 
 interface StubShape {
   id: string;
@@ -26,7 +26,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe('resolveSiteContextFromSelection', () => {
+describe('resolveContextFrameFromSelection', () => {
   it('returns site context when site frame is selected', () => {
     const frameId = contextGroupFrameId({ kind: 'site', id: 'site-abc' });
     const shapes = new Map<string, StubShape>([
@@ -44,7 +44,7 @@ describe('resolveSiteContextFromSelection', () => {
     const editor = makeEditor(shapes);
     editor.getSelectedShapeIds = vi.fn(() => [frameId]);
 
-    const result = resolveSiteContextFromSelection(editor as never);
+    const result = resolveContextFrameFromSelection(editor as never);
     expect(result).toEqual({
       siteId: 'site-abc',
       frameId,
@@ -82,10 +82,10 @@ describe('resolveSiteContextFromSelection', () => {
     const editor = makeEditor(shapes);
     editor.getSelectedShapeIds = vi.fn(() => [panelId]);
 
-    const ctx = findSiteContextGroupForShape(editor as never, panelId);
+    const ctx = findContextFrameGroupForShape(editor as never, panelId);
     expect(ctx?.siteId).toBe('site-abc');
 
-    const result = resolveSiteContextFromSelection(editor as never);
+    const result = resolveContextFrameFromSelection(editor as never);
     expect(result?.siteId).toBe('site-abc');
   });
 
@@ -105,6 +105,6 @@ describe('resolveSiteContextFromSelection', () => {
     const editor = makeEditor(shapes);
     editor.getSelectedShapeIds = vi.fn(() => [panelId]);
 
-    expect(resolveSiteContextFromSelection(editor as never)).toBeNull();
+    expect(resolveContextFrameFromSelection(editor as never)).toBeNull();
   });
 });

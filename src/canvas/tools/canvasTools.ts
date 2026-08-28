@@ -31,7 +31,7 @@ import {
   closePanelInCanvas,
   getEditor as getWhiteboardEditor,
   openPanelInCanvas,
-} from '../../whiteboard/shapes/panelShapeApi';
+} from '../../engines/tldraw/shapes/panelShapeApi';
 
 import { emitAgUiStatePatch } from '../protocol/ag-ui';
 import { getHostActions } from '../../panels/tools';

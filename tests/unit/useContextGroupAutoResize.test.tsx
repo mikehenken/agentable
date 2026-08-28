@@ -7,13 +7,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { createShapeId, type Editor } from 'tldraw';
-import { useContextGroupAutoResize } from '../../src/whiteboard/hooks/useContextGroupAutoResize';
+import { useContextGroupAutoResize } from '../../src/engines/tldraw/hooks/useContextGroupAutoResize';
 
-vi.mock('../../src/whiteboard/context/contextGroupApi', () => ({
+vi.mock('../../src/engines/tldraw/context/contextGroupApi', () => ({
   collectPanelShapeIdsFromStoreDiff: vi.fn(() => []),
-  findSiteContextGroupForShape: vi.fn(() => null),
+  findContextFrameGroupForShape: vi.fn(() => null),
   fitContextGroupFrameToContent: vi.fn(),
-  ensurePanelInSiteContextFrame: vi.fn(),
+  ensurePanelInContextFrame: vi.fn(),
 }));
 
 interface StubEditor {

@@ -15,7 +15,7 @@ import {
   DEFAULT_WHITEBOARD_PANEL_REGISTRY,
   resolveWhiteboardPanelLoaders,
   whiteboardLoadersForDefinitions,
-} from '../../src/whiteboard/shapes/whiteboardPanelRegistry';
+} from '../../src/engines/tldraw/shapes/whiteboardPanelRegistry';
 
 const NullPanel: ComponentType<PanelProps> = () => null;
 
@@ -102,6 +102,10 @@ describe('resolveWhiteboardPanelLoaders', () => {
   });
 
   it('prefers the host registry over the loader-map alias', () => {
+    // Live contract (src/engines/tldraw): host definitions MERGE over the
+    // loader map per key instead of replacing it wholesale (the deleted
+    // src/whiteboard fork replaced). Loader-map panels absent from the host
+    // must survive; host loaders win for shared keys.
     const hostPanel = reactDefinition('all-sites');
     const host = createCanvasHost({ engine: stubEngine(), panels: [hostPanel] });
 
@@ -110,7 +114,22 @@ describe('resolveWhiteboardPanelLoaders', () => {
       DEFAULT_WHITEBOARD_PANEL_REGISTRY,
     );
 
-    expect(Object.keys(map)).toEqual(['all-sites']);
+    expect(Object.keys(map).sort()).toEqual(
+      [...Object.keys(DEFAULT_WHITEBOARD_PANEL_REGISTRY), 'all-sites'].sort(),
+    );
     expect(map['all-sites']).toBe(hostPanel.loader);
+  });
+
+  it('lets a host definition override a loader-map entry for the same key', () => {
+    const defaultKey = Object.keys(DEFAULT_WHITEBOARD_PANEL_REGISTRY)[0]!;
+    const hostPanel = reactDefinition(defaultKey);
+    const host = createCanvasHost({ engine: stubEngine(), panels: [hostPanel] });
+
+    const map = resolveWhiteboardPanelLoaders(
+      host,
+      DEFAULT_WHITEBOARD_PANEL_REGISTRY,
+    );
+
+    expect(map[defaultKey]).toBe(hostPanel.loader);
   });
 });

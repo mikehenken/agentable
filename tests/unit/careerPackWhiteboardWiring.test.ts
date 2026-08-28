@@ -39,7 +39,7 @@ describe('career whiteboard wiring (pack)', () => {
     });
 
     expect(result.host).toBeDefined();
-    const navPanelIds = result.navItems?.map((item) => item.panelId).sort ?? [];
+    const navPanelIds = result.navItems?.map((item) => item.panelId).sort() ?? [];
     expect(navPanelIds).toEqual(
       [
         'applications',

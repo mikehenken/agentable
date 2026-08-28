@@ -3,16 +3,16 @@
  */
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import {
-  computeInitialSiteContextLayout,
-  computePanelPlacementInSiteContext,
-  resolveInsertionSiteContext,
+  computeInitialContextFrameLayout,
+  computePanelPlacementInContextFrame,
+  resolveInsertionContextFrame,
   getPanelGridSpan,
   GRID_ROW_HEIGHT,
   GRID_GUTTER,
-} from '../../src/whiteboard/context/siteContextPanelLayout';
-import { createGridSpec, gridSpanToSize } from '../../src/canvas/gridLayout';
-import { contextGroupFrameId } from '../../src/whiteboard/context/contextGroupApi';
-import { rectsOverlapWithGap } from '../../src/canvas/gridLayout';
+} from '../../src/engines/tldraw/context/contextFramePanelLayout';
+import { createGridSpec, gridSpanToSize } from '../../src/layout/gridLayout';
+import { contextGroupFrameId } from '../../src/engines/tldraw/context/contextGroupApi';
+import { rectsOverlapWithGap } from '../../src/layout/gridLayout';
 
 const ANCHOR = { x: 100, y: 80, maxWidth: 1600, maxHeight: 900 };
 
@@ -21,9 +21,9 @@ function maxBriefHeight(): number {
   return span.rowSpan * GRID_ROW_HEIGHT + (span.rowSpan - 1) * GRID_GUTTER;
 }
 
-describe('computeInitialSiteContextLayout', () => {
+describe('computeInitialContextFrameLayout', () => {
   it('places brief, preview, and files without chat on the 12-column grid', () => {
-    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+    const layouts = computeInitialContextFrameLayout(ANCHOR, {
       includeChat: false,
       includeBrief: true,
       includePreview: true,
@@ -50,7 +50,7 @@ describe('computeInitialSiteContextLayout', () => {
   });
 
   it('does not stretch brief to viewport height', () => {
-    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+    const layouts = computeInitialContextFrameLayout(ANCHOR, {
       includeChat: false,
       includeBrief: true,
       includePreview: false,
@@ -64,7 +64,7 @@ describe('computeInitialSiteContextLayout', () => {
   });
 
   it('expands preview to fill remaining columns without chat', () => {
-    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+    const layouts = computeInitialContextFrameLayout(ANCHOR, {
       includeChat: false,
       includeBrief: true,
       includePreview: true,
@@ -85,7 +85,7 @@ describe('computeInitialSiteContextLayout', () => {
   });
 
   it('uses docked chat + brief + preview + files with gutter after chat', () => {
-    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+    const layouts = computeInitialContextFrameLayout(ANCHOR, {
       includeChat: true,
       includeBrief: true,
       includePreview: true,
@@ -109,7 +109,7 @@ describe('computeInitialSiteContextLayout', () => {
   });
 
   it('produces non-overlapping panel placements', () => {
-    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+    const layouts = computeInitialContextFrameLayout(ANCHOR, {
       includeChat: true,
       includeBrief: true,
       includePreview: true,
@@ -127,7 +127,7 @@ describe('computeInitialSiteContextLayout', () => {
   });
 
   it('snaps all coordinates to the 20px grid', () => {
-    const layouts = computeInitialSiteContextLayout(ANCHOR, {
+    const layouts = computeInitialContextFrameLayout(ANCHOR, {
       includeChat: true,
       includeBrief: true,
       includePreview: true,
@@ -216,25 +216,25 @@ function makeLayoutEditor(): StubEditor {
   return editor;
 }
 
-describe('resolveInsertionSiteContext', () => {
+describe('resolveInsertionContextFrame', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('resolves from panel __siteId', () => {
     const editor = makeLayoutEditor();
-    const ctx = resolveInsertionSiteContext(editor as never, { __siteId: 'site-abc' });
+    const ctx = resolveInsertionContextFrame(editor as never, { __siteId: 'site-abc' });
     expect(ctx?.siteId).toBe('site-abc');
   });
 
   it('resolves from selected panel in site group', () => {
     const editor = makeLayoutEditor();
-    const ctx = resolveInsertionSiteContext(editor as never);
+    const ctx = resolveInsertionContextFrame(editor as never);
     expect(ctx?.siteId).toBe('site-abc');
   });
 });
 
-describe('computePanelPlacementInSiteContext', () => {
+describe('computePanelPlacementInContextFrame', () => {
   it('places new panels on the grid without overlapping existing panels', () => {
     const editor = makeLayoutEditor();
     const frameId = contextGroupFrameId({ kind: 'site', id: 'site-abc' });
@@ -244,7 +244,7 @@ describe('computePanelPlacementInSiteContext', () => {
       h: span.rowSpan * GRID_ROW_HEIGHT,
     };
 
-    const placement = computePanelPlacementInSiteContext(
+    const placement = computePanelPlacementInContextFrame(
       editor as never,
       { siteId: 'site-abc', frameId, label: 'Site' },
       size,

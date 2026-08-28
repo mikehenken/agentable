@@ -1,9 +1,9 @@
 /**
- * Unit tests for enterSiteWorkspaceMode zoom-to-fit behavior.
+ * Unit tests for enterContextFrameWorkspaceMode zoom-to-fit behavior.
  */
 import { describe, it, expect, vi } from 'vitest';
 import { createShapeId } from 'tldraw';
-import { enterSiteWorkspaceMode } from '../../src/whiteboard/context/siteWorkspaceMode';
+import { enterContextFrameWorkspaceMode } from '../../src/engines/tldraw/context/contextFrameWorkspaceMode';
 
 const SITE_ID = 'site-zoom';
 const FRAME_ID = createShapeId('context:site:site-zoom');
@@ -22,13 +22,13 @@ function makeEditor(frameBounds: { x: number; y: number; w: number; h: number })
   return { editor, zoomToBounds, select };
 }
 
-describe('enterSiteWorkspaceMode zoom-to-fit', () => {
+describe('enterContextFrameWorkspaceMode zoom-to-fit', () => {
   it('caps zoom at the default 2x for a tiny frame (no absurd over-zoom)', () => {
     // 400x300 would fit at ~2.8x; the default maxZoom caps it at 2x so a tiny
     // group fills the screen without ballooning to a 425%-style over-zoom.
     const { editor, zoomToBounds, select } = makeEditor({ x: 500, y: 500, w: 400, h: 300 });
 
-    const ok = enterSiteWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false });
+    const ok = enterContextFrameWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false });
 
     expect(ok).toBe(true);
     expect(select).toHaveBeenCalledWith(FRAME_ID);
@@ -41,7 +41,7 @@ describe('enterSiteWorkspaceMode zoom-to-fit', () => {
     // ≈ 1.16, i.e. it scales UP past 100% to fill the screen but under the cap.
     const { editor, zoomToBounds } = makeEditor({ x: 200, y: 200, w: 1200, h: 720 });
 
-    enterSiteWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false });
+    enterContextFrameWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false });
 
     const opts = zoomToBounds.mock.calls[0]?.[1];
     const expected = Math.min((1440 - 48) / 1200, (900 - 48) / 720);
@@ -54,7 +54,7 @@ describe('enterSiteWorkspaceMode zoom-to-fit', () => {
     // 4000x3000 with a 24px inset → min((1440-48)/4000, (900-48)/3000) ≈ 0.284.
     const { editor, zoomToBounds } = makeEditor({ x: 0, y: 0, w: 4000, h: 3000 });
 
-    enterSiteWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false });
+    enterContextFrameWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false });
 
     const opts = zoomToBounds.mock.calls[0]?.[1];
     const expected = Math.min((1440 - 48) / 4000, (900 - 48) / 3000);
@@ -65,7 +65,7 @@ describe('enterSiteWorkspaceMode zoom-to-fit', () => {
   it('honors a custom maxZoom option', () => {
     const { editor, zoomToBounds } = makeEditor({ x: 0, y: 0, w: 400, h: 300 });
 
-    enterSiteWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false, maxZoom: 0.75 });
+    enterContextFrameWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false, maxZoom: 0.75 });
 
     const opts = zoomToBounds.mock.calls[0]?.[1];
     expect(opts?.targetZoom).toBe(0.75);
@@ -79,6 +79,6 @@ describe('enterSiteWorkspaceMode zoom-to-fit', () => {
       select: vi.fn(),
       zoomToBounds: vi.fn(),
     };
-    expect(enterSiteWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false })).toBe(false);
+    expect(enterContextFrameWorkspaceMode(editor as never, SITE_ID, { arrangeFirst: false })).toBe(false);
   });
 });

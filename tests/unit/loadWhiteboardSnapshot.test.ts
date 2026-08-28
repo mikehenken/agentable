@@ -3,7 +3,7 @@ import {
   __resetPanelShapeApiForTests__,
   bindEditor,
   loadWhiteboardSnapshot,
-} from '../../src/whiteboard/shapes/panelShapeApi';
+} from '../../src/engines/tldraw/shapes/panelShapeApi';
 
 describe('loadWhiteboardSnapshot', () => {
   beforeEach(() => {

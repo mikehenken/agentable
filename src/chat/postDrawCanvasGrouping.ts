@@ -2,13 +2,16 @@
  * Auto-group shapes created in a single draw_shapes call so each user request
  * produces one movable group (operator iteration).
  */
-import type { TLShapeId } from 'tldraw';
 import { executeTool } from '../agents/tools/canvasTools';
 import {
   withAgentToolContextAsync,
   type AgentToolExecutionContext,
 } from '../agents/agentContext';
 import { getEditor } from '../engines/tldraw/shapes/panelShapeApi';
+
+// Shape-id type derived from the engine surface so this module never
+// imports tldraw, even type-only (engine import boundary).
+type EngineShapeId = Parameters<NonNullable<ReturnType<typeof getEditor>>['getShape']>[0];
 import type { PostDrawProgressHooks } from './postDrawCanvasReview';
 import type { AuthoringArrangeLayout } from '../engine/authoringToolkitTypes';
 import type { AgentDiagramLayoutMode } from '../engine/agentDrawingTypes';
@@ -61,7 +64,7 @@ export function filterGroupableSiblingIds(shapeIds: readonly string[]): string[]
   const byParent = new Map<string, string[]>();
   for (const rawId of shapeIds) {
     if (typeof rawId !== 'string' || rawId.length === 0) continue;
-    const shape = editor.getShape(rawId as TLShapeId);
+    const shape = editor.getShape(rawId as EngineShapeId);
     if (shape === undefined) continue;
     const parentKey = String(shape.parentId ?? 'page');
     const bucket = byParent.get(parentKey) ?? [];

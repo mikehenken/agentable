@@ -7,13 +7,13 @@ import {
   resolveDock,
   resolveDockTree,
   cascadeDockedPanelsInFrame,
-  reflowSiteContextRow,
+  reflowContextFrameRow,
   PANEL_DOCK_META_KEY,
   type PanelDock,
-} from '../../src/whiteboard/context/panelDockEngine';
-import { buildAdminSiteDockTree, sizesFromPlacements } from '../../src/whiteboard/context/siteContextDockPresets';
-import { computeInitialSiteContextLayout } from '../../src/whiteboard/context/siteContextPanelLayout';
-import { CONTEXT_FRAME_PADDING } from '../../src/whiteboard/context/contextGroupApi';
+} from '../../src/engines/tldraw/context/panelDockEngine';
+import { buildAdminSiteDockTree, sizesFromPlacements } from '../../src/engines/tldraw/context/contextFrameDockPresets';
+import { computeInitialContextFrameLayout } from '../../src/engines/tldraw/context/contextFramePanelLayout';
+import { CONTEXT_FRAME_PADDING } from '../../src/engines/tldraw/context/contextGroupApi';
 import { GRID_GUTTER } from '../../src/canvas/gridLayout';
 
 const FRAME_ID = createShapeId('context:site:site-abc');
@@ -92,7 +92,7 @@ describe('resolveDock', () => {
 describe('resolveDockTree admin preset', () => {
   it('produces non-overlapping flush admin layout', () => {
     const editor = makeDockEditor();
-    const placements = computeInitialSiteContextLayout(
+    const placements = computeInitialContextFrameLayout(
       { x: 20, y: 20, maxWidth: 1160, maxHeight: 860 },
       { includeChat: false, includeBrief: true, includePreview: true, includeFiles: true });
     const sizes = sizesFromPlacements(placements);
@@ -279,12 +279,12 @@ function makeReflowEditor(frameRect: { x: number; y: number; w: number; h: numbe
   return { editor, shapes, chatId, previewId, filesId, pageRect };
 }
 
-describe('reflowSiteContextRow', () => {
+describe('reflowContextFrameRow', () => {
   it('docks chat left + files right and centers preview with symmetric gutters', () => {
     const frameRect = { x: 100, y: 200, w: 1000, h: 600 };
     const { editor, chatId, filesId, pageRect } = makeReflowEditor(frameRect);
 
-    reflowSiteContextRow(editor as never, FRAME_ID);
+    reflowContextFrameRow(editor as never, FRAME_ID);
 
     const chat = pageRect(chatId);
     const preview = pageRect(createShapeId('panel:web-preview'));
@@ -306,12 +306,12 @@ describe('reflowSiteContextRow', () => {
     const frameRect = { x: 100, y: 200, w: 1000, h: 600 };
     const { editor, filesId, previewId, pageRect } = makeReflowEditor(frameRect);
 
-    reflowSiteContextRow(editor as never, FRAME_ID);
+    reflowContextFrameRow(editor as never, FRAME_ID);
     const previewWBefore = pageRect(previewId).w;
 
     // Simulate the user widening the group by 400px.
     frameRect.w = 1400;
-    reflowSiteContextRow(editor as never, FRAME_ID);
+    reflowContextFrameRow(editor as never, FRAME_ID);
 
     const files = pageRect(filesId);
     const preview = pageRect(previewId);
@@ -327,7 +327,7 @@ describe('reflowSiteContextRow', () => {
     const { editor, chatId, filesId, previewId, pageRect } = makeReflowEditor(frameRect);
 
     frameRect.h = 900;
-    reflowSiteContextRow(editor as never, FRAME_ID);
+    reflowContextFrameRow(editor as never, FRAME_ID);
 
     expect(pageRect(chatId).h).toBe(900);
     expect(pageRect(previewId).h).toBe(900);

@@ -1,3 +1,9 @@
+/**
+ * @deprecated Legacy substrate copy. The canonical chat panel is
+ * `src/chat/ChatPanel.tsx`; `src/canvas` retirement is a deferred owner
+ * decision (see tests/future/p7t2LegacySubstrateRetirement notes). Fix
+ * bugs in the canonical copy first.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Paperclip, Mic, Send, Sparkles, Wrench, Volume2, AlertTriangle, Copy, Check } from 'lucide-react';
 import { Streamdown } from 'streamdown';

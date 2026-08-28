@@ -4,7 +4,7 @@ import {
   getShapeLabel,
   getShapeSearchText,
   searchCanvasText,
-} from '../../src/whiteboard/utils/shapeTextUtils';
+} from '../../src/engines/tldraw/utils/shapeTextUtils';
 
 function createMockEditor(
   shapes: TLShape[],

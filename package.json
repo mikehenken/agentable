@@ -51,7 +51,7 @@
     ".": "./src/react/index.tsx",
     "./react": "./src/react/index.tsx",
     "./react-canvas": "./src/react-canvas/index.tsx",
-    "./whiteboard": "./src/whiteboard/index.tsx",
+    "./whiteboard": "./src/engines/tldraw/index.tsx",
     "./copilotkit-bridge": "./src/canvas/protocol/copilotkit-bridge.tsx",
     "./i18n": "./src/i18n/index.ts",
     "./general": "./src/components/general/index.ts",

@@ -2,6 +2,10 @@
  * MockGeminiLiveClient — drop-in replacement for `createVoiceClient` that
  * runs entirely offline.
  *
+ * @deprecated Legacy substrate copy. The canonical offline voice client is
+ * `src/voice/mockGeminiLiveClient.ts`; `src/canvas` retirement is a
+ * deferred owner decision. Fix bugs in the canonical copy first.
+ *
  * Same `VoiceClient` interface as `geminiLiveClient.ts`. No WebSocket, no
  * mic capture, no API key. Reads scenario data (transcripts + timing) and
  * synthesizes audio levels via easing functions so the visualiser still

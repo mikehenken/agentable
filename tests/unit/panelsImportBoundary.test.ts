@@ -1,6 +1,8 @@
 /**
  * Engine-boundary rule for the panel system: no module under `src/panels/`
- * may import tldraw (values or types) or reach into `src/whiteboard/`. The
+ * may import tldraw (values or types) or reach into the engine
+ * implementation directory, `src/engines/tldraw/` (home of the former
+ * `src/whiteboard/` fork, deleted in the 2026-08 remediation Wave 3). The
  * host consumes an engine handle; tldraw specifics live behind it in the
  * engine directory only.
  *
@@ -8,10 +10,10 @@
  * export-from, dynamic import, and require specifier via the TypeScript
  * compiler API, and rejects forbidden ones. Relative specifiers resolve
  * against the importing file and are tested for containment in the
- * whiteboard directory itself, so the rule holds at any nesting depth
- * under src/panels. Fixture cases prove the collector actually detects
- * violations, flat and nested, so the rule cannot rot into a vacuous
- * green.
+ * engine implementation directory itself, so the rule holds at any
+ * nesting depth under src/panels. Fixture cases prove the collector
+ * actually detects violations, flat and nested, so the rule cannot rot
+ * into a vacuous green.
  */
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -24,8 +26,8 @@ function panelsDir(): string {
   return resolve(dirname(testPath), '../../src/panels');
 }
 
-function whiteboardDir(): string {
-  return resolve(panelsDir(), '..', 'whiteboard');
+function engineImplDir(): string {
+  return resolve(panelsDir(), '..', 'engines', 'tldraw');
 }
 
 function listModules(dir: string): string[] {
@@ -79,7 +81,7 @@ function isForbidden(specifier: string, importingFile: string, forbiddenDir: str
   if (specifier === 'tldraw' || specifier.startsWith('tldraw/')) return true;
   if (specifier === '@tldraw' || specifier.startsWith('@tldraw/')) return true;
   if (specifier.startsWith('@/')) {
-    return specifier.startsWith('@/whiteboard');
+    return specifier.startsWith('@/engines/tldraw');
   }
   if (specifier.startsWith('.')) {
     const target = resolve(dirname(importingFile), specifier);
@@ -101,8 +103,8 @@ describe('panels engine boundary', () => {
     expect(moduleNames).toContain('types.ts');
   });
 
-  it('keeps every panels module free of tldraw and whiteboard imports', () => {
-    const forbiddenDir = whiteboardDir();
+  it('keeps every panels module free of tldraw and engine-impl imports', () => {
+    const forbiddenDir = engineImplDir();
     const offending = listModules(panelsDir()).flatMap((file) => {
       const found = violationsIn(file, readFileSync(file, 'utf8'), forbiddenDir);
       return found.map((specifier) => `${relative(panelsDir(), file)} -> ${specifier}`);
@@ -115,36 +117,36 @@ describe('panels engine boundary', () => {
     const fixture = [
       "import { createShapeId } from 'tldraw';",
       "import type { Editor } from '@tldraw/editor';",
-      "export { bindEditor } from '../whiteboard/shapes/panelShapeApi';",
+      "export { bindEditor } from '../engines/tldraw/shapes/panelShapeApi';",
       "import('tldraw/store');",
-      "const api = require('@/whiteboard/shapes/panelShapeApi');",
+      "const api = require('@/engines/tldraw/shapes/panelShapeApi');",
       "type E = import('tldraw').Editor;",
       "import { useState } from 'react';",
       "import type { PanelScope } from './types';",
     ].join('\n');
 
-    expect(violationsIn(fixturePath, fixture, whiteboardDir())).toEqual([
+    expect(violationsIn(fixturePath, fixture, engineImplDir())).toEqual([
       'tldraw',
       '@tldraw/editor',
-      '../whiteboard/shapes/panelShapeApi',
+      '../engines/tldraw/shapes/panelShapeApi',
       'tldraw/store',
-      '@/whiteboard/shapes/panelShapeApi',
+      '@/engines/tldraw/shapes/panelShapeApi',
       'tldraw',
     ]);
   });
 
-  it('catches whiteboard imports from nested panels modules', () => {
+  it('catches engine-impl imports from nested panels modules', () => {
     const fixturePath = join(panelsDir(), 'spec', 'fixture.ts');
     const fixture = [
-      "export { bindEditor } from '../../whiteboard/shapes/panelShapeApi';",
-      "import { loadWhiteboardSnapshot } from '../../whiteboard';",
+      "export { bindEditor } from '../../engines/tldraw/shapes/panelShapeApi';",
+      "import { loadWhiteboardSnapshot } from '../../engines/tldraw';",
       "import type { PanelScope } from '../types';",
       "import { validateSpec } from './validate';",
     ].join('\n');
 
-    expect(violationsIn(fixturePath, fixture, whiteboardDir())).toEqual([
-      '../../whiteboard/shapes/panelShapeApi',
-      '../../whiteboard',
+    expect(violationsIn(fixturePath, fixture, engineImplDir())).toEqual([
+      '../../engines/tldraw/shapes/panelShapeApi',
+      '../../engines/tldraw',
     ]);
   });
 });
