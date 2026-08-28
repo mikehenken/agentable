@@ -38,6 +38,10 @@ export default defineConfig({
     ],
   },
   define: {
+    // G3: shipped embed bundles never inline a provider key, whatever the
+    // local .env.local carries for vite dev. The embeds' only sanctioned
+    // credential source at runtime is a token-endpoint / chat proxy.
+    'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(''),
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
   build: {

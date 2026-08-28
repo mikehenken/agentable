@@ -58,6 +58,12 @@ function collectErrors(page: Page): string[] {
   const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text());
+    // G3 runtime guard: the voice kernel logs apiKeyPresent at mount. A
+    // bundle answering true has a provider key baked into it (the build
+    // machine's .env.local leaked into the artifact); that must never ship.
+    if (message.text().includes('apiKeyPresent: true')) {
+      errors.push(`G3 violation: a provider key is baked into a bundle (${message.text().slice(0, 80)})`);
+    }
   });
   page.on('pageerror', (error) => {
     errors.push(String(error));

@@ -29,6 +29,7 @@ function repoRoot(): string {
 }
 
 const TOKEN_ENDPOINT = '/v1/voice/token';
+const CHAT_PROXY = '/v1/chat';
 
 describe('gallery voice token endpoint wiring', () => {
   it('finds the shared config documents it is guarding', () => {
@@ -45,20 +46,36 @@ describe('gallery voice token endpoint wiring', () => {
       if (!file.endsWith('-config.json')) continue;
       const doc = JSON.parse(readFileSync(join(sharedDir, file), 'utf8')) as {
         tokenEndpoint?: string;
-        persona?: { tokenEndpoint?: string };
+        persona?: { tokenEndpoint?: string; chatProxyUrl?: string };
       };
       const endpoint = doc.persona?.tokenEndpoint ?? doc.tokenEndpoint;
       if (endpoint !== TOKEN_ENDPOINT) missing.push(`${file} -> ${String(endpoint)}`);
+      // Live ephemeral tokens authenticate ONLY the Live WebSocket API; a
+      // persona minting them must also route text chat through the proxy or
+      // ChatPanel spends the token on generateContent and every message
+      // fails (examplePagesChatProxyGuard covers the attribute-wired pages;
+      // this covers configs reached only via config-url).
+      if (endpoint === TOKEN_ENDPOINT && doc.persona?.chatProxyUrl !== CHAT_PROXY) {
+        missing.push(`${file} -> chatProxyUrl ${String(doc.persona?.chatProxyUrl)}`);
+      }
     }
     expect(missing).toEqual([]);
   });
 
-  it('example 04 keeps its element-attribute token endpoint', () => {
-    const html = readFileSync(
-      join(repoRoot(), 'examples/04-zero-js-marketing/index.html'),
-      'utf8',
-    );
-    expect(html).toContain(`token-endpoint="${TOKEN_ENDPOINT}"`);
+  it('attribute-wired pages keep their element-level token endpoint', () => {
+    // 04 set the pattern; 01 and 05 need it because <agentable-canvas> does
+    // not consume config-url, and 13 needs it because the operator surface
+    // resolves credentials from the whiteboard ELEMENT's attributes
+    // (whiteboardChatCredentials), not from the config document.
+    for (const page of [
+      'examples/04-zero-js-marketing/index.html',
+      'examples/01-career-homepage/index.html',
+      'examples/05-bounded-demo-kiosk/index.html',
+      'examples/13-canvas-wide-agent/index.html',
+    ]) {
+      const html = readFileSync(join(repoRoot(), page), 'utf8');
+      expect(html, page).toContain(`token-endpoint="${TOKEN_ENDPOINT}"`);
+    }
   });
 
   it('config.local.json probes require a JSON content type', () => {

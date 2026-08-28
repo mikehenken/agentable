@@ -5,6 +5,7 @@
   "welcomeMessage": "Northwind Support Desk — triage tickets with Casey, your concierge.",
   "persona": {
     "tokenEndpoint": "/v1/voice/token",
+    "chatProxyUrl": "/v1/chat",
     "assistantName": "Casey",
     "tenantTitle": "Northwind Support Desk",
     "systemPrompt": "You are Casey, the Northwind Support concierge. Help agents triage fictional SaaS tickets only.",

@@ -152021,10 +152021,10 @@ function PPe({ text: e }) {
   );
 }
 function BKn({ chromeless: e = !1 } = {}) {
-  const { panels: t, showPanel: n } = tu(), { persona: a, labels: r } = FC(), i = a.assistantName ?? "Assistant", o = a.tenantTitle ?? "AI Assistant", s = a.starterPrompts ?? [], l = i.charAt(0).toUpperCase() || "A", [u, d] = q.useState([]), [p, m] = q.useState(""), [A, g] = q.useState(!1), [h, f] = q.useState(null), b = q.useRef(null), y = q.useRef(null), w = t.chat, k = "AQ.Ab8RN6Lk9oyPxOJhLqoR42C9aBfrrB_4z6P9yzsa3nF8hqI-hA", x = (a.tokenEndpoint ?? void 0 ?? void 0 ?? "").trim(), E = (a.chatProxyUrl ?? void 0 ?? "").trim(), I = !k, S = q.useMemo(() => NPe(E ? {
+  const { panels: t, showPanel: n } = tu(), { persona: a, labels: r } = FC(), i = a.assistantName ?? "Assistant", o = a.tenantTitle ?? "AI Assistant", s = a.starterPrompts ?? [], l = i.charAt(0).toUpperCase() || "A", [u, d] = q.useState([]), [p, m] = q.useState(""), [A, g] = q.useState(!1), [h, f] = q.useState(null), b = q.useRef(null), y = q.useRef(null), w = t.chat, k = "", x = (a.tokenEndpoint ?? void 0 ?? void 0 ?? "").trim(), E = (a.chatProxyUrl ?? void 0 ?? "").trim(), I = !E && !1, S = q.useMemo(() => E ? NPe({
     proxyUrl: E,
     systemInstruction: a.systemPrompt
-  } : {
+  }) : x ? NPe({
     apiKeySource: x ? async () => {
       const F = await fetch(x, {
         method: "POST",
@@ -152038,7 +152038,7 @@ function BKn({ chromeless: e = !1 } = {}) {
       return L.token;
     } : k,
     systemInstruction: a.systemPrompt
-  }), [I, k, x, E, a.systemPrompt]);
+  }) : null, [I, k, x, E, a.systemPrompt]);
   q.useEffect(() => {
     b.current && (b.current.scrollTop = b.current.scrollHeight);
   }, [u.length, A]), q.useEffect(() => {
@@ -152828,7 +152828,7 @@ function zPe(e, t = {}) {
   );
 }
 function GKn(e) {
-  const t = "AQ.Ab8RN6Lk9oyPxOJhLqoR42C9aBfrrB_4z6P9yzsa3nF8hqI-hA", r = e.tokenEndpoint?.trim() ?? "", i = t.length > 0 || r.length > 0, o = !!e.forceMock || !1 || !i && !1;
+  const r = e.tokenEndpoint?.trim() ?? "", i = r.length > 0, o = !!e.forceMock || !1 || !i && !1;
   !i && !e.forceMock && console.error(
     "[voiceKernel] PRODUCTION misconfiguration: neither VITE_GEMINI_API_KEY nor `tokenEndpoint` is set, and VITE_LANDI_MOCK is not enabled. The voice CTA will fail. Set the API key, point `tokenEndpoint` at your agent worker mint endpoint, OR explicitly opt into mock mode with VITE_LANDI_MOCK=1 / <CareerCanvas mockOnly>."
   );
@@ -152919,13 +152919,13 @@ function GKn(e) {
           throw new Error("[voiceKernel] token mint response missing `token` field");
         const K = V.expireTime ? new Date(V.expireTime).getTime() : U + 12e5;
         return T.current = { token: V.token, expiresAt: K - 3e4 }, V.token;
-      } : t;
+      } : "";
       k.current = o ? zKn(l.current, L, {
         scenario: e.mockScenario
       }) : $Kn($, l.current, L);
     }
     return k.current;
-  }, [t, r, s, o, e.mockScenario]);
+  }, ["", r, s, o, e.mockScenario]);
   q.useEffect(() => {
     k.current?.stop(), k.current = null;
   }, [u]);
@@ -152976,7 +152976,7 @@ function GKn(e) {
     e.autoStart && M();
   }, []), jPe || (jPe = !0, console.info("[voiceKernel] useGeminiLive mounted", {
     transportSelected: o ? "MOCK" : "real Gemini Live",
-    apiKeyPresent: t.length > 0,
+    apiKeyPresent: !1,
     envMock: !1,
     systemPromptChars: e.persona.systemPrompt?.length ?? 0,
     systemPromptHead: (e.persona.systemPrompt ?? "").slice(0, 80),
