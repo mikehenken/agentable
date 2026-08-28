@@ -117,7 +117,13 @@
         for (const url of CONFIG_CANDIDATES) {
           try {
             const response = await fetch(url);
-            if (response.ok) return url;
+            // Static hosts with an SPA fallback (Cloudflare Pages serving
+            // this gallery) answer 200 text/html for missing files, so a
+            // bare response.ok check selects config.local.json even when it
+            // does not exist and the element then fails parsing HTML as
+            // JSON. Require a JSON content type before accepting.
+            const contentType = response.headers.get('content-type') || '';
+            if (response.ok && contentType.includes('json')) return url;
           } catch {
             // Network-level failure (offline, blocked request): try the
             // next candidate instead of throwing.

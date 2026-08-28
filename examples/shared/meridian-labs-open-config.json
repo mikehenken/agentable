@@ -10,6 +10,8 @@
     "preset": "open"
   },
   "persona": {
+    "tokenEndpoint": "/v1/voice/token",
+    "chatProxyUrl": "/v1/chat",
     "assistantName": "Atlas",
     "tenantTitle": "Product Design Copilot",
     "systemPrompt": "You are Atlas, the Meridian Labs design copilot. Use wireframe stencils and structured document blocks only — never inline markup.",

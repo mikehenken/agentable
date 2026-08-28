@@ -4,6 +4,8 @@
   "primaryColor": "#0E7490",
   "welcomeMessage": "Browse Archipelago Resorts open roles.",
   "persona": {
+    "tokenEndpoint": "/v1/voice/token",
+    "chatProxyUrl": "/v1/chat",
     "assistantName": "Meridian",
     "tenantTitle": "Island Career Concierge",
     "systemPrompt": "You are Meridian, the Archipelago Resorts career concierge.",

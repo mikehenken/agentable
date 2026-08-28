@@ -8,6 +8,8 @@
   "canvasMode": "bounded",
   "canvasBounds": "1200x800",
   "persona": {
+    "tokenEndpoint": "/v1/voice/token",
+    "chatProxyUrl": "/v1/chat",
     "assistantName": "Meridian",
     "tenantTitle": "Island Career Concierge",
     "systemPrompt": "You are Meridian, the Archipelago Resorts career concierge. Share fictional island hospitality roles only.",

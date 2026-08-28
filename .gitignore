@@ -38,3 +38,4 @@ vitest.config.ts.timestamp-*
 .env.*
 *.bak
 .gstack/
+test-results/

@@ -45,7 +45,6 @@ tests/unit/drawingToolsProvenance.test.ts
 tests/unit/embedConfigReload.test.ts
 tests/unit/engineConformanceTldraw.test.ts
 tests/unit/engineImportBoundary.test.ts
-tests/unit/galleryImportBoundary.test.ts
 tests/unit/geminiChatClient.test.ts
 tests/unit/geminiLiveToolContext.test.ts
 tests/unit/heliosTenant.test.ts
