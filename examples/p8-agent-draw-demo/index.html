@@ -227,7 +227,11 @@
         for (const url of CONFIG_CANDIDATES) {
           try {
             const response = await fetch(url);
-            if (response.ok) return url;
+            // SPA-fallback hosts answer 200 text/html for missing files;
+            // require a JSON content type so an absent config.local.json
+            // falls through to the committed example config.
+            const contentType = response.headers.get('content-type') || '';
+            if (response.ok && contentType.includes('json')) return url;
           } catch {
             // try next candidate
           }

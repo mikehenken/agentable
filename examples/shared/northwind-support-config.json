@@ -4,6 +4,7 @@
   "primaryColor": "#2563EB",
   "welcomeMessage": "Northwind Support Desk — triage tickets with Casey, your concierge.",
   "persona": {
+    "tokenEndpoint": "/v1/voice/token",
     "assistantName": "Casey",
     "tenantTitle": "Northwind Support Desk",
     "systemPrompt": "You are Casey, the Northwind Support concierge. Help agents triage fictional SaaS tickets only.",

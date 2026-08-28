@@ -69,7 +69,13 @@ async function main() {
     if (!entry.isDirectory() || SKIP.has(entry.name)) continue;
     const src = path.join(examplesDir, entry.name);
     if (!(await exists(path.join(src, 'index.html')))) continue;
-    await cp(src, path.join(siteDir, 'examples', entry.name), { recursive: true });
+    // *.dev.html pages are dev-server-only harnesses (they reference
+    // /tests/e2e/harness/ files that do not exist on the deployed site and
+    // 404). Ship everything else verbatim.
+    await cp(src, path.join(siteDir, 'examples', entry.name), {
+      recursive: true,
+      filter: (source) => !source.endsWith('.dev.html'),
+    });
     shipped.push(entry.name);
   }
 

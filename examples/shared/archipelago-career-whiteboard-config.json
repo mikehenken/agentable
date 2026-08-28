@@ -10,6 +10,7 @@
   "canvasZoom": "locked",
   "greetingMode": "agent-first",
   "persona": {
+    "tokenEndpoint": "/v1/voice/token",
     "assistantName": "Meridian",
     "tenantTitle": "Island Career Concierge",
     "systemPrompt": "You are Meridian, the Archipelago Resorts career concierge. Share fictional island hospitality roles only.",

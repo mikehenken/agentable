@@ -2,10 +2,15 @@ import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { initAgentableEmbed } from '../../src/embed/embedApi';
 
 describe('embedApi init', () => {
+  // These two dynamic imports pull the full embed element graph (React +
+  // Lit + every panel) through the vite transform inside a worker. Under a
+  // fully parallel suite on a loaded runner that reproducibly crosses the
+  // global 30s hookTimeout (vitest.release.config.ts documents the class),
+  // so this hook carries its own explicit budget.
   beforeAll(async () => {
     await import('../../src/embed/agentable-canvas');
     await import('../../src/embed/agentable-panel');
-  });
+  }, 120_000);
 
   afterEach(() => {
     document.body.replaceChildren();

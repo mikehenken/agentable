@@ -103,6 +103,48 @@ jobs:
       - name: Full suite
         run: npm run test
 
+  gallery-smoke:
+    # Assembles the deployable examples site and smoke-tests every shipped
+    # page in a real browser: loads, key surface visible, clean console, no
+    # tldraw license blank-out. Required: a broken gallery page blocks merge.
+    name: Gallery smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Gallery import guard
+        run: node scripts/check-gallery-imports.mjs
+
+      - name: Build the examples site
+        env:
+          VITE_TLDRAW_LICENSE_KEY: ${{ secrets.TLDRAW_LICENSE_KEY }}
+        run: npm run build:examples-site
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Smoke test the assembled site
+        run: npm run test:smoke
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-smoke-traces
+          path: test-results/
+          retention-days: 7
+
   bundle-budgets:
     # Builds the embed bundles and enforces the gzip budgets in
     # scripts/check-bundle-size.mjs. Required: a budget bust blocks merge.
