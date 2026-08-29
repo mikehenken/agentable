@@ -147,7 +147,10 @@ export function authenticateAccessToken(
 export function resolveIssuer(
   env: Pick<CanvasMcpOAuthEnv, 'MCP_OAUTH_ISSUER'>,
   requestUrl: URL): string {
-  return (env.MCP_OAUTH_ISSUER ?? `${requestUrl.protocol}${requestUrl.host}`).replace(/\/$/, '');
+  // `url.protocol` is "https:" (no slashes), so protocol+host produced
+  // "https:host" and every derived discovery URL (issuer, token_endpoint,
+  // resource) was malformed. `url.origin` is "https://host".
+  return (env.MCP_OAUTH_ISSUER ?? requestUrl.origin).replace(/\/$/, '');
 }
 
 export function resolveResourceUri(

@@ -176,9 +176,9 @@ describe('canvas MCP scopes', () => {
     const url = new URL('https://canvas-mcp.dev/canvas/mcp');
     const resource = protectedResourceMetadata({}, url);
     expect(resource.scopes_supported).toEqual([
-      // CANVAS_MCP_SCOPES.READ,
-      // CANVAS_MCP_SCOPES.ACT,
-      // CANVAS_MCP_SCOPES.DIGEST,
+      CANVAS_MCP_SCOPES.READ,
+      CANVAS_MCP_SCOPES.ACT,
+      CANVAS_MCP_SCOPES.DIGEST,
     ]);
     const authServer = authorizationServerMetadata({}, url);
     expect(authServer.token_endpoint).toBe('https://canvas-mcp.dev/canvas/oauth/token');

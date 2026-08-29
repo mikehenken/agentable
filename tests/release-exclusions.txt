@@ -14,7 +14,6 @@ tests/integration/telemetryEventCoverage.test.ts
 tests/integration/telemetrySinkBoundary.test.ts
 tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
-tests/unit/canvasMcp.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
 tests/unit/digestDrawingIntegration.test.ts
