@@ -32,5 +32,4 @@ tests/unit/panelRepairRound.test.tsx
 tests/unit/panelTools.test.ts
 tests/unit/repairVocabulary.test.ts
 tests/unit/specInspectorPanel.test.tsx
-tests/unit/storyModeWalkthrough.test.ts
 tests/unit/whiteboardChromeInsets.test.ts

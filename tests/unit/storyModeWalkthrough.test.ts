@@ -97,7 +97,7 @@ describe('runWalkthrough camera queue integration ', () => {
     expect(result.completedSteps).toBe(2);
     expect(applied).toHaveLength(2);
     expect(narrations).toEqual(['Welcome to chat.', 'Scene two.']);
-    expect(camera.holder).toBeUndefined();
+    expect(camera.holder()).toBeUndefined();
   });
 
   it('cancels instantly when user camera input fires mid-walkthrough', async () => {
@@ -131,7 +131,7 @@ describe('runWalkthrough camera queue integration ', () => {
     expect(result.cancelled).toBe(true);
     expect(result.cancelReason).toBe('user_input');
     expect(result.completedSteps).toBe(1);
-    expect(camera.holder).toBeUndefined();
+    expect(camera.holder()).toBeUndefined();
   });
 
   it('returns hold_denied when camera hold cannot be acquired', async () => {
