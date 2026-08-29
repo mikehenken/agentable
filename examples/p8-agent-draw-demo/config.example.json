@@ -4,9 +4,7 @@
   "primaryColor": "#7C3AED",
   "welcomeMessage": "Northstar Atelier — Creative studio workflow: agent draw & see.",
   "voiceEnabled": false,
-  "canvasMode": "bounded",
-  "canvasBounds": "400x720",
-  "canvasBehavior": "contain",
+  "canvasMode": "infinite",
   "persona": {
     "assistantName": "Astra",
     "tenantTitle": "Design Agent",
