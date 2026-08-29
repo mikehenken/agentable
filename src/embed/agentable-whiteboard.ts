@@ -307,6 +307,21 @@ export class AgentableWhiteboardElement extends LitElement {
          into the shadow tree, so this re-themes chat without touching any
          component, and it keys off the public attribute rather than an
          internal shell class that not every canvas mode renders. */
+      /* Escape hatch for the expanded canvas. The contain declaration above
+         makes this element a containing block for position:fixed descendants,
+         which anchors the expand overlay and its scrim to this box instead of
+         the viewport. On a page that embeds the canvas mid-content the overlay
+         then opened at the embed top edge and got clipped, while still
+         reporting itself expanded.
+
+         WhiteboardCanvasFrame sets this attribute for exactly as long as the
+         overlay is up, so containment is given up only while it would break
+         things. It doubles as the signal an embedding page can key its own
+         clipping off. */
+      :host([data-canvas-expanded]) {
+        contain: none;
+      }
+
       :host([light-canvas]) {
         --vibe-background: #f7f9fb;
         --vibe-surface: #ffffff;
