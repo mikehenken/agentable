@@ -290,6 +290,6 @@ describe('compose repair render path', () => {
       expect(screen.queryByTestId('composed-spec-invalid')).toBeNull();
     });
 
-    expect(screen.getByText('Agent draft')).toBeInTheDocument;
+    expect(screen.getByText('Agent draft')).toBeInTheDocument();
   });
 });

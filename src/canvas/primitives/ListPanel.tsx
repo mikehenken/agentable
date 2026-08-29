@@ -88,7 +88,7 @@ export interface ListPanelProps<T> {
    */
   panelId: PanelId;
   /** Items to render. Order is preserved; sorting is the consumer's job. */
-  items: T[];
+  items: readonly T[];
   /** Stable identifier for an item — used as React key + selection key. */
   getId: (item: T) => ListPanelItemId;
   /**

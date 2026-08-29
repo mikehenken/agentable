@@ -130,7 +130,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function readShapeGraph(result: unknown): CanvasShapeGraph | undefined {
   if (!isRecord(result)) return undefined;
   if (!Array.isArray(result.shapes)) return undefined;
-  return result as CanvasShapeGraph;
+  // Safety: untyped tool-result boundary — the `shapes` array shape was
+  // verified above and consumers only read optional per-node fields.
+  return result as unknown as CanvasShapeGraph;
 }
 
 function summarizeProvenance(graph: CanvasShapeGraph): NorthstarDemoSummary {
@@ -235,7 +237,7 @@ export async function runGalleryScriptedTool(
     }
     const agentContext = resolveGalleryScriptedAgentContext();
     const result = await withAgentToolContextAsync(agentContext, () =>
-      perceptionTool.handler(args));
+      Promise.resolve(perceptionTool.handler(args)));
     if (!result.ok) {
       return { ok: false, toolName, error: String(result.error ?? `${toolName} failed`) };
     }
@@ -246,7 +248,7 @@ export async function runGalleryScriptedTool(
   if (authoringTool !== undefined) {
     const agentContext = resolveGalleryScriptedAgentContext();
     const result = await withAgentToolContextAsync(agentContext, () =>
-      authoringTool.handler(args));
+      Promise.resolve(authoringTool.handler(args)));
     if (!result.ok) {
       return { ok: false, toolName, error: String(result.error ?? `${toolName} failed`) };
     }
@@ -261,7 +263,7 @@ export async function runGalleryScriptedTool(
   const agentContext = resolveGalleryScriptedAgentContext();
   const shapesBeforeDraw = toolName === 'draw_shapes' ? countPageShapes() : 0;
   const runDraw = (): Promise<{ ok: boolean; error?: string; result?: unknown }> =>
-    withAgentToolContextAsync(agentContext, () => drawTool.handler(args));
+    withAgentToolContextAsync(agentContext, () => Promise.resolve(drawTool.handler(args)));
   const result = await (options.drawIntentUserText !== undefined
     ? withDrawUserMessageAsync(options.drawIntentUserText, runDraw): runDraw());
   if (!result.ok) {
@@ -415,10 +417,18 @@ export async function runNorthstarGalleryStep(
   return { ok, summary, steps };
 }
 
+/** Strips the deep `readonly` a fixture's `as const` adds; type-level only. */
+type DeepMutable<T> = { -readonly [K in keyof T]: DeepMutable<T[K]> };
+
 function buildMeridianDocumentPayload(): DocumentPayload {
   let blocks: DocumentPayload['blocks'] = [];
-  for (let index = 0; index < MERIDIAN_PRODUCT_BRIEF_BLOCKS.length; index += 1) {
-    const block = MERIDIAN_PRODUCT_BRIEF_BLOCKS[index]!;
+  // Safety: the fixture is `as const` (deeply readonly by type only) while
+  // DocBlockInput wants mutable arrays; applyBlockOp copies arrays before
+  // storing, so widening away readonly never enables observable mutation.
+  const inputBlocks =
+    MERIDIAN_PRODUCT_BRIEF_BLOCKS as DeepMutable<typeof MERIDIAN_PRODUCT_BRIEF_BLOCKS>;
+  for (let index = 0; index < inputBlocks.length; index += 1) {
+    const block = inputBlocks[index]!;
     const op: BlockOp = { op: 'insert', index, block };
     blocks = applyBlockOp(blocks, op);
   }
@@ -577,11 +587,11 @@ async function runMeridianWireframeGalleryStep(): Promise<{
   };
 
   const flowResult = await withAgentToolContextAsync(MERIDIAN_AGENT, () =>
-    drawTool.handler(flowRequest));
+    Promise.resolve(drawTool.handler(flowRequest)));
   const flowOk = push({
     ok: flowResult.ok === true,
     toolName: 'draw_shapes',
-    result: flowResult.result,
+    result: flowResult.ok ? flowResult.result : undefined,
     error: flowResult.ok ? undefined : String(flowResult.error ?? 'flow draw failed'),
   });
 
@@ -621,16 +631,16 @@ async function runMeridianWireframeGalleryStep(): Promise<{
 
   if (geoShapeIds.length >= 2) {
     const connectResult = await withAgentToolContextAsync(MERIDIAN_AGENT, () =>
-      connectTool.handler({
+      Promise.resolve(connectTool.handler({
         from: geoShapeIds[0],
         to: geoShapeIds[1],
         kind: 'flow',
         label: 'Meridian flow',
-      }));
+      })));
     push({
       ok: connectResult.ok === true,
       toolName: 'connect_shapes',
-      result: connectResult.result,
+      result: connectResult.ok ? connectResult.result : undefined,
       error: connectResult.ok ? undefined : String(connectResult.error ?? 'connect failed'),
     });
   } else {

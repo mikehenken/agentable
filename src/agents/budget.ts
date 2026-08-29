@@ -62,7 +62,7 @@ export function createAgentBudget(options?: {
       return spent;
     },
 
-    remaining: remaining(),
+    remaining,
 
     record(spend): BudgetSpendRecord {
       const entry: BudgetSpendRecord = {

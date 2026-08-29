@@ -1,4 +1,4 @@
-import type { PartialCanvasTenantConfig } from '../../../../src/canvas/CanvasContext';
+import type { PartialCanvasTenantConfig } from '../../../../src/config/CanvasContext';
 import type { EmbedConfigDocument } from '../../../../src/embed/types/embedConfig';
 import {
   createCareerPack,

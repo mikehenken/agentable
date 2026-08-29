@@ -38,7 +38,8 @@ function describeZodType(schema: z.ZodType): PropsSchemaDescription {
   if (schema instanceof z.ZodEnum) {
     return {
       type: 'string',
-      enum: schema.options as readonly string[],
+      // Safe: ZodEnum options are string literals by construction; spread yields a mutable JSON array.
+      enum: [...(schema.options as readonly string[])],
     };
   }
 

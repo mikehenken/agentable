@@ -14,7 +14,7 @@
  */
 import type { PanelDefinition } from '../../../src/panels/types';
 import type { ToolDefinition } from '../../../src/panels/tools';
-import type { CareerNavItem, CareerPack, CareerPackOptions } from './types';
+import type { CareerNavItem, CareerPackOptions } from './types';
 
 /** Published extension-point inputs (mechanism 2). */
 export interface CareerPackExtensions {

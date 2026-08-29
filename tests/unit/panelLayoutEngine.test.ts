@@ -4,7 +4,6 @@ import {
   findNonOverlappingPosition,
   organizePanelsResponsive,
   rectsOverlap,
-  computeFreeCanvasArea,
   shouldDockVoicePanel,
   getVoiceDockLayout,
   getSidebarColumnLayout,
@@ -26,8 +25,6 @@ import {
   NAV_SIDEBAR_TOP,
   type ViewportLayoutConfig,
 } from '../../src/layout/panelLayoutEngine';
-
-import type { PanelLayout } from "../../src/types";
 
 const viewport: ViewportLayoutConfig = getViewportLayoutConfig({
   viewportWidth: 1200,

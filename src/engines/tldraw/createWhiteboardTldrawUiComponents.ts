@@ -1,5 +1,5 @@
-import { createElement, type ReactElement } from 'react';
-import type { TLUiComponents } from 'tldraw';
+import { createElement } from 'react';
+import type { TLComponents } from 'tldraw';
 import { TextSearchPanel } from './components/TextSearchPanel';
 import { WhiteboardOverlays } from './components/WhiteboardOverlays';
 import { minimalTldrawUiComponents } from './minimalTldrawUiComponents';
@@ -40,7 +40,7 @@ function isResolvedToolbar(
 /** Build tldraw UI component overrides for WhiteboardShell. */
 export function createWhiteboardTldrawUiComponents(
   options: WhiteboardTldrawUiOptions = {},
-): TLUiComponents {
+): TLComponents {
   const {
     enableContextActionsTool = false,
     enableLayersPanel = false,

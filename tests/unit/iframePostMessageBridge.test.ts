@@ -64,7 +64,7 @@ describe('iframe postMessage bridge', () => {
       targetWindow: mockParent,
     });
 
-    const childCleanup = childBridge.start;
+    const childCleanup = childBridge.start();
 
     const parentBridge = createIframeParentBridge({
       bridgeId,
@@ -76,7 +76,7 @@ describe('iframe postMessage bridge', () => {
       onEvent,
     });
 
-    const parentCleanup = parentBridge.connect;
+    const parentCleanup = parentBridge.connect();
 
     mockChild.postMessage(
       createBridgeEnvelope('agentable:bridge:handshake', {
@@ -106,12 +106,21 @@ describe('iframe postMessage bridge', () => {
     const bridgeId = 'bridge_denied';
     const onReady = vi.fn();
 
-    createIframeChildBridge({
+    const childCleanup = createIframeChildBridge({
       bridgeId,
       surface: 'panel',
       allowedParentOrigins: ['https://cms.example.com'],
       targetWindow: mockParent,
-    }).start;
+    }).start();
+
+    const parentCleanup = createIframeParentBridge({
+      bridgeId,
+      iframe,
+      embedOrigin: 'https://embed.agentable.dev',
+      parentOrigin: 'https://cms.example.com',
+      contentWindow: mockChild,
+      onReady,
+    }).connect();
 
     window.dispatchEvent(
       new MessageEvent('message', {
@@ -123,28 +132,31 @@ describe('iframe postMessage bridge', () => {
         source: mockParent,
       }));
 
-    createIframeParentBridge({
-      bridgeId,
-      iframe,
-      embedOrigin: 'https://embed.agentable.dev',
-      parentOrigin: 'https://cms.example.com',
-      contentWindow: mockChild,
-      onReady,
-    }).connect;
-
     expect(onReady).not.toHaveBeenCalled();
+
+    parentCleanup();
+    childCleanup();
   });
 
   it('rejects parent script injection commands outside the protocol', () => {
     const bridgeId = 'bridge_protocol';
     const onEvent = vi.fn();
 
-    createIframeChildBridge({
+    const childCleanup = createIframeChildBridge({
       bridgeId,
       surface: 'panel',
       allowedParentOrigins: [PARENT_ORIGIN],
       targetWindow: mockParent,
-    }).start;
+    }).start();
+
+    const parentCleanup = createIframeParentBridge({
+      bridgeId,
+      iframe,
+      embedOrigin: EMBED_ORIGIN,
+      parentOrigin: PARENT_ORIGIN,
+      contentWindow: mockChild,
+      onEvent,
+    }).connect();
 
     window.dispatchEvent(
       new MessageEvent('message', {
@@ -157,15 +169,9 @@ describe('iframe postMessage bridge', () => {
         source: mockParent,
       }));
 
-    createIframeParentBridge({
-      bridgeId,
-      iframe,
-      embedOrigin: EMBED_ORIGIN,
-      parentOrigin: PARENT_ORIGIN,
-      contentWindow: mockChild,
-      onEvent,
-    }).connect;
-
     expect(onEvent).not.toHaveBeenCalled();
+
+    parentCleanup();
+    childCleanup();
   });
 });

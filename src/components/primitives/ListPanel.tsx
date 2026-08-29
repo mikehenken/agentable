@@ -85,7 +85,7 @@ export interface ListPanelProps<T> {
    */
   panelId: string;
   /** Items to render. Order is preserved; sorting is the consumer's job. */
-  items: T[];
+  items: readonly T[];
   /** Stable identifier for an item — used as React key + selection key. */
   getId: (item: T) => ListPanelItemId;
   /**
@@ -155,7 +155,6 @@ const DEFAULT_LABELS: Required<ListPanelLabels> = {
 
 export function ListPanel<T>(props: ListPanelProps<T>) {
   const {
-    panelId,
     items,
     getId,
     getSearchText,
@@ -163,7 +162,6 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
     showSearch = true,
     renderCard,
     renderDetail,
-    getTitle,
     labels,
     selectedId: ctrlSelectedId,
     onSelectedIdChange,
@@ -304,10 +302,6 @@ export function ListPanel<T>(props: ListPanelProps<T>) {
     else next.add(id);
     setSaved(next);
   };
-
-  const title = getTitle
-    ? getTitle({ count: filtered.length, selected: selectedItem })
-    : `${merged.titlePrefix} · ${filtered.length}`;
 
   // Body content — same in both chrome modes. Only the wrapper differs.
   const body = (

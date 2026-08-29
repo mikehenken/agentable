@@ -171,13 +171,13 @@ describe('document panel save integration ', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('doc-block-paragraph')).toHaveTextContent('Draft paragraph');
-      expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument;
+      expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('panel-action-save'));
 
     await waitFor(() => {
-      expect(screen.queryByTestId('dirty-indicator')).not.toBeInTheDocument;
+      expect(screen.queryByTestId('dirty-indicator')).not.toBeInTheDocument();
     });
 
     expect(

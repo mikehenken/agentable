@@ -27,6 +27,18 @@ import type {
  */
 export type PanelInstanceId = string;
 
+/**
+ * App-shell region ids used by engines with a region layout model (the DOM
+ * workspace engine). Interim until the Layout Pack owns placement.
+ */
+export type AppShellRegionId =
+  | 'left'
+  | 'main'
+  | 'right'
+  | 'bottom'
+  | 'drawer'
+  | 'sidebar';
+
 /** Axis-aligned rectangle in engine page coordinates. */
 export interface Rect {
   x: number;
@@ -145,6 +157,15 @@ export interface WorkspaceLayoutRecord {
   pinned: boolean;
   /** Who placed the panel: the host (including user actions) or an agent. */
   origin: SpecOrigin;
+  /**
+   * App-shell placement (v2 records from the DOM workspace engine). Spatial
+   * engines omit these; `position` stays authoritative for them.
+   */
+  region?: AppShellRegionId;
+  /** Tab group index within the region (DOM workspace engine). */
+  tabGroup?: number;
+  /** Tab order within the group (DOM workspace engine). */
+  order?: number;
 }
 
 /**
@@ -160,6 +181,14 @@ export interface EnginePanelPlacement {
   position?: { x: number; y: number };
   size?: { w: number; h: number };
   focus?: boolean;
+  /** Page-session slot name (embed panel-only engine targeting). */
+  slot?: string;
+  /** App-shell region targeting (DOM workspace engine). */
+  region?: AppShellRegionId;
+  /** Tab group index within the region (DOM workspace engine). */
+  tabGroup?: number;
+  /** Tab order within the group (DOM workspace engine). */
+  order?: number;
 }
 
 /**

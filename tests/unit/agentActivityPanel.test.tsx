@@ -91,7 +91,7 @@ async function mountActivityPanel(
     />);
 
   await waitFor(() => {
-    expect(screen.getByTestId('virtual-list')).toBeInTheDocument;
+    expect(screen.getByTestId('virtual-list')).toBeInTheDocument();
   });
 
   const element = screen.getByTestId('virtual-list') as AgentableVirtualListElement;

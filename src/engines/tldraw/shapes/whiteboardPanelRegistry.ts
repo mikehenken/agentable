@@ -1,4 +1,3 @@
-import { MessageSquare } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { CanvasHost } from '../../../panels/host';
 import { reactPanelDefinitions } from '../../../panels/registry';

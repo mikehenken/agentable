@@ -79,7 +79,7 @@
     "build:styles": "node scripts/build-styles.mjs",
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "lint": "eslint .",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "tsc -b --noEmit && npm run typecheck:packages",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -88,7 +88,10 @@
     "test:smoke": "playwright test --config playwright.gallery.config.ts",
     "build:embed:site": "vite build --config vite.embed.config.ts && vite build --config vite.embed-button.config.ts && vite build --config vite.embed-panel.config.ts && vite build --config vite.embed-whiteboard.config.ts && vite build --config vite.embed-app-shell.config.ts && vite build --config vite.embed-starter-chip.config.ts && vite build --config vite.embed-agent-status.config.ts && vite build --config vite.embed-ask-about.config.ts && vite build --config vite.embed-career-whiteboard.config.ts && vite build --config vite.embed-gallery-13-chrome.config.ts && vite build --config vite.embed-operator-surface-placement.config.ts && vite build --config vite.embed-iframe-host.config.ts",
     "build:examples-site": "npm run build:embed:site && npm run build:gallery-harnesses && node scripts/build-examples-site.mjs",
-    "test:release": "vitest run --config vitest.release.config.ts"
+    "test:release": "vitest run --config vitest.release.config.ts",
+    "typecheck:packages": "tsc -p packages/career-pack/tsconfig.json --noEmit && tsc -p packages/catalog-charts/tsconfig.json --noEmit && tsc -p packages/support-inbox-pack/tsconfig.json --noEmit",
+    "typecheck:tests": "tsc -p tsconfig.tests.json --noEmit",
+    "serve:site:functions": "npx wrangler pages dev dist/site --port 5199 --compatibility-date=2026-05-01"
   },
   "dependencies": {
     "@copilotkit/react-core": "^1.56.3",
@@ -122,6 +125,7 @@
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@tldraw/tlschema": "^4.5.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -153,6 +157,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@lit/reactive-element": "^2.1.2",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@open-wc/testing": "^4.0.0",
     "@open-wc/testing-helpers": "^3.0.1",
     "@playwright/test": "^1.62.1",

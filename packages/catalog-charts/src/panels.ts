@@ -1,4 +1,4 @@
-import type { PanelDefinition, PanelSpec } from '../../../src/panels/types';
+import type { JsonObject, PanelDefinition, PanelSpec } from '../../../src/panels/types';
 import { CHART_PANEL_IDS } from './constants';
 import {
   SAMPLE_CARTESIAN_SERIES,
@@ -27,14 +27,14 @@ interface ChartPanelBlueprint {
   chartType: ChartCatalogEntryName;
   titleKey: string;
   subtitleKey: string;
-  chartProps: Record<string, unknown>;
+  chartProps: JsonObject;
   agentDescription: string;
   defaultSize: { w: number; h: number };
 }
 
 function buildChartPanelSpec(
   chartType: ChartCatalogEntryName,
-  chartProps: Record<string, unknown>): PanelSpec {
+  chartProps: JsonObject): PanelSpec {
   return {
     v: 1,
     origin: 'host',
@@ -141,7 +141,7 @@ const BLUEPRINTS: readonly ChartPanelBlueprint[] = [
  */
 export function buildComposedChartSpec(input: {
   chartType: ChartCatalogEntryName;
-  chartProps: Record<string, unknown>;
+  chartProps: JsonObject;
   title?: string;
   subtitle?: string;
 }): PanelSpec {

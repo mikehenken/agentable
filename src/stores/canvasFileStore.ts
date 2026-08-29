@@ -38,7 +38,7 @@ export const useCanvasFileStore = create<CanvasFileStoreState>((set, get) => ({
 
   setSiteId: (siteId) => {
     set({ siteId });
-    emitAgUiStatePatch('files.siteId', siteId);
+    emitAgUiStatePatch([{ op: 'replace', path: '/files/siteId', value: siteId }]);
   },
 
   listFiles: () => Object.values(get().files).sort((a, b) => a.path.localeCompare(b.path)),
@@ -58,7 +58,7 @@ export const useCanvasFileStore = create<CanvasFileStoreState>((set, get) => ({
       source,
     };
     set((state) => ({ files: {...state.files, [key]: entry } }));
-    emitAgUiStatePatch(`files.${key}`, entry);
+    emitAgUiStatePatch([{ op: 'replace', path: `/files/${key}`, value: entry }]);
     return entry;
   },
 
@@ -71,7 +71,7 @@ export const useCanvasFileStore = create<CanvasFileStoreState>((set, get) => ({
       delete next[key];
       return { files: next };
     });
-    emitAgUiStatePatch(`files.${key}`, null);
+    emitAgUiStatePatch([{ op: 'remove', path: `/files/${key}` }]);
     return true;
   },
 
@@ -86,7 +86,7 @@ export const useCanvasFileStore = create<CanvasFileStoreState>((set, get) => ({
       url,
     };
     set((state) => ({ files: {...state.files, [key]: entry } }));
-    emitAgUiStatePatch(`files.${key}`, entry);
+    emitAgUiStatePatch([{ op: 'replace', path: `/files/${key}`, value: entry }]);
     return entry;
   },
 }));

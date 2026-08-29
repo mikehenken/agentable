@@ -92467,7 +92467,7 @@ function FC() {
   return q.useContext(Fct);
 }
 function wkn() {
-  const { autoOrganize: e, showPanel: t, toggleSnapGrid: n, snapGrid: a } = tu(), { persona: r } = FC(), i = r.tenantTitle, o = (r.assistantName?.[0] ?? i[0] ?? "A").toUpperCase();
+  const { autoOrganize: e, showPanel: t, toggleSnapGrid: n, snapGrid: a } = tu(), { persona: r } = FC(), i = r.tenantTitle ?? "AI Assistant", o = (r.assistantName?.[0] ?? i[0] ?? "A").toUpperCase();
   return /* @__PURE__ */ _.jsxs(_.Fragment, { children: [
     /* @__PURE__ */ _.jsxs("div", { className: "absolute top-3 left-3 z-50 flex items-center gap-2.5 pointer-events-auto", children: [
       /* @__PURE__ */ _.jsx("div", { className: "w-8 h-8 rounded-lg bg-canvas-primary flex items-center justify-center text-white text-sm font-bold", children: o }),
@@ -134797,9 +134797,7 @@ function Vb({
   className: a = "",
   headerClassName: r = ""
 }) {
-  const { panels: i, movePanel: o, resizePanel: s, hidePanel: l, minimizePanel: u, maximizePanel: d } = tu(), [p, m] = q.useState(!1), A = q.useRef(null), g = q.useRef({ x: 0, y: 0, w: 0, h: 0 }), h = i[e];
-  if (!h?.visible) return null;
-  const f = h.x ?? 100, b = h.y ?? 100, y = p && A.current ? A.current.w : h.w ?? 400, w = h.minimized ? 44 : h.h ?? 300, k = h.minimized ?? !1, x = h.resizable ?? !1, E = q.useCallback((S) => {
+  const { panels: i, movePanel: o, resizePanel: s, hidePanel: l, minimizePanel: u, maximizePanel: d } = tu(), [p, m] = q.useState(!1), A = q.useRef(null), g = q.useRef({ x: 0, y: 0, w: 0, h: 0 }), h = i[e], f = h?.x ?? 100, b = h?.y ?? 100, y = q.useCallback((S) => {
     if (S.button !== 0) return;
     S.preventDefault(), S.stopPropagation();
     const T = S.clientX, Q = S.clientY, M = f, N = b, P = (F) => {
@@ -134809,24 +134807,26 @@ function Vb({
       window.removeEventListener("pointermove", P), window.removeEventListener("pointerup", R);
     };
     window.addEventListener("pointermove", P), window.addEventListener("pointerup", R);
-  }, [e, f, b, o]), I = q.useCallback((S, T) => {
+  }, [e, f, b, o]), w = q.useCallback((S, T) => {
     if (S.button !== 0) return;
     S.preventDefault(), S.stopPropagation(), m(!0), g.current = {
       x: S.clientX,
       y: S.clientY,
-      w: h.w ?? 400,
-      h: h.h ?? 300
-    }, A.current = { w: h.w ?? 400, h: h.h ?? 300 };
+      w: h?.w ?? 400,
+      h: h?.h ?? 300
+    }, A.current = { w: h?.w ?? 400, h: h?.h ?? 300 };
     const Q = (N) => {
       const P = N.clientX - g.current.x, R = N.clientY - g.current.y;
       let F = g.current.w, L = g.current.h;
-      T.includes("e") && (F = Math.max(h.minW ?? 200, g.current.w + P)), T.includes("s") && (L = Math.max(h.minH ?? 150, g.current.h + R)), T.includes("se") && (F = Math.max(h.minW ?? 200, g.current.w + P), L = Math.max(h.minH ?? 150, g.current.h + R)), A.current = { w: F, h: L }, m((j) => j);
+      T.includes("e") && (F = Math.max(h?.minW ?? 200, g.current.w + P)), T.includes("s") && (L = Math.max(h?.minH ?? 150, g.current.h + R)), T.includes("se") && (F = Math.max(h?.minW ?? 200, g.current.w + P), L = Math.max(h?.minH ?? 150, g.current.h + R)), A.current = { w: F, h: L }, m((j) => j);
     }, M = () => {
       const N = A.current;
       N && s(e, N.w, N.h), A.current = null, m(!1), window.removeEventListener("pointermove", Q), window.removeEventListener("pointerup", M);
     };
     window.addEventListener("pointermove", Q), window.addEventListener("pointerup", M);
-  }, [e, h.w, h.h, h.minW, h.minH, s]);
+  }, [e, h?.w, h?.h, h?.minW, h?.minH, s]);
+  if (!h?.visible) return null;
+  const k = p && A.current ? A.current.w : h.w ?? 400, x = h.minimized ? 44 : h.h ?? 300, E = h.minimized ?? !1, I = h.resizable ?? !1;
   return /* @__PURE__ */ _.jsxs(
     "div",
     {
@@ -134834,11 +134834,11 @@ function Vb({
       style: {
         left: f,
         top: b,
-        width: y,
-        height: k ? 44 : h.autoHeight ? "auto" : p && A.current ? A.current.h : w,
-        zIndex: k ? 10 : 30,
+        width: k,
+        height: E ? 44 : h.autoHeight ? "auto" : p && A.current ? A.current.h : x,
+        zIndex: E ? 10 : 30,
         minWidth: h.minW || 200,
-        minHeight: k ? 44 : h.minH || 150,
+        minHeight: E ? 44 : h.minH || 150,
         transition: p ? "none" : "box-shadow 0.15s ease"
       },
       children: [
@@ -134846,7 +134846,7 @@ function Vb({
           "div",
           {
             className: `flex items-center justify-between px-3 py-2 border-b border-canvas-border select-none shrink-0 ${r}`,
-            onPointerDown: E,
+            onPointerDown: y,
             style: { cursor: "grab" },
             children: [
               /* @__PURE__ */ _.jsxs("div", { className: "flex items-center gap-2", children: [
@@ -134858,7 +134858,7 @@ function Vb({
                   "button",
                   {
                     onClick: (S) => {
-                      S.stopPropagation(), k ? d(e) : u(e);
+                      S.stopPropagation(), E ? d(e) : u(e);
                     },
                     className: "p-1.5 rounded-lg hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas-muted transition-colors",
                     style: { cursor: "pointer" },
@@ -134881,7 +134881,7 @@ function Vb({
           }
         ) : (
           /* Custom close button for panels without title */
-          !k && /* @__PURE__ */ _.jsx("div", { className: "absolute top-0 right-0 z-30 p-1", children: /* @__PURE__ */ _.jsx(
+          !E && /* @__PURE__ */ _.jsx("div", { className: "absolute top-0 right-0 z-30 p-1", children: /* @__PURE__ */ _.jsx(
             "button",
             {
               onClick: (S) => {
@@ -134893,14 +134893,14 @@ function Vb({
             }
           ) })
         ),
-        !k && /* @__PURE__ */ _.jsx("div", { className: "flex-1 overflow-hidden flex flex-col", children: n }),
-        x && !k && !h.autoHeight && /* @__PURE__ */ _.jsxs(_.Fragment, { children: [
+        !E && /* @__PURE__ */ _.jsx("div", { className: "flex-1 overflow-hidden flex flex-col", children: n }),
+        I && !E && !h.autoHeight && /* @__PURE__ */ _.jsxs(_.Fragment, { children: [
           /* @__PURE__ */ _.jsx(
             "div",
             {
               className: "absolute bottom-0 right-0 w-5 h-5 z-20",
               style: { cursor: "se-resize" },
-              onPointerDown: (S) => I(S, "se"),
+              onPointerDown: (S) => w(S, "se"),
               children: /* @__PURE__ */ _.jsx("svg", { width: "10", height: "10", viewBox: "0 0 10 10", className: "absolute bottom-1 right-1 text-canvas-faint", children: /* @__PURE__ */ _.jsx("path", { d: "M1 9L9 1M4 9L9 4", stroke: "currentColor", strokeWidth: "1.5", fill: "none" }) })
             }
           ),
@@ -134909,7 +134909,7 @@ function Vb({
             {
               className: "absolute top-10 right-0 w-2 h-[calc(100%-40px)] z-20",
               style: { cursor: "e-resize" },
-              onPointerDown: (S) => I(S, "e")
+              onPointerDown: (S) => w(S, "e")
             }
           ),
           /* @__PURE__ */ _.jsx(
@@ -134917,7 +134917,7 @@ function Vb({
             {
               className: "absolute bottom-0 left-4 w-[calc(100%-40px)] h-2 z-20",
               style: { cursor: "s-resize" },
-              onPointerDown: (S) => I(S, "s")
+              onPointerDown: (S) => w(S, "s")
             }
           )
         ] })

@@ -22,6 +22,8 @@ export interface PanelActionMeta {
   reversible?: boolean;
  /** Declared compensating action for reversal. */
   inverseActionId?: string;
+  /** Prompt text dispatched to chat for `kind: 'prompt'` actions. */
+  prompt?: string;
 }
 
 export type PanelScopeKind = 'global' | 'context';
@@ -91,6 +93,14 @@ function extractActionsFromSpec(spec: PanelSpec): PanelActionMeta[] {
         confirmMessage: action.confirm,
         reversible,
         inverseActionId: action.inverse,
+      };
+    }
+    if (action.kind === 'prompt') {
+      return {
+        id,
+        kind: action.kind,
+        label: id,
+        prompt: action.prompt,
       };
     }
     return {

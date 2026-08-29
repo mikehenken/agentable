@@ -1,5 +1,6 @@
 import type { PartialCanvasTenantConfig } from '../../../src/canvas/CanvasContext';
 import type { EmbedConfigDocument } from '../../../src/embed/types/embedConfig';
+import type { RawPanelDataPayload } from '../../../src/config/panelDataNormalize';
 import type { PanelDefinition } from '../../../src/panels/types';
 import { CAREER_SOURCE_NAMES } from './constants';
 import { careerDatasetToPanelData } from './adapters/careerDatasetToPanelData';
@@ -123,12 +124,14 @@ export function resolveCareerHostConfig(
     options.adapter ??
     ({
       kind: 'static',
+      // Rows originate from the zod-parsed CareerDataset; the tenant-config
+      // boundary widens them to unknown[], so re-assert the raw payload shape.
       data: {
         jobs: tenantDefaults.panelData?.jobs,
         applications: tenantDefaults.panelData?.applications,
         growthPaths: tenantDefaults.panelData?.growthPaths,
         resources: tenantDefaults.panelData?.resources,
-      },
+      } as RawPanelDataPayload,
     } as const);
 
   return {
@@ -151,7 +154,9 @@ export function toEmbedConfigDocument(config: CareerHostConfig): EmbedConfigDocu
     tenant: config.tenant,
     persona: config.persona,
     adapter: config.adapter,
-    panelData: config.panelData,
+    // Same widening as the static adapter above: CanvasPanelData rows come
+    // from the parsed dataset and satisfy the raw payload row contracts.
+    panelData: config.panelData as RawPanelDataPayload | undefined,
     panels: config.panels.map((panel) => ({ id: panel.id, kind: panel.kind })),
   });
 }

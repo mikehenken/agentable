@@ -34,8 +34,11 @@ export type BlockOp =
   | { op: 'move'; blockId: string; toIndex: number }
   | { op: 'remove'; blockId: string };
 
+/** Omit that distributes over union members instead of collapsing to common keys. */
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
+
 /** Block payload for insert/replace — id optional (assigned when missing). */
-export type DocBlockInput = Omit<DocBlock, 'id'> & { id?: string };
+export type DocBlockInput = DistributiveOmit<DocBlock, 'id'> & { id?: string };
 
 export const WORKSPACE_DOCUMENTS_SOURCE = 'workspace.documents';
 

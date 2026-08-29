@@ -162,7 +162,6 @@ export interface ChatPanelProps {
 export function ChatPanel({ chromeless: _chromeless = true }: ChatPanelProps = {}) {
   const { persona, labels, welcomeMessage } = useCanvasConfig();
   const assistantName = persona.assistantName ?? 'Assistant';
-  const tenantTitle = persona.tenantTitle ?? 'AI Assistant';
   const starterPrompts = persona.starterPrompts ?? [];
   const emptyStateWelcome =
     welcomeMessage?.trim() ||

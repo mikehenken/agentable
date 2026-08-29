@@ -2,7 +2,7 @@
  * In-memory `workspace.documents` adapter. Host persistence via
  * `createPersistedDocumentStore`.
  */
-import type { PanelScope } from '../types';
+import type { JsonValue, PanelScope } from '../types';
 import type {
   DataAdapter,
   DeclaredAction,
@@ -63,7 +63,7 @@ function readDocumentId(ref: SourceRef, scope: PanelScope): string | null {
       return fromParams;
     }
   }
-  if (scope.entityId.length > 0) {
+  if (scope.entityId !== undefined && scope.entityId.length > 0) {
     return scope.entityId;
   }
   return null;
@@ -120,7 +120,8 @@ export function createDocumentDataAdapter(store: DocumentStore): DataAdapter {
         });
       }
       store.set(documentId, { ...parsed, documentId, version: (parsed.version ?? 0) + 1 });
-      return Promise.resolve({ ok: true, data: parsed });
+      // Safe: parsed is the output of parseDocumentPayload over JSON input, a plain JSON shape.
+      return Promise.resolve({ ok: true, data: parsed as unknown as JsonValue });
     },
 
     subscribe(ref: SourceRef, scope: PanelScope, onChange: () => void): Unsubscribe {

@@ -169,8 +169,10 @@ export function readParentOriginAllowlistFromSearchParams(
   if (fromReferrer.length > 0) {
     return fromReferrer;
   }
+  // `null` (no referrer) must not reach normalizeOrigin, which calls
+  // `.trim()` on each entry and would throw on a non-string.
   const derived = parseAllowedOrigins(
-    referrer !== undefined ? [referrer] : [],
+    typeof referrer === 'string' ? [referrer] : [],
   );
   return derived;
 }

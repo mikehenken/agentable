@@ -54,7 +54,12 @@ const server = createServer(async (req, res) => {
 
   if (pathname.startsWith('/v1/')) {
     res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ error: 'pages functions are not emulated by serve-site' }));
+    res.end(
+      JSON.stringify({
+        error: 'pages functions are not emulated by serve-site',
+        hint: 'Run `npm run serve:site:functions` (wrangler pages dev) with a `.dev.vars` file — see .dev.vars.example.',
+      }),
+    );
     return;
   }
 

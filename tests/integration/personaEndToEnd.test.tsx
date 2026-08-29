@@ -20,7 +20,7 @@
  * the published state + transcript. Speed=10x for fast playback.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { CanvasProvider, useCanvasConfig } from '../../src/canvas/CanvasContext';
 import { useGeminiLive } from '../../src/canvas/voice/useGeminiLive';
 import type { ReactNode } from 'react';

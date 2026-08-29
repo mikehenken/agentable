@@ -7,7 +7,7 @@ import type { ToolDefinition } from '../panels/tools';
 import { DRAWING_TOOL_NAMES } from './tools/drawingTools';
 import { AUTHORING_TOOLKIT_TOOL_NAMES } from './tools/authoringToolkitTools';
 import { WALKTHROUGH_TOOL_NAMES } from './tools/walkthroughTools';
-import type { AgentSession, CapabilityNote, ModelCapabilities, ProviderBinding } from './types';
+import type { CapabilityNote, ModelCapabilities, ProviderBinding } from './types';
 
 export type CapabilityClass = 'read' | 'ui' | 'mutate' | 'job';
 
@@ -120,7 +120,6 @@ function bindingMeetsRequirement(
 
 /** Derive session capabilities from the tool registry. */
 export function deriveCapabilities(
-  session: AgentSession,
   tools: readonly ToolDefinition[],
 ): CapabilityDescriptor[] {
   return tools.map((tool) => {

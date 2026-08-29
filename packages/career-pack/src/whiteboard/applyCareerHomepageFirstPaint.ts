@@ -46,7 +46,7 @@ function listPanelIds(editor: Editor): readonly string[] {
 
   const ids: string[] = [];
 
-  for (const shape of editor.getCurrentPageShapes) {
+  for (const shape of editor.getCurrentPageShapes()) {
 
     if ((shape.type as string) !== 'panel') continue;
 
@@ -68,15 +68,16 @@ function listPanelIds(editor: Editor): readonly string[] {
 
 function openChatAtDefault(editor: Editor, options: ResolveWhiteboardChromeInsetsOptions): void {
 
-  const viewport = editor.getViewportPageBounds;
+  // Call immediately: assigning the method unbound loses `this` on tldraw's Editor.
+  const viewport = editor.getViewportPageBounds();
 
   const navExpanded = options.showNavSidebar
 
-    ? options.navExpanded ?? shouldExpandWhiteboardNav(viewport().w): false;
+    ? options.navExpanded ?? shouldExpandWhiteboardNav(viewport.w): false;
 
   const chrome = computeWhiteboardChromeInsets({
 
-    viewportWidth: viewport().w,
+    viewportWidth: viewport.w,
 
     navExpanded,
 
@@ -94,9 +95,9 @@ function openChatAtDefault(editor: Editor, options: ResolveWhiteboardChromeInset
 
     position: {
 
-      x: snapToGrid(viewport().x + chrome.left),
+      x: snapToGrid(viewport.x + chrome.left),
 
-      y: snapToGrid(viewport().y + chrome.top),
+      y: snapToGrid(viewport.y + chrome.top),
 
     },
 

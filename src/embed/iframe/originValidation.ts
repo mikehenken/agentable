@@ -22,9 +22,8 @@ export function parseAllowedOrigins(raw: string | readonly string[] | undefined)
   if (raw === undefined) {
     return [];
   }
-  const parts = Array.isArray(raw)
-    ? raw
-    : raw.split(',').map((entry) => entry.trim());
+  const parts: readonly string[] =
+    typeof raw === 'string' ? raw.split(',').map((entry) => entry.trim()) : raw;
   const normalized = parts
     .map((entry) => normalizeOrigin(entry))
     .filter((entry): entry is string => entry !== null);

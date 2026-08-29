@@ -59,12 +59,21 @@ function resolveContainer(container: string | HTMLElement): HTMLElement {
   return container;
 }
 
+/** Panel elements carry lookup/config properties the canvas element does not declare. */
+function isAgentablePanelElement(
+  element: AgentableEmbedElement,
+): element is AgentablePanelElement {
+  return element.tagName.toLowerCase() === 'agentable-panel';
+}
+
 function applySharedAttributes(
   element: AgentableEmbedElement,
   options: AgentableEmbedInitOptions): void {
   if (options.anonKey) {
     element.setAttribute(ANON_KEY_ATTR, options.anonKey);
-    element.anonKey = options.anonKey;
+    if (isAgentablePanelElement(element)) {
+      element.anonKey = options.anonKey;
+    }
   }
   if (options.apiEndpoint) {
     element.setAttribute(API_ENDPOINT_ATTR, options.apiEndpoint);
@@ -72,15 +81,21 @@ function applySharedAttributes(
   }
   if (options.configPath) {
     element.setAttribute(CONFIG_PATH_ATTR, options.configPath);
-    element.configPath = options.configPath;
+    if (isAgentablePanelElement(element)) {
+      element.configPath = options.configPath;
+    }
   }
   if (options.configUrl) {
     element.setAttribute('config-url', options.configUrl);
-    element.configUrl = options.configUrl;
+    if (isAgentablePanelElement(element)) {
+      element.configUrl = options.configUrl;
+    }
   }
   if (options.panelDataUrl) {
     element.setAttribute('panel-data-url', options.panelDataUrl);
-    element.panelDataUrl = options.panelDataUrl;
+    if (isAgentablePanelElement(element)) {
+      element.panelDataUrl = options.panelDataUrl;
+    }
   }
   if (options.tenant) {
     element.setAttribute('tenant', options.tenant);
@@ -96,7 +111,9 @@ function applySharedAttributes(
   }
   if (options.locale) {
     element.setAttribute('locale', options.locale);
-    element.locale = options.locale;
+    if (isAgentablePanelElement(element)) {
+      element.locale = options.locale;
+    }
   }
 }
 

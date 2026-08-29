@@ -33,7 +33,7 @@ describe('engine conformance kit — tldraw lifecycle edge cases', () => {
     const readySpy = vi.fn();
     ctx().engine.on('ready', readySpy);
     ctx().reset();
-    expect(readySpy).not.toHaveBeenCalled;
+    expect(readySpy).not.toHaveBeenCalled();
     ctx().teardown();
   });
 });

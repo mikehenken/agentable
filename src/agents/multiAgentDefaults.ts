@@ -38,7 +38,7 @@ export const MULTI_AGENT_CONCIERGE_PRESET: AgentRegistryRegisterInput = {
 /** Background job agent: compose-heavy flows under HITL, no destructive actions by default. */
 export const MULTI_AGENT_JOB_PRESET: AgentRegistryRegisterInput = {
   id: 'job',
-  kind: 'job',
+  kind: 'background',
   label: 'Background Job',
   transport: 'async',
   allowedTools: ['list_panels', 'open_panel', 'compose_panel', 'describe_panel'],

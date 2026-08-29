@@ -24,14 +24,11 @@ export function DraggablePanel({
   const resizeStartRef = useRef({ x: 0, y: 0, w: 0, h: 0 });
 
   const layout = panels[id];
-  if (!layout?.visible) return null;
-
-  const x = layout.x ?? 100;
-  const y = layout.y ?? 100;
-  const w = isResizing && resizePreviewRef.current ? resizePreviewRef.current.w : (layout.w ?? 400);
-  const h = layout.minimized ? 44 : (layout.h ?? 300);
-  const minimized = layout.minimized ?? false;
-  const resizable = layout.resizable ?? false;
+  // Hooks must run on every render, including hidden panels: the early
+  // `return null` lives BELOW every hook so toggling visibility cannot
+  // change the hook count between renders (React error #300).
+  const x = layout?.x ?? 100;
+  const y = layout?.y ?? 100;
 
   // DRAG: Header drag handler
   const handleHeaderPointerDown = useCallback((e: React.PointerEvent) => {
@@ -67,21 +64,21 @@ export function DraggablePanel({
     resizeStartRef.current = {
       x: e.clientX,
       y: e.clientY,
-      w: layout.w ?? 400,
-      h: layout.h ?? 300,
+      w: layout?.w ?? 400,
+      h: layout?.h ?? 300,
     };
-    resizePreviewRef.current = { w: layout.w ?? 400, h: layout.h ?? 300 };
+    resizePreviewRef.current = { w: layout?.w ?? 400, h: layout?.h ?? 300 };
 
     const handleMove = (e: PointerEvent) => {
       const dx = e.clientX - resizeStartRef.current.x;
       const dy = e.clientY - resizeStartRef.current.y;
       let newW = resizeStartRef.current.w;
       let newH = resizeStartRef.current.h;
-      if (direction.includes('e')) newW = Math.max((layout.minW ?? 200), resizeStartRef.current.w + dx);
-      if (direction.includes('s')) newH = Math.max((layout.minH ?? 150), resizeStartRef.current.h + dy);
+      if (direction.includes('e')) newW = Math.max((layout?.minW ?? 200), resizeStartRef.current.w + dx);
+      if (direction.includes('s')) newH = Math.max((layout?.minH ?? 150), resizeStartRef.current.h + dy);
       if (direction.includes('se')) {
-        newW = Math.max((layout.minW ?? 200), resizeStartRef.current.w + dx);
-        newH = Math.max((layout.minH ?? 150), resizeStartRef.current.h + dy);
+        newW = Math.max((layout?.minW ?? 200), resizeStartRef.current.w + dx);
+        newH = Math.max((layout?.minH ?? 150), resizeStartRef.current.h + dy);
       }
       resizePreviewRef.current = { w: newW, h: newH };
       setIsResizing(prev => prev);
@@ -100,7 +97,14 @@ export function DraggablePanel({
 
     window.addEventListener('pointermove', handleMove);
     window.addEventListener('pointerup', handleUp);
-  }, [id, layout.w, layout.h, layout.minW, layout.minH, resizePanel]);
+  }, [id, layout?.w, layout?.h, layout?.minW, layout?.minH, resizePanel]);
+
+  if (!layout?.visible) return null;
+
+  const w = isResizing && resizePreviewRef.current ? resizePreviewRef.current.w : (layout.w ?? 400);
+  const h = layout.minimized ? 44 : (layout.h ?? 300);
+  const minimized = layout.minimized ?? false;
+  const resizable = layout.resizable ?? false;
 
   return (
     <div
@@ -129,7 +133,14 @@ export function DraggablePanel({
           </div>
           <div className="flex items-center gap-0.5">
             <button
-              onClick={(e) => { e.stopPropagation(); minimized ? maximizePanel(id) : minimizePanel(id); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (minimized) {
+                  maximizePanel(id);
+                } else {
+                  minimizePanel(id);
+                }
+              }}
               className="p-1.5 rounded-lg hover:bg-canvas-surface-subtle text-canvas-faint hover:text-canvas-muted transition-colors"
               style={{ cursor: 'pointer' }}
             >

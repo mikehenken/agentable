@@ -1,4 +1,4 @@
-/** Public exports for iframe + oEmbed fallback. */
+﻿/** Public exports for iframe + oEmbed fallback. */
 export {
   EMBED_BRIDGE_VERSION,
   IFRAME_EMBED_SANDBOX,
@@ -11,13 +11,13 @@ export {
   type EmbedBridgeEnvelope,
   type EmbedBridgeSurface,
   type EmbedBridgeMessageType,
-} from './iframe/embedBridgeProtocol';
+} from '../iframe/embedBridgeProtocol';
 
 export {
   parseAllowedOrigins,
   isOriginAllowed,
   resolveParentOriginFromReferrer,
-} from './iframe/originValidation';
+} from '../iframe/originValidation';
 
 export {
   createIframeChildBridge,
@@ -25,14 +25,14 @@ export {
   createBridgeIdFromParams,
   type IframeChildBridge,
   type IframeChildBridgeOptions,
-} from './iframe/iframeChildBridge';
+} from '../iframe/iframeChildBridge';
 
 export {
   applySandboxedIframeAttributes,
   createIframeParentBridge,
   type IframeParentBridge,
   type IframeParentBridgeOptions,
-} from './iframe/iframeParentBridge';
+} from '../iframe/iframeParentBridge';
 
 export {
   buildIframeHostUrl,
@@ -40,9 +40,9 @@ export {
   buildSandboxedIframeHtml,
   readIframeHostParamsFromSearchParams,
   type IframeHostEmbedParams,
-} from './iframe/iframeHostUrl';
+} from '../iframe/iframeHostUrl';
 
-export { bootstrapIframeHostPage } from './iframe/iframeHostBootstrap';
+export { bootstrapIframeHostPage } from '../iframe/iframeHostBootstrap';
 
 export {
   buildOEmbedDiscoveryLink,
@@ -53,7 +53,7 @@ export {
   serializeOEmbedResponse,
   createOEmbedHttpHandler,
   resolveOEmbedTitle,
-} from './oembed/oEmbedDiscovery';
+} from '../oembed/oEmbedDiscovery';
 
 export type {
   OEmbedDiscoveryLink,
@@ -61,6 +61,6 @@ export type {
   OEmbedErrorResponse,
   OEmbedResponse,
   OEmbedRequestParams,
-} from './oembed/oEmbedTypes';
+} from '../oembed/oEmbedTypes';
 
-export { AgentableIframeEmbedElement } from './agentable-iframe-embed';
+export { AgentableIframeEmbedElement } from '../agentable-iframe-embed';

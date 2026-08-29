@@ -62,7 +62,11 @@ describe('catalog-charts bundle boundary', () => {
     for (const file of OPTIONAL_EXPORT_ALLOWLIST) {
       const content = readFileSync(file, 'utf8');
       if (!content.includes('catalog-charts')) continue;
-      expect(content).toMatch(/"\.\/catalog-charts"|@agentable\/catalog-charts/);
+      // Sanctioned forms: exports-map wiring, the package name, or the
+      // standalone typecheck script's tsconfig path (tooling, not an import).
+      expect(content).toMatch(
+        /"\.\/catalog-charts"|@agentable\/catalog-charts|packages\/catalog-charts\/tsconfig\.json/,
+      );
     }
   });
 

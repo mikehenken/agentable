@@ -35,9 +35,9 @@ export async function createCanvasMcpFixture(
     mintTestAccessToken(authStore, {
       workspaceId: options.bridge.workspaceId,
       scopes: options.scopes ?? [
-        // CANVAS_MCP_SCOPES.READ,
-        // CANVAS_MCP_SCOPES.ACT,
-        // CANVAS_MCP_SCOPES.DIGEST,
+        CANVAS_MCP_SCOPES.READ,
+        CANVAS_MCP_SCOPES.ACT,
+        CANVAS_MCP_SCOPES.DIGEST,
       ],
     });
 
@@ -73,11 +73,15 @@ export async function callCanvasMcpTool<T = unknown>(
   toolName: string,
   args: Record<string, unknown> = {}): Promise<{ ok: boolean; result?: T; error?: string; code?: string }> {
   const response = await fixture.client.callTool({ name: toolName, arguments: args });
-  const textBlock = response.content.find((block) => block.type === 'text');
-  if (textBlock === undefined || textBlock.type !== 'text') {
+  const content: unknown = response.content;
+  // Serialization boundary: MCP SDK types tool-call content as unknown; blocks are plain JSON objects.
+  const blocks = Array.isArray(content) ? (content as Array<{ type?: unknown; text?: unknown }>) : [];
+  const textBlock = blocks.find((block) => block.type === 'text');
+  if (textBlock === undefined || typeof textBlock.text !== 'string') {
     return { ok: false, error: 'MCP tool returned no text content' };
   }
   try {
+    // Serialization boundary: the MCP text block carries the tool's JSON envelope.
     return JSON.parse(textBlock.text) as { ok: boolean; result?: T; error?: string; code?: string };
   } catch {
     return { ok: false, error: `invalid JSON from MCP tool: ${textBlock.text}` };

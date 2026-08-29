@@ -2,7 +2,7 @@
  * Field-form field renderers, including the P7 `repeatable-group` primitive for
  * editable lists of typed sub-objects (Template AI rules, Forms field builder).
  */
-import React, { useCallback, useId } from 'react';
+import React, { useCallback } from 'react';
 import { t } from '../../i18n';
 import { sanitizeInertText } from '../../security/codeExecutionBoundary';
 import {

@@ -22,7 +22,7 @@ function run(cmd, args) {
   }
 }
 
-function ensureGalleryAssetsBuilt {
+function ensureGalleryAssetsBuilt() {
   run(process.platform === 'win32' ? 'npx.cmd': 'npx', [
     'vite',
     'build',
@@ -38,7 +38,7 @@ function ensureGalleryAssetsBuilt {
 }
 
 if (process.env.SKIP_GALLERY_BUILD !== '1') {
-  ensureGalleryAssetsBuilt;
+  ensureGalleryAssetsBuilt();
 }
 
 /** @type {Record<string, string>} */

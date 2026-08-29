@@ -81,7 +81,10 @@ export function warnUnknownCanvasPolicyFields(
   if (!input || typeof input !== 'object') {
     return;
   }
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production') {
+  // Read via globalThis so browser-only programs typecheck without @types/node.
+  const nodeEnv = (globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process?.env?.NODE_ENV;
+  if (nodeEnv === 'production') {
     return;
   }
   for (const key of Object.keys(input)) {

@@ -30,7 +30,7 @@ describe('<ask-about-this-button>', () => {
       widgetEvent = event as CustomEvent;
     });
 
-    el.shadowRoot!.querySelector('button')!.click;
+    el.shadowRoot!.querySelector('button')!.click();
     await elementUpdated(el);
 
     expect(promptEvent).to.exist;

@@ -11,14 +11,14 @@ describe('StarterChips', () => {
   it('renders compact chips above composer with pin affordance', () => {
     render(
       <StarterChips prompts={PROMPTS} variant="compact" showPinAffordance onSelect={() => {}} />);
-    expect(screen.getByTestId('starter-chips-compact')).toBeInTheDocument;
+    expect(screen.getByTestId('starter-chips-compact')).toBeInTheDocument();
     expect(screen.getAllByTestId('starter-chip')).toHaveLength(2);
-    expect(screen.getByText('Open roles')).toBeInTheDocument;
+    expect(screen.getByText('Open roles')).toBeInTheDocument();
   });
 
   it('renders card variant for empty chat state', () => {
     render(<StarterChips prompts={PROMPTS} variant="cards" onSelect={() => {}} />);
-    expect(screen.getByTestId('starter-chips-cards')).toBeInTheDocument;
+    expect(screen.getByTestId('starter-chips-cards')).toBeInTheDocument();
     expect(screen.getAllByTestId('starter-chip-card')).toHaveLength(2);
   });
 

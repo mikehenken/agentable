@@ -160,7 +160,7 @@ describe('<agentable-operator-surface>', () => {
       expect(el.threads.length).to.equal(1);
 
       const eventPromise = oneEvent(el, 'landi:operator-thread-changed');
-      el.shadowRoot!.querySelector<HTMLButtonElement>('[data-testid="operator-new-thread"]')!.click;
+      el.shadowRoot!.querySelector<HTMLButtonElement>('[data-testid="operator-new-thread"]')!.click();
       await waitForReactChrome(el);
       const event = await eventPromise;
 
@@ -183,7 +183,7 @@ describe('<agentable-operator-surface>', () => {
       expect(alphaPanel!.textContent).to.contain('Hello from Alpha thread');
 
       const eventPromise = oneEvent(el, 'landi:operator-thread-changed');
-      el.shadowRoot!.querySelector<HTMLButtonElement>('[data-thread-tab="thread-beta"]')!.click;
+      el.shadowRoot!.querySelector<HTMLButtonElement>('[data-thread-tab="thread-beta"]')!.click();
       await waitForReactChrome(el);
       const event = await eventPromise;
 
@@ -230,7 +230,7 @@ describe('<agentable-operator-surface>', () => {
       await waitForReactChrome(el);
 
       const eventPromise = oneEvent(el, 'landi:operator-mode-changed');
-      el.shadowRoot!.querySelector<HTMLButtonElement>('[data-mode="build"]')!.click;
+      el.shadowRoot!.querySelector<HTMLButtonElement>('[data-mode="build"]')!.click();
       const event = await eventPromise;
 
       expect(event.detail.mode).to.equal('build');
@@ -317,7 +317,7 @@ describe('<agentable-operator-surface>', () => {
 
       const submit = el.shadowRoot!.querySelector<HTMLButtonElement>('[part="composer-submit"]');
       expect(submit).to.not.equal(null);
-      submit!.click;
+      submit!.click();
       await waitForReactChrome(el);
       await new Promise((resolve) => setTimeout(resolve, 0));
       await elementUpdated(el);

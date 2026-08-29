@@ -45,6 +45,7 @@ import {
   track,
   useEditor,
   useValue,
+  type HTMLContainerProps,
   type RecordProps,
   type TLBaseShape,
 } from 'tldraw';
@@ -68,20 +69,32 @@ import {
 } from './whiteboardPanelRegistry';
 
 /**
- * Custom shape type. Width/height are mandatory for any tldraw box-shape.
- * `panelId` selects the registered panel component. `minimized` toggles
- * the body. `data` is the shape-scoped prop bag used by panel components.
+ * Props for the custom 'panel' shape. Width/height are mandatory for any
+ * tldraw box-shape. `panelId` selects the registered panel component.
+ * `minimized` toggles the body. `data` is the shape-scoped prop bag used
+ * by panel components.
  */
-export type PanelShape = TLBaseShape<
-  'panel',
-  {
-    w: number;
-    h: number;
-    panelId: string;
-    minimized: boolean;
-    data: Record<string, unknown>;
+export interface PanelShapeProps {
+  w: number;
+  h: number;
+  panelId: string;
+  minimized: boolean;
+  data: Record<string, unknown>;
+}
+
+/**
+ * Register 'panel' in tldraw's shape union. TLGlobalShapePropsMap is the
+ * documented augmentation point: TLIndexedShapes maps over its keys, so
+ * `shape.type === 'panel'` narrows to PanelShape everywhere instead of
+ * `never`, and createShape/updateShape accept `type: 'panel'` partials.
+ */
+declare module '@tldraw/tlschema' {
+  interface TLGlobalShapePropsMap {
+    panel: PanelShapeProps;
   }
->;
+}
+
+export type PanelShape = TLBaseShape<'panel', PanelShapeProps>;
 
 const TITLE_BAR_HEIGHT = 32;
 const PANEL_INDICATOR_STROKE = 'rgba(255, 140, 122, 0.55)';
@@ -368,8 +381,16 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
 
   const edgeToEdge = noBorder || fullBleed;
 
+  // tldraw's HTMLContainer spreads its rest props onto the underlying <div>,
+  // so under React 19 `ref` flows through as a regular prop. Its declared
+  // HTMLAttributes type predates ref-as-prop; widen it once here rather than
+  // wrapping the container in an extra DOM node.
+  const PanelHTMLContainer = HTMLContainer as (
+    props: HTMLContainerProps & { ref?: React.Ref<HTMLDivElement> },
+  ) => ReactElement;
+
   return (
-    <HTMLContainer
+    <PanelHTMLContainer
       ref={rootRef}
       data-testid={`panel-shape-${panelId}`}
       className={[
@@ -465,7 +486,7 @@ function PanelShapeBody({ shape, registry }: PanelShapeBodyProps): ReactElement 
           </div>
         </div>
       )}
-    </HTMLContainer>
+    </PanelHTMLContainer>
   );
 }
 

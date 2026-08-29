@@ -103,8 +103,8 @@ async function mountDocumentPanel(
     />);
 
   await waitFor(() => {
-    expect(screen.getByTestId('document-view')).toBeInTheDocument;
-    expect(screen.getByTestId('document-block-viewport')).toBeInTheDocument;
+    expect(screen.getByTestId('document-view')).toBeInTheDocument();
+    expect(screen.getByTestId('document-block-viewport')).toBeInTheDocument();
   });
 
   return {
@@ -221,21 +221,21 @@ describe('DocumentView component states', () => {
     };
     const { rerender } = render(
       <DocumentView bind="document" context={loading} />);
-    expect(screen.getByTestId('loading-skeleton')).toBeInTheDocument;
+    expect(screen.getByTestId('loading-skeleton')).toBeInTheDocument();
 
     rerender(
       <DocumentView
         bind="document"
         context={{...loading, state: 'error' }}
       />);
-    expect(screen.getByTestId('error-card')).toBeInTheDocument;
+    expect(screen.getByTestId('error-card')).toBeInTheDocument();
 
     rerender(
       <DocumentView
         bind="document"
         context={{...loading, state: 'empty' }}
       />);
-    expect(screen.getByTestId('empty-placeholder')).toBeInTheDocument;
+    expect(screen.getByTestId('empty-placeholder')).toBeInTheDocument();
   });
 
   it('renders populated document blocks', () => {
@@ -247,7 +247,7 @@ describe('DocumentView component states', () => {
           { id: 'p', type: 'paragraph', runs: [{ text: 'World' }] },
         ])}
       />);
-    expect(screen.getByTestId('populated-content')).toBeInTheDocument;
+    expect(screen.getByTestId('populated-content')).toBeInTheDocument();
     expect(screen.getByTestId('doc-block-heading')).toHaveTextContent('Hello');
     expect(screen.getByTestId('doc-block-paragraph')).toHaveTextContent('World');
   });
@@ -316,12 +316,12 @@ describe('DocumentView undo/redo controls', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('doc-block-paragraph')).toBeInTheDocument;
+      expect(screen.getByTestId('doc-block-paragraph')).toBeInTheDocument();
     });
 
     const undoButton = screen.getByTestId('document-undo');
-    expect(undoButton).not.toBeDisabled;
+    expect(undoButton).not.toBeDisabled();
     fireEvent.click(undoButton);
-    expect(screen.queryByTestId('doc-block-paragraph')).not.toBeInTheDocument;
+    expect(screen.queryByTestId('doc-block-paragraph')).not.toBeInTheDocument();
   });
 });

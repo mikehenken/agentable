@@ -31,12 +31,7 @@ export {
   documentPersistenceStorageKeyForTests,
   type PersistedDocumentStoreOptions,
 } from './documentPersistence';
-export {
-  exportDocument,
-  exportDocumentBoth,
-  sha256Bytes,
-  type DocumentExportResult,
-} from './documentExport';
+export { exportDocument, exportDocumentBoth, sha256Bytes } from './documentExport';
 export {
   createExportDocumentHostAction,
   createPanelDocumentResolver,
@@ -48,5 +43,6 @@ export {
   type DocumentExportFormat,
   type DocumentExportHostContext,
   type DocumentExportOptions,
+  type DocumentExportResult,
 } from './exportTypes';
 export { DOCUMENT_EXPORT_GOLDEN_SEED } from './goldenExportSeed';

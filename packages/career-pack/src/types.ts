@@ -3,6 +3,8 @@ import type { EmbedAdapterConfig } from '../../../src/embed/types/embedConfig';
 import type { PanelDefinition } from '../../../src/panels/types';
 import type { ToolDefinition } from '../../../src/panels/tools';
 import type { CareerPanelId, CareerSourceName } from './constants';
+// Re-exports below don't bring names into local scope; CareerPackOptions needs it.
+import type { CareerDataset } from './schema/careerEntityTypes';
 
 export type {
   CareerApplication,

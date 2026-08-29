@@ -113,9 +113,13 @@ function shouldBypassLiveChatForModeAction(
 
 interface WhiteboardScriptedHost extends HTMLElement {
   runScriptedTool?: (
-    toolName: 'read_canvas',
+    toolName: 'draw_shapes' | 'read_canvas' | 'clear_agent_drawings',
     args?: Record<string, unknown>,
-  ) => Promise<{ ok: boolean; result?: unknown; error?: string }>;
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
+  runOperatorScriptedTool?: (
+    toolName: 'draw_shapes' | 'read_canvas' | 'clear_agent_drawings',
+    args?: Record<string, unknown>,
+  ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
   whenReady?: (timeoutMs?: number) => Promise<boolean>;
 }
 
@@ -230,8 +234,9 @@ async function postVerifyDrawToolMessages(
       ? drawMessage.args._pageShapeCountBefore
       : undefined;
   const storeFromArgs = drawMessage.args._store;
+  // drawIndex was found with a `message.ok` predicate, so this is the ok branch.
   const drawResult = {
-    ok: drawMessage.ok,
+    ok: true as const,
     result: {
       createdShapeIds: createdFromArgs,
       ...(storeFromArgs !== undefined &&

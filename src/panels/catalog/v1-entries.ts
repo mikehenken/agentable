@@ -3,7 +3,21 @@ import type { CatalogEntry } from '../types';
 import * as Components from './components';
 import { DocumentView } from '../document/DocumentView';
 
-const fieldDefSchema = z.object({
+/** Recursive field definition; explicit interface breaks the z.lazy inference cycle. */
+interface FieldDefSchemaShape {
+  bind?: string;
+  type?: string;
+  label?: string;
+  placeholder?: string;
+  rowKey?: string;
+  defaultItem?: Record<string, unknown>;
+  minItems?: number;
+  maxItems?: number;
+  fields?: FieldDefSchemaShape[];
+  [key: string]: unknown;
+}
+
+const fieldDefSchema: z.ZodType<FieldDefSchemaShape> = z.object({
   bind: z.string().optional(),
   type: z.string().optional(),
   label: z.string().optional(),

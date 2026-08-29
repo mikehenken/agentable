@@ -187,7 +187,7 @@ describe('geminiChatClient post-draw hard gate', () => {
   it('runs programmatic read_canvas before accepting final text after draw_shapes', async () => {
     const { createChatClient } = await import('../../src/chat/geminiChatClient');
 
-    vi.spyOn(canvasTools, 'executeTool').mockImplementation(async (name, args) => {
+    vi.spyOn(canvasTools, 'executeTool').mockImplementation(async (name, _args) => {
       if (name === 'draw_shapes') {
         return { ok: true, result: { createdShapeIds: ['shape:box1', 'shape:box2'] } };
       }

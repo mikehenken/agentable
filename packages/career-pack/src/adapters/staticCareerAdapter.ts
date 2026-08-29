@@ -1,11 +1,11 @@
-import type { JsonObject, PanelScope } from '../../../src/panels/types';
+import type { JsonObject, JsonValue, PanelScope } from '../../../../src/panels/types';
 import type {
   DataAdapter,
   DeclaredAction,
   MutationResult,
   SourceRef,
   Unsubscribe,
-} from '../../../src/panels/renderer';
+} from '../../../../src/panels/renderer';
 import { parseCareerDataset } from '../schema/careerDatasetSchema';
 import type { CareerApplication, CareerDataset, CareerJob } from '../types';
 
@@ -352,7 +352,8 @@ export function createStaticCareerAdapter(
     savePersistedApplications(persistenceKey, applications);
     notify('career.applications');
 
-    return { ok: true, data: application };
+    // JSON-safe record; interfaces lack the implicit index signature JsonValue wants.
+    return { ok: true, data: application as unknown as JsonValue };
   };
 
   return {

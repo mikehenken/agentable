@@ -50,7 +50,7 @@ describe('agentable-canvas embed reload', () => {
 
     await el.reload();
 
-    expect(fetchMock).toHaveBeenCalled;
+    expect(fetchMock).toHaveBeenCalled();
     expect(reloadDetail?.ok).toBe(true);
     expect(el.configUrl).toBe('/fixtures/embed-config-static.json');
   });

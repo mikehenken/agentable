@@ -21,8 +21,8 @@ test.describe(' support inbox quickstart', () => {
       undefined,
       { timeout: 30_000 });
 
-    await expect(page.locator('agentable-panel')).toBeVisible;
-    await expect(page.getByRole('heading', { name: 'Northwind support inbox' })).toBeVisible;
+    await expect(page.locator('agentable-panel')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Northwind support inbox' })).toBeVisible();
 
     const ready = await page.evaluate(() => window.__supportInboxReady);
     expect(ready?.ok).toBe(true);

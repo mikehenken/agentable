@@ -39,12 +39,16 @@ export interface WalkthroughRunResult {
   attentionBadge?: boolean;
 }
 
-/** Opaque camera intent payload enqueued through the P6 politeness queue. */
-export interface WalkthroughCameraIntent {
+/**
+ * Opaque camera intent payload enqueued through the P6 politeness queue.
+ * Type alias (not interface) so it stays assignable to the queue's
+ * Record<string, unknown> payload parameter via implicit index signature.
+ */
+export type WalkthroughCameraIntent = {
   kind: 'zoomTo';
   rect: Rect;
   inset?: number;
-}
+};
 
 export const DEFAULT_WALKTHROUGH_DWELL_MS = 1_500;
 

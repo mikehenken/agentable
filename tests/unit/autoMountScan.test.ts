@@ -190,7 +190,7 @@ describe('autoMountScan — scan lifecycle', () => {
     expect(host.querySelector(`.${PANEL_EMBED_SKELETON_CLASS}`)).not.toBeNull();
     expect(host.querySelector('agentable-panel')).toBeNull();
 
-    // MockIntersectionObserver.emitFor(host, true);
+    MockIntersectionObserver.emitFor(host, true);
     const panel = await waitForAgentablePanel(host);
     expect(host.hasAttribute(DATA_MOUNTED_ATTR)).toBe(true);
     expect(host.hasAttribute(DATA_LAZY_PENDING_ATTR)).toBe(false);

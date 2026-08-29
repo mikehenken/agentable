@@ -68,7 +68,7 @@ export function bindVoiceTelemetry(emit: TelemetryEmit): () => void {
     emit(
       buildVoiceTelemetryEvent({
         outcome,
-        sessionId: sessionId(),
+        sessionId,
         errorCodes: voiceErrorCodesForState(outcome, snapshot.errorMessage),
       }));
   });
