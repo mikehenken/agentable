@@ -18,7 +18,6 @@ tests/unit/canvasMcp.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
 tests/unit/digestDrawingIntegration.test.ts
-tests/unit/documentPanel.test.tsx
 tests/unit/documentPersistence.test.tsx
 tests/unit/domLayoutPersistence.test.ts
 tests/unit/embedConfigReload.test.ts
