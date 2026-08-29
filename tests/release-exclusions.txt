@@ -10,5 +10,4 @@ tests/unit/embedConfigReload.test.ts
 tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/modelRuntime.test.ts
-tests/unit/operatorTranscriptRouting.test.ts
 tests/unit/panelEmbedGalleryDark.test.ts

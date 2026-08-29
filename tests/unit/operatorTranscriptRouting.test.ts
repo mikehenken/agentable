@@ -2,7 +2,7 @@
  * — operator composer must not mirror into page session
  * (Atlas ChatPanel ingests voice-only transcripts).
  */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { submitOperatorComposerMessage } from '../../src/agents/surface/operatorComposer';
 import { DEFAULT_OPERATOR_THREADS } from '../../src/agents/surface/constants';
 import { isOperatorTextMessage } from '../../src/agents/surface/types';
@@ -19,10 +19,22 @@ function voiceOnlyIngest(entries: PageTranscriptEntry[]): PageTranscriptEntry[] 
 describe('operator transcript routing isolation ', () => {
   beforeEach(() => {
     __resetPageSessionForTests__();
+    // Keep the composer send deterministic and offline: without a stub the
+    // chat client makes a real generateContent call (live chat is enabled
+    // whenever an API key is present), which fails with a 401 in tests.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            candidates: [{ content: { parts: [{ text: 'Operator reply.' }] } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } })));
   });
 
   afterEach(() => {
     __resetPageSessionForTests__();
+    vi.unstubAllGlobals();
   });
 
   it('does not publish operator composer sends into page session', async () => {
@@ -77,7 +89,7 @@ describe('operator transcript routing isolation ', () => {
       source: 'voice',
     });
 
-    const filtered = voiceOnlyIngest(session().getBufferedTranscripts);
+    const filtered = voiceOnlyIngest(session().getBufferedTranscripts());
     expect(filtered.some((entry) => entry.text === 'Operator chat leak')).toBe(false);
     expect(filtered.some((entry) => entry.text === 'Voice mirror line')).toBe(true);
     expect(voiceIngest.some((entry) => entry.text === 'Operator chat leak')).toBe(false);
