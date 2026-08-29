@@ -203,7 +203,7 @@ describe('DOM digest attention tiers', () => {
     const focusedDigest = engine.getDigestCompilerInput({ id: 'user-1' });
     const mainContext = focusedDigest.contexts.find((entry) => entry.id === 'region:main');
     expect(mainContext?.attention).toBe('focused');
-    expect(engine.getSelectedPanelIds).toEqual(['beta']);
+    expect(engine.getSelectedPanelIds()).toEqual(['beta']);
 
     engine.destroy();
   });

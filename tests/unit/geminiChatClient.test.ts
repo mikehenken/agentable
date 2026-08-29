@@ -426,7 +426,7 @@ describe('geminiChatClient nested post-draw (no repair thrash)', () => {
     __resetPanelShapeApiForTests__();
     resetEngineCapabilitiesForTests();
     bindEngineCapabilities(makeCapabilities());
-    bindEditor(makeStubEditor as never);
+    bindEditor(makeStubEditor() as never);
   });
 
   afterEach(() => {

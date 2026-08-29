@@ -22,15 +22,12 @@ tests/unit/curatedExamplesValidate.test.ts
 tests/unit/digestDrawingIntegration.test.ts
 tests/unit/documentPanel.test.tsx
 tests/unit/documentPersistence.test.tsx
-tests/unit/domDigestAttention.test.ts
 tests/unit/domLayoutPersistence.test.ts
 tests/unit/embedConfigReload.test.ts
-tests/unit/geminiChatClient.test.ts
 tests/unit/geminiLiveToolContext.test.ts
 tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/modelRuntime.test.ts
-tests/unit/operatorModeScope.test.ts
 tests/unit/operatorTranscriptRouting.test.ts
 tests/unit/panelBuilder.test.ts
 tests/unit/panelEmbedGalleryDark.test.ts
