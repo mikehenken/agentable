@@ -28,8 +28,9 @@ describe('curated example specs ( CI guard)', () => {
 
   it('validates every curated example against validateSpec with zero errors', () => {
     const failures: string[] = [];
+    const allEntries = entries();
 
-    for (const entry of entries) {
+    for (const entry of allEntries) {
       const context = buildValidationContextFromHints(entry.validation, v1CatalogEntries);
       const result = validateSpec(entry.spec, context);
       if (!result.ok) {
@@ -39,6 +40,6 @@ describe('curated example specs ( CI guard)', () => {
     }
 
     expect(failures, failures.join('\n')).toEqual([]);
-    expect(entries.length).toBeGreaterThanOrEqual(26);
+    expect(allEntries.length).toBeGreaterThanOrEqual(26);
   });
 });

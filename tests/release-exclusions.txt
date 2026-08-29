@@ -5,6 +5,5 @@
 # Full suite (npm run test) still runs everything and remains the CI signal.
 tests/integration/anonKeyRateLimitE2e.test.ts
 tests/unit/careerPackLocale.test.tsx
-tests/unit/curatedExamplesValidate.test.ts
 tests/unit/embedConfigReload.test.ts
 tests/unit/panelEmbedGalleryDark.test.ts
