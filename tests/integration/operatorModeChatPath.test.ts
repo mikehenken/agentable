@@ -112,9 +112,12 @@ describe('operator mode chat path coexistence', () => {
     expect(executeToolSpy).toHaveBeenCalledWith(
       'draw_shapes',
       expect.objectContaining({ shapes: expect.any(Array) }));
-    expect(result.toolCalls).toHaveLength(1);
+    // draw_shapes triggers the post-draw review, which reads the canvas back
+    // (draw -> see); both run under the scoped chat agent context.
+    expect(result.toolCalls).toHaveLength(2);
     expect(result.toolCalls[0]?.name).toBe('draw_shapes');
     expect(result.toolCalls[0]?.ok).toBe(true);
+    expect(result.toolCalls[1]?.name).toBe('read_canvas');
     expect(CHAT_AGENT_TOOL_CONTEXT.agentId).toBe('agentable-chat-agent');
 
     executeToolSpy.mockRestore();
