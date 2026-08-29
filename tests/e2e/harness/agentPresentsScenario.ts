@@ -105,6 +105,7 @@ function makeStubEditor(viewport = PLACEMENT_BOUNDS): StubEditor {
     __shapes: shapes,
     getViewportPageBounds: vi.fn(() => viewport),
     getCurrentPageShapes: vi.fn(() => [...shapes.values()]),
+    getCurrentPageId: vi.fn(() => 'page:main'),
     getShape: vi.fn((id: string) => shapes.get(String(id))),
     getShapePageBounds: vi.fn((id: string) => {
       const shape = shapes.get(String(id));

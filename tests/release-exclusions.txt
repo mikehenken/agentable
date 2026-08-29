@@ -3,12 +3,9 @@
 # Policy: this list may ONLY SHRINK. Adding an entry requires an explicit
 # owner decision, mirroring the careerPackBundleBoundary allowlist rule.
 # Full suite (npm run test) still runs everything and remains the CI signal.
-tests/integration/agentPresentsE2e.test.ts
 tests/integration/anonKeyRateLimitE2e.test.ts
 tests/integration/builderRawIrParity.test.tsx
-tests/integration/openAgentCanvasE2e.test.ts
 tests/integration/operatorModeChatPath.test.ts
-tests/integration/wireframeToLayoutE2e.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
 tests/unit/embedConfigReload.test.ts
