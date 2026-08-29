@@ -16,7 +16,7 @@ import { ARCHIPELAGO_CAREER_SYSTEM_PROMPT } from './prompts/archipelagoSystemPro
 import {
   DEFAULT_CAREER_TOOLBAR_CONFIG,
 } from './whiteboard/careerCanvasDefaults';
-import { HELIOS_STARTER_PROMPTS } from './tenants/helios';
+import { HELIOS_STARTER_PROMPTS, HELIOS_STARTER_PROMPTS_ES } from './tenants/helios';
 import { ARCHIPELAGO_STARTER_PROMPTS } from './tenants/archipelago';
 
 /** Core tools suppressed when career routing tools are registered. */
@@ -50,25 +50,49 @@ export interface CareerChatBundle {
 const HELIOS_AGENT_JOBS_GUIDE_SOURCE =
   'career-fixture.json#agentJobsGuide';
 
-/** Helios starter chips with deterministic tool prefetch (parity with Mason playbook). */
-export const HELIOS_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [
-  {
-    ...HELIOS_STARTER_PROMPTS[0],
-    prefetchTool: { name: 'open_positions', args: { location: 'South Florida' } },
-  },
-  {
-    ...HELIOS_STARTER_PROMPTS[1],
-    prefetchTool: { name: 'open_positions', args: { track: 'Solar Hourly' } },
-  },
-  {
-    ...HELIOS_STARTER_PROMPTS[2],
-    prefetchTool: { name: 'open_resources', args: { search: 'internship' } },
-  },
-  {
-    ...HELIOS_STARTER_PROMPTS[3],
-    prefetchTool: { name: 'open_positions', args: { location: 'Texas' } },
-  },
+/**
+ * Prefetch tool bindings for the Helios starter chips, index-aligned to the
+ * localized prompt sets. The bindings are language-independent (open_positions /
+ * open_resources with structured args), so the same tools attach to every
+ * locale's chips; only the visible label and text differ.
+ */
+const HELIOS_STARTER_PROMPT_PREFETCH: readonly NonNullable<
+  CanvasStarterPrompt['prefetchTool']
+>[] = [
+  { name: 'open_positions', args: { location: 'South Florida' } },
+  { name: 'open_positions', args: { track: 'Solar Hourly' } },
+  { name: 'open_resources', args: { search: 'internship' } },
+  { name: 'open_positions', args: { location: 'Texas' } },
 ];
+
+function withHeliosStarterTools(
+  prompts: readonly CanvasStarterPrompt[],
+): readonly CanvasStarterPrompt[] {
+  return prompts.map((prompt, index) => {
+    const prefetchTool = HELIOS_STARTER_PROMPT_PREFETCH[index];
+    return prefetchTool ? { ...prompt, prefetchTool } : { ...prompt };
+  });
+}
+
+/** Helios starter chips with deterministic tool prefetch (parity with Mason playbook). */
+export const HELIOS_STARTER_PROMPTS_WITH_TOOLS = withHeliosStarterTools(HELIOS_STARTER_PROMPTS);
+
+/** Spanish Helios starter chips carrying the same tool prefetch as the English set. */
+export const HELIOS_STARTER_PROMPTS_ES_WITH_TOOLS =
+  withHeliosStarterTools(HELIOS_STARTER_PROMPTS_ES);
+
+/**
+ * Locale-aware Helios starter chips (with tools). The embed config must thread
+ * the requested locale through here; hardcoding the English set left Spanish
+ * embeds showing English chips despite a correctly localized persona.
+ */
+export function resolveHeliosStarterPromptsWithTools(
+  locale: string,
+): readonly CanvasStarterPrompt[] {
+  return locale === 'es'
+    ? HELIOS_STARTER_PROMPTS_ES_WITH_TOOLS
+    : HELIOS_STARTER_PROMPTS_WITH_TOOLS;
+}
 
 /** Archipelago starter chips with deterministic tool prefetch. */
 export const ARCHIPELAGO_STARTER_PROMPTS_WITH_TOOLS: readonly CanvasStarterPrompt[] = [

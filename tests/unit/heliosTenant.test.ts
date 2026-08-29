@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  CAREER_PANEL_IDS,
   createHeliosEmbedConfig,
   HELIOS_PERSONA_EN,
   HELIOS_PERSONA_ES,
@@ -40,11 +41,6 @@ describe('helios tenant embed config', () => {
     const doc = createHeliosEmbedConfig({ systemPrompt: SAMPLE_PROMPT });
     expect(doc.canvasMode).toBe('bounded');
     expect(doc.canvasZoom).toBe('locked');
-    expect(doc.panels?.map((p) => (p as { id: string }).id)).toEqual([
-      'open-positions',
-      'applications',
-      'growth-paths',
-      'resources',
-    ]);
+    expect(doc.panels?.map((p) => (p as { id: string }).id)).toEqual([...CAREER_PANEL_IDS]);
   });
 });

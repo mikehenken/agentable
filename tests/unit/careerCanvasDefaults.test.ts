@@ -51,7 +51,7 @@ describe('career canvas defaults', () => {
   });
 
   it('resolveCareerWhiteboardShellDefaults matches bounded locked mode', () => {
-    const shell = resolveCareerWhiteboardShellDefaults;
+    const shell = resolveCareerWhiteboardShellDefaults();
     expect(shell.mode).toEqual(DEFAULT_CAREER_BOUNDED_MODE);
     expect(shell.toolbarConfig.layoutActionPlacement).toBe('toolbar');
     expect(shell.snapGrid).toBe(true);

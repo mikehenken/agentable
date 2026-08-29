@@ -17,8 +17,6 @@ tests/integration/wireframeToLayoutE2e.test.ts
 tests/unit/anonKeyTenantLookup.test.ts
 tests/unit/approvalCard.test.tsx
 tests/unit/canvasMcp.test.ts
-tests/unit/careerCanvasDefaults.test.ts
-tests/unit/careerPack.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/chatPanelToolEcho.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
@@ -30,7 +28,6 @@ tests/unit/domLayoutPersistence.test.ts
 tests/unit/embedConfigReload.test.ts
 tests/unit/geminiChatClient.test.ts
 tests/unit/geminiLiveToolContext.test.ts
-tests/unit/heliosTenant.test.ts
 tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/lucideIconImports.test.ts

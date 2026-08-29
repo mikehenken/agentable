@@ -9,8 +9,8 @@ import type { CareerPersonaScaffold } from '../types';
 import { CAREER_TENANT_PRIMARY_COLORS } from './careerTenantTokens';
 import { HELIOS_CAREER_SYSTEM_PROMPT } from '../prompts/heliosSystemPrompt';
 import {
-  HELIOS_STARTER_PROMPTS_WITH_TOOLS,
   resolveCareerChatBundle,
+  resolveHeliosStarterPromptsWithTools,
 } from '../careerChatBundle';
 import { applyCareerEmbedDefaults } from '../whiteboard/careerCanvasDefaults';
 
@@ -120,7 +120,7 @@ export function createHeliosEmbedConfig(input: CreateHeliosEmbedConfigInput): Em
       assistantName: personaLocale.assistantName,
       tenantTitle: personaLocale.tenantTitle,
       voiceGreeting: personaLocale.voiceGreeting,
-      starterPrompts: [...HELIOS_STARTER_PROMPTS_WITH_TOOLS],
+      starterPrompts: [...resolveHeliosStarterPromptsWithTools(locale)],
       systemPrompt,
     },
   });
@@ -149,7 +149,7 @@ export function createHeliosEmbedConfig(input: CreateHeliosEmbedConfigInput): Em
       assistantName: personaLocale.assistantName,
       tenantTitle: personaLocale.tenantTitle,
       voiceGreeting: personaLocale.voiceGreeting,
-      starterPrompts: [...HELIOS_STARTER_PROMPTS_WITH_TOOLS],
+      starterPrompts: [...resolveHeliosStarterPromptsWithTools(locale)],
       systemPrompt,
       greetingMode: 'agent-first',
     } satisfies PartialCanvasTenantConfig['persona'],
