@@ -90,7 +90,7 @@ describe('anonKeyTenantLookup', () => {
     expect(first.cacheHit).toBe(false);
     expect(second.cacheHit).toBe(true);
     expect(fetchFn).toHaveBeenCalledTimes(1);
-    expect(cache.size).toBe(1);
+    expect(cache.size()).toBe(1);
   });
 
   it('expires cache entries after TTL', async () => {

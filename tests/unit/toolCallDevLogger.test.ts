@@ -11,7 +11,7 @@ describe('toolCallDevLogger', () => {
   });
 
   it('is enabled in dev or when VITE_LOG_TOOL_CALLS=1', () => {
-    expect(isToolCallLoggingEnabled).toBe(true);
+    expect(isToolCallLoggingEnabled()).toBe(true);
   });
 
   it('emits landi:tool-call-log with panelOpened inference', () => {

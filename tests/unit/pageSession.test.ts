@@ -50,7 +50,7 @@ describe('pageSession — transcript bus', () => {
     });
 
     expect(received).toEqual(['Hello from voice']);
-    expect(session().getBufferedTranscripts).toHaveLength(1);
+    expect(session().getBufferedTranscripts()).toHaveLength(1);
   });
 
   it('caps buffered transcripts at 64 entries', () => {
@@ -63,7 +63,7 @@ describe('pageSession — transcript bus', () => {
         source: 'voice',
       });
     }
-    const buffered = session().getBufferedTranscripts;
+    const buffered = session().getBufferedTranscripts();
     expect(buffered).toHaveLength(64);
     expect(buffered[0]?.text).toBe('line-6');
     expect(buffered[63]?.text).toBe('line-69');

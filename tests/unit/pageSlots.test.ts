@@ -20,7 +20,7 @@ describe('pageSlots — registry', () => {
 
     const unregister = registry().register('sidebar', sidebar);
     expect(registry().get('sidebar')).toBe(sidebar);
-    expect(registry().list).toEqual(['sidebar']);
+    expect(registry().list()).toEqual(['sidebar']);
 
     unregister();
     expect(registry().get('sidebar')).toBeNull();

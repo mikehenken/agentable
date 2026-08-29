@@ -14,7 +14,6 @@ tests/integration/telemetryEventCoverage.test.ts
 tests/integration/telemetrySinkBoundary.test.ts
 tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
-tests/unit/anonKeyTenantLookup.test.ts
 tests/unit/approvalCard.test.tsx
 tests/unit/canvasMcp.test.ts
 tests/unit/careerPackLocale.test.tsx
@@ -34,8 +33,6 @@ tests/unit/lucideIconImports.test.ts
 tests/unit/modelRuntime.test.ts
 tests/unit/operatorModeScope.test.ts
 tests/unit/operatorTranscriptRouting.test.ts
-tests/unit/pageSession.test.ts
-tests/unit/pageSlots.test.ts
 tests/unit/panelBuilder.test.ts
 tests/unit/panelEmbedGalleryDark.test.ts
 tests/unit/panelRepairRound.test.tsx
@@ -44,5 +41,4 @@ tests/unit/repairVocabulary.test.ts
 tests/unit/specInspectorPanel.test.tsx
 tests/unit/starterChips.test.tsx
 tests/unit/storyModeWalkthrough.test.ts
-tests/unit/toolCallDevLogger.test.ts
 tests/unit/whiteboardChromeInsets.test.ts
