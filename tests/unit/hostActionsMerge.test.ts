@@ -16,6 +16,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { createCanvasHost, type EngineHandle, type EngineLifecycleEvent } from '../../src/panels/host';
 import {
   getHostActions,
+  PANEL_TOOL_NAMES,
   registerHostActions,
   type ToolDefinition,
   type ToolResult,
@@ -147,7 +148,11 @@ describe('createCanvasHost hostActions', () => {
     );
 
     const after = getFunctionDeclarations().map((d) => d.name);
-    expect(after).toEqual(builtInNames);
+    // The host auto-registers the panel tool suite (see tools.ts: "panel tools
+    // register automatically from the host's panel registry"), so the merged
+    // registry is the built-ins (with open_chat replacing in place) followed by
+    // the panel tools.
+    expect(after).toEqual([...builtInNames, ...PANEL_TOOL_NAMES]);
     await expect(executeTool('open_chat', {})).resolves.toEqual({
       ok: true,
       result: 'host-owned chat',
@@ -179,9 +184,13 @@ describe('createCanvasHost hostActions', () => {
     expect(builtIn).toBe(CANVAS_TOOLS.find((t) => t.declaration.name === 'dismiss_panel'));
   });
 
-  it('registers nothing for a host without hostActions', () => {
+  it('registers only the auto panel tools for a host without hostActions', () => {
     track(createCanvasHost({ engine: new FakeEngine() }));
-    expect(getHostActions()).toEqual([]);
+    // No custom hostActions were supplied, so the store holds exactly the
+    // auto-registered panel tool suite and nothing host-specific.
+    expect(getHostActions().map((action) => action.declaration.name)).toEqual([
+      ...PANEL_TOOL_NAMES,
+    ]);
   });
 
   it('keeps a second host\'s actions when the first is disposed', () => {
