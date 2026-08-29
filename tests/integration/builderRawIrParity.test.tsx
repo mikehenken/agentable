@@ -167,7 +167,11 @@ describe('builder vs raw IR: schema panel renders byte-identical DOM', () => {
     // The state-hidden badge proves showIf survived the compile.
     expect(builderHtml).not.toContain('Hidden');
 
-    expect(builderHtml).toBe(rawHtml);
+    // React's useId assigns instance-specific ids (e.g. _r_b_ vs _r_3_) that
+    // legitimately differ between two separate renders; normalize them so the
+    // comparison asserts structural DOM parity, not counter identity.
+    const normalizeIds = (html: string): string => html.replace(/_r_[a-z0-9]+_/g, '_r_ID_');
+    expect(normalizeIds(builderHtml)).toBe(normalizeIds(rawHtml));
 
     fromBuilder.dispose();
     fromRaw.dispose();
