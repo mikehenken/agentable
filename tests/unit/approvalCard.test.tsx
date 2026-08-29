@@ -56,7 +56,7 @@ describe('resolveApprovalCardState', () => {
 
 describe('ApprovalCard review state', () => {
   it('renders payload diff rows and action metadata', () => {
-    render(<ApprovalCard request={sampleRequest} />);
+    render(<ApprovalCard request={sampleRequest()} />);
 
     expect(screen.getByTestId('approval-card-review')).toBeInTheDocument();
     expect(screen.getByTestId('approval-awaiting-badge')).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe('ApprovalCard review state', () => {
     const onApprove = vi.fn();
     const onReject = vi.fn();
     render(
-      <ApprovalCard request={sampleRequest} onApprove={onApprove} onReject={onReject} />);
+      <ApprovalCard request={sampleRequest()} onApprove={onApprove} onReject={onReject} />);
 
     fireEvent.click(screen.getByTestId('approval-approve'));
     fireEvent.click(screen.getByTestId('approval-reject'));

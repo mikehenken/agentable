@@ -14,10 +14,8 @@ tests/integration/telemetryEventCoverage.test.ts
 tests/integration/telemetrySinkBoundary.test.ts
 tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
-tests/unit/approvalCard.test.tsx
 tests/unit/canvasMcp.test.ts
 tests/unit/careerPackLocale.test.tsx
-tests/unit/chatPanelToolEcho.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
 tests/unit/digestDrawingIntegration.test.ts
 tests/unit/documentPanel.test.tsx
@@ -35,6 +33,5 @@ tests/unit/panelRepairRound.test.tsx
 tests/unit/panelTools.test.ts
 tests/unit/repairVocabulary.test.ts
 tests/unit/specInspectorPanel.test.tsx
-tests/unit/starterChips.test.tsx
 tests/unit/storyModeWalkthrough.test.ts
 tests/unit/whiteboardChromeInsets.test.ts
