@@ -1,7 +1,7 @@
 /**
  * Animated canvas frame — 98% width, figure-ground border, canvas-only expand.
  */
-import { useEffect, type CSSProperties, type ReactElement, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactElement, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import type { ResolvedWhiteboardHostChrome } from './whiteboardHostChrome';
 import { useWhiteboardHostChromeRequired } from './WhiteboardHostChromeContext';
@@ -26,6 +26,37 @@ export function WhiteboardCanvasFrame({
   shellBackground = 'var(--landi-color-background, #F0F0EC)',
 }: WhiteboardCanvasFrameProps): ReactElement {
   const { isCanvasExpanded, exitCanvasExpand } = useWhiteboardHostChromeRequired();
+  const frameRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Let the expanded overlay escape the custom element's own box.
+   *
+   * `<agentable-whiteboard>` sets `contain: layout paint` on its host. Both of
+   * those make the host a containing block for `position: fixed` descendants,
+   * so the expanded frame and its scrim positioned themselves against the
+   * element rather than the viewport. On a page that embeds the canvas
+   * mid-page, expanding opened the overlay at the embed's top edge and let the
+   * embed's own clipping cut it off, all while the frame correctly reported
+   * data-expanded="true". Geometry was wrong; every flag looked right.
+   *
+   * Marking the host lets its stylesheet drop containment for exactly as long
+   * as the overlay is up. A host element that does not define the matching rule
+   * is unaffected, and the attribute doubles as the signal an embedding page
+   * needs to relax its own clipping.
+   */
+  useEffect(() => {
+    const root = frameRef.current?.getRootNode();
+    const host = root instanceof ShadowRoot ? root.host : null;
+    if (host === null) {
+      return;
+    }
+    if (!isCanvasExpanded) {
+      host.removeAttribute('data-canvas-expanded');
+      return;
+    }
+    host.setAttribute('data-canvas-expanded', 'true');
+    return () => host.removeAttribute('data-canvas-expanded');
+  }, [isCanvasExpanded]);
 
   useEffect(() => {
     if (!isCanvasExpanded) {
@@ -103,6 +134,7 @@ export function WhiteboardCanvasFrame({
         />
       ) : null}
       <motion.div
+        ref={frameRef}
         data-testid="whiteboard-canvas-frame"
         data-expanded={isCanvasExpanded ? 'true' : 'false'}
         layout
