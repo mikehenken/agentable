@@ -188,7 +188,7 @@ describe('frozen repair vocabulary', () => {
   it('compose_panel validation rejections use only frozen codes', async () => {
     const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
-    const result = await composePanel.handler({ spec: invalidSeoSpec });
+    const result = await composePanel.handler({ spec: invalidSeoSpec() });
     cleanup();
     expect(result.ok).toBe(true);
     if (result.ok && !result.result.ok) {
