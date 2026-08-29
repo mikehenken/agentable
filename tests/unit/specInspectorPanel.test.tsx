@@ -77,7 +77,7 @@ describe('Spec Inspector panel ', () => {
     const session = createSpecDevtoolsSession();
     session.inspectSpec({
       targetLabel: 'playground',
-      spec: invalidSeoSpec,
+      spec: invalidSeoSpec(),
       errors: [
         {
           code: 'SPEC_ACTION_REF_MISSING',
@@ -122,7 +122,7 @@ describe('panel tool runtime devtools bridge', () => {
         devtoolsSession: session,
       });
 
-    const result = await runtime.composePanel(invalidSeoSpec);
+    const result = await runtime.composePanel(invalidSeoSpec());
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.agentRepairEligible).toBe(true);
