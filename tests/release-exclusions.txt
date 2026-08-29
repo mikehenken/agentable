@@ -23,6 +23,5 @@ tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/modelRuntime.test.ts
 tests/unit/operatorTranscriptRouting.test.ts
 tests/unit/panelEmbedGalleryDark.test.ts
-tests/unit/panelRepairRound.test.tsx
 tests/unit/panelTools.test.ts
 tests/unit/repairVocabulary.test.ts

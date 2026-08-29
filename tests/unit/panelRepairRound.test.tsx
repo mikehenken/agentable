@@ -137,7 +137,7 @@ describe('compose_panel repair round', () => {
     const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
-    const result = await composePanel.handler({ spec: invalidSeoSpec });
+    const result = await composePanel.handler({ spec: invalidSeoSpec() });
     cleanup();
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -159,8 +159,8 @@ describe('compose_panel repair round', () => {
     const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
-    await composePanel.handler({ spec: invalidSeoSpec });
-    const second = await composePanel.handler({ spec: invalidSeoSpec });
+    await composePanel.handler({ spec: invalidSeoSpec() });
+    const second = await composePanel.handler({ spec: invalidSeoSpec() });
     cleanup();
     expect(second.ok).toBe(true);
     if (second.ok && !second.result.ok) {
@@ -173,7 +173,7 @@ describe('compose_panel repair round', () => {
     const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
-    const first = await composePanel.handler({ spec: invalidSeoSpec });
+    const first = await composePanel.handler({ spec: invalidSeoSpec() });
     expect(first.ok).toBe(true);
     if (first.ok) {
       expect(first.result.ok).toBe(false);
@@ -274,7 +274,7 @@ describe('compose repair render path', () => {
     const { tools, cleanup } = buildRuntime();
     const composePanel = toolByName(tools, 'compose_panel');
 
-    await composePanel.handler({ spec: invalidSeoSpec });
+    await composePanel.handler({ spec: invalidSeoSpec() });
     const composed = await composePanel.handler({ spec: minimalValidSpec });
     cleanup();
     expect(composed.ok).toBe(true);
