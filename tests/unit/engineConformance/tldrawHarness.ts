@@ -54,7 +54,7 @@ interface StubEditor {
   getSelectedShapeIds(): Mock;
   select: Mock;
   zoomToBounds: Mock;
-  getCamera(): Mock;
+  getCamera: Mock;
   setCamera: Mock;
   setCameraOptions: Mock;
   getZoomLevel(): Mock;
@@ -111,19 +111,19 @@ function makeStubEditor(): StubEditor {
     }),
     getViewportPageBounds: vi.fn(() => ({ x: 0, y: 0, w: 1440, h: 900 })),
     getViewportScreenBounds: vi.fn(() => ({ x: 0, y: 0, w: 1440, h: 900 })),
-    getCurrentPageShapes: vi.fn(() => Array.from(shapes.values)),
+    getCurrentPageShapes: vi.fn(() => Array.from(shapes.values())),
     getSelectedShapeIds: vi.fn(() => [] as string[]),
     select: vi.fn(),
     zoomToBounds: vi.fn(),
     getCamera: vi.fn(() => ({ x: 10, y: 20, z: 2 })),
     setCamera: vi.fn((state: { x: number; y: number; z: number }) => {
-      editor.getCamera().mockReturnValue(state);
+      editor.getCamera.mockReturnValue(state);
     }),
     setCameraOptions: vi.fn(),
     getZoomLevel: vi.fn(() => 2),
     getSnapshot: vi.fn(() => ({ document: { pages: 1 } })),
     loadSnapshot: vi.fn(() => {
-      editor.__emitStoreEntry(emptyEntry);
+      editor.__emitStoreEntry(emptyEntry());
     }),
     bringToFront: vi.fn(),
     sendToBack: vi.fn(),
@@ -217,7 +217,7 @@ export function createTldrawConformanceHarness(): EngineConformanceHarness {
           stub.__shapes.set(panelShapeId(panelId), panelShape(panelId, rect));
         },
         emitUserStoreChange: () => {
-          stub.__emitStoreEntry(emptyEntry);
+          stub.__emitStoreEntry(emptyEntry());
         },
         emitCameraMotion: () => {
           stub.__emitStoreEntry({

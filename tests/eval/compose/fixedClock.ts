@@ -18,10 +18,12 @@ export function createFixedClock(iso: string): FixedClock {
 
   return {
     iso,
-    now(): Date {
+    // Getters, not methods: the FixedClock interface exposes these as
+    // properties and consumers (harness fingerprinting) read them directly.
+    get now(): Date {
       return new Date(currentMs);
     },
-    nowIso(): string {
+    get nowIso(): string {
       return new Date(currentMs).toISOString();
     },
     advance(ms: number): void {
@@ -30,7 +32,7 @@ export function createFixedClock(iso: string): FixedClock {
       }
       currentMs += ms;
     },
-    elapsedMs(): number {
+    get elapsedMs(): number {
       return currentMs - startMs;
     },
   };

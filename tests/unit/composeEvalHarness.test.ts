@@ -30,7 +30,7 @@ describe('compose eval seeded utilities ', () => {
   it('createSeededRandom produces identical sequences for the same seed', () => {
     const left = createSeededRandom(180018);
     const right = createSeededRandom(180018);
-    const samples = Array.from({ length: 8 }, () => [left, right]);
+    const samples = Array.from({ length: 8 }, () => [left(), right()]);
     for (const [a, b] of samples) {
       expect(a).toBe(b);
     }
@@ -105,45 +105,45 @@ describe('compose eval harness ', () => {
   });
 
   it('produces identical fingerprints across repeated runs with the same seed', async () => {
-    const first = await runComposeEvalHarness;
-    const second = await runComposeEvalHarness;
+    const first = await runComposeEvalHarness();
+    const second = await runComposeEvalHarness();
 
-    expect(first().fingerprint).toBe(second().fingerprint);
-    expect(first().table.rows).toHaveLength(6);
-    expect(first().table.modelMetrics).toHaveLength(3);
+    expect(first.fingerprint).toBe(second.fingerprint);
+    expect(first.table.rows).toHaveLength(6);
+    expect(first.table.modelMetrics).toHaveLength(3);
   });
 
   it('matches the frozen baseline fingerprint for seed 180018', async () => {
-    const run = await runComposeEvalHarness;
-    expect(run().fingerprint).toBe(EXPECTED_FINGERPRINT);
+    const run = await runComposeEvalHarness();
+    expect(run.fingerprint).toBe(EXPECTED_FINGERPRINT);
   });
 
   it('aggregates per-model compose success, repair rate, and rejection reasons', async () => {
-    const run = await runComposeEvalHarness;
-    const alpha = run().table.modelMetrics.find((metric) => metric.modelId === 'mock-model-alpha');
-    const gamma = run().table.modelMetrics.find((metric) => metric.modelId === 'mock-model-gamma');
+    const run = await runComposeEvalHarness();
+    const alpha = run.table.modelMetrics.find((metric) => metric.modelId === 'mock-model-alpha');
+    const gamma = run.table.modelMetrics.find((metric) => metric.modelId === 'mock-model-gamma');
 
     expect(alpha?.composeSuccessRate).toBe(0.5);
     expect(alpha?.rejectionReasons.SPEC_ACTION_REF_MISSING).toBeGreaterThan(0);
     expect(gamma?.repairRate).toBe(0.5);
     expect(gamma?.successCount).toBe(1);
 
-    const markdown = formatResultsTableMarkdown(run().table);
+    const markdown = formatResultsTableMarkdown(run.table);
     expect(markdown).toContain('mock-model-gamma');
     expect(markdown).toContain('repaired_success');
   });
 
   it('passes the default CI regression gate scaffold', async () => {
-    const run = await runComposeEvalHarness;
-    const gate = evaluateComposeEvalRegressionGate(run().table, DEFAULT_COMPOSE_EVAL_BASELINE);
+    const run = await runComposeEvalHarness();
+    const gate = evaluateComposeEvalRegressionGate(run.table, DEFAULT_COMPOSE_EVAL_BASELINE);
     expect(gate.ok).toBe(true);
     expect(gate.violations).toEqual([]);
-    expect(run().regression.ok).toBe(true);
+    expect(run.regression.ok).toBe(true);
   });
 
   it('fails regression gate when compose success floor is unreachable', async () => {
-    const run = await runComposeEvalHarness;
-    const gate = evaluateComposeEvalRegressionGate(run().table, {
+    const run = await runComposeEvalHarness();
+    const gate = evaluateComposeEvalRegressionGate(run.table, {
       minComposeSuccessRate: 0.99,
     });
     expect(gate.ok).toBe(false);
@@ -153,12 +153,12 @@ describe('compose eval harness ', () => {
 
 describe('compose eval results table fingerprint stability', () => {
   it('builds stable fingerprints from aggregated metrics only', async () => {
-    const run = await runComposeEvalHarness;
-    const metricsOnly = aggregateModelMetrics(run().caseResults);
-    const table = {...run().table,
+    const run = await runComposeEvalHarness();
+    const metricsOnly = aggregateModelMetrics(run.caseResults);
+    const table = {...run.table,
       generatedAtIso: 'ignored-for-fingerprint',
       modelMetrics: metricsOnly,
     };
-    expect(fingerprintResultsTable(table)).toBe(run().fingerprint);
+    expect(fingerprintResultsTable(table)).toBe(run.fingerprint);
   });
 });

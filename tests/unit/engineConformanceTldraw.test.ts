@@ -22,19 +22,20 @@ describe('engine conformance kit — tldraw lifecycle edge cases', () => {
 
   it('exportSnapshot is empty before attachEditor', () => {
     const engine = createUnattachedTldrawEngine();
-    expect(engine.isReady).toBe(false);
-    expect(engine.exportSnapshot).toEqual({});
+    expect(engine.isReady()).toBe(false);
+    expect(engine.exportSnapshot()).toEqual({});
     engine.destroy();
   });
 
   it('fires ready exactly once even when attachEditor is called twice', () => {
     const harness = createTldrawConformanceHarness();
-    const ctx = harness.createContext;
+    // One context throughout: each createContext() call builds a fresh engine.
+    const ctx = harness.createContext();
     const readySpy = vi.fn();
-    ctx().engine.on('ready', readySpy);
-    ctx().reset();
+    ctx.engine.on('ready', readySpy);
+    ctx.reset();
     expect(readySpy).not.toHaveBeenCalled();
-    ctx().teardown();
+    ctx.teardown();
   });
 });
 
@@ -45,12 +46,13 @@ describe('engine conformance kit — tldraw selection contract', () => {
 
   it('maps selected shape ids to panel instance ids', () => {
     const harness = createTldrawConformanceHarness();
-    const ctx = harness.createContext;
+    // One context throughout: each createContext() call builds a fresh engine.
+    const ctx = harness.createContext();
     const selection = vi.fn();
-    ctx().engine.on('selection:changed', selection);
-    ctx().seedPanel('jobs', { x: 0, y: 0, w: 10, h: 10 });
-    ctx().emitSelectionChange('jobs');
+    ctx.engine.on('selection:changed', selection);
+    ctx.seedPanel('jobs', { x: 0, y: 0, w: 10, h: 10 });
+    ctx.emitSelectionChange('jobs');
     expect(selection).toHaveBeenCalledWith({ ids: ['jobs'] });
-    ctx().teardown();
+    ctx.teardown();
   });
 });

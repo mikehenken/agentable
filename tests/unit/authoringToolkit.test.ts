@@ -101,10 +101,13 @@ function makeStubEditor(): StubEditor {
     __shapes: shapes,
     __groups: groups,
     getShape: vi.fn((id: string) => shapes.get(id)),
+    getCurrentPageId: () => 'page:page',
     createShape: vi.fn((shape: Omit<StubShape, 'typeName' | 'index'>) => {
       shapes.set(shape.id, {...shape,
         typeName: 'shape',
         index: `a${shapes.size + 1}`,
+        // Real tldraw defaults parentId to the current page when omitted.
+        parentId: shape.parentId ?? 'page:page',
         meta: shape.meta ?? {},
         props: shape.props ?? {},
       });
@@ -223,7 +226,9 @@ describe('authoring toolkit engine capability gating', () => {
     const declarations = getFunctionDeclarations().map((entry) => entry.name);
     for (const name of AUTHORING_TOOLKIT_TOOL_NAMES) {
       expect(declarations).not.toContain(name);
-      expect(getTool(name)).toBeUndefined();
+      // getTool stays resolvable on purpose: executeTool needs the handler so
+      // it can return the runtime capability refusal.
+      expect(getTool(name)).toBeDefined();
     }
   });
 
@@ -245,7 +250,7 @@ describe('insert_image markup rejection ( G4)', () => {
     resetEngineCapabilitiesForTests();
     resetAuthoringAssetBridgeForTests();
     bindEngineCapabilities(makeCapabilities(true));
-    editor = makeStubEditor;
+    editor = makeStubEditor();
     bindEditor(editor as never);
     bindAuthoringAssetResolver((assetId) => ({
       assetId,
@@ -316,7 +321,7 @@ describe('wireframe stencils and authoring adapters ', () => {
     __resetPanelShapeApiForTests__();
     resetEngineCapabilitiesForTests();
     bindEngineCapabilities(makeCapabilities(true));
-    editor = makeStubEditor;
+    editor = makeStubEditor();
     bindEditor(editor as never);
   });
 
@@ -497,7 +502,7 @@ describe('arrange uses real sizes and moves edge arrows with their nodes (iterat
     __resetPanelShapeApiForTests__();
     resetEngineCapabilitiesForTests();
     bindEngineCapabilities(makeCapabilities(true));
-    editor = makeStubEditor;
+    editor = makeStubEditor();
     bindEditor(editor as never);
   });
 

@@ -58,9 +58,11 @@ interface StubShape {
 }
 
 interface StubEditor {
-  getViewportPageBounds(): Mock;
-  getCurrentPageShapes(): Mock;
-  getShapePageBounds(): Mock;
+  getViewportPageBounds: Mock;
+  getCurrentPageShapes: Mock;
+  getShapePageBounds: Mock;
+  getShape: Mock;
+  getCurrentPageId(): string;
   toImageDataUrl: Mock;
   __shapes: Map<string, StubShape>;
 }
@@ -98,6 +100,8 @@ function makeStubEditor(viewport = { x: 0, y: 0, w: 800, h: 560 }): StubEditor {
       }
       return { x: shape.x, y: shape.y, w: 1, h: 1 };
     }),
+    getShape: vi.fn((id: string) => shapes.get(String(id))),
+    getCurrentPageId: () => 'page:page',
     toImageDataUrl: vi.fn(async () => 'data:image/png;base64,stub'),
   };
   return editor;
@@ -195,7 +199,7 @@ describe('perception tool registration ', () => {
   });
 
   it('read_canvas handler returns structured graph', async () => {
-    bindEngineCapabilities(drawCapableEngine);
+    bindEngineCapabilities(drawCapableEngine());
     const editor = makeStubEditor();
     seedWireframe(editor);
     bindEditor(editor as never);
@@ -218,8 +222,8 @@ describe('screenshot_canvas raster capture ', () => {
 
   beforeEach(() => {
     __resetPanelShapeApiForTests__();
-    bindEngineCapabilities(drawCapableEngine);
-    editor = makeStubEditor;
+    bindEngineCapabilities(drawCapableEngine());
+    editor = makeStubEditor();
     seedWireframe(editor);
     bindEditor(editor as never);
   });
@@ -262,7 +266,7 @@ describe('screenshot_canvas raster capture ', () => {
   });
 
   it('falls back to all page shapes when viewport region is empty', async () => {
-    editor.getViewportPageBounds().mockReturnValue({ x: 5000, y: 5000, w: 800, h: 560 });
+    editor.getViewportPageBounds.mockReturnValue({ x: 5000, y: 5000, w: 800, h: 560 });
     const capture = await screenshotCanvasRegion({ region: { kind: 'viewport' } });
     expect(capture.dataUrl.startsWith('data:image/png')).toBe(true);
     expect(capture.region.x).toBeLessThan(5000);
@@ -270,7 +274,7 @@ describe('screenshot_canvas raster capture ', () => {
   });
 
   it('falls back to explicit fallbackShapeIds when region is empty', async () => {
-    editor.getViewportPageBounds().mockReturnValue({ x: 5000, y: 5000, w: 800, h: 560 });
+    editor.getViewportPageBounds.mockReturnValue({ x: 5000, y: 5000, w: 800, h: 560 });
     const shapeId = [...editor.__shapes.keys()][0];
     expect(shapeId).toBeDefined();
     const capture = await screenshotCanvasRegion({

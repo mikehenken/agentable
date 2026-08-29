@@ -104,7 +104,7 @@ beforeEach(() => {
 
 describe('canvas-local stack undo (.a)', () => {
   it('undoes and redoes a canvas op on the per-actor stack', () => {
-    const { runtime } = buildRuntime;
+    const { runtime } = buildRuntime();
     let x = 0;
 
     runtime.pushCanvasOp('user', {
@@ -139,13 +139,13 @@ describe('canvas-local stack undo (.a)', () => {
     expect(redone.ok).toBe(true);
     expect(x).toBe(2);
 
-    const ledger = runtime.getActivityLedger;
+    const ledger = runtime.getActivityLedger();
     expect(ledger.some((entry) => entry.verb === 'undo')).toBe(true);
     expect(ledger.some((entry) => entry.verb === 'redo')).toBe(true);
   });
 
   it('does not let one actor undo another actor canvas stack', () => {
-    const { runtime } = buildRuntime;
+    const { runtime } = buildRuntime();
     let agentMoved = false;
 
     runtime.pushCanvasOp('agent-a', {
@@ -174,7 +174,7 @@ describe('canvas-local stack undo (.a)', () => {
   });
 
   it('refuses stack-undo for irreversible canvas ops', () => {
-    const { runtime } = buildRuntime;
+    const { runtime } = buildRuntime();
     let deleted = true;
 
     runtime.pushCanvasOp('user', {
@@ -201,7 +201,7 @@ describe('canvas-local stack undo (.a)', () => {
 
 describe('persisted mutation reversal (.b)', () => {
   it('records applied mutations in the per-actor ledger with inverse metadata', async () => {
-    const { runtime, controller } = buildRuntime;
+    const { runtime, controller } = buildRuntime();
     const opened = await runtime.openPanel('site-seo');
     expect(opened.ok).toBe(true);
     if (!opened.ok) return;
@@ -210,7 +210,7 @@ describe('persisted mutation reversal (.b)', () => {
 
     const pending = runtime.runPanelAction(opened.panelId, 'save', { title: 'After title' });
     await Promise.resolve();
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const result = await pending;
 
     expect(result.status).toBe('ok');
@@ -229,7 +229,7 @@ describe('persisted mutation reversal (.b)', () => {
   });
 
   it('does not stack-undo persisted mutations — only compensating HITL reversal', async () => {
-    const { runtime, controller } = buildRuntime;
+    const { runtime, controller } = buildRuntime();
     const opened = await runtime.openPanel('site-seo');
     if (!opened.ok) return;
 
@@ -237,7 +237,7 @@ describe('persisted mutation reversal (.b)', () => {
 
     const pending = runtime.runPanelAction(opened.panelId, 'save', { title: 'Saved' });
     await Promise.resolve();
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const applied = await pending;
     expect(applied.status).toBe('ok');
 
@@ -250,7 +250,7 @@ describe('persisted mutation reversal (.b)', () => {
   });
 
   it('reverses an approved saved mutation via compensating action under HITL', async () => {
-    const { runtime, controller } = buildRuntime;
+    const { runtime, controller } = buildRuntime();
     const opened = await runtime.openPanel('site-seo');
     if (!opened.ok) return;
 
@@ -261,14 +261,14 @@ describe('persisted mutation reversal (.b)', () => {
       description: 'Agent desc',
     });
     await Promise.resolve();
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const saveResult = await savePending;
     expect(saveResult.status).toBe('ok');
     if (saveResult.status !== 'ok' || saveResult.ledgerEntryId === undefined) return;
 
     const reversePending = runtime.reverseMutation(saveResult.ledgerEntryId, 'user');
     await Promise.resolve();
-    const compensationRequest = controller.getPending[0];
+    const compensationRequest = controller.getPending()[0];
     expect(compensationRequest?.actionId).toBe('save');
     expect(compensationRequest?.payload).toMatchObject({
       title: 'Original',
@@ -284,12 +284,12 @@ describe('persisted mutation reversal (.b)', () => {
     const original = runtime.undoReversal.activity.get(saveResult.ledgerEntryId);
     expect(original?.reversal.reversedByEntryId).toBe(reverseResult.reversalEntryId);
 
-    const ledger = runtime.getActivityLedger;
+    const ledger = runtime.getActivityLedger();
     expect(ledger.filter((entry) => entry.reversal.persisted).length).toBeGreaterThanOrEqual(2);
   });
 
   it('uses declared inverse action id when reversing', async () => {
-    const { runtime, controller } = buildRuntime;
+    const { runtime, controller } = buildRuntime();
     const opened = await runtime.openPanel('site-seo');
     if (!opened.ok) return;
 
@@ -297,7 +297,7 @@ describe('persisted mutation reversal (.b)', () => {
 
     const revertPending = runtime.runPanelAction(opened.panelId, 'revert', { title: 'Changed' });
     await Promise.resolve();
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const revertResult = await revertPending;
     if (revertResult.status !== 'ok' || revertResult.ledgerEntryId === undefined) return;
 
@@ -308,15 +308,15 @@ describe('persisted mutation reversal (.b)', () => {
 
 describe('irreversible persisted mutations (.d)', () => {
   it('marks destructive actions irreversible and refuses compensating reversal', async () => {
-    const { runtime, controller } = buildRuntime;
+    const { runtime, controller } = buildRuntime();
     const opened = await runtime.openPanel('site-seo');
     if (!opened.ok) return;
 
     const pending = runtime.runPanelAction(opened.panelId, 'purge');
     await Promise.resolve();
-    expect(controller.getPending[0]?.reversible).toBe(false);
-    controller.advancePhase(controller.getPending[0]!.id);
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    expect(controller.getPending()[0]?.reversible).toBe(false);
+    controller.advancePhase(controller.getPending()[0]!.id);
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const result = await pending;
     expect(result.status).toBe('ok');
     if (result.status !== 'ok' || result.ledgerEntryId === undefined) return;

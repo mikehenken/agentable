@@ -56,7 +56,7 @@ describe('repeatable-group field rendering', () => {
         mutate: async () => ({ ok: true as const }),
       },
     });
-    const validated = validateSpec(repeatableGroupSpec, {
+    const validated = validateSpec(repeatableGroupSpec(), {
       catalog: defaultCatalog,
       adapterSources: new Set(['demo.config']),
       hostActions: new Set(),
@@ -85,7 +85,7 @@ describe('repeatable-group field rendering', () => {
         mutate: async () => ({ ok: true as const }),
       },
     });
-    const validated = validateSpec(repeatableGroupSpec, {
+    const validated = validateSpec(repeatableGroupSpec(), {
       catalog: defaultCatalog,
       adapterSources: new Set(['demo.config']),
       hostActions: new Set(),
@@ -117,7 +117,7 @@ describe('repeatable-group field rendering', () => {
         mutate: async () => ({ ok: true as const }),
       },
     });
-    const validated = validateSpec(repeatableGroupSpec, {
+    const validated = validateSpec(repeatableGroupSpec(), {
       catalog: defaultCatalog,
       adapterSources: new Set(['demo.config']),
       hostActions: new Set(),
@@ -158,7 +158,7 @@ describe('repeatable-group field rendering', () => {
         },
       },
     });
-    const validated = validateSpec(repeatableGroupSpec, {
+    const validated = validateSpec(repeatableGroupSpec(), {
       catalog: defaultCatalog,
       adapterSources: new Set(['demo.config']),
       hostActions: new Set(),

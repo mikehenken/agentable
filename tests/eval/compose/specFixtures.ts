@@ -38,7 +38,7 @@ export function resolveEvalSpec(ref: EvalSpecRef): unknown {
     case 'valid-seo':
       return EVAL_SEO_PANEL.spec;
     case 'invalid-seo-missing-action':
-      return invalidSeoSpec;
+      return invalidSeoSpec();
     case 'non-object':
       return 'not-a-panel-spec';
     default: {

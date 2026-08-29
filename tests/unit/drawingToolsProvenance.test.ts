@@ -54,10 +54,15 @@ interface StubEditor {
  getShape(): Mock;
  createShape: Mock;
  deleteShapes: Mock;
+ updateShapes: Mock;
  getShapePageBounds(): Mock;
  getCurrentPageShapes(): Mock;
+ getCurrentPageId(): string;
+ getSortedChildIdsForParent(parentId: string): string[];
  __shapes: Map<string, StubShape>;
 }
+
+const STUB_PAGE_ID = 'page:page';
 
 function makeCapabilities(draw: boolean): EngineCapabilities {
  return {
@@ -78,6 +83,8 @@ function makeStubEditor(): StubEditor {
  shapes.set(shape.id, {...shape,
  typeName: 'shape',
  index: `a${shapes.size + 1}`,
+ // Real tldraw defaults parentId to the current page when omitted.
+ parentId: shape.parentId ?? STUB_PAGE_ID,
  meta: shape.meta ?? {},
  props: shape.props ?? {},
  });
@@ -87,12 +94,27 @@ function makeStubEditor(): StubEditor {
  shapes.delete(id);
  }
  }),
+ updateShapes: vi.fn((updates: Array<Partial<StubShape> & { id: string }>) => {
+ for (const update of updates) {
+ const existing = shapes.get(update.id);
+ if (!existing) continue;
+ shapes.set(update.id, {
+ ...existing,
+ ...update,
+ props: { ...existing.props, ...(update.props ?? {}) },
+ meta: { ...existing.meta, ...(update.meta ?? {}) },
+ });
+ }
+ }),
  getShapePageBounds: vi.fn((id: string) => {
  const shape = shapes.get(id);
  if (!shape) return null;
  return { x: shape.x, y: shape.y, w: 400, h: 300 };
  }),
  getCurrentPageShapes: vi.fn(() => [...shapes.values()]),
+ getCurrentPageId: () => STUB_PAGE_ID,
+ getSortedChildIdsForParent: (parentId: string) =>
+ [...shapes.values()].filter((shape) => shape.parentId === parentId).map((shape) => shape.id),
  };
  return editor;
 }
@@ -105,6 +127,7 @@ function seedPanel(editor: StubEditor, panelId: string): void {
  type: 'panel',
  x: 100,
  y: 120,
+ parentId: STUB_PAGE_ID,
  index: 'a1',
  meta: {},
  props: { w: 400, h: 300, panelId, minimized: false, data: {} },
@@ -151,7 +174,9 @@ describe('drawing tool engine capability gating', () => {
  const declarations = getFunctionDeclarations().map((entry) => entry.name);
  for (const name of DRAWING_TOOL_NAMES) {
  expect(declarations).not.toContain(name);
- expect(getTool(name)).toBeUndefined();
+ // getTool stays resolvable on purpose: executeTool needs the handler so
+ // it can return the runtime refusal (covered by the handler-refusal test).
+ expect(getTool(name)).toBeDefined();
  }
  });
 
@@ -490,7 +515,9 @@ describe('agent drawing provenance stamping', () => {
  { kind: 'ellipse', geometry: { kind: 'rect', x: 80, y: 0, w: 60, h: 40 } },
  ]);
 
- const cleared = clearAgentDrawings('agent-one');
+ // scope 'all': the default 'currentTurn' reads the chat turn ledger,
+ // which direct API calls (as here) never populate.
+ const cleared = clearAgentDrawings('agent-one', { scope: 'all' });
  expect(cleared.removedShapeIds).toHaveLength(1);
  expect(editor.deleteShapes).toHaveBeenCalledTimes(1);
 
