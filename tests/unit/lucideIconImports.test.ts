@@ -17,6 +17,8 @@ const SKIP_COMPONENTS = new Set([
   'IconButton',
   'CopyButton',
   'Icon', // dynamic lucide component from config/state
+  'LetterAvatar', // local avatar component in src/chat/ChatPanel.tsx, not lucide
+  'ChatPersonaAvatar', // local avatar component in src/chat/ChatPanel.tsx, not lucide
 ]);
 
 function repoRoot(): string {

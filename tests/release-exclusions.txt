@@ -29,7 +29,6 @@ tests/unit/geminiChatClient.test.ts
 tests/unit/geminiLiveToolContext.test.ts
 tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
-tests/unit/lucideIconImports.test.ts
 tests/unit/modelRuntime.test.ts
 tests/unit/operatorModeScope.test.ts
 tests/unit/operatorTranscriptRouting.test.ts
