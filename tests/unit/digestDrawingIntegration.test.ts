@@ -224,9 +224,11 @@ describe(' digest shape delta integration', () => {
     ]);
 
     bindDigestShapeCollector(editor as unknown as Parameters<typeof bindDigestShapeCollector>[0]);
-    const first = getDigestShapeSlice;
-    expect(first?.().changeBatchId).toBe('digest-shapes:1');
-    expect(first?.().shapes).toHaveLength(1);
+    // Capture the slice value now (batch 1); holding the function and calling
+    // it later would read post-update state and make the bump check vacuous.
+    const first = getDigestShapeSlice();
+    expect(first?.changeBatchId).toBe('digest-shapes:1');
+    expect(first?.shapes).toHaveLength(1);
 
     editor.__shapes.set(
       'shape:mark-2',
@@ -238,9 +240,9 @@ describe(' digest shape delta integration', () => {
     const onStoreChange = listenCall?.[0] as (() => void) | undefined;
     onStoreChange?.();
 
-    const second = getDigestShapeSlice;
-    expect(second?.().changeBatchId).not.toBe(first?.().changeBatchId);
-    expect(second?.().shapes).toHaveLength(2);
+    const second = getDigestShapeSlice();
+    expect(second?.changeBatchId).not.toBe(first?.changeBatchId);
+    expect(second?.shapes).toHaveLength(2);
   });
 
   it('records drawing activity verbs for digest recency', () => {

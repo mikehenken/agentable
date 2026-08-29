@@ -16,7 +16,6 @@ tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
-tests/unit/digestDrawingIntegration.test.ts
 tests/unit/embedConfigReload.test.ts
 tests/unit/geminiLiveToolContext.test.ts
 tests/unit/hostActionsMerge.test.ts
