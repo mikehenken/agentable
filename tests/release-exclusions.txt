@@ -10,7 +10,6 @@ tests/integration/multiAgentE2eScenario.test.ts
 tests/integration/openAgentCanvasE2e.test.ts
 tests/integration/operatorModeChatPath.test.ts
 tests/integration/sharedPageSessionTwoEmbed.test.tsx
-tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts

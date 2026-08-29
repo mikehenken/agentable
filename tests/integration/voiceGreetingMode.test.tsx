@@ -30,7 +30,7 @@ function VoiceHarness({ children }: { children: ReactNode }) {
 }
 
 function useContextVoice (){
-  const { persona } = useCanvasConfig;
+  const { persona } = useCanvasConfig();
   return useGeminiLive({
     persona,
     forceMock: true,
@@ -51,26 +51,26 @@ describe('voice greeting mode ', () => {
   });
 
   it('merges greetingMode into CanvasContext persona', () => {
-    const { result } = renderHook(() => useCanvasConfig, { wrapper: VoiceHarness });
-    expect(result.current().persona.greetingMode).toBe('agent-first');
-    expect(result.current().persona.voiceGreeting).toBe(AGENT_GREETING);
+    const { result } = renderHook(() => useCanvasConfig(), { wrapper: VoiceHarness });
+    expect(result.current.persona.greetingMode).toBe('agent-first');
+    expect(result.current.persona.voiceGreeting).toBe(AGENT_GREETING);
   });
 
   it('agent-first speaks voiceGreeting on connect (SC3)', async () => {
     vi.useFakeTimers();
     try {
-      const { result } = renderHook(() => useContextVoice, { wrapper: VoiceHarness });
+      const { result } = renderHook(() => useContextVoice(), { wrapper: VoiceHarness });
 
       await act(async () => {
-        void result.current().start;
+        void result.current.start();
         await vi.advanceTimersByTimeAsync(400);
       });
 
-      expect(result.current().lastTranscript).toBe(AGENT_GREETING);
-      expect(result.current().state).toBe('speaking');
+      expect(result.current.lastTranscript).toBe(AGENT_GREETING);
+      expect(result.current.state).toBe('speaking');
 
       act(() => {
-        void result.current().stop;
+        void result.current.stop();
       });
     } finally {
       vi.useRealTimers();
@@ -97,7 +97,7 @@ describe('voice greeting mode ', () => {
       }
 
       function useUserFirstVoice (){
-        const { persona } = useCanvasConfig;
+        const { persona } = useCanvasConfig();
         return useGeminiLive({
           persona,
           forceMock: true,
@@ -108,18 +108,18 @@ describe('voice greeting mode ', () => {
         });
       }
 
-      const { result } = renderHook(() => useUserFirstVoice, { wrapper: UserFirstHarness });
+      const { result } = renderHook(() => useUserFirstVoice(), { wrapper: UserFirstHarness });
 
       await act(async () => {
-        void result.current().start;
+        void result.current.start();
         await vi.advanceTimersByTimeAsync(400);
       });
 
-      expect(result.current().lastTranscript).toBe('');
-      expect(result.current().state).toBe('listening');
+      expect(result.current.lastTranscript).toBe('');
+      expect(result.current.state).toBe('listening');
 
       act(() => {
-        void result.current().stop;
+        void result.current.stop();
       });
     } finally {
       vi.useRealTimers();
