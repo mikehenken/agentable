@@ -144,13 +144,13 @@ describe('telemetry event coverage', () => {
 
     const scopeDenied = await host.agents.executeTool(
       'compose_panel',
-      { spec: invalidSeoSpec },
+      { spec: invalidSeoSpec() },
       { agentId: 'restricted', agentLabel: 'Restricted' });
     expect(scopeDenied.ok).toBe(false);
 
     const invalid = await host.agents.executeTool(
       'compose_panel',
-      { spec: invalidSeoSpec },
+      { spec: invalidSeoSpec() },
       { agentId: 'editor', agentLabel: 'Content Editor' });
     expect(invalid.ok).toBe(true);
     if (!invalid.ok || invalid.result.ok !== false) {
