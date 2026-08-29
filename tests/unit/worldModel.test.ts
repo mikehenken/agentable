@@ -191,7 +191,7 @@ describe(' digest budgeter drop order', () => {
      // Force only activity to be large enough relative to a high target by
      // keeping a moderate target that activity alone exceeds after clone.
     const modest = {...digest,
-      contexts: digest().contexts.filter((context) => context.attention !== 'background').slice(0, 2),
+      contexts: digest.contexts.filter((context) => context.attention !== 'background').slice(0, 2),
       jobs: [],
       pendingApprovals: [],
       recentActivity: Array.from({ length: 15 }, (_, index) => ({

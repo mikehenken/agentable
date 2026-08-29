@@ -78,9 +78,9 @@ describe('operatorModelBridge ', () => {
 
     const session = getOperatorAgentSession();
     expect(session).not.toBeNull();
-    expect(session?.().agentId).toBe(OPERATOR_AGENT_ID);
-    expect(session?.().requestedAlias).toBe('default');
-    expect(session?.().binding.model).toBe('gemini-default');
+    expect(session?.agentId).toBe(OPERATOR_AGENT_ID);
+    expect(session?.requestedAlias).toBe('default');
+    expect(session?.binding.model).toBe('gemini-default');
   });
 
   it('rebinds server-side when the switcher selects a new alias', async () => {
@@ -148,7 +148,7 @@ describe('operatorModelBridge ', () => {
     const bound = await bindOperatorModelBridge({ initialAlias: 'default' });
     expect(bound).toBe(false);
     expect(isOperatorModelBridgeActive()).toBe(false);
-    expect(getOperatorAgentSession).toBeNull();
+    expect(getOperatorAgentSession()).toBeNull();
   });
 
   it('unbind clears the active session', async () => {
@@ -159,6 +159,6 @@ describe('operatorModelBridge ', () => {
     await bindOperatorModelBridge({ initialAlias: 'default' });
     unbindOperatorModelBridge();
     expect(isOperatorModelBridgeActive()).toBe(false);
-    expect(getOperatorAgentSession).toBeNull();
+    expect(getOperatorAgentSession()).toBeNull();
   });
 });

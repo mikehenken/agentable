@@ -16,7 +16,6 @@ tests/integration/voiceGreetingMode.test.tsx
 tests/integration/wireframeToLayoutE2e.test.ts
 tests/unit/anonKeyTenantLookup.test.ts
 tests/unit/approvalCard.test.tsx
-tests/unit/approvalRuntime.test.ts
 tests/unit/canvasMcp.test.ts
 tests/unit/careerCanvasDefaults.test.ts
 tests/unit/careerPack.test.ts
@@ -36,9 +35,7 @@ tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/lucideIconImports.test.ts
 tests/unit/modelRuntime.test.ts
-tests/unit/offlineDrawFallback.test.ts
 tests/unit/operatorModeScope.test.ts
-tests/unit/operatorModelBridge.test.ts
 tests/unit/operatorTranscriptRouting.test.ts
 tests/unit/pageSession.test.ts
 tests/unit/pageSlots.test.ts
@@ -52,4 +49,3 @@ tests/unit/starterChips.test.tsx
 tests/unit/storyModeWalkthrough.test.ts
 tests/unit/toolCallDevLogger.test.ts
 tests/unit/whiteboardChromeInsets.test.ts
-tests/unit/worldModel.test.ts
