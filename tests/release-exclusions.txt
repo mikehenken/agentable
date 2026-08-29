@@ -18,14 +18,12 @@ tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
 tests/unit/digestDrawingIntegration.test.ts
 tests/unit/documentPersistence.test.tsx
-tests/unit/domLayoutPersistence.test.ts
 tests/unit/embedConfigReload.test.ts
 tests/unit/geminiLiveToolContext.test.ts
 tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/modelRuntime.test.ts
 tests/unit/operatorTranscriptRouting.test.ts
-tests/unit/panelBuilder.test.ts
 tests/unit/panelEmbedGalleryDark.test.ts
 tests/unit/panelRepairRound.test.tsx
 tests/unit/panelTools.test.ts

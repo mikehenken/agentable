@@ -55,7 +55,7 @@ describe('DOM layout persistence round-trip', () => {
     const engine = createDomEngine();
     engine.importLayout(SAMPLE_LAYOUT);
 
-    expect(engine.exportLayout).toEqual(SAMPLE_LAYOUT);
+    expect(engine.exportLayout()).toEqual(SAMPLE_LAYOUT);
   });
 
   it('round-trips through JSON persistence and migration', () => {
@@ -63,14 +63,14 @@ describe('DOM layout persistence round-trip', () => {
     engine.importLayout(SAMPLE_LAYOUT);
     engine.setActiveTab('main', 1);
 
-    const exported = engine.exportLayout;
+    const exported = engine.exportLayout();
     const persisted = JSON.parse(JSON.stringify(exported)) as WorkspaceLayoutRecord[];
     const restoredRecords = migrateLayoutRecords(persisted);
 
     const engine2 = createDomEngine();
     engine2.importLayout(restoredRecords);
 
-    expect(engine2.exportLayout).toEqual(exported);
+    expect(engine2.exportLayout()).toEqual(exported);
   });
 
   it('round-trips legacy v1 records without explicit region fields', () => {
@@ -95,7 +95,7 @@ describe('DOM layout persistence round-trip', () => {
 
     const engine = createDomEngine();
     engine.importLayout(legacy);
-    const exported = engine.exportLayout;
+    const exported = engine.exportLayout();
 
     expect(exported).toEqual([
       expect.objectContaining({ panelId: 'alpha', region: 'main', order: 0, tabGroup: 0 }),
@@ -104,7 +104,7 @@ describe('DOM layout persistence round-trip', () => {
 
     const engine2 = createDomEngine();
     engine2.importLayout(migrateLayoutRecords(JSON.parse(JSON.stringify(legacy))));
-    expect(engine2.exportLayout).toEqual(exported);
+    expect(engine2.exportLayout()).toEqual(exported);
   });
 
   it('clamps activeTab when re-import reduces tab count', () => {
