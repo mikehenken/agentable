@@ -54,6 +54,18 @@ export const DEFAULT_CAREER_HOST_CHROME: ResolvedWhiteboardHostChrome = {
   fullscreenMode: 'canvas-expand',
 };
 
+/**
+ * Map an embed element's `fullscreen-mode` attribute to a mode.
+ *
+ * Anything that is not the literal `canvas-expand` resolves to `document`,
+ * the behavior that predates the attribute. A typo therefore degrades to the
+ * old behavior rather than silently disabling the expand button.
+ */
+export function parseFullscreenMode(
+  value: string | null | undefined): WhiteboardFullscreenMode {
+  return value === 'canvas-expand' ? 'canvas-expand' : 'document';
+}
+
 export function resolveWhiteboardHostChrome(
   partial?: WhiteboardHostChromeConfig | null): ResolvedWhiteboardHostChrome {
   if (partial === null || partial === undefined) {
