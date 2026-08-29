@@ -97,6 +97,7 @@ function makeStubEditor() {
       return { x: shape.x, y: shape.y, w: 400, h: 300 };
     }),
     getCurrentPageShapes: vi.fn(() => [...shapes.values()]),
+    getCurrentPageId: vi.fn(() => 'page:main'),
     getViewportPageBounds: vi.fn(() => ({ x: 0, y: 0, w: 1200, h: 800 })),
   };
 }
@@ -149,7 +150,7 @@ describe('geminiLiveClient tool-execution agent context binding (voice parity)',
     expect(editor.createShape).toHaveBeenCalledTimes(1);
     const created = editor.createShape.mock.calls[0][0];
     expect(readShapeProvenance(created)).toBe(VOICE_AGENT_TOOL_CONTEXT.agentId);
-    expect(getAgentToolContext).toBeNull();
+    expect(getAgentToolContext()).toBeNull();
   });
 
   it('executes a batch of tool calls sequentially rather than firing them all at once', async () => {
@@ -185,6 +186,6 @@ describe('geminiLiveClient tool-execution agent context binding (voice parity)',
     for (const call of editor.createShape.mock.calls) {
       expect(readShapeProvenance(call[0] as never)).toBe(VOICE_AGENT_TOOL_CONTEXT.agentId);
     }
-    expect(getAgentToolContext).toBeNull();
+    expect(getAgentToolContext()).toBeNull();
   });
 });

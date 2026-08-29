@@ -9,7 +9,6 @@ tests/integration/operatorModeChatPath.test.ts
 tests/unit/careerPackLocale.test.tsx
 tests/unit/curatedExamplesValidate.test.ts
 tests/unit/embedConfigReload.test.ts
-tests/unit/geminiLiveToolContext.test.ts
 tests/unit/hostActionsMerge.test.ts
 tests/unit/i18nHardcodedStrings.test.ts
 tests/unit/modelRuntime.test.ts
