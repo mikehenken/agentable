@@ -92,6 +92,8 @@ import { MeridianEngineBindingBridge } from './meridian/MeridianEngineBindingBri
 import { MeridianGalleryDemoVisuals } from './meridian/MeridianGalleryDemoVisuals';
 import { createMeridianDocumentPanelLoader } from './meridian/MeridianDocumentPanelHost';
 import { DEFAULT_WHITEBOARD_PANEL_REGISTRY } from '../engines/tldraw/shapes/whiteboardPanelRegistry';
+import { parseFullscreenMode } from '../engines/tldraw/hostChrome/whiteboardHostChrome';
+import type { WhiteboardFullscreenMode } from '../engines/tldraw/hostChrome/whiteboardHostChrome';
 import { getEditor } from '../engines/tldraw/shapes/panelShapeApi';
 import {
   createEmbedBootstrapState,
@@ -716,6 +718,7 @@ export class AgentableWhiteboardElement extends LitElement {
       openChatOnMount: this.openChatOnMount,
       suppressCanvasChat: this.suppressCanvasChat,
       darkCanvas: this._resolveDarkCanvas(),
+      fullscreenMode: this._resolveFullscreenMode(),
       toolbarConfig: resolved.toolbarConfig ?? null,
       locale: resolved.locale,
       meridian: tenant === 'meridian-labs',
@@ -762,6 +765,27 @@ export class AgentableWhiteboardElement extends LitElement {
     return false;
   }
 
+  /**
+   * What the top bar's expand button does.
+   *
+   * `document` (the default, and the only behavior before this attribute
+   * existed) calls `documentElement.requestFullscreen()`, which hands the whole
+   * browser window to the page and hides the host site entirely.
+   *
+   * `canvas-expand` keeps the visitor on the page: the canvas grows into a fixed
+   * overlay starting below `host-header-height`, so a sticky site nav stays put,
+   * a scrim covers the rest of the page, and Escape collapses it back. That is
+   * the right behavior for a canvas embedded in a marketing page, where dropping
+   * someone into browser fullscreen is disorienting.
+   *
+   * Attribute-only, matching `light-canvas`/`dark-canvas`: this describes the
+   * page the element was embedded in, not the tenant, so it has no business in a
+   * tenant config document that several hosts may share.
+   */
+  private _resolveFullscreenMode(): WhiteboardFullscreenMode {
+    return parseFullscreenMode(this.getAttribute('fullscreen-mode'));
+  }
+
   private _renderReact(): void {
     if (!this._root) return;
 
@@ -794,6 +818,7 @@ export class AgentableWhiteboardElement extends LitElement {
       darkCanvas: this._resolveDarkCanvas(),
       snapGrid: resolved.snapGrid,
       fullpageOnEngage: resolved.fullpageOnEngage,
+      hostChrome: { fullscreenMode: this._resolveFullscreenMode() },
       hostHeaderHeight: parseHostHeaderHeight(resolved.hostHeaderHeight),...(resolved.toolbarConfig ? { toolbarConfig: resolved.toolbarConfig }: {}),
       enableVoiceTool: resolved.voiceEnabled,...(meridianBundle !== null
         ? {
