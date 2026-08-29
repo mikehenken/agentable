@@ -20,7 +20,7 @@ function makeEditor(viewport = { x: 0, y: 0, w: 1280, h: 800 }) {
 
   const editor = {
     getViewportPageBounds: () => viewport,
-    getCurrentPageShapes: () => Array.from(shapes.values),
+    getCurrentPageShapes: () => Array.from(shapes.values()),
     getShape: (id: string) => shapes.get(String(id)) ?? null,
     createShape: (shape: {
       id: string;
