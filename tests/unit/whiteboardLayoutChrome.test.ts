@@ -13,7 +13,7 @@ function makeEditor(viewport = { x: 0, y: 0, w: 1200, h: 800 }) {
 
   const editor = {
     getViewportPageBounds: () => viewport,
-    getCurrentPageShapes: () => Array.from(shapes.values),
+    getCurrentPageShapes: () => Array.from(shapes.values()),
     getShape: (id: string) => shapes.get(String(id)) ?? null,
     createShape: (shape: { id: string; type: string; x: number; y: number; props: Record<string, unknown> }) => {
       shapes.set(String(shape.id), {...shape, props: {...shape.props } });
@@ -125,7 +125,7 @@ describe('autoArrangeWhiteboardPanels', () => {
     const moved = autoArrangeWhiteboardPanels(editor as never, { navExpanded: true });
     expect(moved).toBe(defs.length);
 
-    const rects = Array.from(shapes.values).map((shape) => ({
+    const rects = Array.from(shapes.values()).map((shape) => ({
       id: String(shape.props.panelId),
       x: shape.x,
       y: shape.y,

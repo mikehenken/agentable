@@ -165,7 +165,7 @@ describe(' digest budgeter drop order', () => {
   });
 
   it('drops recentActivity first, then background contexts', () => {
-    const digest = bulkyDigest;
+    const digest = bulkyDigest();
     const before = estimateDigestTokens(digest);
     expect(before).toBeGreaterThan(DIGEST_TARGET_TOKENS);
 
@@ -187,11 +187,11 @@ describe(' digest budgeter drop order', () => {
   });
 
   it('preserves focused/visible contexts when only recentActivity must drop', () => {
-    const digest = bulkyDigest;
+    const digest = bulkyDigest();
      // Force only activity to be large enough relative to a high target by
      // keeping a moderate target that activity alone exceeds after clone.
     const modest = {...digest,
-      contexts: digest().contexts.filter((context) => context.attention !== 'background').slice(0, 2),
+      contexts: digest.contexts.filter((context) => context.attention !== 'background').slice(0, 2),
       jobs: [],
       pendingApprovals: [],
       recentActivity: Array.from({ length: 15 }, (_, index) => ({
@@ -467,7 +467,7 @@ describe(' world-model runtime surface', () => {
     const budgetCheck = host.agents.budget.checkCostClass('expensive');
     expect(budgetCheck.ok).toBe(true);
 
-    const tools = host.agents.createDrillDownTools;
+    const tools = host.agents.createDrillDownTools();
     expect(tools.map((tool) => tool.declaration.name).sort()).toEqual([
       'describe_context',
       'get_activity',

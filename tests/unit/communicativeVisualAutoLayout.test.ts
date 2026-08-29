@@ -485,13 +485,15 @@ describe('draw_shapes tool auto-layout routing', () => {
     resetEngineCapabilitiesForTests();
     bindEngineCapabilities(makeCapabilities(true));
     const shapes = new Map<string, unknown>();
-    editor = {...makeStubEditor,
+    editor = {...makeStubEditor(),
       getShape: vi.fn((id: string) => shapes.get(id)),
-      createShape: vi.fn((shape: { id: string }) => {
-        shapes.set(shape.id, shape);
+      createShape: vi.fn((shape: { id: string; parentId?: string }) => {
+        // Real tldraw defaults parentId to the current page when omitted.
+        shapes.set(shape.id, { ...shape, parentId: shape.parentId ?? 'page:page' });
       }),
       deleteShapes: vi.fn(),
       getCurrentPageShapes: vi.fn(() => [...shapes.values()]),
+      getCurrentPageId: () => 'page:page',
     };
     bindEditor(editor as never);
   });
@@ -545,13 +547,15 @@ describe('drawAgentDiagram integration ', () => {
     resetEngineCapabilitiesForTests();
     bindEngineCapabilities(makeCapabilities(true));
     const shapes = new Map<string, unknown>();
-    const editor = {...makeStubEditor,
+    const editor = {...makeStubEditor(),
       getShape: vi.fn((id: string) => shapes.get(id)),
-      createShape: vi.fn((shape: { id: string }) => {
-        shapes.set(shape.id, shape);
+      createShape: vi.fn((shape: { id: string; parentId?: string }) => {
+        // Real tldraw defaults parentId to the current page when omitted.
+        shapes.set(shape.id, { ...shape, parentId: shape.parentId ?? 'page:page' });
       }),
       deleteShapes: vi.fn(),
       getCurrentPageShapes: vi.fn(() => [...shapes.values()]),
+      getCurrentPageId: () => 'page:page',
     };
     bindEditor(editor as never);
   });

@@ -43,12 +43,17 @@ function makeStubEditor (){
   return {
     __shapes: shapes,
     getShape: vi.fn((id: string) => shapes.get(String(id))),
-    createShape: vi.fn((shape: Omit<StubShape, 'typeName' | 'index'>) => {
+    getCurrentPageId: () => 'page:page',
+    getSortedChildIdsForParent: vi.fn(() => [] as string[]),
+    updateShapes: vi.fn(),
+    createShape: vi.fn((shape: Omit<StubShape, 'typeName' | 'index'> & { parentId?: string }) => {
       const id = String(shape.id);
       shapes.set(id, {...shape,
         id,
         typeName: 'shape',
         index: `a${shapes.size + 1}`,
+        // Real tldraw defaults parentId to the current page when omitted.
+        parentId: shape.parentId ?? 'page:page',
         meta: shape.meta ?? {},
         props: shape.props ?? {},
       });
@@ -83,10 +88,10 @@ describe('runOfflineDrawFallback', () => {
     window.addEventListener(FIT_AGENT_DRAWING_EVENT, onFit);
 
     try {
-      const result = await runOfflineDrawFallback;
+      const result = await runOfflineDrawFallback();
 
-      expect(result().toolCalls).toHaveLength(0);
-      expect(result().text.toLowerCase()).toContain('not configured');
+      expect(result.toolCalls).toHaveLength(0);
+      expect(result.text.toLowerCase()).toContain('not configured');
        // Nothing was drawn, so the camera must not be asked to fit anything.
       expect(fitEvents).toHaveLength(0);
     } finally {
@@ -110,28 +115,29 @@ describe('runOfflineDrawFallback', () => {
     window.addEventListener(FIT_AGENT_DRAWING_EVENT, onFit);
 
     try {
-      const result = await runOfflineDrawFallback;
+      const result = await runOfflineDrawFallback();
 
-      expect(result().text).toContain('Offline demo mode');
-      expect(result().toolCalls.map((c) => c.name)).toEqual(['clear_agent_drawings', 'draw_shapes']);
-      for (const call of result().toolCalls) {
+      expect(result.text).toContain('Offline demo mode');
+      expect(result.toolCalls.map((c) => c.name)).toEqual(['clear_agent_drawings', 'draw_shapes']);
+      for (const call of result.toolCalls) {
         expect(call.ok).toBe(true);
       }
 
        // Proves the fixture drawn is this page's own Apogee Aerospace
        // composition, not the unrelated P8-demo Northstar Atelier fixture,
        // and not a rigid auto-layout diagram (explicit shapes only).
-      expect(result().toolCalls[1].args).toEqual({ shapes: APOGEE_LAUNCH_SEQUENCE_SHAPES });
-      const serialized = JSON.stringify(result().toolCalls);
+      expect(result.toolCalls[1].args).toEqual({ shapes: APOGEE_LAUNCH_SEQUENCE_SHAPES });
+      const serialized = JSON.stringify(result.toolCalls);
       expect(serialized).not.toContain('Northstar');
       expect(serialized).not.toContain('meta.agentableAgent');
       expect(serialized).toContain('Halcyon-7');
       expect(serialized).toContain('Stage 2 Separation');
 
-       // One created shape per fixture entry (5 nodes + 5 labels + 4 arrows
-       // + 3 freehand strokes + 1 annotation = 18), all attributed to the
-       // chat agent context.
-      expect(editor.createShape.mock.calls.length).toBe(APOGEE_LAUNCH_SEQUENCE_SHAPES.length);
+       // One materialized shape per fixture entry, all attributed to the
+       // chat agent context. Assert the final page contents rather than raw
+       // createShape call counts: stroke/arrow redraws replace via
+       // delete + create, so call counts double-count churn.
+      expect(editor.getCurrentPageShapes()).toHaveLength(APOGEE_LAUNCH_SEQUENCE_SHAPES.length);
       for (const call of editor.createShape.mock.calls) {
         expect(readShapeProvenance(call[0] as never)).toBe(CHAT_AGENT_TOOL_CONTEXT.agentId);
       }
@@ -209,11 +215,11 @@ describe('runOfflineDrawFallback', () => {
     bindEditor(editor as never);
 
     await runOfflineDrawFallback();
-    const countAfterFirst = editor.getCurrentPageShapes.length;
+    const countAfterFirst = editor.getCurrentPageShapes().length;
     expect(countAfterFirst).toBeGreaterThan(0);
 
     await runOfflineDrawFallback();
-    const countAfterSecond = editor.getCurrentPageShapes.length;
+    const countAfterSecond = editor.getCurrentPageShapes().length;
 
     expect(countAfterSecond).toBe(countAfterFirst);
   });

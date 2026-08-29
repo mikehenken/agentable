@@ -139,7 +139,7 @@ describe(' multi-agent defaults ', () => {
   });
 
   it('runs two agents editing different panels with activity attribution', async () => {
-    const { host } = buildMultiAgentHost;
+    const { host } = buildMultiAgentHost();
     cleanups.push(() => host.dispose());
 
     expect(
@@ -172,7 +172,7 @@ describe(' multi-agent defaults ', () => {
   });
 
   it('attributes HITL approval cards to the acting agent', async () => {
-    const { host } = buildMultiAgentHost;
+    const { host } = buildMultiAgentHost();
     cleanups.push(() => host.dispose());
     const controller = host.approvals;
 
@@ -254,7 +254,7 @@ describe(' multi-agent defaults ', () => {
   });
 
   it('refuses out-of-scope tool and panel calls', async () => {
-    const { host } = buildMultiAgentHost;
+    const { host } = buildMultiAgentHost();
     cleanups.push(() => host.dispose());
 
     const toolDenied = await host.agents.executeTool(
@@ -280,10 +280,10 @@ describe(' multi-agent defaults ', () => {
   });
 
   it('lists two registered agents in digest input', () => {
-    const { host } = buildMultiAgentHost;
+    const { host } = buildMultiAgentHost();
     cleanups.push(() => host.dispose());
 
-    const agents = host.agents.registry.list;
+    const agents = host.agents.registry.list();
     expect(agents.map((entry) => entry.id).sort()).toEqual(['concierge', 'editor']);
 
     const digest = host.agents.digest.compile({
@@ -302,7 +302,7 @@ describe(' multi-agent defaults ', () => {
   });
 
   it('registerMultiAgentDefaults registers standing presets', () => {
-    const { host } = buildMultiAgentHost;
+    const { host } = buildMultiAgentHost();
     cleanups.push(() => host.dispose());
     expect(DEFAULT_MULTI_AGENT_PRESETS.length).toBeGreaterThanOrEqual(2);
     expect(host.agents.registry.get('editor')?.label).toBe('Content Editor');
@@ -377,7 +377,7 @@ function buildPendingRequest(overrides: Partial<PendingApprovalRequest> = {}): P
 
 describe('ApprovalCard agent attribution chrome', () => {
   it('renders agent badge on review and destructive cards', () => {
-    const { rerender } = render(<ApprovalCard request={buildPendingRequest} />);
+    const { rerender } = render(<ApprovalCard request={buildPendingRequest()} />);
     expect(screen.getByTestId('approval-agent-badge')).toBeTruthy();
 
     rerender(

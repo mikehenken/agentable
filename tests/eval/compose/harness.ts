@@ -88,7 +88,7 @@ export function loadDefaultComposeEvalSuite(): ComposeEvalSuiteFixture {
 
 export async function runComposeEvalHarness(
   options: ComposeEvalHarnessOptions = {}): Promise<ComposeEvalHarnessRun> {
-  const suite = options.suite ?? loadDefaultComposeEvalSuite;
+  const suite = options.suite ?? loadDefaultComposeEvalSuite();
   const seed = options.seed ?? suite.seed;
   const clockIso = options.clockIso ?? suite.clockIso;
   const clock = createFixedClock(clockIso);
@@ -140,7 +140,7 @@ function createEvalRuntime(seed: number): { runtime: PanelToolRuntime; dispose: 
   const runtime = createPanelToolRuntime(
     { panels: host.panels, catalog: host.catalog },
     registry,
-    { approvalController: createApprovalController });
+    { approvalController: createApprovalController() });
 
   return {
     runtime,

@@ -94,7 +94,13 @@ export async function runOfflineDrawFallback(): Promise<OfflineDrawFallbackResul
   const toolCalls: OfflineDrawFallbackToolCall[] = [];
 
   toolCalls.push(
-    await runOfflineTool('clear_agent_drawings', { agentId: CHAT_AGENT_TOOL_CONTEXT.agentId }),
+    // scope 'all': the default 'currentTurn' reads the chat turn ledger,
+    // which offline mode never populates — without it a retyped message
+    // stacks a second copy of the sketch instead of redrawing.
+    await runOfflineTool('clear_agent_drawings', {
+      agentId: CHAT_AGENT_TOOL_CONTEXT.agentId,
+      scope: 'all',
+    }),
   );
 
   const drawArgs: Record<string, unknown> = {

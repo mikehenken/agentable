@@ -189,10 +189,13 @@ describe('drawAgentShapes placement hygiene wiring', () => {
     shapes = new Map();
     const editor = {
       getShape: vi.fn((id: string) => shapes.get(String(id))),
-      createShape: vi.fn((shape: Omit<StubShape, 'typeName' | 'index'>) => {
+      getCurrentPageId: () => 'page:page',
+      createShape: vi.fn((shape: Omit<StubShape, 'typeName' | 'index'> & { parentId?: string }) => {
         shapes.set(String(shape.id), {...shape,
           id: String(shape.id),
           typeName: 'shape',
+          // Real tldraw defaults parentId to the current page when omitted.
+          parentId: shape.parentId ?? 'page:page',
           index: `a${shapes.size + 1}`,
           meta: shape.meta ?? {},
           props: shape.props ?? {},
