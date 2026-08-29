@@ -85,7 +85,10 @@ function isStringLike(node: ts.Node): node is ts.StringLiteral | ts.NoSubstituti
 function stringLikeText(node: ts.Node): string {
  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
  if (ts.isTemplateExpression(node)) {
- return [node.head.text,...node.templateSpans.map((span) => span.literal.text)].join('');
+ // Dropping each `${…}` leaves the literal head and tail abutting; the removed
+ // span can sit between two spaces ("Value " + " is bad"), so collapse interior
+ // whitespace to keep the reconstructed prose clean.
+ return [node.head.text,...node.templateSpans.map((span) => span.literal.text)].join('').replace(/\s+/g, ' ');
  }
  return '';
 }
