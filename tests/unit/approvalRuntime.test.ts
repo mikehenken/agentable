@@ -93,13 +93,13 @@ describe('runPanelAction approval flow', () => {
 
     const pending = runtime.runPanelAction(opened.panelId, 'save', { title: 'Agent title' });
     await Promise.resolve();
-    expect(controller.getPending).toHaveLength(1);
-    expect(controller.getPending[0]?.diff[0]).toMatchObject({
+    expect(controller.getPending()).toHaveLength(1);
+    expect(controller.getPending()[0]?.diff[0]).toMatchObject({
       path: 'title',
       kind: 'change',
     });
 
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const result = await pending;
     expect(result).toMatchObject({
       status: 'ok',
@@ -115,7 +115,7 @@ describe('runPanelAction approval flow', () => {
 
     const pending = runtime.runPanelAction(opened.panelId, 'save');
     await Promise.resolve();
-    controller.resolve(controller.getPending[0]!.id, 'rejected_by_user');
+    controller.resolve(controller.getPending()[0]!.id, 'rejected_by_user');
     const result = await pending;
     expect(result).toEqual({ status: 'rejected_by_user' });
   });
@@ -128,7 +128,7 @@ describe('runPanelAction approval flow', () => {
 
     const result = await runtime.runPanelAction(opened.panelId, 'save', { title: 'Fast save' });
     expect(result.status).toBe('ok');
-    expect(controller.getPending).toHaveLength(0);
+    expect(controller.getPending()).toHaveLength(0);
   });
 
   it('still requires destructive confirm when autoApproved', async () => {
@@ -139,10 +139,10 @@ describe('runPanelAction approval flow', () => {
 
     const pending = runtime.runPanelAction(opened.panelId, 'restore');
     await Promise.resolve();
-    expect(controller.getPending).toHaveLength(1);
-    expect(controller.getPending[0]?.phase).toBe('destructive_confirm');
+    expect(controller.getPending()).toHaveLength(1);
+    expect(controller.getPending()[0]?.phase).toBe('destructive_confirm');
 
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const result = await pending;
     expect(result.status).toBe('ok');
   });
@@ -159,7 +159,7 @@ describe('runPanelAction approval flow', () => {
       { title: 'User save' },
       { actor: 'user' });
     expect(result.status).toBe('ok');
-    expect(controller.getPending).toHaveLength(0);
+    expect(controller.getPending()).toHaveLength(0);
   });
 });
 

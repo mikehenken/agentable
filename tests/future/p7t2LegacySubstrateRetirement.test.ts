@@ -1,5 +1,10 @@
 /**
- * automated_check: src/canvas/ gone; exactly one substrate (tldraw).
+ * FUTURE-STATE SPEC — parked outside the vitest include globs on purpose.
+ *
+ * Asserts the deferred `src/canvas` + legacy substrate retirement (owner
+ * decision 2026-08-28: retirement deferred; delete-the-fork-only shipped in
+ * Wave 3). Move this file back under tests/unit/ when that decision lands.
+ * Plan: career-canvas-tldraw-velvet-badger.md, Wave 5.
  */
 import { describe, it, expect } from 'vitest';
 import { existsSync, readdirSync } from 'node:fs';

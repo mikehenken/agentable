@@ -83,10 +83,10 @@ describe('runOfflineDrawFallback', () => {
     window.addEventListener(FIT_AGENT_DRAWING_EVENT, onFit);
 
     try {
-      const result = await runOfflineDrawFallback;
+      const result = await runOfflineDrawFallback();
 
-      expect(result().toolCalls).toHaveLength(0);
-      expect(result().text.toLowerCase()).toContain('not configured');
+      expect(result.toolCalls).toHaveLength(0);
+      expect(result.text.toLowerCase()).toContain('not configured');
        // Nothing was drawn, so the camera must not be asked to fit anything.
       expect(fitEvents).toHaveLength(0);
     } finally {
@@ -110,19 +110,19 @@ describe('runOfflineDrawFallback', () => {
     window.addEventListener(FIT_AGENT_DRAWING_EVENT, onFit);
 
     try {
-      const result = await runOfflineDrawFallback;
+      const result = await runOfflineDrawFallback();
 
-      expect(result().text).toContain('Offline demo mode');
-      expect(result().toolCalls.map((c) => c.name)).toEqual(['clear_agent_drawings', 'draw_shapes']);
-      for (const call of result().toolCalls) {
+      expect(result.text).toContain('Offline demo mode');
+      expect(result.toolCalls.map((c) => c.name)).toEqual(['clear_agent_drawings', 'draw_shapes']);
+      for (const call of result.toolCalls) {
         expect(call.ok).toBe(true);
       }
 
        // Proves the fixture drawn is this page's own Apogee Aerospace
        // composition, not the unrelated P8-demo Northstar Atelier fixture,
        // and not a rigid auto-layout diagram (explicit shapes only).
-      expect(result().toolCalls[1].args).toEqual({ shapes: APOGEE_LAUNCH_SEQUENCE_SHAPES });
-      const serialized = JSON.stringify(result().toolCalls);
+      expect(result.toolCalls[1].args).toEqual({ shapes: APOGEE_LAUNCH_SEQUENCE_SHAPES });
+      const serialized = JSON.stringify(result.toolCalls);
       expect(serialized).not.toContain('Northstar');
       expect(serialized).not.toContain('meta.agentableAgent');
       expect(serialized).toContain('Halcyon-7');

@@ -104,6 +104,16 @@ for (const spec of PAGES) {
       await expect(page.locator('[data-testid="tl-license-expired"]')).toHaveCount(0);
     }
 
+    // Layout sanity: a broken page grid (e.g. `grid-column: 1 / -1` losing
+    // its slash in example 03) overflows the document horizontally and shows
+    // up to the user as page-level scrollbars. Small tolerance for
+    // scrollbar-width rounding across platforms.
+    const overflowPx = await page.evaluate(() => {
+      const doc = document.documentElement;
+      return doc.scrollWidth - doc.clientWidth;
+    });
+    expect(overflowPx, `horizontal document overflow on ${spec.slug}`).toBeLessThanOrEqual(20);
+
     expect(unexpected(errors), `console errors on ${spec.slug}`).toEqual([]);
   });
 }
