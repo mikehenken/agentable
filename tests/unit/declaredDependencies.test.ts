@@ -40,6 +40,13 @@ const RESOLVER_ALIASES = [
   '@agentable/catalog-charts',
 ] as const;
 
+/**
+ * Aliases defined in vite.config.ts (build-time resolver), cross-checked
+ * against that config text below. `classnames-original` is the ESM-interop
+ * shim indirection, not an npm package.
+ */
+const VITE_BUILD_ALIASES = ['classnames-original'] as const;
+
 const NODE_BUILTINS = new Set(builtinModules);
 
 function listModules(dir: string): string[] {
@@ -99,7 +106,8 @@ function isBareSpecifier(specifier: string): boolean {
   if (specifier.startsWith('.') || specifier.startsWith('/')) return false;
   if (specifier.startsWith('node:')) return false;
   if (NODE_BUILTINS.has(packageRoot(specifier))) return false;
-  return !RESOLVER_ALIASES.some(
+  const aliases: readonly string[] = [...RESOLVER_ALIASES, ...VITE_BUILD_ALIASES];
+  return !aliases.some(
     (alias) => specifier === alias || specifier.startsWith(`${alias}/`),
   );
 }
@@ -137,9 +145,31 @@ describe('declared dependencies for tests/', () => {
     }
   });
 
+  it('keeps the vite build-alias allowlist aligned with vite.config.ts', () => {
+    const configText = readFileSync(join(repoRoot(), 'vite.config.ts'), 'utf8');
+    for (const alias of VITE_BUILD_ALIASES) {
+      expect(configText).toContain(`"${alias}"`);
+    }
+  });
+
   it('every bare import in tests/ is declared in package.json', () => {
     const declared = declaredPackages();
     const violations = listModules(testsDir()).flatMap((file) => {
+      const undeclared = undeclaredIn(file, readFileSync(file, 'utf8'), declared);
+      return [...new Set(undeclared)].map(
+        (root) => `${relative(repoRoot(), file)} -> ${root}`,
+      );
+    });
+    expect(violations).toEqual([]);
+  });
+
+  it('every bare import in src/ is declared in package.json', () => {
+    // The parent directory is an npm workspace root, so `../node_modules`
+    // hoisting resolves undeclared packages locally while a clean CI checkout
+    // cannot (src/mcp -> @modelcontextprotocol/sdk was exactly this). Same
+    // guard as tests/, applied to shipped source.
+    const declared = declaredPackages();
+    const violations = listModules(resolve(repoRoot(), 'src')).flatMap((file) => {
       const undeclared = undeclaredIn(file, readFileSync(file, 'utf8'), declared);
       return [...new Set(undeclared)].map(
         (root) => `${relative(repoRoot(), file)} -> ${root}`,
