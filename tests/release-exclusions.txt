@@ -6,7 +6,6 @@
 tests/integration/agentPresentsE2e.test.ts
 tests/integration/anonKeyRateLimitE2e.test.ts
 tests/integration/builderRawIrParity.test.tsx
-tests/integration/multiAgentE2eScenario.test.ts
 tests/integration/openAgentCanvasE2e.test.ts
 tests/integration/operatorModeChatPath.test.ts
 tests/integration/wireframeToLayoutE2e.test.ts
