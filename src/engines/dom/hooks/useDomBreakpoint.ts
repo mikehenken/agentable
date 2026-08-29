@@ -10,7 +10,7 @@ export interface DomBreakpointState {
 }
 
 export function useDomBreakpoint(): DomBreakpointState {
-  const [isCompact, setIsCompact] = useState<boolean>(() => readCompact);
+  const [isCompact, setIsCompact] = useState<boolean>(readCompact);
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {

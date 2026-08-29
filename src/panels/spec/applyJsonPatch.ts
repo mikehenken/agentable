@@ -65,7 +65,7 @@ function getParent(
     }
 
     if (!isRecord(current)) return null;
-    const next = current[token];
+    const next: JsonValue | undefined = current[token];
     if (next === undefined) return null;
     current = next;
   }

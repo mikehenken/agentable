@@ -119,5 +119,22 @@ describe('<agentable-app-shell>', () => {
       expect(panel).to.exist;
       expect(panel!.querySelector('[data-testid="header"]')).to.exist;
     });
+
+    it('unmounts the React tree when the element is disconnected', async () => {
+      // Regression: disconnectedCallback referenced `this._root?.unmount`
+      // without invoking it, leaving a zombie React tree per removed embed.
+      const el = await fixture<AgentableAppShellElement>(
+        html`<agentable-app-shell tenant="archipelago-resorts-disconnect-test"></agentable-app-shell>`);
+      await oneEvent(el, 'agentable:workspace-ready');
+      await elementUpdated(el);
+      const mount = el.shadowRoot!.querySelector('.agentable-app-shell-mount');
+      expect(mount).to.exist;
+      expect(mount!.childElementCount).to.be.greaterThan(0);
+
+      el.remove();
+      // React 18+ root.unmount() clears synchronously; give a microtask anyway.
+      await Promise.resolve();
+      expect(mount!.childElementCount).to.equal(0);
+    });
   });
 });

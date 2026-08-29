@@ -209,8 +209,9 @@ export class AgentablePanelElement extends LitElement {
   @property({ type: Boolean, attribute: 'lazy-hydrate' })
   declare lazyHydrate: boolean;
 
+  /** @internal Not private only so `changed.has('_hydrated')` type-checks against `keyof this`. */
   @state()
-  private declare _hydrated: boolean;
+  declare _hydrated: boolean;
 
   private _participantId = `panel-embed-${Math.random().toString(36).slice(2, 10)}`;
   private _root: Root | null = null;

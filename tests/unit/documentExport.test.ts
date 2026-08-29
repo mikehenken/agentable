@@ -15,7 +15,6 @@ import {
   exportDocumentBoth,
   EXPORT_DOCUMENT_HOST_ACTION_ID,
   sha256Bytes,
-  type AgentSession,
 } from '../../src/agents';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -108,11 +107,10 @@ describe('export_document host action ', () => {
   });
 
   it('derives job capability class for export_document', () => {
-    const session = {} as AgentSession;
     const tool = createExportDocumentHostAction({
       resolveDocument: () => DOCUMENT_EXPORT_GOLDEN_SEED,
     });
-    const caps = deriveCapabilities(session, [tool]);
+    const caps = deriveCapabilities([tool]);
     const exportCap = caps.find((cap) => cap.id === EXPORT_DOCUMENT_HOST_ACTION_ID);
     expect(exportCap?.class).toBe('job');
     expect(exportCap?.approval).toBe('none');

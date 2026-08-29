@@ -143,7 +143,7 @@ describe('lazyHydration — observeLazyVisibility', () => {
 describe('lazyHydration — placeholder skeleton', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
-    document.head.querySelector('#agentable-panel-embed-skeleton-styles')?.remove;
+    document.head.querySelector('#agentable-panel-embed-skeleton-styles')?.remove();
   });
 
   it('renders and clears skeleton markup in light DOM', () => {

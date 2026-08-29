@@ -35,7 +35,8 @@ export interface OperatorDrawVisibilityVerdict {
   countIncreased: boolean;
   blueGeoIncreased: boolean;
   pageShapeCountBefore: number;
-  pageShapeCountAfter: number;
+  /** Undefined when no after-draw page-count evidence was available. */
+  pageShapeCountAfter: number | undefined;
 }
 
 interface WhiteboardScriptedHost extends HTMLElement {
@@ -49,6 +50,10 @@ interface WhiteboardScriptedHost extends HTMLElement {
   ) => Promise<{ ok: boolean; result?: unknown; error?: string; toolName?: string }>;
   whenReady?: (timeoutMs?: number) => Promise<boolean>;
 }
+
+type WhiteboardScriptedToolRunner = NonNullable<
+  WhiteboardScriptedHost['runOperatorScriptedTool']
+>;
 
 export interface OperatorViewportRegion {
   x: number;
@@ -145,7 +150,7 @@ export async function readOperatorViewportRegion(
 
 function resolveWhiteboardScriptedRunner(
   host: WhiteboardScriptedHost | null,
-): WhiteboardScriptedHost['runOperatorScriptedTool'] | null {
+): WhiteboardScriptedToolRunner | null {
   if (host === null) {
     return null;
   }
@@ -203,7 +208,7 @@ export function operatorCreatedShapeIdsExistOnPage(
 export function resolvePageShapeCountAfterDraw(
   drawResult: ToolResult,
 ): number | undefined {
-  if (drawResult.result !== undefined && typeof drawResult.result === 'object') {
+  if (drawResult.ok && drawResult.result !== undefined && typeof drawResult.result === 'object') {
     const payload = drawResult.result as {
       _verifyPageCount?: unknown;
       _shapesAfterDraw?: unknown;
@@ -292,7 +297,9 @@ export function verifyOperatorDrawVisibility(input: {
   const after = input.shapesAfterDraw;
 
   const resultPayload =
-    input.drawResult.result !== undefined && typeof input.drawResult.result === 'object'
+    input.drawResult.ok &&
+    input.drawResult.result !== undefined &&
+    typeof input.drawResult.result === 'object'
       ? (input.drawResult.result as {
           _shapesBeforeDraw?: unknown;
           _shapesAfterDraw?: unknown;
@@ -427,7 +434,10 @@ export function buildDrawFailureMessage(
   ) {
     return 'Draw failed: canvas shape count did not increase after draw_shapes.';
   }
-  if (verdict.pageShapeCountAfter <= verdict.pageShapeCountBefore) {
+  if (
+    verdict.pageShapeCountAfter !== undefined &&
+    verdict.pageShapeCountAfter <= verdict.pageShapeCountBefore
+  ) {
     return 'Draw failed: page shape count did not increase after draw_shapes.';
   }
   if (verdict.shapesAfterDraw !== null && verdict.shapesAfterDraw.count === 0) {

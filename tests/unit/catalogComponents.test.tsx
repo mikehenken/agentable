@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ComponentType, type ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { v1CatalogEntries } from '../../src/panels/catalog/v1-entries';
@@ -23,7 +23,11 @@ describe('catalog component state matrix', () => {
     describe(entry.name, () => {
       states.forEach((state) => {
         it(`renders in ${state} state with distinct DOM markers`, () => {
-          const Component = entry.component as any;
+          // Every catalog entry gets the same superset of props; widen once
+          // instead of `any` so prop typos still surface.
+          const Component = entry.component as ComponentType<
+            Record<string, unknown> & { children?: ReactNode }
+          >;
           const context: SpecNodeContextValue = {
             scope: {},
             data: {},

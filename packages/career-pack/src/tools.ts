@@ -35,7 +35,7 @@ function readNumber(value: unknown): number | undefined {
 function openPanelTool(
   runtime: CareerToolRuntime,
   panelId: CareerPanelId,
-  source: CareerToolName,
+  _source: CareerToolName,
 ): ToolResult {
   if (!CAREER_PANEL_IDS.includes(panelId)) {
     return { ok: false, error: `unknown career panel "${panelId}"` };

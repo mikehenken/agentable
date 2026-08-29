@@ -23,8 +23,6 @@ export interface AgentablePanelMountConfig {
   panelDataUrl?: string;
   /** Public anon key for tenant config lookup (G3). */
   anonKey?: string;
-  /** API base for lookup — maps to `api-endpoint`. */
-  apiEndpoint?: string;
   /** Lookup route override — maps to `config-path`. */
   configPath?: string;
   panelTitle?: string;

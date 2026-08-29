@@ -19,7 +19,7 @@ export interface PromptInputProps {
   actions?: React.ReactNode;
   /** Chip row rendered above the textarea (e.g. attachments). */
   header?: React.ReactNode;
-  textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
   maxRows?: number;
 }
 

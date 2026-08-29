@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "p8-tldraw-demo",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:p8-demo"
+      ],
+      "port": 3018
+    },
+    {
+      "name": "examples-site",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/serve-site.mjs"
+      ],
+      "port": 5199
+    },
+    {
+      "name": "examples-site-functions",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "pages",
+        "dev",
+        "dist/site",
+        "--port",
+        "5199",
+        "--compatibility-date=2026-05-01"
+      ],
+      "port": 5199
+    }
+  ]
+}

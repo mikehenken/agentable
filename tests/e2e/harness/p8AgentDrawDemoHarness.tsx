@@ -281,36 +281,6 @@ function listFlowGeoShapeIds(
   return geos.map((entry) => entry.id);
 }
 
-function readShapeDomContainerRect(
-  shapeId: string,
-  pageCenter?: { x: number; y: number }): DOMRect | null {
-  const host = document.querySelector('[data-testid="p8-canvas-host"]');
-  if (host === null) return null;
-  const selectors = [
-    `[data-shape-id="${shapeId}"]`,
-    `[data-id="${shapeId}"]`,
-    `.tl-shape[data-shape-id="${shapeId}"]`,
-  ];
-  for (const selector of selectors) {
-    const el = host.querySelector(selector);
-    if (el instanceof HTMLElement) {
-      const rect = el.getBoundingClientRect();
-      if (rect.width >= 24 && rect.height >= 16) {
-        if (pageCenter !== undefined) {
-          const domCx = rect.x + rect.width / 2;
-          const domCy = rect.y + rect.height / 2;
-          const delta = Math.hypot(domCx - pageCenter.x, domCy - pageCenter.y);
-          if (delta > 120) {
-            continue;
-          }
-        }
-        return rect;
-      }
-    }
-  }
-  return null;
-}
-
 function collectFlowLabelDomCentroids(): ScreenCentroid[] {
   const centroids: ScreenCentroid[] = [];
   for (const label of FLOW_NODE_LABELS) {
@@ -573,8 +543,6 @@ async function clearHarnessIndexedDbPersistence(): Promise<void> {
 
 const TOOLBAR_CLEARANCE_PX = 96;
 
-type GeoPageBounds = { minX: number; minY: number; maxX: number; maxY: number };
-
 function nudgeCameraForDomTimelineLegibility(
   editor: NonNullable<ReturnType<typeof getEditor>>): void {
   const host = readCanvasHostScreenBounds();
@@ -606,35 +574,9 @@ function nudgeCameraForDomTimelineLegibility(
     { animation: { duration: 0 } });
 }
 
-function zoomEditorToGeoPageBounds(
-  editor: NonNullable<ReturnType<typeof getEditor>>,
-  bounds: GeoPageBounds): void {
-  const host = readTldrawViewportScreenBounds();
-  fitAgentDrawingCamera(editor, bounds, {
-    toolbarClearancePx: TOOLBAR_CLEARANCE_PX,
-    screen: host,
-  });
-}
-
 function dispatchShellAgentFit(agentId: string): void {
   window.dispatchEvent(
     new CustomEvent(FIT_AGENT_DRAWING_EVENT, { detail: { agentId } }));
-}
-
-function zoomEditorToAgentGeoBounds(
-  editor: NonNullable<ReturnType<typeof getEditor>>,
-  agentId: string): boolean {
-  const bounds = frameAgentGeoBounds(editor, agentId);
-  if (bounds === null) {
-    return false;
-  }
-  editor.setCamera({ x: 0, y: 0, z: 1 }, { animation: { duration: 0 } });
-  zoomEditorToGeoPageBounds(editor, bounds);
-  if (isCameraStateCorrupted(editor)) {
-    editor.setCamera({ x: 0, y: 0, z: 1 }, { animation: { duration: 0 } });
-    zoomEditorToGeoPageBounds(editor, bounds);
-  }
-  return true;
 }
 
 function isCameraStateCorrupted(editor: NonNullable<ReturnType<typeof getEditor>>): boolean {
@@ -702,7 +644,7 @@ async function fitCanvasToAgentDrawings(agentId: string): Promise<boolean> {
     }
   }
 
-  let metrics = measureAgentShapeScreenLegibility(agentId);
+  const metrics = measureAgentShapeScreenLegibility(agentId);
 
   const legible =
     domTimeline.geoNodeCount >= 4 &&

@@ -22,7 +22,7 @@ export function createDomCanvasEngine(): CanvasEngine {
       const baseDestroy = handle.destroy.bind(handle);
       handle.destroy = (): void => {
         const mountedRoot = reactRoots.get(handle);
-        mountedRoot?.unmount;
+        mountedRoot?.unmount();
         reactRoots.delete(handle);
         baseDestroy();
       };

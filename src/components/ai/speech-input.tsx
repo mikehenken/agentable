@@ -38,7 +38,7 @@ export function SpeechInput({
 }: SpeechInputProps): ReactElement {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
-  const supported = Boolean(getSpeechRecognitionCtor);
+  const supported = getSpeechRecognitionCtor() !== undefined;
 
   const stopListening = useCallback(() => {
     recognitionRef.current?.stop();
@@ -49,7 +49,7 @@ export function SpeechInput({
     if (disabled) {
       return;
     }
-    const SpeechRecognitionCtor = getSpeechRecognitionCtor;
+    const SpeechRecognitionCtor = getSpeechRecognitionCtor();
     if (!SpeechRecognitionCtor) {
       return;
     }
@@ -73,7 +73,9 @@ export function SpeechInput({
     setListening(true);
   }, [disabled, onTranscript]);
 
-  useEffect(() => ()=> stopListening, [stopListening]);
+  useEffect(() => () => {
+    stopListening();
+  }, [stopListening]);
 
   if (!supported) {
     return <></>;
@@ -92,7 +94,7 @@ export function SpeechInput({
         'text-[var(--vibe-text-muted,#9a9a9a)] hover:text-[var(--vibe-text,#ececec)]',
         listening && 'border-[var(--vibe-accent,#ff6b57)] text-[var(--vibe-accent,#ff6b57)]',
         className)}
-      onClick={() => (listening ? stopListening: startListening)}
+      onClick={() => (listening ? stopListening(): startListening())}
     >
       {listening ? <MicOff size={15} />: <Mic size={15} />}
     </button>

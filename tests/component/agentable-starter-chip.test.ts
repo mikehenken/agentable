@@ -50,7 +50,7 @@ describe('<agentable-starter-chip>', () => {
       widgetEvent = event as CustomEvent;
     });
 
-    el.shadowRoot!.querySelector('button')!.click;
+    el.shadowRoot!.querySelector('button')!.click();
     await elementUpdated(el);
 
     expect(promptDetail).to.exist;
@@ -68,7 +68,7 @@ describe('<agentable-starter-chip>', () => {
     window.addEventListener(OPEN_CHAT_EVENT, () => seen.push('open'));
     window.addEventListener(CHAT_PROMPT_EVENT, () => seen.push('prompt'));
 
-    el.shadowRoot!.querySelector('button')!.click;
+    el.shadowRoot!.querySelector('button')!.click();
     expect(seen).to.deep.equal(['open', 'prompt']);
   });
 });

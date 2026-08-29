@@ -235,7 +235,7 @@ describe('screenshot_canvas raster capture ', () => {
     expect(capture.dataUrl.startsWith('data:image/png')).toBe(true);
     expect(capture.width).toBeGreaterThan(0);
     expect(capture.height).toBeGreaterThan(0);
-    expect(editor.toImageDataUrl).toHaveBeenCalled;
+    expect(editor.toImageDataUrl).toHaveBeenCalled();
   });
 
   it('extracts url from tldraw toImageDataUrl object result', async () => {
@@ -266,7 +266,7 @@ describe('screenshot_canvas raster capture ', () => {
     const capture = await screenshotCanvasRegion({ region: { kind: 'viewport' } });
     expect(capture.dataUrl.startsWith('data:image/png')).toBe(true);
     expect(capture.region.x).toBeLessThan(5000);
-    expect(editor.toImageDataUrl).toHaveBeenCalled;
+    expect(editor.toImageDataUrl).toHaveBeenCalled();
   });
 
   it('falls back to explicit fallbackShapeIds when region is empty', async () => {

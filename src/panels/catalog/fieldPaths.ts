@@ -2,7 +2,7 @@
  * Dot-path read/write helpers for field-form draft values. Segments may be
  * object keys or numeric array indices (`rules.0.name`).
  */
-import type { JsonObject, JsonValue } from '../types';
+import type { JsonValue } from '../types';
 
 export function splitFieldPath(path: string): string[] {
   if (path.length === 0) return [];

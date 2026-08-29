@@ -35,8 +35,8 @@ describe('career pack locale rendering', () => {
     expect(panel?.kind).toBe('react');
 
     render(<OpenPositionsPanel data={{ jobs: SAMPLE_JOBS }} hostedInWhiteboard={false} />);
-    expect(screen.getByRole('searchbox')).toBeInTheDocument;
-    expect(screen.getByText(/Open Positions ·/)).toBeInTheDocument;
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
+    expect(screen.getByText(/Open Positions ·/)).toBeInTheDocument();
     expect(getI18n().locale).toBe('es');
   });
 
@@ -60,8 +60,8 @@ describe('career pack locale rendering', () => {
   it('SC3: renders Arabic open-positions list when locale is ar', () => {
     bootstrapSessionLocale({ embedLocale: 'ar' });
     render(<OpenPositionsPanel data={{ jobs: SAMPLE_JOBS.slice(0, 3) }} hostedInWhiteboard={false} />);
-    expect(screen.getByTestId('open-positions-panel')).toBeInTheDocument;
-    expect(screen.getByText('Resort Manager')).toBeInTheDocument;
+    expect(screen.getByTestId('open-positions-panel')).toBeInTheDocument();
+    expect(screen.getByText('Resort Manager')).toBeInTheDocument();
     expect(getI18n().locale).toBe('ar');
   });
 });

@@ -50,6 +50,10 @@ export type SpecAction =
       confirm?: string;
       variant?: 'ai';
       targetFields?: string[];
+      /** Set false to declare the mutation not undoable. */
+      reversible?: boolean;
+      /** Declared compensating action id for reversal. */
+      inverse?: string;
     }
   | { kind: 'host'; action: string }
   | { kind: 'panel'; panelId: string; scopeFrom?: string }
@@ -90,6 +94,8 @@ export interface PanelMeta {
   contextKinds?: string[];
   /** Passed verbatim into panel enumeration and agent tool grounding. */
   agentDescription?: string;
+  /** Panel body overflow behavior: 'auto' scrolls, 'hidden' clips. */
+  bodyScroll?: 'auto' | 'hidden';
 }
 
 /**
@@ -99,6 +105,8 @@ export interface PanelMeta {
 export interface PanelScope {
   contextId?: string;
   entityId?: string;
+  /** Page-session slot the panel is scoped to (embed panel-only engine). */
+  slot?: string;
 }
 
 export interface PanelChromeOptions {
@@ -130,6 +138,11 @@ export interface CatalogEntry<TProps = any> {
   component: ComponentType<TProps & { context: SpecNodeContextValue }>;
   agentHint?: string;
   internal?: boolean;
+  /**
+   * When true, the component renders its own binding-error UI and the spec
+   * renderer suppresses its default error card for this entry.
+   */
+  selfManagedBindingErrors?: boolean;
 }
 
 /** Typed facade over a mounted panel instance. */

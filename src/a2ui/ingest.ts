@@ -125,7 +125,7 @@ export function ingestA2UIStream(
   const surfaceId =
     options.surfaceId ??
     inferSurfaceIdFromEnvelope(parseA2UIEnvelope(envelopes[0]!)) ??
-    null();
+    null;
   if (surfaceId === null) {
     return failure([{ code: 'A2UI_SURFACE_MISSING', message: 'Could not infer surfaceId from stream' }]);
   }

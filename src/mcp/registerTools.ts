@@ -111,12 +111,12 @@ export function registerCanvasMcpTools(options: RegisterCanvasMcpToolsOptions): 
         description: tool.declaration.description,
         inputSchema: inputSchema,
       },
-      async (args) => {
+      async (args: Record<string, unknown>) => {
         const outcome = await executeWorkspaceToolWithAuth(options.bridge, {
           authStore: options.authStore,
           accessToken: options.accessToken,
           toolName: name,
-          args: args as Record<string, unknown>,
+          args,
         }, catalog);
         return formatMcpToolResult(outcome);
       });

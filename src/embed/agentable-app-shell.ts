@@ -143,7 +143,7 @@ export class AgentableAppShellElement extends LitElement {
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this._root?.unmount;
+    this._root?.unmount();
     this._root = null;
   }
 

@@ -1,0 +1,12 @@
+# Copy to `.dev.vars` (gitignored) to run gallery agents locally with real
+# Pages-function emulation:
+#
+#   npm run build:examples-site
+#   npm run serve:site:functions     # wrangler pages dev dist/site --port 5199
+#
+# Without this file, /v1/chat and /v1/voice/token return an honest 503
+# (gemini_api_key_missing) instead of the old serve-site 404 stub.
+#
+# NEVER commit the real value. The key here is the same secret the deployed
+# Pages project holds as GEMINI_API_KEY.
+GEMINI_API_KEY=paste-your-gemini-api-key-here

@@ -1,4 +1,4 @@
-import type { CareerDataset } from './types';
+import type { CareerDataset } from '../types';
 
 /** Minimal fixture dataset for interop tests and local demos. */
 export const MINIMAL_CAREER_DATASET: CareerDataset = {

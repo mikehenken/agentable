@@ -48,8 +48,8 @@ describe('whiteboard panel data wiring', () => {
       </PanelEmbedHostProvider>);
 
     await waitFor(() => {
-        expect(screen.getByText('Resort Manager')).toBeInTheDocument;
-        expect(screen.getByText('Senior Software Developer')).toBeInTheDocument;
+        expect(screen.getByText('Resort Manager')).toBeInTheDocument();
+        expect(screen.getByText('Senior Software Developer')).toBeInTheDocument();
       },
       { timeout: 5000 });
 

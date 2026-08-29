@@ -40,21 +40,6 @@ function readFiniteNumber(value: unknown): number | undefined {
   return value;
 }
 
-function readPoint(value: unknown): { x: number; y: number } | undefined {
-  if (Array.isArray(value) && value.length >= 2) {
-    const x = readFiniteNumber(value[0]);
-    const y = readFiniteNumber(value[1]);
-    if (x !== undefined && y !== undefined) {
-      return { x, y };
-    }
-  }
-  if (!isRecord(value)) return undefined;
-  const x = readFiniteNumber(value.x);
-  const y = readFiniteNumber(value.y);
-  if (x === undefined || y === undefined) return undefined;
-  return { x, y };
-}
-
 function normalizeShapeKind(value: unknown): 'box' | 'ellipse' | 'arrow' | 'text' | undefined {
   const kind = readString(value)?.toLowerCase();
   if (kind === undefined) return undefined;

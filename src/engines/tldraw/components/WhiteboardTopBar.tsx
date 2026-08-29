@@ -74,7 +74,10 @@ export function WhiteboardTopBar({
   const hostChrome = useWhiteboardHostChrome();
   const isCanvasExpanded = hostChrome?.isCanvasExpanded ?? false;
   const useCanvasExpand = hostChrome?.chrome.fullscreenMode === 'canvas-expand';
-  const isFullscreen = useCanvasExpand ? isCanvasExpanded : useDocumentFullscreenState();
+  // Always call the hook — in a ternary arm it runs conditionally and breaks
+  // hook order when fullscreenMode changes between renders.
+  const documentFullscreen = useDocumentFullscreenState();
+  const isFullscreen = useCanvasExpand ? isCanvasExpanded : documentFullscreen;
   const { state: personaState, level: personaLevel } = useAiPersonaState({
     preferAsleepWhenIdle: true,
   });

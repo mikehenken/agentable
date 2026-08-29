@@ -12,7 +12,6 @@ import type {
   ApprovalActor,
   ApprovalController,
   PanelToolApprovalOptions,
-  PendingApprovalRequest,
 } from './approval/types';
 import type { ComposeGateEvaluation } from './composeGate';
 import { COMPOSE_GATE_CLOSED_CODE } from './composeGate';
@@ -879,7 +878,7 @@ export function createPanelToolRuntime(
       const acting = resolveActingAgent(runOptions);
       const actionPayload = normalizeActionPayload(payload);
 
-      if (action?.kind === 'prompt') {
+      if (action?.kind === 'prompt' && action.prompt !== undefined) {
         dispatchChatPrompt(action.prompt, {
           source: `panel:${instance.panelId}:${actionId}`,
         });

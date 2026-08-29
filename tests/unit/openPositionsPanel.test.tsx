@@ -10,11 +10,11 @@ describe('OpenPositionsPanel', () => {
     const jobs = careerDatasetToPanelData(archipelagoFixture).jobs ?? [];
     render(<OpenPositionsPanel data={{ jobs }} hostedInWhiteboard={false} />);
 
-    expect(screen.getByRole('searchbox')).toBeInTheDocument;
-    expect(screen.getByText(/Open Positions · 10/)).toBeInTheDocument;
-    expect(screen.getByText('Guest Experience Lead')).toBeInTheDocument;
-    expect(screen.getByText('Environmental Programs Coordinator')).toBeInTheDocument;
-    expect(screen.getByRole('radio', { name: 'Guest Services' })).toBeInTheDocument;
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
+    expect(screen.getByText(/Open Positions · 10/)).toBeInTheDocument();
+    expect(screen.getByText('Guest Experience Lead')).toBeInTheDocument();
+    expect(screen.getByText('Environmental Programs Coordinator')).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Guest Services' })).toBeInTheDocument();
   });
 
   it('opens job detail when a card is clicked', async () => {
@@ -23,7 +23,7 @@ describe('OpenPositionsPanel', () => {
     render(<OpenPositionsPanel data={{ jobs }} hostedInWhiteboard={false} />);
 
     await user().click(screen.getByLabelText('Open Guest Experience Lead details'));
-    expect(screen.getByTestId('open-positions-job-detail-1')).toBeInTheDocument;
-    expect(screen.getByRole('button', { name: /All positions/i })).toBeInTheDocument;
+    expect(screen.getByTestId('open-positions-job-detail-1')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /All positions/i })).toBeInTheDocument();
   });
 });

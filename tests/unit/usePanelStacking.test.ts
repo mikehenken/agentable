@@ -67,7 +67,7 @@ describe('usePanelStacking', () => {
 
     editor.emitSelectionChange([], ['shape:frame:site']);
 
-    expect(editor.bringToFront).not.toHaveBeenCalled;
+    expect(editor.bringToFront).not.toHaveBeenCalled();
   });
 
   it('re-raises an already-selected panel when selection is unchanged', () => {
@@ -76,6 +76,6 @@ describe('usePanelStacking', () => {
 
     editor.emitSelectionChange(['shape:panel:seo'], ['shape:panel:seo']);
 
-    expect(editor.bringToFront).not.toHaveBeenCalled;
+    expect(editor.bringToFront).not.toHaveBeenCalled();
   });
 });

@@ -282,6 +282,8 @@ interface RuntimeBlock {
   row?: ListRowConfig<string>;
   search?: boolean;
   filters?: readonly FieldConfig[];
+  rowKey?: string;
+  virtualizeThreshold?: number;
   columns?: readonly JsonObject[];
   rowActions?: readonly string[];
   text?: string;

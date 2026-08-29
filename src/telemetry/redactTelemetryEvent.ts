@@ -77,9 +77,7 @@ export function redactTelemetryString(value: string, fieldKey?: string): string 
   return next;
 }
 
-type JsonLike = string | number | boolean | null | JsonLike[] | { [key: string]: JsonLike };
-
-function redactJsonLike(value: JsonLike, fieldKey?: string): JsonLike {
+function redactJsonLike(value: unknown, fieldKey?: string): unknown {
   if (typeof value === 'string') {
     return redactTelemetryString(value, fieldKey);
   }
@@ -89,7 +87,7 @@ function redactJsonLike(value: JsonLike, fieldKey?: string): JsonLike {
   }
 
   if (value !== null && typeof value === 'object') {
-    const next: Record<string, JsonLike> = {};
+    const next: Record<string, unknown> = {};
     for (const [key, entry] of Object.entries(value)) {
       if (isForbiddenTelemetryKey(key)) {
         continue;
@@ -107,5 +105,6 @@ function redactJsonLike(value: JsonLike, fieldKey?: string): JsonLike {
  * truncates `anonKeyHint`, and replaces PII / credential-shaped strings.
  */
 export function redactTelemetryEvent(event: TelemetryEvent): TelemetryEvent {
-  return redactJsonLike(event as JsonLike) as TelemetryEvent;
+  // Serialization boundary: the walker treats the event as plain JSON and preserves its shape (minus forbidden keys).
+  return redactJsonLike(event) as TelemetryEvent;
 }

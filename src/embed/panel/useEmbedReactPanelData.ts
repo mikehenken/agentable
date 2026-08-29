@@ -28,7 +28,10 @@ export function useEmbedReactPanelData(
   panelId: string,
   panelData: Record<string, unknown> | undefined): Record<string, unknown> {
   const ctx = useOptionalPanelEmbedHost();
-  const host = ctx?.host ?? useWhiteboardPanelHost();
+  // Always call the hook — behind `??` it runs conditionally and breaks
+  // hook order when the embed context host flips between renders.
+  const whiteboardHost = useWhiteboardPanelHost();
+  const host = ctx?.host ?? whiteboardHost;
   const lifecycle = host?.data.lifecycle ?? null;
   const { panelData: tenantPanelData } = useCanvasConfig();
 

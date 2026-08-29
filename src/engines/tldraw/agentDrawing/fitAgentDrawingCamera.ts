@@ -115,7 +115,6 @@ export function fitAgentDrawingCamera(
 ): void {
   resetEditorCameraIfViewportCorrupted(editor);
 
-  const inset = options.inset ?? DEFAULT_INSET;
   const toolbarClearancePx = options.toolbarClearancePx ?? DEFAULT_TOOLBAR_CLEARANCE_PX;
   const screen = resolveViewportScreenBounds(editor, options.screen);
   if (screen === null) {

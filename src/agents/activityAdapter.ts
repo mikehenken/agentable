@@ -58,7 +58,7 @@ export function createActivityDataAdapter(activity: ActivityLog): DataAdapter {
     },
 
     mutate(_action: DeclaredAction, _payload: unknown, _scope: PanelScope): Promise<MutationResult> {
-      return Promise.resolve(readOnlyMutationError);
+      return Promise.resolve(readOnlyMutationError());
     },
 
     subscribe(ref: SourceRef, _scope: PanelScope, onChange: () => void): Unsubscribe {

@@ -545,7 +545,6 @@ export function OperatorSurfaceShell({
               hidden={!isActive}
             >
               <Conversation
-                part="transcript"
                 className="transcript operator-overlay-scroll min-h-0 flex-1"
                 style={{ background: 'transparent' }}
               >

@@ -280,7 +280,7 @@ export function snapshotFromNativeExport(snapshot: JsonObject): DomLayoutSnapsho
 
     sidebarSplit:
 
-      typeof snapshot.sidebarSplit === 'number' ? snapshot.sidebarSplit: baseSidebarSplit,
+      typeof snapshot.sidebarSplit === 'number' ? snapshot.sidebarSplit : baseSidebarSplit(),
 
     activeTab: readActiveTab(snapshot.activeTab),
 

@@ -65,7 +65,8 @@ function ChartFrame({
 }: {
   state: ChartState;
   height: number;
-  children: React.ReactNode;
+  /** Single chart element — recharts' ResponsiveContainer requires one. */
+  children: React.ReactElement;
   testId: string;
 }): ReactElement {
   return (
@@ -217,6 +218,8 @@ export function ChartPie(props: PieChartComponentProps): ReactElement {
   const nameKey = props.nameKey ?? 'label';
   const valueKey = props.valueKey ?? 'value';
   const rows = resolveChartRows(props.bind, props.data, props.context);
+  // Invoke immediately: as a bare function the null-check below never fires
+  // and recharts receives the function itself as `data`.
   const slices = (() => {
     if (rows === null) return null;
     const next = rows.map((row) => ({
@@ -227,7 +230,7 @@ export function ChartPie(props: PieChartComponentProps): ReactElement {
       value: number;
     }>;
     return next.length > 0 ? next: null;
-  });
+  })();
 
   if (slices === null) {
     return <div data-testid="chart-pie" role="note">Chart requires data</div>;
@@ -245,7 +248,7 @@ export function ChartPie(props: PieChartComponentProps): ReactElement {
           innerRadius={props.innerRadius ?? 0}
           outerRadius="80%"
         >
-          {slices().map((slice, index) => (
+          {slices.map((slice, index) => (
             <Cell key={slice.name} fill={colorAt(index)} />
           ))}
         </Pie>

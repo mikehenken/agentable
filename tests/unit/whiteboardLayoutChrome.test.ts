@@ -169,7 +169,7 @@ describe('resetWhiteboardLayout', () => {
 
     const closed = resetWhiteboardLayout(editor as never, { openChat: true, resetCamera: true });
     expect(closed).toBeGreaterThanOrEqual(1);
-    expect(editor.setCamera).toHaveBeenCalled;
+    expect(editor.setCamera).toHaveBeenCalled();
 
     const chatId = String(createShapeId('panel:chat'));
     const chat = shapes.get(chatId);

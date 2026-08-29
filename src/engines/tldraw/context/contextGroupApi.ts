@@ -5,7 +5,6 @@
 import {
   Box,
   Vec,
-  compact,
   createShapeId,
   fitFrameToContent,
   type Editor,
@@ -18,6 +17,11 @@ import {
 import { GRID_SIZE, snapToGrid } from '../../../layout/panelLayoutEngine';
 import { resolvePanelScope } from '../../../panels/scope';
 import { filterContextFramePanelIds, isCanvasGlobalPanel } from './canvasGlobalPanels';
+
+/** Local replacement for tldraw's removed `compact` re-export. */
+function compact<T>(items: readonly (T | null | undefined)[]): T[] {
+  return items.filter((item): item is T => item !== null && item !== undefined);
+}
 
 export type ContextGroupKind = 'site' | 'agency';
 

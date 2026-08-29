@@ -68,14 +68,14 @@ export function SpecPlayground({
   initialSpecJson = SAMPLE_VALID_SPEC_JSON,
 }: SpecPlaygroundProps): ReactElement {
   const [rawJson, setRawJson] = useState(initialSpecJson);
-  const session = useMemo(() => createSpecDevtoolsSession, []);
+  const session = useMemo(() => createSpecDevtoolsSession(), []);
 
-  const inspectorDefinition = useMemo(() => createSpecInspectorPanelDefinition, []);
+  const inspectorDefinition = useMemo(() => createSpecInspectorPanelDefinition(), []);
   const inspectorSpec = useMemo(() => {
-    if (inspectorDefinition().kind !== 'spec') {
+    if (inspectorDefinition.kind !== 'spec') {
       throw new Error('spec inspector must compile to a spec panel');
     }
-    const validation = validateSpec(inspectorDefinition().spec, {
+    const validation = validateSpec(inspectorDefinition.spec, {
       catalog: defaultCatalog,
       adapterSources: INSPECTOR_ADAPTER_SOURCES,
       hostActions: new Set(),
@@ -88,20 +88,22 @@ export function SpecPlayground({
   }, [inspectorDefinition]);
 
   const lifecycle = useMemo((): DataLifecycle => {
-    const adapter = withSpecDevtoolsSources(session(), {
+    const adapter = withSpecDevtoolsSources(session, {
       query: async () => null,
       mutate: async () => ({ ok: true as const }),
     });
     return createDataLifecycle({ adapter, retryBackoffMs: 5 });
   }, [session]);
 
-  useEffect(() => ()=> lifecycle.dispose, [lifecycle]);
+  useEffect(() => () => {
+    lifecycle.dispose();
+  }, [lifecycle]);
 
   const inspect = useCallback(
     (raw: string): void => {
       const { spec, parseError } = parseSpecInput(raw);
       if (parseError !== null || spec === null) {
-        session().inspectSpec({
+        session.inspectSpec({
           targetLabel: 'playground',
           spec: null,
           errors: [
@@ -123,7 +125,7 @@ export function SpecPlayground({
       });
 
       if (!validation.ok) {
-        session().inspectSpec({
+        session.inspectSpec({
           targetLabel: 'playground',
           spec,
           errors: validation.errors,
@@ -132,7 +134,7 @@ export function SpecPlayground({
         return;
       }
 
-      session().inspectSpec({
+      session.inspectSpec({
         targetLabel: 'playground',
         spec: validation.spec,
         warnings: validation.warnings,

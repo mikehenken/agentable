@@ -68,7 +68,7 @@ describe('repeatable-group field rendering', () => {
       <SpecRenderer spec={validated.spec} scope={{}} lifecycle={lifecycle} />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('repeatable-group')).toBeInTheDocument;
+      expect(screen.getByTestId('repeatable-group')).toBeInTheDocument();
     });
     expect(screen.getAllByTestId('repeatable-group-row')).toHaveLength(1);
     expect(screen.getByTestId('repeatable-field-rules-0-name')).toHaveValue('Tone');
@@ -97,7 +97,7 @@ describe('repeatable-group field rendering', () => {
       <SpecRenderer spec={validated.spec} scope={{}} lifecycle={lifecycle} />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('repeatable-group-add')).toBeEnabled;
+      expect(screen.getByTestId('repeatable-group-add')).toBeEnabled();
     });
     expect(screen.queryAllByTestId('repeatable-group-row')).toHaveLength(0);
 
@@ -105,7 +105,7 @@ describe('repeatable-group field rendering', () => {
 
     expect(screen.getAllByTestId('repeatable-group-row')).toHaveLength(1);
     expect(screen.getByTestId('repeatable-field-rules-0-name')).toHaveValue('');
-    expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument;
+    expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument();
     lifecycle.dispose();
   });
 
@@ -129,7 +129,7 @@ describe('repeatable-group field rendering', () => {
       <SpecRenderer spec={validated.spec} scope={{}} lifecycle={lifecycle} />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('repeatable-field-rules-0-name')).toBeInTheDocument;
+      expect(screen.getByTestId('repeatable-field-rules-0-name')).toBeInTheDocument();
     });
 
     const nameInput = screen.getByTestId('repeatable-field-rules-0-name');
@@ -137,7 +137,7 @@ describe('repeatable-group field rendering', () => {
     await user().type(nameInput, 'Voice');
 
     expect(nameInput).toHaveValue('Voice');
-    expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument;
+    expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument();
     lifecycle.dispose();
   });
 

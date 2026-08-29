@@ -35,10 +35,11 @@ jobs:
         run: npm run lint
 
   typecheck:
-    name: Typecheck (advisory)
+    # Required since Wave 4: `npm run typecheck` covers tsconfig.app.json plus
+    # the three standalone packages/* programs, all at zero errors.
+    name: Typecheck
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    continue-on-error: true
 
     steps:
       - name: Checkout

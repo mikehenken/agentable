@@ -58,18 +58,18 @@ describe('ApprovalCard review state', () => {
   it('renders payload diff rows and action metadata', () => {
     render(<ApprovalCard request={sampleRequest} />);
 
-    expect(screen.getByTestId('approval-card-review')).toBeInTheDocument;
-    expect(screen.getByTestId('approval-awaiting-badge')).toBeInTheDocument;
+    expect(screen.getByTestId('approval-card-review')).toBeInTheDocument();
+    expect(screen.getByTestId('approval-awaiting-badge')).toBeInTheDocument();
     expect(screen.getByTestId('approval-target-source')).toHaveTextContent('site.seo');
-    expect(screen.getByTestId('approval-payload-diff')).toBeInTheDocument;
+    expect(screen.getByTestId('approval-payload-diff')).toBeInTheDocument();
     expect(screen.getByTestId('approval-diff-row-title')).toHaveAttribute('data-diff-kind', 'change');
-    expect(screen.getByText('Old title')).toBeInTheDocument;
-    expect(screen.getByText('New title')).toBeInTheDocument;
+    expect(screen.getByText('Old title')).toBeInTheDocument();
+    expect(screen.getByText('New title')).toBeInTheDocument();
   });
 
   it('surfaces irreversible warning when action cannot be undone', () => {
     render(<ApprovalCard request={sampleRequest({ reversible: false })} />);
-    expect(screen.getByTestId('approval-irreversible')).toBeInTheDocument;
+    expect(screen.getByTestId('approval-irreversible')).toBeInTheDocument();
   });
 
   it('shows empty diff copy when payload introduces no field changes', () => {
@@ -81,7 +81,7 @@ describe('ApprovalCard review state', () => {
           currentData: { title: 'Same' },
         })}
       />);
-    expect(screen.getByText('No field changes in this payload.')).toBeInTheDocument;
+    expect(screen.getByText('No field changes in this payload.')).toBeInTheDocument();
   });
 
   it('calls approve and reject handlers', () => {
@@ -113,9 +113,9 @@ describe('ApprovalCard destructive confirm state', () => {
         onCancelDestructive={onCancel}
       />);
 
-    expect(screen.getByTestId('approval-card-destructive')).toBeInTheDocument;
-    expect(screen.getByTestId('approval-destructive-badge')).toBeInTheDocument;
-    expect(screen.getByText('Restore this version permanently?')).toBeInTheDocument;
+    expect(screen.getByTestId('approval-card-destructive')).toBeInTheDocument();
+    expect(screen.getByTestId('approval-destructive-badge')).toBeInTheDocument();
+    expect(screen.getByText('Restore this version permanently?')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('approval-destructive-confirm'));
     fireEvent.click(screen.getByTestId('approval-destructive-cancel'));

@@ -3,11 +3,15 @@
  * `SpecNodeContextValue` in; field-form owns draft state for bound sources
  * including the P7 `repeatable-group` field primitive.
  */
+// Load the <agentable-virtual-list> JSX augmentation for programs that don't
+// sweep src/ globally (the standalone packages/* tsconfigs).
+/// <reference path="./virtual-list-jsx.d.ts" />
+
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { t } from '../../i18n';
 import { resolveCatalogString } from '../../i18n/resolveCatalogString';
 import { sanitizeInertText } from '../../security/codeExecutionBoundary';
-import type { CatalogEntry, PanelScope, SpecAction, SpecNodeContextValue } from '../types';
+import type { SpecAction, SpecNodeContextValue } from '../types';
 import type { DeclaredAction } from '../renderer/types';
 import {
   FieldEditor,

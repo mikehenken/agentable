@@ -94,7 +94,6 @@ export interface OpenPanelOptions {
 
 const DEFAULT_SNAP_GRID = true;
 
-const BESIDE_CHAT_Y_TOLERANCE = 12;
 
 interface QueuedRequest {
   panelId: string;
@@ -457,7 +456,7 @@ function ensureCareerPanelBesideChatTopRow(
   if (!panelBounds) return false;
 
   const besideTopRow =
-    // Math.abs(panelBounds.y - chatBounds.y) <= BESIDE_CHAT_Y_TOLERANCE &&
+    // Math.abs(panelBounds.y - chatBounds.y) <= 12 (beside-chat y tolerance) &&
     panelBounds.x >= chatBounds.x + chatBounds.w - 24;
   if (besideTopRow) return false;
 

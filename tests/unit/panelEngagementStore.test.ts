@@ -32,4 +32,16 @@ describe('usePanelEngagementStore', () => {
 
     expect(historyZ).toBeGreaterThan(seoZ);
   });
+
+  it('toSnapshot returns the current engagement state, not undefined fields', () => {
+    const store = usePanelEngagementStore.getState;
+    store().recordEngagement('history', 'open');
+    store().recordEngagement('site-seo', 'open');
+
+    const snapshot = store().toSnapshot();
+
+    expect(snapshot.stackOrder).toEqual(['history', 'site-seo']);
+    expect(snapshot.lastEngagedAt['history']).toBeTypeOf('number');
+    expect(snapshot.lastEngagedAt['site-seo']).toBeTypeOf('number');
+  });
 });

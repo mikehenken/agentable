@@ -90,7 +90,7 @@ describe('repositionPanelBesideChatIfOverlapping', () => {
       true);
 
     expect(moved).toBe(true);
-    expect(editor.updateShape).toHaveBeenCalled;
+    expect(editor.updateShape).toHaveBeenCalled();
 
     const growth = shapes.get(growthId) as { x: number; y: number };
     const chatBounds = { x: 24, y: 24, w: 360, h: 600 };

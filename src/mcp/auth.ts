@@ -30,10 +30,11 @@ export const CANVAS_MCP_OAUTH_ENV_KEY_NAMES = [
 export type CanvasMcpOAuthEnvKeyName = (typeof CANVAS_MCP_OAUTH_ENV_KEY_NAMES)[number];
 
 export interface CanvasMcpOAuthEnv {
-  // MCP_OAUTH_ISSUER?: string;
-  // MCP_RESOURCE_URI?: string;
-  // MCP_CREDENTIAL_PEPPER?: string;
-  // CANVAS_MCP_OAUTH_KV?: KVNamespace;
+  MCP_OAUTH_ISSUER?: string;
+  MCP_RESOURCE_URI?: string;
+  MCP_CREDENTIAL_PEPPER?: string;
+  /** Cloudflare KVNamespace binding; typed loosely because worker types are not part of the app build. */
+  CANVAS_MCP_OAUTH_KV?: unknown;
 }
 
 export interface CanvasMcpTokenRecord {

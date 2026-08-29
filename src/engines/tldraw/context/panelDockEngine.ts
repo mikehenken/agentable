@@ -13,11 +13,16 @@ import {
   getContextGroupMeta,
 } from './contextGroupApi';
 import type { ContextFramePanelKind } from './contextFramePanelLayout';
+import type { PanelShape } from '../shapes/PanelShape';
 
 export type PanelDockTarget = 'group' | 'panel' | 'canvas';
 export type PanelDockEdge = 'left' | 'right' | 'top' | 'bottom';
 
-export interface PanelDock {
+/**
+ * Type alias (not interface) on purpose: aliases get an implicit index
+ * signature, so PanelDock is assignable to tldraw's JsonValue shape meta.
+ */
+export type PanelDock = {
   target: PanelDockTarget;
   targetId?: TLShapeId;
   edge: PanelDockEdge;
@@ -25,7 +30,7 @@ export interface PanelDock {
   gap: number;
   /** Stretch panel height to the site frame inner bounds (chat left-edge dock). */
   fillHeight?: boolean;
-}
+};
 
 export const PANEL_DOCK_META_KEY = 'panelDock';
 export const DOCK_HIT_THRESHOLD = 12;
@@ -248,9 +253,10 @@ export function previewPanelDockHighlight(
 
   const frameZones = buildDockZonesForFrame(editor, ctx.frameId);
 
-  let best: { dock: PanelDock; dist: number; rect: LayoutRect } | null = null;
+  type BestZone = { dock: PanelDock; dist: number; rect: LayoutRect };
 
-  const consider = (zones: DockZone[]): void => {
+  const pickBest = (zones: DockZone[], current: BestZone | null): BestZone | null => {
+    let best = current;
     for (const zone of zones) {
       const nearCursor = isPointNearRectEdge(pagePoint, zone.rect, zone.dock.edge, threshold);
       const nearPanelEdge = isPanelEdgeNearDockTarget(
@@ -265,11 +271,12 @@ export function previewPanelDockHighlight(
         best = { dock: zone.dock, dist, rect: zone.rect };
       }
     }
+    return best;
   };
 
-  consider(siblingZones);
+  let best = pickBest(siblingZones, null);
   if (!best) {
-    consider(frameZones);
+    best = pickBest(frameZones, null);
   }
 
   if (!best) return null;
@@ -632,7 +639,7 @@ export function reflowContextFrameRow(editor: Editor, frameId: TLShapeId): void 
       // Gather panel rects (post-cascade, so docked panels are already flush).
       const panelRects: Array<{ panelId: string; rect: LayoutRect }> = [];
       let previewId: TLShapeId | null = null;
-      let previewProps: Record<string, unknown> | null = null;
+      let previewProps: PanelShape['props'] | null = null;
       let previewRectNow: LayoutRect | null = null;
 
       for (const childId of editor.getSortedChildIdsForParent(frameId)) {
@@ -640,10 +647,10 @@ export function reflowContextFrameRow(editor: Editor, frameId: TLShapeId): void 
         if (!shape || shape.type !== 'panel') continue;
         const rect = getShapePageRect(editor, childId);
         if (!rect) continue;
-        const panelId = String((shape.props as { panelId?: unknown }).panelId ?? '');
+        const panelId = shape.props.panelId;
         if (panelId === 'web-preview') {
           previewId = childId;
-          previewProps = shape.props as Record<string, unknown>;
+          previewProps = shape.props;
           previewRectNow = rect;
           continue;
         }

@@ -16,6 +16,6 @@ describe('check-conditional-hooks script', () => {
         cwd: root,
         stdio: 'pipe',
       });
-    }).not.toThrow;
+    }).not.toThrow();
   });
 });

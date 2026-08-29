@@ -13,7 +13,6 @@ import { ensurePageSession } from '../../session/pageSession';
 import {
   DEFAULT_OPERATOR_MODEL_OPTIONS,
   DEFAULT_OPERATOR_REQUIRED_CAPS,
-  DEFAULT_OPERATOR_THREADS,
   OPERATOR_PAGE_SESSION_ID,
   OPERATOR_SURFACE_TAG,
 } from './constants';
@@ -210,7 +209,9 @@ export class AgentableOperatorSurfaceElement extends LitElement {
     this._defaultModeApplied = true;
   }
 
-  protected updated(changed: PropertyValues<this>): void {
+  // PropertyValues without the <this> narrowing: the render gate below keys on
+  // private @state fields, which `keyof` excludes from PropertyValues<this>.
+  protected updated(changed: PropertyValues): void {
     if (changed.has('mode')) {
       syncOperatorMode(this.mode);
       syncOperatorRegistrationMode(this.mode);

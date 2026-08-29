@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { A2UI_PROTOCOL_VERSION } from './constants';
+import type { JsonValue } from '../panels/types';
 
-const jsonValue: z.ZodType<unknown> = z.lazy(() =>
+const jsonValue: z.ZodType<JsonValue> = z.lazy(() =>
   z.union([
     z.string(),
     z.number(),

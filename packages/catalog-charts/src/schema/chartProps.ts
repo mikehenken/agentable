@@ -22,8 +22,10 @@ function requireDataOrBind<T extends z.ZodRawShape>(
   shape: T,
   refineMessage: string): z.ZodObject<T> {
   return z.object(shape).superRefine((value, ctx) => {
-    const bind = 'bind' in value ? value.bind: undefined;
-    const data = 'data' in value ? value.data: undefined;
+    // The generic raw shape erases field types; bind is a string and data an
+    // array wherever this refinement is applied.
+    const bind = 'bind' in value ? (value.bind as string | undefined) : undefined;
+    const data = 'data' in value ? (value.data as readonly unknown[] | undefined) : undefined;
     if ((bind === undefined || bind.length === 0) && (data === undefined || data.length === 0)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

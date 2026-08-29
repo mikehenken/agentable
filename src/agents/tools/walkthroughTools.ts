@@ -153,23 +153,26 @@ export const WALKTHROUGH_TOOLS: readonly ToolDefinition[] = [
           emitNarration: (narration) => emitWalkthroughNarration(agentId, narration),
           registerCancelListener: runtime.registerCancelListener,
         });
-        return {
-          ok: result.ok,
-          result: {
-            completedSteps: result.completedSteps,
-            totalSteps: result.totalSteps,
-            cancelled: result.cancelled,
-            cancelReason: result.cancelReason,
-            narrations: result.narrations,
-          },
-          ...(result.ok
-            ? {}
-            : {
-                error: result.cancelled
-                  ? `walkthrough cancelled (${result.cancelReason ?? 'unknown'})`
-                  : 'walkthrough did not complete all steps',
-              }),
+        const summary = {
+          completedSteps: result.completedSteps,
+          totalSteps: result.totalSteps,
+          cancelled: result.cancelled,
+          cancelReason: result.cancelReason,
+          narrations: result.narrations,
         };
+        if (result.ok) {
+          return { ok: true, result: summary };
+        }
+        // Failure keeps the summary payload alongside the error (runtime shape
+        // preserved; typed consumers read only the `error` discriminant branch).
+        const failure = {
+          ok: false as const,
+          error: result.cancelled
+            ? `walkthrough cancelled (${result.cancelReason ?? 'unknown'})`
+            : 'walkthrough did not complete all steps',
+          result: summary,
+        };
+        return failure;
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         return { ok: false, error: message };

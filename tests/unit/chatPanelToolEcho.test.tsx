@@ -45,9 +45,9 @@ describe('ChatPanel — tool call echo', () => {
         ok: true,
         source: 'voice',
       });
-    }).not.toThrow;
+    }).not.toThrow();
 
-    expect(screen.getByText('open_panel(panel_id=open-positions)')).toBeInTheDocument;
+    expect(screen.getByText('open_panel(panel_id=open-positions)')).toBeInTheDocument();
   });
 
   it('renders failed tool call cards with error styling text', () => {
@@ -59,12 +59,12 @@ describe('ChatPanel — tool call echo', () => {
       source: 'voice',
     });
 
-    expect(screen.getByText('open_panel(panel_id=unknown-panel)')).toBeInTheDocument;
+    expect(screen.getByText('open_panel(panel_id=unknown-panel)')).toBeInTheDocument();
   });
 
   it('leaves empty state once a tool echo arrives (non-empty message branch)', () => {
     renderChromelessChat();
-    expect(screen.getByText(/Ask me anything/)).toBeInTheDocument;
+    expect(screen.getByText(/Ask me anything/)).toBeInTheDocument();
 
     dispatchToolCall({
       name: 'open_positions',
@@ -72,13 +72,13 @@ describe('ChatPanel — tool call echo', () => {
       ok: true,
     });
 
-    expect(screen.queryByText(/Ask me anything/)).not.toBeInTheDocument;
-    expect(screen.getByText('open_positions(department=Engineering)')).toBeInTheDocument;
+    expect(screen.queryByText(/Ask me anything/)).not.toBeInTheDocument();
+    expect(screen.getByText('open_positions(department=Engineering)')).toBeInTheDocument();
   });
 
   it('voice composer button opens voice panel without throwing', () => {
     renderChromelessChat();
     const voiceButton = screen.getByRole('button', { name: 'Open voice conversation' });
-    expect(() => fireEvent.click(voiceButton)).not.toThrow;
+    expect(() => fireEvent.click(voiceButton)).not.toThrow();
   });
 });

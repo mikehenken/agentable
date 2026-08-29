@@ -4,7 +4,6 @@
  */
 import {
   Suspense,
-  lazy,
   useMemo,
   type ComponentType,
   type LazyExoticComponent,
@@ -82,7 +81,10 @@ function WhiteboardSpecPanelContent(props: {
   definition: Extract<PanelDefinition, { kind: 'spec' }>;
 }): ReactElement {
   const ctx = useOptionalPanelEmbedHost();
-  const host = ctx?.host ?? useWhiteboardPanelHost();
+  // Always call the hook — behind `??` it runs conditionally and breaks
+  // hook order when the embed context host flips between renders.
+  const whiteboardHost = useWhiteboardPanelHost();
+  const host = ctx?.host ?? whiteboardHost;
   const contextSources = usePanelEmbedAdapterSources();
   const adapterSources =
     contextSources.length > 0 ? contextSources : getWhiteboardPanelAdapterSources();
@@ -128,7 +130,10 @@ export function WhiteboardPanelShapeContent({
   composedSpec,
 }: WhiteboardPanelShapeContentProps): ReactElement {
   const ctx = useOptionalPanelEmbedHost();
-  const host = ctx?.host ?? useWhiteboardPanelHost();
+  // Always call the hook — behind `??` it runs conditionally and breaks
+  // hook order when the embed context host flips between renders.
+  const whiteboardHost = useWhiteboardPanelHost();
+  const host = ctx?.host ?? whiteboardHost;
   const Lazy = useLazyPanel(registry, panelId);
   const hostDefinition = host?.panels.get(panelId);
 

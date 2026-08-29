@@ -185,7 +185,7 @@ describe('saveAppShellLayout', () => {
       throw new Error('QuotaExceededError');
     });
     const storage: AppShellStorageLike = { getItem: () => null, setItem };
-    expect(() => saveAppShellLayout(storage, 'k', VALID_SNAPSHOT)).not.toThrow;
-    expect(setItem).toHaveBeenCalledOnce;
+    expect(() => saveAppShellLayout(storage, 'k', VALID_SNAPSHOT)).not.toThrow();
+    expect(setItem).toHaveBeenCalledOnce();
   });
 });

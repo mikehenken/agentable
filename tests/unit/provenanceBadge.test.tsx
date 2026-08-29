@@ -11,7 +11,7 @@ describe('ProvenanceBadge', () => {
   it('renders the agent badge when visible', () => {
     render(<ProvenanceBadge visible />);
     const badge = screen.getByTestId('panel-provenance-badge');
-    expect(badge).toBeInTheDocument;
+    expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('Agent');
   });
 
@@ -32,8 +32,8 @@ describe('PanelChrome provenance', () => {
         showPinButton
       />);
 
-    expect(screen.getByTestId('panel-provenance-badge')).toBeInTheDocument;
-    expect(screen.getByTestId('panel-pin-button')).toBeInTheDocument;
+    expect(screen.getByTestId('panel-provenance-badge')).toBeInTheDocument();
+    expect(screen.getByTestId('panel-pin-button')).toBeInTheDocument();
   });
 
   it('hides the pin button once the composed panel is pinned', () => {
@@ -47,7 +47,7 @@ describe('PanelChrome provenance', () => {
         pinned
       />);
 
-    expect(screen.getByTestId('panel-provenance-badge')).toBeInTheDocument;
+    expect(screen.getByTestId('panel-provenance-badge')).toBeInTheDocument();
     expect(screen.queryByTestId('panel-pin-button')).toBeNull();
   });
 });

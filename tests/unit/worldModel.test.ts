@@ -354,7 +354,8 @@ describe(' capability derivation', () => {
       makeResolver({
         default: binding('mock', 'mock-model', FULL_CAPS),
       }));
-    const session = await createAgentSession({
+    // Session registration side effect is what the assertions below observe.
+    await createAgentSession({
       agentId: 'cap-1',
       modelAlias: 'default',
     });
@@ -376,7 +377,7 @@ describe(' capability derivation', () => {
       }),
     ];
 
-    const caps = deriveCapabilities(session, tools);
+    const caps = deriveCapabilities(tools);
     const byId = new Map(caps.map((capability) => [capability.id, capability]));
 
     expect(byId.get('list_panels')).toMatchObject({

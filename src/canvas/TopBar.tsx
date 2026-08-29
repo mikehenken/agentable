@@ -5,7 +5,7 @@ import { useCanvasConfig } from './CanvasContext';
 export function TopBar() {
   const { autoOrganize, showPanel, toggleSnapGrid, snapGrid } = useLayoutStore();
   const { persona } = useCanvasConfig();
-  const title = persona.tenantTitle;
+  const title = persona.tenantTitle ?? 'AI Assistant';
   const initial = (persona.assistantName?.[0] ?? title[0] ?? 'A').toUpperCase();
 
   return (

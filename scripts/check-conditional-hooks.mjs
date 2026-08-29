@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const HOOK_RE = /\buse(?:State|Effect|Memo|Callback|Ref|Context|Reducer|Id|LayoutEffect|ImperativeHandle|DebugValue)\s*\(/;
 const EARLY_RETURN_RE = /^\s*if\s*\([^)]*\)\s*return\s+null\s*;/;
 
-function repoRoot {
+function repoRoot() {
   return resolve(dirname(fileURLToPath(import.meta.url)), '..');
 }
 
@@ -24,7 +24,7 @@ function listTsx(dir) {
       files.push(full);
     }
   }
-  return files.sort;
+  return files.sort();
 }
 
 function componentBodies(source) {
@@ -73,8 +73,8 @@ function findViolations(body, relPath) {
   return violations;
 }
 
-function main {
-  const root = repoRoot;
+function main() {
+  const root = repoRoot();
   const srcDir = join(root, 'src');
   const allViolations = [];
 
@@ -94,4 +94,4 @@ function main {
   console.log('check-conditional-hooks: ok');
 }
 
-main;
+main();

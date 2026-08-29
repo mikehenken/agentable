@@ -58,7 +58,7 @@ describe('operator gallery chat endpoint ', () => {
       mode: 'build',
     });
 
-    expect(fetchMock).toHaveBeenCalled;
+    expect(fetchMock).toHaveBeenCalled();
     expect(result.error).toBeDefined();
     expect(result.error).not.toMatch(/gallery demo mode/i);
   });

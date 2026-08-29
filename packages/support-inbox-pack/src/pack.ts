@@ -1,5 +1,6 @@
 import type { PartialCanvasTenantConfig } from '../../../src/config/CanvasContext';
 import type { EmbedConfigDocument } from '../../../src/embed/types/embedConfig';
+import type { RawPanelDataPayload } from '../../../src/config/panelDataNormalize';
 import type { PanelDefinition } from '../../../src/panels/types';
 import { supportDatasetToPanelData } from './adapters/supportDatasetToPanelData';
 import { MINIMAL_SUPPORT_DATASET } from './fixtures/minimal-dataset';
@@ -134,7 +135,9 @@ export function toEmbedConfigDocument(config: SupportInboxHostConfig): EmbedConf
     tenant: config.tenant,
     persona: config.persona,
     adapter: config.adapter,
-    panelData: config.panelData,
+    // CanvasPanelData rows come from the parsed SupportDataset and satisfy
+    // the raw payload row contracts; the tenant boundary widened them.
+    panelData: config.panelData as RawPanelDataPayload | undefined,
     panels: config.panels.map((panel) => ({ id: panel.id, kind: panel.kind })),
   };
 }

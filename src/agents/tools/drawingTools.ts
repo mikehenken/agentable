@@ -455,11 +455,13 @@ export function normalizeDrawShapesArgs(args: Record<string, unknown>): Normaliz
   }
 
   if (Array.isArray(normalized.shapes)) {
-    normalized.shapes = normalized.shapes
+    const shapes = normalized.shapes
       .map((entry) => normalizeShapeEntry(entry))
       .filter((entry): entry is Record<string, unknown> => entry !== undefined);
-    if (normalized.shapes.length === 0) {
+    if (shapes.length === 0) {
       delete normalized.shapes;
+    } else {
+      normalized.shapes = shapes;
     }
   }
 

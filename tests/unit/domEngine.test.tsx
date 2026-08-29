@@ -56,8 +56,8 @@ describe('DOM workspace engine — region layout', () => {
     expect(container.querySelector('[data-dom-layout="split"]')).not.toBeNull();
     expect(container.querySelector('[data-dom-panel="main"]')).not.toBeNull();
     expect(container.querySelector('[data-dom-panel="sidebar"]')).not.toBeNull();
-    expect(screen.getByText('main-panel')).toBeInTheDocument;
-    expect(screen.getByText('side-panel')).toBeInTheDocument;
+    expect(screen.getByText('main-panel')).toBeInTheDocument();
+    expect(screen.getByText('side-panel')).toBeInTheDocument();
   });
 
   it('exports layout records with region and tab indices', () => {
@@ -81,7 +81,7 @@ describe('DOM workspace engine — region layout', () => {
       },
     ]);
 
-    expect(engine.exportLayout).toEqual([
+    expect(engine.exportLayout()).toEqual([
       expect.objectContaining({
         panelId: 'chat',
         region: 'main',
@@ -135,12 +135,12 @@ describe('DOM workspace engine — tab switching', () => {
 
     const mainRegion = screen.getByLabelText('main panels');
     expect(within(mainRegion).getByRole('tab', { name: 'alpha' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByTestId('dom-panel-alpha')).toBeInTheDocument;
+    expect(screen.getByTestId('dom-panel-alpha')).toBeInTheDocument();
 
     fireEvent.click(within(mainRegion).getByRole('tab', { name: 'beta' }));
 
     expect(within(mainRegion).getByRole('tab', { name: 'beta' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByTestId('dom-panel-beta')).toBeInTheDocument;
+    expect(screen.getByTestId('dom-panel-beta')).toBeInTheDocument();
     expect(engine.getDomLayout().activeTab.main).toBe(1);
   });
 });
@@ -168,7 +168,7 @@ describe('DOM workspace engine — drawer collapse at breakpoints', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /open sidebar/i }));
     expect(drawer).toHaveAttribute('data-dom-drawer-open', 'true');
-    expect(screen.getByText('side-panel')).toBeInTheDocument;
+    expect(screen.getByText('side-panel')).toBeInTheDocument();
   });
 });
 
@@ -179,7 +179,7 @@ describe('DOM workspace engine — SPI camera:none', () => {
 
   it('reports fixed camera and disables spatial capabilities', () => {
     const engine = createDomEngine();
-    expect(engine.getCamera).toEqual({ x: 0, y: 0, zoom: 1 });
+    expect(engine.getCamera()).toEqual({ x: 0, y: 0, zoom: 1 });
     expect(engine.capabilities).toEqual({
       frames: false,
       draw: false,
@@ -188,8 +188,38 @@ describe('DOM workspace engine — SPI camera:none', () => {
       nativeSnapshots: false,
     });
     engine.setCamera({ x: 50, y: 50, zoom: 2 });
-    expect(engine.getCamera).toEqual({ x: 0, y: 0, zoom: 1 });
+    expect(engine.getCamera()).toEqual({ x: 0, y: 0, zoom: 1 });
     engine.destroy();
+  });
+});
+
+describe('DOM canvas engine — mount/destroy lifecycle', () => {
+  beforeEach(() => {
+    mockMatchMedia(false);
+  });
+
+  afterEach(() => {
+    __resetDomEngineForTests__();
+  });
+
+  it('unmounts the React tree when the handle is destroyed', async () => {
+    const { createDomCanvasEngine } = await import('../../src/engines/dom/domCanvasEngine');
+    const { act } = await import('react');
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const canvasEngine = createDomCanvasEngine();
+    let handle!: ReturnType<typeof createDomEngine>;
+    await act(async () => {
+      handle = canvasEngine.mount(container);
+    });
+    expect(container.childElementCount).toBeGreaterThan(0);
+    await act(async () => {
+      handle.destroy();
+    });
+    // Regression: destroy referenced `root.unmount` without invoking it,
+    // leaving the React tree mounted in the container forever.
+    expect(container.childElementCount).toBe(0);
+    container.remove();
   });
 });
 

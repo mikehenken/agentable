@@ -46,9 +46,9 @@ export interface VoiceCallButtonEventMap {
 }
 
 declare global {
-  interface HTMLElementTagNameMap {
-    'voice-call-button': VoiceCallButtonElement;
-  }
+  // The `HTMLElementTagNameMap['voice-call-button']` entry lives in
+  // widgets/voice-call-button.ts (the shipped bundle entry); declaring it here
+  // too would conflict since the two element classes have distinct types.
   interface HTMLElementEventMap extends VoiceCallButtonEventMap {}
 }
 

@@ -179,6 +179,14 @@ export interface CanvasPanelData {
   resources?: readonly unknown[];
   /** Optional override for the featured (top) resource on ResourcesPanel. */
   featuredResource?: unknown;
+  /** Optional agent-facing guide text describing the jobs dataset. */
+  agentJobsGuide?: string;
+  /** Optional role taxonomy rows (panel-defined shape, cast at consumption). */
+  roleTaxonomy?: readonly unknown[];
+  /** Support-inbox pack rows (pack-defined shapes, cast at consumption). */
+  tickets?: readonly unknown[];
+  messages?: readonly unknown[];
+  macros?: readonly unknown[];
 }
 
 export interface CanvasTenantConfig {

@@ -11,11 +11,12 @@ import {
   type IframeParentBridge,
 } from './iframe/iframeParentBridge';
 import { buildIframeHostUrl } from './iframe/iframeHostUrl';
+import type { EmbedBridgeSurface } from './iframe/embedBridgeProtocol';
 import type { PageSessionSnapshot } from '../session/pageSession';
 
 export interface AgentableIframeEmbedReadyDetail {
   bridgeId: string;
-  surface: 'panel';
+  surface: EmbedBridgeSurface;
   sessionId: string;
 }
 
@@ -86,7 +87,6 @@ export class AgentableIframeEmbedElement extends LitElement {
   @property({ type: String, attribute: 'bridge-id' })
   declare bridgeId: string;
 
-  private _iframe: HTMLIFrameElement | null = null;
   private _bridge: IframeParentBridge | null = null;
   private _disconnectBridge: (() => void) | null = null;
 
@@ -215,7 +215,6 @@ export class AgentableIframeEmbedElement extends LitElement {
     applySandboxedIframeAttributes(iframe, iframeSrc);
     iframe.style.minHeight = `${this.height}px`;
 
-    this._iframe = iframe;
     this._bridge = createIframeParentBridge({
       bridgeId: bridgeId,
       iframe,

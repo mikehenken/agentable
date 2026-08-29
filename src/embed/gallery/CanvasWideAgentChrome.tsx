@@ -204,7 +204,7 @@ export function CanvasWideAgentChrome({
 
       <ResizablePanelGroup
 
-        direction="horizontal"
+        orientation="horizontal"
 
         className="min-h-0 flex-1"
 

@@ -39,3 +39,9 @@ vitest.config.ts.timestamp-*
 *.bak
 .gstack/
 test-results/
+
+# Local Pages-function emulation secrets (wrangler pages dev). Never commit.
+.dev.vars
+
+# wrangler pages dev scratch
+.wrangler/

@@ -94,8 +94,9 @@ function macrosPanel(): PanelDefinition {
       {
         block: 'list',
         bind: 'macros',
-        row: { title: 'title', subtitle: 'category' },
-        rowActions: ['insertMacro'],
+        // rowActions live on `row` — the compiler only reads row.rowActions,
+        // so a block-level key is silently dropped.
+        row: { title: 'title', subtitle: 'category', rowActions: ['insertMacro'] },
       },
     ],
   });

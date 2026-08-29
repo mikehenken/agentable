@@ -51,8 +51,8 @@ describe('useKeybindings', () => {
         },
       ]));
 
-    expect(() => dispatchKeyDownWithoutKey).not.toThrow;
-    expect(handler).not.toHaveBeenCalled;
+    expect(() => dispatchKeyDownWithoutKey).not.toThrow();
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it('ignores keydown events with empty key without throwing', () => {
@@ -65,7 +65,7 @@ describe('useKeybindings', () => {
         },
       ]));
 
-    expect(() => dispatchKeyDown({ key: '' })).not.toThrow;
-    expect(handler).not.toHaveBeenCalled;
+    expect(() => dispatchKeyDown({ key: '' })).not.toThrow();
+    expect(handler).not.toHaveBeenCalled();
   });
 });

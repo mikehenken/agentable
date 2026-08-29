@@ -21,7 +21,7 @@ describe('OpenCanvasIndicator', () => {
         <OpenCanvasIndicator />
       </CanvasProvider>);
     const indicator = screen.getByTestId('open-canvas-indicator');
-    expect(indicator).toBeVisible;
+    expect(indicator).toBeVisible();
     expect(indicator).toHaveTextContent('Open canvas');
     expect(indicator).toHaveAttribute('role', 'status');
   });

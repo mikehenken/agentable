@@ -1,11 +1,11 @@
-import type { JsonObject, PanelScope } from '../../../src/panels/types';
+import type { JsonObject, JsonValue, PanelScope } from '../../../../src/panels/types';
 import type {
   DataAdapter,
   DeclaredAction,
   MutationResult,
   SourceRef,
   Unsubscribe,
-} from '../../../src/panels/renderer';
+} from '../../../../src/panels/renderer';
 import { parseSupportDataset } from '../schema/supportDatasetSchema';
 import type { SupportDataset, SupportMessage, SupportTicket } from '../schema/supportEntityTypes';
 
@@ -313,7 +313,8 @@ export function createStaticSupportInboxAdapter(
     notify('support.messages');
     notify('support.tickets');
 
-    return { ok: true, data: message };
+    // JSON-safe record; interfaces lack the implicit index signature JsonValue wants.
+    return { ok: true, data: message as unknown as JsonValue };
   };
 
   return {

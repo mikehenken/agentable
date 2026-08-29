@@ -92,7 +92,7 @@ export const usePanelEngagementStore = create<PanelEngagementState>((set, get) =
   },
 
   toSnapshot: () => {
-    const { lastEngagedAt, stackOrder } = get;
+    const { lastEngagedAt, stackOrder } = get();
     return { lastEngagedAt, stackOrder };
   },
 }));

@@ -18,7 +18,8 @@ export function hasEmbedConfigSource(host: EmbedConfigHostFields): boolean {
 }
 
 export function embedConfigSourceChanged(
-  changed: Map<string, unknown>,
+  // Accepts Lit `PropertyValues<this>` maps, whose keys are `keyof` the host element.
+  changed: ReadonlyMap<PropertyKey, unknown>,
 ): boolean {
   return (
     changed.has('configUrl') ||

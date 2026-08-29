@@ -5,7 +5,6 @@ import { useMemo, type ReactElement } from 'react';
 import { t } from '../../i18n';
 import { createDataLifecycle, SpecRenderer } from '../renderer';
 import { validateSpec, defaultCatalog } from '../spec';
-import type { PanelSpec } from '../types';
 import { dispatchChatPrompt } from '../../choreography/dispatchPrompt';
 import { readComposedSpec } from '../provenance';
 

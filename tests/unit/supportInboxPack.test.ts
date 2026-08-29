@@ -48,6 +48,22 @@ describe('createSupportInboxPack', () => {
       expect(result.ok, `validateSpec failed for ${panel.id}`).toBe(true);
     }
   });
+
+  it('compiles the macros list with the insertMacro row action', () => {
+    // Regression: rowActions declared at the block level (instead of on `row`)
+    // were silently dropped by the list compiler, shipping macros rows with
+    // no insert action.
+    const pack = createSupportInboxPack();
+    const macros = pack.panels.find((panel) => panel.id === 'macros');
+    expect(macros?.kind).toBe('spec');
+    if (macros?.kind !== 'spec') return;
+    const listNode = Object.values(macros.spec.nodes).find(
+      (node) => node.type === 'list' && (node.props as { bind?: string })?.bind === 'macros',
+    );
+    expect(listNode).toBeDefined();
+    const row = (listNode?.props as { row?: { rowActions?: string[] } })?.row;
+    expect(row?.rowActions).toEqual(['insertMacro']);
+  });
 });
 
 describe('createSupportInboxTools runtime binding', () => {

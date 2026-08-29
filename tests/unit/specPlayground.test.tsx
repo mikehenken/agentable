@@ -9,12 +9,12 @@ import { SpecPlayground } from '../../src/devtools/playground/SpecPlayground';
 describe('SpecPlayground ', () => {
   it('renders playground shell with preview and inspector panes', async () => {
     render(<SpecPlayground />);
-    expect(screen.getByTestId('spec-playground')).toBeInTheDocument;
-    expect(screen.getByTestId('spec-playground-input')).toBeInTheDocument;
+    expect(screen.getByTestId('spec-playground')).toBeInTheDocument();
+    expect(screen.getByTestId('spec-playground-input')).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.getByTestId('spec-playground-preview')).toBeInTheDocument;
+      expect(screen.getByTestId('spec-playground-preview')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('spec-playground-inspector')).toBeInTheDocument;
+    expect(screen.getByTestId('spec-playground-inspector')).toBeInTheDocument();
   });
 
   it('diagnoses an invalid pasted spec end to end in the inspector', async () => {
@@ -22,11 +22,11 @@ describe('SpecPlayground ', () => {
     fireEvent.click(screen.getByTestId('load-invalid-sample'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('spec-playground-preview-error')).toBeInTheDocument;
+      expect(screen.getByTestId('spec-playground-preview-error')).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/SPEC_ACTION_REF_MISSING/)).toBeInTheDocument;
+      expect(screen.getByText(/SPEC_ACTION_REF_MISSING/)).toBeInTheDocument();
     });
   });
 
@@ -35,9 +35,9 @@ describe('SpecPlayground ', () => {
     fireEvent.click(screen.getByTestId('load-valid-sample'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('spec-playground-preview')).toBeInTheDocument;
+      expect(screen.getByTestId('spec-playground-preview')).toBeInTheDocument();
     });
 
-    expect(screen.queryByTestId('spec-playground-preview-error')).not.toBeInTheDocument;
+    expect(screen.queryByTestId('spec-playground-preview-error')).not.toBeInTheDocument();
   });
 });

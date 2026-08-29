@@ -228,7 +228,7 @@ describe(' telemetry sink boundary ', () => {
         tool: 'compose_panel',
         panelId: 'composed-1',
       });
-    }).not.toThrow;
+    }).not.toThrow();
   });
 
   it('supports late sink registration via host.telemetry.registerSink', async () => {

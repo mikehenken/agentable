@@ -1,0 +1,10 @@
+{
+  "//": "Advisory test-tree typecheck (Wave 4). Run via `npm run typecheck:tests`. Not in the CI gate until the tests tree reaches zero; the gate is `npm run typecheck` (app + packages).",
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tests.tsbuildinfo",
+    "types": ["vite/client", "node"],
+    "noEmit": true
+  },
+  "include": ["src", "tests", "packages"]
+}

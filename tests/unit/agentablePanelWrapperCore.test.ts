@@ -100,7 +100,7 @@ describe('agentablePanelWrapperCore', () => {
         detail: { panelId: 'applications', definitionKind: 'react' },
       }));
 
-    expect(ready).not.toHaveBeenCalled;
+    expect(ready).not.toHaveBeenCalled();
   });
 
   it('reads latest handler from getter on each dispatch', () => {

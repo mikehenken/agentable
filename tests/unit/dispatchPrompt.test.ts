@@ -33,6 +33,6 @@ describe('dispatchChatPrompt', () => {
 
   it('ignores blank prompts', () => {
     dispatchChatPrompt(' ');
-    expect(window.dispatchEvent).not.toHaveBeenCalled;
+    expect(window.dispatchEvent).not.toHaveBeenCalled();
   });
 });

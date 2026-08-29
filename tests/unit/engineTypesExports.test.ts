@@ -25,6 +25,8 @@ function typesPath(): string {
 }
 
 const EXPECTED_EXPORTS = [
+  // Wave 4: DOM workspace engine region placement (interim until Layout Pack).
+  'AppShellRegionId',
   'CameraState',
   'CanvasEngine',
   'CanvasMode',
