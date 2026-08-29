@@ -34,7 +34,7 @@ import {
   NORTHSTAR_AGENT,
   NORTHSTAR_FLOW_DIAGRAM,
   NORTHSTAR_SHAPE_BATCH,
-} from '../../examples/p8-agent-draw-demo/fixtures/northstarBrand';
+} from './meridian/fixtures/northstarBrand';
 import {
   MERIDIAN_AGENT,
   MERIDIAN_DOCUMENT_ID,
@@ -43,7 +43,7 @@ import {
   MERIDIAN_WIREFRAME_FLOW,
   MERIDIAN_WIREFRAME_PLACEMENT,
   MERIDIAN_WIREFRAME_STENCILS,
-} from '../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+} from './meridian/fixtures/meridianLabs';
 import { DOCUMENT_PANEL_ID } from '../panels/document/types';
 import {
   applyBlockOp,

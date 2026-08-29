@@ -2,7 +2,7 @@
  * Mode-aware deterministic operator actions for gallery / offline paths.
  * Draw routes through executeTool → operatorCanvasToolsProxy → runGalleryScriptedTool.
  */
-import { MERIDIAN_DOCUMENT_ID } from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+import { MERIDIAN_DOCUMENT_ID } from '../../embed/meridian/fixtures/meridianLabs';
 import { withAgentToolContextAsync } from '../agentContext';
 import { executeTool } from '../tools/canvasTools';
 import { formatToolCallLabel } from '../../chat/toolCallLabels';

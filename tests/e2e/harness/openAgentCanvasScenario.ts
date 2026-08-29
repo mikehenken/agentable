@@ -1,7 +1,7 @@
 /**
  * Node-side open-agent-canvas gallery scenario — core + PDF export checks.
  */
-import { MERIDIAN_DOCUMENT_ID } from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+import { MERIDIAN_DOCUMENT_ID } from '../../../src/embed/meridian/fixtures/meridianLabs';
 import {
   createExportDocumentHostAction,
   createPanelDocumentResolver,

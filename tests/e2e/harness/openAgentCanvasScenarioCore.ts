@@ -9,7 +9,7 @@ import {
   MERIDIAN_PRODUCT_BRIEF_TITLE,
   MERIDIAN_WIREFRAME_FLOW,
   MERIDIAN_WIREFRAME_STENCILS,
-} from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+} from '../../../src/embed/meridian/fixtures/meridianLabs';
 import { bindEngineCapabilities, resetEngineCapabilitiesForTests } from '../../../src/agents/engineBridge';
 import { withAgentToolContextAsync } from '../../../src/agents/agentContext';
 import { createDocumentPanelDefinition } from '../../../src/agents/panels/documentPanel';
