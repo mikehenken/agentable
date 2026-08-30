@@ -162,8 +162,22 @@ export function bootstrapIframeHostPage(doc: Document = document): () => void {
   };
 }
 
+/**
+ * True when `pathname` is the iframe-host page, in either hosting form.
+ *
+ * Cloudflare Pages (and `wrangler pages dev`) 308-redirect
+ * `/embed/iframe-host.html` to the extension-stripped `/embed/iframe-host`, so
+ * an `.endsWith('iframe-host.html')` guard never fired on the deployed gallery
+ * and the iframe surface stayed permanently blank (example 07 "Careers
+ * block"). This matches both the `.html` and the clean-URL form, while the
+ * `(?:^|\/)` segment anchor keeps `.../my-iframe-host` from false-matching.
+ */
+export function isIframeHostPathname(pathname: string): boolean {
+  return /(?:^|\/)iframe-host(?:\.html)?$/.test(pathname);
+}
+
 if (typeof window !== 'undefined' && import.meta.env.MODE !== 'test') {
-  if (window.location.pathname.endsWith('iframe-host.html')) {
+  if (isIframeHostPathname(window.location.pathname)) {
     bootstrapIframeHostPage();
   }
 }
