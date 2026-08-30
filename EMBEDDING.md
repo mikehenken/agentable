@@ -22,7 +22,7 @@ Add the script tag to any HTML page:
     welcome-message="Hi! How can I help?"
   ></agentable-canvas>
 
-  <script src="https://cdn.jsdelivr.net/npm/agentable-canvas@latest/dist/embed/agentable-canvas.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mikehenken/agentable-canvas@latest/dist/embed/agentable-canvas.js"></script>
 </body>
 </html>
 ```
@@ -30,11 +30,11 @@ Add the script tag to any HTML page:
 React npm
 
 ```bash
-npm install agentable-canvas
+npm install @mikehenken/agentable-canvas
 ```
 
 ```jsx
-import { AgentableCanvas } from 'agentable-canvas/react';
+import { AgentableCanvas } from '@mikehenken/agentable-canvas/react';
 
 function App() {
   return (
@@ -150,7 +150,7 @@ npm run build
 Project Structure
 
 ```
-agentable-canvas/
+@mikehenken/agentable-canvas/
   src/
     canvas/
       CanvasShell.tsx      # Root layout (pannable bg + fixed UI)
@@ -328,7 +328,7 @@ agentable-canvas[tenant="acme"] {
 }
 ```
 
-Set BOTH the hex and HSL forms together — the hex powers solid `bg-canvas-primary`, the HSL powers alpha-modified `bg-canvas-primary/30`, `border-canvas-primary/10`, etc. **Don't eyeball HSL** — a wrong-by-10-lightness companion silently makes alpha-modified shades look darker than solid ones, the exact split-brand bug the dual-form contract exists to prevent. Derive from the hex either in code via the bundled helper (`import { hexToHslComponents } from 'agentable-canvas/utils/hex-to-hsl'`) or via any reliable hex→HSL converter.
+Set BOTH the hex and HSL forms together — the hex powers solid `bg-canvas-primary`, the HSL powers alpha-modified `bg-canvas-primary/30`, `border-canvas-primary/10`, etc. **Don't eyeball HSL** — a wrong-by-10-lightness companion silently makes alpha-modified shades look darker than solid ones, the exact split-brand bug the dual-form contract exists to prevent. Derive from the hex either in code via the bundled helper (`import { hexToHslComponents } from '@mikehenken/agentable-canvas/utils/hex-to-hsl'`) or via any reliable hex→HSL converter.
 
 > **Dark-theme groundwork — usable, with caveats.** As of Track F.7.2 (2026-04-25), 241 Tailwind grayscale utility sites across 15 panel files have been migrated to consume the canvas's `--landi-color-text*` `--landi-color-surface*` `--landi-color-border` tokens. Setting `--landi-color-text: #F9FAFB` + `--landi-color-surface: #111827` etc. now correctly inverts the canvas chrome AND the panel internals.
 >
@@ -341,18 +341,18 @@ Set BOTH the hex and HSL forms together — the hex powers solid `bg-canvas-prim
 ### Importing the pre-built stylesheet (React-canvas mode)
 
 ```ts
-// React 19 host using <CanvasShell> from agentable-canvas/react-canvas
-import 'agentable-canvas/styles.css';
+// React 19 host using <CanvasShell> from @mikehenken/agentable-canvas/react-canvas
+import '@mikehenken/agentable-canvas/styles.css';
 ```
 
-This ships the full Tailwind base (~16 KB gzipped) plus the canvas tokens defined above. Source available at `agentable-canvas/styles.source.css` for advanced consumers who want to run their own Tailwind compilation against the canvas source.
+This ships the full Tailwind base (~16 KB gzipped) plus the canvas tokens defined above. Source available at `@mikehenken/agentable-canvas/styles.source.css` for advanced consumers who want to run their own Tailwind compilation against the canvas source.
 
 ### Tenant labels (UI copy)
 
 Independent of brand tokens, the canvas accepts a `labels` config object so embedders can swap action-button copy (e.g. "Share" → "Send to recruiter") without forking:
 
 ```tsx
-import { CanvasShell } from 'agentable-canvas/react-canvas';
+import { CanvasShell } from '@mikehenken/agentable-canvas/react-canvas';
 
 <CanvasShell
   config={{

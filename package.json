@@ -1,5 +1,5 @@
 {
-  "name": "agentable-canvas",
+  "name": "@mikehenken/agentable-canvas",
   "version": "0.4.0",
   "type": "module",
   "description": "Embeddable AI canvas web component — Lit shell + React internals + voice (Gemini Live) + a draggable-panel workspace. Drop into any page; brand via CSS tokens; isolate with Shadow DOM.",
@@ -13,7 +13,8 @@
     "url": "https://github.com/mikehenken/agentable/issues"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "keywords": [
     "ai",
@@ -31,6 +32,9 @@
   "files": [
     "src",
     "dist",
+    "!dist/site",
+    "!dist/gallery",
+    "!dist/e2e",
     "scripts",
     "vite.config.ts",
     "vite.embed.config.ts",
@@ -56,8 +60,6 @@
     "./i18n": "./src/i18n/index.ts",
     "./general": "./src/components/general/index.ts",
     "./ui-ai": "./src/components/ui-ai/index.ts",
-    "./orchestration": "./src/components/orchestration/index.ts",
-    "./orchestration/tokens.css": "./src/components/orchestration/tokens.css",
     "./styles.css": "./dist/styles.css",
     "./styles.source.css": "./src/index.css",
     "./utils/hex-to-hsl": "./src/embed/utils/hexToHsl.ts",

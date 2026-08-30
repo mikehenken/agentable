@@ -64,8 +64,8 @@ This installs the package as `agentable-canvas` (the `name` field in
 
 ```tsx
 // React shell — full canvas, all panels, brand-tokenable
-import { CanvasShell } from 'agentable-canvas/react-canvas';
-import 'agentable-canvas/styles.css';
+import { CanvasShell } from '@mikehenken/agentable-canvas/react-canvas';
+import '@mikehenken/agentable-canvas/styles.css';
 
 export function MyPage() {
   return (
@@ -90,11 +90,11 @@ export function MyPage() {
 ### Other entry points
 
 ```ts
-import { CanvasShell }           from 'agentable-canvas/react-canvas';  // React-only host
-import { AgentableCanvas }       from 'agentable-canvas/react';         // React wrapper around the Lit element
-import 'agentable-canvas/embed';                                        // Side-effect: registers <agentable-canvas>
-import 'agentable-canvas/embed/voice-call-button';                      // Side-effect: registers <voice-call-button>
-import { hexToHsl }              from 'agentable-canvas/utils/hex-to-hsl';
+import { CanvasShell }           from '@mikehenken/agentable-canvas/react-canvas';  // React-only host
+import { AgentableCanvas }       from '@mikehenken/agentable-canvas/react';         // React wrapper around the Lit element
+import '@mikehenken/agentable-canvas/embed';                                        // Side-effect: registers <agentable-canvas>
+import '@mikehenken/agentable-canvas/embed/voice-call-button';                      // Side-effect: registers <voice-call-button>
+import { hexToHsl }              from '@mikehenken/agentable-canvas/utils/hex-to-hsl';
 ```
 
 ### Vite consumers
@@ -105,11 +105,11 @@ No extra config needed.
 
 ### Webpack 5 consumers
 
-You may need to add a TypeScript loader for the `node_modules/agentable-canvas/src/`
+You may need to add a TypeScript loader for the `node_modules/@mikehenken/agentable-canvas/src/`
 tree, or import only the prebuilt entry points:
 
 ```ts
-import 'agentable-canvas/embed';   // Always pre-built
+import '@mikehenken/agentable-canvas/embed';   // Always pre-built
 ```
 
 ---
@@ -149,8 +149,8 @@ scripts/                          # Build + size-check scripts
 
 CSS for the web-component embed is **inlined into the JS bundle** — you
 do not need to ship `styles.css` for `Mode 1` (script-tag) or for the
-Lit-wrapper React import (`agentable-canvas/react`). You only need
-`styles.css` if you import `CanvasShell` from `agentable-canvas/react-canvas`,
+Lit-wrapper React import (`@mikehenken/agentable-canvas/react`). You only need
+`styles.css` if you import `CanvasShell` from `@mikehenken/agentable-canvas/react-canvas`,
 because that mode bypasses the Shadow DOM.
 
 ---
@@ -179,7 +179,7 @@ A reference Cloudflare Worker implementation lives in the companion
 
 ```bash
 # After `npm install`, the prepare script ensures dist/ exists.
-ls node_modules/agentable-canvas/dist/embed/agentable-canvas.js
+ls node_modules/@mikehenken/agentable-canvas/dist/embed/agentable-canvas.js
 ```
 
 If the file is present, the install worked. If not, run:

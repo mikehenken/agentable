@@ -19,10 +19,10 @@ Embeddable AI canvas: chat panel, draggable workspace, voice transport (Gemini L
 
 | Path | Surface |
 |------|---------|
-| `agentable-canvas/whiteboard` | tldraw infinite canvas + `PanelShape` panels |
-| `agentable-canvas/react-canvas` | Pure React `<CanvasShell>` |
-| `agentable-canvas/react` | React wrapper over Lit element |
-| `agentable-canvas/embed` | Lit `<agentable-canvas>` web component |
+| `@mikehenken/agentable-canvas/whiteboard` | tldraw infinite canvas + `PanelShape` panels |
+| `@mikehenken/agentable-canvas/react-canvas` | Pure React `<CanvasShell>` |
+| `@mikehenken/agentable-canvas/react` | React wrapper over Lit element |
+| `@mikehenken/agentable-canvas/embed` | Lit `<agentable-canvas>` web component |
 
 ## Quick start
 
@@ -30,14 +30,14 @@ Embeddable AI canvas: chat panel, draggable workspace, voice transport (Gemini L
 
 ```html
 <agentable-canvas tenant="my-co" primary-color="#3B82F6" voice-enabled></agentable-canvas>
-<script src="https://cdn.example.com/agentable-canvas/v1/agentable-canvas.js"></script>
+<script src="https://cdn.example.com/@mikehenken/agentable-canvas/v1/agentable-canvas.js"></script>
 ```
 
 ### Pure React
 
 ```tsx
-import { CanvasShell } from 'agentable-canvas/react-canvas';
-import 'agentable-canvas/styles.css';
+import { CanvasShell } from '@mikehenken/agentable-canvas/react-canvas';
+import '@mikehenken/agentable-canvas/styles.css';
 
 export default function Page() {
   return <CanvasShell config={{ tenant: 'my-co' }} />;
@@ -47,7 +47,7 @@ export default function Page() {
 ### Whiteboard (tldraw host, e.g. landi-canvas-studio)
 
 ```tsx
-import { LazyWhiteboardShell } from 'agentable-canvas/whiteboard';
+import { LazyWhiteboardShell } from '@mikehenken/agentable-canvas/whiteboard';
 
 <LazyWhiteboardShell config={{ tenant: 'my-co' }} tokenEndpoint="/api/mint-token" />
 ```
@@ -68,7 +68,7 @@ npm run build
 Downstream apps (e.g. **landi-canvas-studio**) install via git ref:
 
 ```json
-"agentable-canvas": "github:mikehenken/agentable#<sha>"
+"@mikehenken/agentable-canvas": "github:mikehenken/agentable#<sha>"
 ```
 
 After a release, bump the SHA. See [docs/setup/RELEASE.md](docs/setup/RELEASE.md).

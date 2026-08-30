@@ -126,7 +126,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          registry-url: https://npm.pkg.github.com
+          registry-url: https://registry.npmjs.org
           scope: "@mikehenken"
 
       - name: Install dependencies
@@ -210,11 +210,11 @@ jobs:
           {
             echo "## ${TAG}"
             echo ""
-            echo "Published \`agentable-canvas@${{ steps.version.outputs.next }}\`."
+            echo "Published \`@mikehenken/agentable-canvas@${{ steps.version.outputs.next }}\` to npm."
             echo ""
             echo "### Consumer bump (landi-canvas-studio)"
             echo '```json'
-            echo "\"agentable-canvas\": \"github:mikehenken/agentable#${TAG}\""
+            echo "\"@mikehenken/agentable-canvas\": \"github:mikehenken/agentable#${TAG}\""
             echo '```'
             if [[ -n "${{ inputs.release_notes }}" ]]; then
               echo ""
@@ -229,16 +229,17 @@ jobs:
           fi
           gh release create "${ARGS[@]}"
 
-      - name: Publish to GitHub Packages
+      - name: Build publishable artifacts
         if: steps.version.outputs.should_release == 'true'
-        continue-on-error: true
+        run: npm run build:embed:all
+
+      - name: Publish to npm
+        if: steps.version.outputs.should_release == 'true'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
-          # GitHub Packages requires owner-scoped names when package name != repo name.
-          # Primary consumer install path is github:mikehenken/agentable#<tag>.
-          npm publish --access public || {
-            echo "::warning::npm publish failed (expected until package is scoped to @mikehenken/*). GitHub release + git tag remain the supported install path."
-            exit 0
-          }
+          # Scoped public package @mikehenken/agentable-canvas on registry.npmjs.org.
+          # Requires the NPM_TOKEN repo secret (automation token owning the @mikehenken scope).
+          # No failure swallow: a publish failure fails the job so it is never silently green.
+          npm publish --access public
