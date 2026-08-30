@@ -44,6 +44,7 @@ import {
   MERIDIAN_WIREFRAME_PLACEMENT,
   MERIDIAN_WIREFRAME_STENCILS,
 } from './meridian/fixtures/meridianLabs';
+import { isMeridianLabsTenant } from './meridian/tenant';
 import { DOCUMENT_PANEL_ID } from '../panels/document/types';
 import {
   applyBlockOp,
@@ -182,7 +183,7 @@ function resolveGalleryScriptedAgentContext(): AgentToolExecutionContext {
   }
   const whiteboard = document.querySelector('agentable-whiteboard');
   const tenant = whiteboard?.getAttribute('tenant')?.trim() ?? '';
-  if (tenant === 'meridian-labs') {
+  if (isMeridianLabsTenant(tenant)) {
     return MERIDIAN_AGENT;
   }
   return NORTHSTAR_AGENT;

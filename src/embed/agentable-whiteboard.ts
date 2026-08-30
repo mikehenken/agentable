@@ -91,6 +91,7 @@ import { MeridianGalleryHostProvider } from './meridian/MeridianGalleryHostConte
 import { MeridianEngineBindingBridge } from './meridian/MeridianEngineBindingBridge';
 import { MeridianGalleryDemoVisuals } from './meridian/MeridianGalleryDemoVisuals';
 import { createMeridianDocumentPanelLoader } from './meridian/MeridianDocumentPanelHost';
+import { isMeridianLabsTenant } from './meridian/tenant';
 import { DEFAULT_WHITEBOARD_PANEL_REGISTRY } from '../engines/tldraw/shapes/whiteboardPanelRegistry';
 import { getEditor } from '../engines/tldraw/shapes/panelShapeApi';
 import {
@@ -542,7 +543,7 @@ export class AgentableWhiteboardElement extends LitElement {
 
   private _isMeridianLabsTenant(resolved: ResolvedEmbedConfig): boolean {
     const tenant = resolved.tenantConfig.tenant ?? resolved.tenant ?? this.tenant;
-    return tenant === 'meridian-labs';
+    return isMeridianLabsTenant(tenant);
   }
 
   private _ensureMeridianHostBundle(): MeridianGalleryHostBundle | null {
@@ -718,7 +719,7 @@ export class AgentableWhiteboardElement extends LitElement {
       darkCanvas: this._resolveDarkCanvas(),
       toolbarConfig: resolved.toolbarConfig ?? null,
       locale: resolved.locale,
-      meridian: tenant === 'meridian-labs',
+      meridian: isMeridianLabsTenant(tenant),
       panelDataKeys: this._panelDataRaw ? Object.keys(this._panelDataRaw).sort() : [],
       configPanels: this._configDocument?.panels ?? null,
     });
