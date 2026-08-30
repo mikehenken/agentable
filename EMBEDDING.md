@@ -60,6 +60,10 @@ Attribute	Type	Default	Description
 `api-endpoint`	string	`"/api"`	Backend API URL	
 `voice-enabled`	boolean	`true`	Show voice widget	
 `snap-grid`	boolean	`true`	Snap to grid	
+`config-url`	string	`""`	URL to a JSON embed config document (tenant + persona + adapter)	
+`anon-key`	string	`""`	Public white-label key; fetches tenant config from `api-endpoint`	
+`config-path`	string	`"/agentable/embed/config"`	Route appended to `api-endpoint` for anon-key lookup	
+`panel-data-url`	string	`""`	Legacy panel-data document URL	
 
 Events (from canvas to parent page)
 
@@ -87,6 +91,28 @@ canvas.startVoiceCall();
 
 // End voice conversation
 canvas.endVoiceCall();
+```
+
+Reload Config at Runtime
+
+When the canvas is driven by `config-url` or `anon-key`, call `reload()` to
+refetch the tenant config. It resolves after the refetch and emits
+`agentable:config-reloaded`. A refusal carries a structured code, including
+`rate_limited` when an over-limit anon key is throttled before any network call.
+
+```javascript
+const canvas = document.querySelector('agentable-canvas');
+
+canvas.addEventListener('agentable:config-reloaded', (e) => {
+  if (!e.detail.ok) {
+    // e.detail.code === 'rate_limited' → e.detail.retryAfterMs is set
+    console.warn('Config reload refused:', e.detail.code, e.detail.error);
+    return;
+  }
+  console.log('Config reloaded');
+});
+
+await canvas.reload();
 ```
 
 Build from Source (for development)

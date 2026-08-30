@@ -57,37 +57,15 @@ jobs:
         run: npm run typecheck
 
   quality-gates:
-    # The REQUIRED gate. Runs the release suite (full suite minus the
-    # shrink-only exclusion list in tests/release-exclusions.txt) so the
-    # required signal states only true things while the full-suite debt is
-    # burned down. The full-suite job below keeps the debt visible; when the
-    # exclusion list reaches zero this job becomes `npm run test` again.
+    # The REQUIRED gate. The shrink-only exclusion list
+    # (tests/release-exclusions.txt) reached zero, so this now runs the FULL
+    # suite; every test is green and gating, no hidden exclusions. The
+    # `test:release` script is retained only for the publish workflow's
+    # pre-publish check; it is identical to `npm run test` while the exclusion
+    # list is empty.
     name: Unit tests (release gate)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Unit tests (release gate)
-        run: npm run test:release
-
-  full-suite:
-    # Advisory while tests/release-exclusions.txt shrinks to zero: shows the
-    # remaining debt on every PR without blocking merges on known-red files.
-    name: Full suite (advisory)
-    runs-on: ubuntu-latest
     timeout-minutes: 25
-    continue-on-error: true
 
     steps:
       - name: Checkout
@@ -101,7 +79,7 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Full suite
+      - name: Unit tests (full suite)
         run: npm run test
 
   gallery-smoke:

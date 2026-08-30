@@ -7,21 +7,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createCareerPack } from '@agentable/career-pack';
 import { careerDatasetToPanelData } from '@agentable/career-pack';
 import { OpenPositionsPanel } from '../../packages/career-pack/src/panels/OpenPositionsPanel';
+import { GrowthPathsPanel } from '../../packages/career-pack/src/panels/GrowthPathsPanel';
 import { ARCHIPELAGO_CAREER_DATASET } from '@agentable/career-pack';
-import { Header } from '../../src/panels/catalog/components';
 import { bootstrapSessionLocale, getI18n } from '../../src/i18n';
-import type { SpecNodeContextValue } from '../../src/panels/types';
 
-const POPULATED_CONTEXT: SpecNodeContextValue = {
-  scope: {},
-  data: {},
-  dispatch: () => undefined,
-  isDirty: false,
-  setDirty: () => undefined,
-  state: 'populated',
-};
-
-const SAMPLE_JOBS = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET).jobs ?? [];
+const PANEL_DATA = careerDatasetToPanelData(ARCHIPELAGO_CAREER_DATASET);
+const SAMPLE_JOBS = PANEL_DATA.jobs ?? [];
 
 afterEach(() => {
   bootstrapSessionLocale({});
@@ -40,21 +31,20 @@ describe('career pack locale rendering', () => {
     expect(getI18n().locale).toBe('es');
   });
 
-  it('SC2: en locale keeps English career panel copy', () => {
+  it('SC2: growth-paths is a react panel that keeps English copy under en locale', () => {
+    // Growth paths is one of the nine all-react career panels (drift-guarded by
+    // CAREER_PANEL_IDS); it is no longer a spec panel. Under the en locale its
+    // header copy stays English.
     bootstrapSessionLocale({});
     const pack = createCareerPack();
     const panel = pack.panels.find((entry) => entry.id === 'growth-paths');
-    expect(panel?.kind).toBe('spec');
-    if (panel?.kind !== 'spec') return;
+    expect(panel?.kind).toBe('react');
 
-    render(
-      <Header
-        title={String(panel.spec.nodes.header?.props?.title)}
-        subtitle={String(panel.spec.nodes.header?.props?.subtitle ?? '')}
-        context={POPULATED_CONTEXT}
-      />);
+    render(<GrowthPathsPanel data={PANEL_DATA} />);
 
-    expect(screen.getByTestId('header')).toHaveTextContent('Growth Paths');
+    expect(screen.getByTestId('growth-paths-panel')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Growth Paths' })).toBeInTheDocument();
+    expect(getI18n().locale).toBe('en');
   });
 
   it('SC3: renders Arabic open-positions list when locale is ar', () => {

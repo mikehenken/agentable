@@ -41,6 +41,23 @@ import { BrowserRouter } from 'react-router';
 import { CanvasShell, type CanvasShellProps } from '../canvas/CanvasShell';
 import { ensureVoiceKernel } from '../shared/voiceKernel';
 import { hexToHslComponents } from './utils/hexToHsl';
+import {
+  createEmbedBootstrapState,
+  runEmbedEnsureReady,
+  runEmbedExplicitReload,
+  type EmbedBootstrapState,
+} from './embedBootstrapLifecycle';
+import {
+  buildEmbedConfigSourceInput,
+  embedConfigSourceChanged,
+  hasEmbedConfigSource,
+} from './embedConfigHost';
+import { resolveEmbedPanelData } from './embedConfigLoader';
+import {
+  buildEmbedConfigReloadDetail,
+  type EmbedConfigReloadDetail,
+} from './configReloadDetail';
+import type { EmbedConfigDocument } from './types/embedConfig';
 // Import the canvas + Tailwind stylesheet as an inline string (Vite ?inline
 // query). For the Lit shell the styles MUST live inside the Shadow Root —
 // a `<link>` in the document <head> will not pierce the shadow boundary, so
@@ -122,7 +139,25 @@ export class AgentableCanvasElement extends LitElement {
   @property({ type: String, attribute: 'token-endpoint' })
   declare tokenEndpoint: string;
 
+  /** Public anon key for white-label tenant config lookup (G3). */
+  @property({ type: String, attribute: 'anon-key' })
+  declare anonKey: string;
+
+  /** Override route for anon-key lookup (default `/agentable/embed/config`). */
+  @property({ type: String, attribute: 'config-path' })
+  declare configPath: string;
+
+  /** URL to a JSON embed config document (tenant + persona + adapter). */
+  @property({ type: String, attribute: 'config-url' })
+  declare configUrl: string;
+
+  /** Legacy panel-data document URL (helios compatibility). */
+  @property({ type: String, attribute: 'panel-data-url' })
+  declare panelDataUrl: string;
+
   private _root: Root | null = null;
+  private _bootstrapState: EmbedBootstrapState = createEmbedBootstrapState();
+  private _configDocument: EmbedConfigDocument | null = null;
 
   constructor() {
     super();
@@ -137,6 +172,10 @@ export class AgentableCanvasElement extends LitElement {
     this.systemPrompt = DEFAULT_CONFIG.systemPrompt;
     this.voiceGreeting = DEFAULT_CONFIG.voiceGreeting;
     this.tokenEndpoint = DEFAULT_CONFIG.tokenEndpoint;
+    this.anonKey = '';
+    this.configPath = '';
+    this.configUrl = '';
+    this.panelDataUrl = '';
   }
 
   // Order matters: the inlined canvas/Tailwind sheet first (provides resets
@@ -180,14 +219,37 @@ export class AgentableCanvasElement extends LitElement {
     // happy-dom Vitest suite under `tests/integration/`.
     // (F.7.3 activation, 2026-04-26: see docs/reviews/2026-04-26-F73-activation-attempt.md "Remaining gap".)
     if (this.hasAttribute('data-skip-react-mount')) {
+      // Component tests skip the React mount but still exercise config
+      // bootstrap (config-url / anon-key / panel-data-url) + reload().
+      if (hasEmbedConfigSource(this)) {
+        void this._reloadConfig(false);
+      }
       return;
     }
-        this._mountReact();
+    if (hasEmbedConfigSource(this)) {
+      // A config source is present: fetch + merge the tenant document, THEN
+      // mount React with the resolved config. ensureReady dedupes the load.
+      void this._bootstrap();
+    } else {
+      this._mountReact();
+    }
   }
 
   updated(changed: Map<string, unknown>): void {
     if (changed.has('primaryColor')) {
       this._applyBrandTokens();
+    }
+    // A post-bootstrap change to a config source (config-url / anon-key /
+    // panel-data-url) refetches. Guarded on `bootstrapped` so this never
+    // double-loads on the first update cycle (firstUpdated owns the initial
+    // load); genuine later attribute changes still refresh.
+    if (
+      embedConfigSourceChanged(changed) &&
+      hasEmbedConfigSource(this) &&
+      this._bootstrapState.bootstrapped
+    ) {
+      void this._reloadConfig(false);
+      return;
     }
     // Re-render React if any prop the tree consumes changed. Avoids tearing
     // down + re-creating the root (which would lose voiceKernel state).
@@ -231,6 +293,76 @@ export class AgentableCanvasElement extends LitElement {
     );
   }
 
+  /**
+   * Explicit config refetch. Re-reads the config source (config-url /
+   * anon-key lookup / panel-data-url), re-renders, and emits
+   * `agentable:config-reloaded` with a structured detail, including a
+   * `rate_limited` refusal when an over-limit anon key is throttled before
+   * any network call. Mirrors the `agentable-panel` / `agentable-whiteboard`
+   * sibling contract (EMBEDDING.md).
+   */
+  async reload(): Promise<void> {
+    await runEmbedExplicitReload(this._bootstrapState, () => this._reloadConfig(true));
+  }
+
+  private async _bootstrap(): Promise<void> {
+    await runEmbedEnsureReady(this._bootstrapState, () => this._reloadConfig(false));
+  }
+
+  private async _reloadConfig(dispatchEvent: boolean): Promise<void> {
+    let ok = true;
+    let caughtError: unknown;
+
+    try {
+      if (hasEmbedConfigSource(this)) {
+        const resolved = await resolveEmbedPanelData(
+          buildEmbedConfigSourceInput(this, fetch.bind(globalThis)),
+        );
+        this._configDocument = resolved.configDoc;
+      } else {
+        this._configDocument = null;
+      }
+    } catch (error: unknown) {
+      ok = false;
+      caughtError = error;
+      console.error('[agentable-canvas] Failed to load embed config:', error);
+    }
+
+    // Re-apply brand tokens (the config document may carry primary-color) and
+    // re-render the canvas with the merged tenant/persona.
+    this._applyBrandTokens();
+    if (!this.hasAttribute('data-skip-react-mount')) {
+      if (!this._root) {
+        this._mountReact();
+      } else {
+        this._renderReact();
+      }
+    }
+
+    if (dispatchEvent) {
+      const detail = buildEmbedConfigReloadDetail(ok, caughtError);
+      this.dispatchEvent(
+        new CustomEvent<EmbedConfigReloadDetail>('agentable:config-reloaded', {
+          bubbles: true,
+          composed: true,
+          detail,
+        }),
+      );
+    }
+  }
+
+  /**
+   * Effective brand color: an explicit `primary-color` attribute always wins;
+   * otherwise a config-url / anon-key document's `primaryColor` applies; else
+   * the neutral default. Keeps existing (source-less) embeds byte-identical.
+   */
+  private _effectivePrimaryColor(): string {
+    if (this.hasAttribute('primary-color')) {
+      return this.primaryColor;
+    }
+    return this._configDocument?.primaryColor || this.primaryColor;
+  }
+
   private _applyBrandTokens(): void {
     // Set BOTH the legacy hex form AND the HSL companion form. The HSL
     // form is what Tailwind's `<alpha-value>` placeholder pattern needs
@@ -239,8 +371,9 @@ export class AgentableCanvasElement extends LitElement {
     // embedder using `primary-color="#ff0000"` would get split brand:
     // solid `bg-canvas-primary` honors override, alpha-modified
     // `bg-canvas-primary/30` keeps the build-time default color.
-    this.style.setProperty('--landi-color-primary', this.primaryColor);
-    const hsl = hexToHslComponents(this.primaryColor);
+    const color = this._effectivePrimaryColor();
+    this.style.setProperty('--landi-color-primary', color);
+    const hsl = hexToHslComponents(color);
     if (hsl) {
       this.style.setProperty('--landi-color-primary-hsl', hsl);
     } else {
@@ -251,7 +384,7 @@ export class AgentableCanvasElement extends LitElement {
       // rendering the build-time default color instead of the override.
       // Loud warn so the misconfiguration surfaces in dev.
       console.warn(
-        `[agentable-canvas] primary-color="${this.primaryColor}" is not a valid hex (#RGB or #RRGGBB); --landi-color-primary-hsl unchanged. Alpha-modified utilities will not honor this override.`
+        `[agentable-canvas] primary-color="${color}" is not a valid hex (#RGB or #RRGGBB); --landi-color-primary-hsl unchanged. Alpha-modified utilities will not honor this override.`
       );
     }
   }
@@ -266,19 +399,27 @@ export class AgentableCanvasElement extends LitElement {
 
   private _renderReact(): void {
     if (!this._root) return;
-    // Build the tenant config from current attribute values. Empty strings
+    // Merge order: a loaded config document (config-url / anon-key) supplies
+    // tenant + persona; explicit attributes always win over it. Empty strings
     // mean "use CanvasContext default" — leave the field undefined so the
     // provider's default-merge kicks in. CanvasProvider accepts a deeply-
     // partial config (`PartialCanvasTenantConfig`), so this is type-safe
     // without casts.
-    const persona: {
-      systemPrompt?: string;
-      voiceGreeting?: string;
-      tokenEndpoint?: string;
-    } = {};
+    const doc = this._configDocument;
+
+    // Persona: start from the document's persona block (assistantName,
+    // starterPrompts, systemPrompt, …), then let host attributes override the
+    // three attribute-backed fields.
+    const persona: NonNullable<CanvasShellProps['config']>['persona'] = {
+      ...(doc?.persona ?? {}),
+    };
     if (this.systemPrompt) persona.systemPrompt = this.systemPrompt;
     if (this.voiceGreeting) persona.voiceGreeting = this.voiceGreeting;
     if (this.tokenEndpoint) persona.tokenEndpoint = this.tokenEndpoint;
+
+    // Tenant: an explicit `tenant` attribute wins; otherwise the document's
+    // tenant id; otherwise the default.
+    const tenant = this.hasAttribute('tenant') ? this.tenant : doc?.tenant || this.tenant;
 
     this._root.render(
       createElement(
@@ -289,7 +430,8 @@ export class AgentableCanvasElement extends LitElement {
           null,
           createElement<CanvasShellProps>(CanvasShell, {
             config: {
-              tenant: this.tenant,...(Object.keys(persona).length > 0 ? { persona }: {}),
+              tenant,
+              ...(Object.keys(persona).length > 0 ? { persona } : {}),
             },
           })
         )
