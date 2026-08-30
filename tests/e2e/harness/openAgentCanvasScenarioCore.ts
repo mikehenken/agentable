@@ -9,7 +9,7 @@ import {
   MERIDIAN_PRODUCT_BRIEF_TITLE,
   MERIDIAN_WIREFRAME_FLOW,
   MERIDIAN_WIREFRAME_STENCILS,
-} from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+} from '../../../src/embed/meridian/fixtures/meridianLabs';
 import { bindEngineCapabilities, resetEngineCapabilitiesForTests } from '../../../src/agents/engineBridge';
 import { withAgentToolContextAsync } from '../../../src/agents/agentContext';
 import { createDocumentPanelDefinition } from '../../../src/agents/panels/documentPanel';
@@ -63,6 +63,7 @@ interface StubShape {
 interface StubEditor {
   getViewportPageBounds: () => typeof PLACEMENT_BOUNDS;
   getCurrentPageShapes: () => StubShape[];
+  getCurrentPageId: () => string;
   getShapePageBounds: (id: string) => { x: number; y: number; w: number; h: number } | null;
   getShape: (id: string) => StubShape | undefined;
   createShape: (shape: Omit<StubShape, 'typeName' | 'index'>) => void;
@@ -120,6 +121,7 @@ function makeStubEditor(viewport = PLACEMENT_BOUNDS): StubEditor {
     __shapes: shapes,
     getViewportPageBounds: createStubFn(() => viewport),
     getCurrentPageShapes: createStubFn(() => [...shapes.values()]),
+    getCurrentPageId: createStubFn(() => 'page:main'),
     getShape: createStubFn((id: string) => shapes.get(String(id))),
     getShapePageBounds: createStubFn((id: string) => {
       const shape = shapes.get(String(id));
@@ -243,7 +245,7 @@ export async function runOpenAgentCanvasScenarioCore(
 
   const host = createCanvasHost({
     engine: new FakeEngine,
-    panels: [createDocumentPanelDefinition],
+    panels: [createDocumentPanelDefinition()],
     adapter: withDocumentSource(documentStore),
     hostActions: options.hostActions ?? [],
   });
@@ -398,7 +400,7 @@ export async function runOpenAgentCanvasScenarioCore(
         runs: [{ text: sanitizePlainText(redTeamSample) }],
       },
     });
-    const undone = undoStack.undo;
+    const undone = undoStack.undo();
     checks.push({
       name: 'document block ops undo restores prior block list',
       ok: undone !== null && undone.length === blockCountBeforeUndo,

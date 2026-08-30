@@ -62,8 +62,8 @@ function documentPanelSpec(
 
 function documentPanelSpecWithEditorReady(
   onEditorReady: (api: DocumentEditorApi) => void): NormalizedPanelSpec {
-  const spec = documentPanelSpec;
-  const documentNode = spec().nodes.document;
+  const spec = documentPanelSpec();
+  const documentNode = spec.nodes.document;
   if (documentNode !== undefined) {
     documentNode.props = {...(documentNode.props ?? {}),
       onEditorReady,
@@ -75,7 +75,7 @@ function documentPanelSpecWithEditorReady(
 function makePersistedLifecycle(): DataLifecycle {
   const store = createPersistedDocumentStore({
     persistenceKey: PERSISTENCE_KEY,
-    seed: { [SCOPE.entityId]: seedDocument },
+    seed: { [SCOPE.entityId]: seedDocument() },
   });
   return createDataLifecycle({ adapter: withDocumentSource(store), retryBackoffMs: 5 });
 }
@@ -89,11 +89,11 @@ describe('createPersistedDocumentStore ', () => {
   it('persists mutate payloads to localStorage', async () => {
     const store = createPersistedDocumentStore({
       persistenceKey: PERSISTENCE_KEY,
-      seed: { [SCOPE.entityId]: seedDocument },
+      seed: { [SCOPE.entityId]: seedDocument() },
     });
     const adapter = withDocumentSource(store);
 
-    const updated: DocumentPayload = {...seedDocument,
+    const updated: DocumentPayload = {...seedDocument(),
       blocks: [
         { id: 'h1', type: 'heading', level: 1, text: 'Saved title' },
         { id: 'p1', type: 'paragraph', runs: [{ text: 'Persisted body' }] },
@@ -118,13 +118,13 @@ describe('createPersistedDocumentStore ', () => {
   it('survives store reload (persistence round-trip)', async () => {
     const store = createPersistedDocumentStore({
       persistenceKey: PERSISTENCE_KEY,
-      seed: { [SCOPE.entityId]: seedDocument },
+      seed: { [SCOPE.entityId]: seedDocument() },
     });
     const adapter = withDocumentSource(store);
 
     await adapter.mutate(
       { kind: 'mutate', source: WORKSPACE_DOCUMENTS_SOURCE, op: 'save' },
-      {...seedDocument,
+      {...seedDocument(),
         title: 'Round trip',
         blocks: [{ id: 'h1', type: 'heading', level: 1, text: 'After reload' }],
       },
@@ -187,7 +187,7 @@ describe('document panel save integration ', () => {
     lifecycle.dispose();
     const reloadedLifecycle = makePersistedLifecycle();
     render(
-      <SpecRenderer spec={documentPanelSpec} scope={SCOPE} lifecycle={reloadedLifecycle} />);
+      <SpecRenderer spec={documentPanelSpec()} scope={SCOPE} lifecycle={reloadedLifecycle} />);
 
     await waitFor(() => {
       expect(screen.getByTestId('doc-block-heading')).toHaveTextContent('Initial');

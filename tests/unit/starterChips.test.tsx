@@ -26,7 +26,10 @@ describe('StarterChips', () => {
     const onSelect = vi.fn();
     render(<StarterChips prompts={PROMPTS} variant="compact" onSelect={onSelect} />);
     fireEvent.click(screen.getByText('Open roles'));
-    expect(onSelect).toHaveBeenCalledWith('Show me open roles');
+    // onSelect receives the whole prompt object, not just the text: the chat
+    // host reads prompt.prefetchTool for deterministic tool routing (see
+    // handleStarterSelect in src/chat/ChatPanel.tsx).
+    expect(onSelect).toHaveBeenCalledWith(PROMPTS[0]);
   });
 
   it('renders nothing when prompts array is empty', () => {

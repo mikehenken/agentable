@@ -83,7 +83,9 @@ describe('model resolver + sessions ', () => {
 
     expect(fast.resolvedAlias).toBe('landi-fast');
     expect(fast.binding.model).toBe('gemini-3.5-flash');
-    expect(quality.resolvedAlias).toBe('gemini-3.1-pro-image-preview');
+    // resolvedAlias echoes the requested alias (see the landi-fast case above),
+    // not the bound model; the binding's model is asserted separately.
+    expect(quality.resolvedAlias).toBe('landi-quality');
     expect(quality.binding.model).toBe('gemini-2.5-pro');
     expect(fast.binding.providerId).toBe('vertex');
     expect(quality.binding.providerId).toBe('vertex');

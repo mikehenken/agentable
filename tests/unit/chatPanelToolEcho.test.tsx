@@ -47,7 +47,7 @@ describe('ChatPanel — tool call echo', () => {
       });
     }).not.toThrow();
 
-    expect(screen.getByText('open_panel(panel_id=open-positions)')).toBeInTheDocument();
+    expect(screen.getByText('open_panel completed')).toBeInTheDocument();
   });
 
   it('renders failed tool call cards with error styling text', () => {
@@ -59,7 +59,7 @@ describe('ChatPanel — tool call echo', () => {
       source: 'voice',
     });
 
-    expect(screen.getByText('open_panel(panel_id=unknown-panel)')).toBeInTheDocument();
+    expect(screen.getByText('open_panel failed')).toBeInTheDocument();
   });
 
   it('leaves empty state once a tool echo arrives (non-empty message branch)', () => {
@@ -73,7 +73,9 @@ describe('ChatPanel — tool call echo', () => {
     });
 
     expect(screen.queryByText(/Ask me anything/)).not.toBeInTheDocument();
-    expect(screen.getByText('open_positions(department=Engineering)')).toBeInTheDocument();
+    expect(
+      screen.getByText('Opened positions · open_positions(department="Engineering")'),
+    ).toBeInTheDocument();
   });
 
   it('voice composer button opens voice panel without throwing', () => {

@@ -18,7 +18,7 @@ import {
   MERIDIAN_AGENT,
   MERIDIAN_DOCUMENT_ID,
   MERIDIAN_PRODUCT_BRIEF_TITLE,
-} from '../../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+} from './fixtures/meridianLabs';
 
 export const MERIDIAN_GALLERY_PERSISTENCE_KEY = 'p12-t7-open-agent-canvas-gallery';
 

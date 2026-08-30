@@ -6,9 +6,9 @@ import { runOpenAgentCanvasE2eScenario } from '../e2e/harness/openAgentCanvasSce
 
 describe(' open-agent-canvas e2e scenario (Meridian Labs)', () => {
   it('authors wireframe + document under open, exports, and keeps host-data HITL', async () => {
-    const result = await runOpenAgentCanvasE2eScenario;
-    expect(result().brand.name).toBe('Meridian Labs');
-    expect(result().checks.map((check) => check.name)).toEqual([
+    const result = await runOpenAgentCanvasE2eScenario();
+    expect(result.brand.name).toBe('Meridian Labs');
+    expect(result.checks.map((check) => check.name)).toEqual([
       'gallery host config resolves canvasPolicy open',
       'connected wireframe compiles from logical flow diagram',
       'wireframe flow draw_shapes succeeds under open policy',
@@ -27,9 +27,9 @@ describe(' open-agent-canvas e2e scenario (Meridian Labs)', () => {
       'host-data save action still queues HITL under open',
       'approved host-data save completes after HITL',
     ]);
-    for (const check of result().checks) {
+    for (const check of result.checks) {
       expect(check.ok, `${check.name}: ${check.detail ?? ''}`).toBe(true);
     }
-    expect(result().ok).toBe(true);
+    expect(result.ok).toBe(true);
   });
 });

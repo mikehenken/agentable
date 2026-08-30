@@ -191,15 +191,15 @@ describe('document block ops undo/redo ', () => {
     });
     expect(stack.blocks).toHaveLength(3);
 
-    expect(stack.canUndo).toBe(true);
-    const undoneOnce = stack.undo;
+    expect(stack.canUndo()).toBe(true);
+    const undoneOnce = stack.undo();
     expect(undoneOnce).toHaveLength(2);
 
-    const undoneTwice = stack.undo;
+    const undoneTwice = stack.undo();
     expect(undoneTwice).toHaveLength(1);
 
-    expect(stack.canRedo).toBe(true);
-    const redone = stack.redo;
+    expect(stack.canRedo()).toBe(true);
+    const redone = stack.redo();
     expect(redone).toHaveLength(2);
   });
 });

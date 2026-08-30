@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { normalizeDiagramPayload } from '../../src/agents/tools/diagramNormalization';
+// Static import (matches drawingToolsNormalize.test.ts): a per-test dynamic
+// `await import` cold-loaded the heavy tldraw chain inside the test-timeout
+// window (~10s), which flaked the release gate under full-suite load. Loading
+// at collection time moves that cost outside testTimeout.
+import { normalizeDrawShapesArgs } from '../../src/agents/tools/drawingTools';
 
 describe('normalizeDiagramPayload', () => {
   it('fills missing node ids and labels from text fields', () => {
@@ -65,7 +70,6 @@ describe('normalizeDiagramPayload', () => {
   });
 
   it('hoists nested diagram.layout, maps shape aliases, and normalizes edge text labels', async () => {
-    const { normalizeDrawShapesArgs } = await import('../../src/agents/tools/drawingTools');
     const result = normalizeDrawShapesArgs({
       diagram: {
         layout: 'nested',
@@ -94,7 +98,6 @@ describe('normalizeDiagramPayload', () => {
   });
 
   it('accepts diagram-only payload with empty shapes array via normalizeDrawShapesArgs', async () => {
-    const { normalizeDrawShapesArgs } = await import('../../src/agents/tools/drawingTools');
     const result = normalizeDrawShapesArgs({
       layout: 'flow',
       shapes: [],

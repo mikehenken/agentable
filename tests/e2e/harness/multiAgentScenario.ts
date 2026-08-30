@@ -199,7 +199,7 @@ export async function runMultiAgentE2eScenario(): Promise<MultiAgentE2eResult> {
       detail: scopeDenied.ok ? 'expected refusal': scopeDenied.error,
     });
 
-    const registered = host.agents.registry.list.map((entry) => entry.id).sort();
+    const registered = host.agents.registry.list().map((entry) => entry.id).sort();
     checks.push({
       name: 'two agents registered in digest input',
       ok: registered.join(',') === 'concierge,editor',

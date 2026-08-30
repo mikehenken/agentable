@@ -40,7 +40,7 @@ import {
   NORTHSTAR_BRAND,
   NORTHSTAR_FLOW_DIAGRAM,
   NORTHSTAR_SHAPE_BATCH,
-} from '../../../examples/p8-agent-draw-demo/fixtures/northstarBrand';
+} from '../../../src/embed/meridian/fixtures/northstarBrand';
 
 type DemoStatus = 'idle' | 'running' | 'ok' | 'error';
 

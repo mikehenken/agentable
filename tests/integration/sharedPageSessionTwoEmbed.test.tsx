@@ -72,7 +72,7 @@ describe('shared page session — two-embed fixture ', () => {
         }));
 
       await act(async () => {
-        void result.current.start;
+        void result.current.start();
         await vi.advanceTimersByTimeAsync(2000);
       });
 
@@ -112,7 +112,7 @@ describe('voice resilience — drop reconnect resume ', () => {
       }));
 
     await act(async () => {
-      void result.current.start;
+      void result.current.start();
       await vi.advanceTimersByTimeAsync(600);
     });
 

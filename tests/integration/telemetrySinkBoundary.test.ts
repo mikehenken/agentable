@@ -116,7 +116,7 @@ describe(' telemetry sink boundary ', () => {
 
     const invalid = await host.agents.executeTool(
       'compose_panel',
-      { spec: invalidSeoSpec },
+      { spec: invalidSeoSpec() },
       { agentId: 'editor', agentLabel: 'Content Editor' });
     expect(invalid.ok).toBe(true);
     if (!invalid.ok || invalid.result.ok !== false) {

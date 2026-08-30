@@ -3,6 +3,7 @@
  * pre-save undo stack and block-list virtualization.
  */
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { t } from '../../i18n';
 import type { SpecNodeContextValue } from '../types';
 import { useOptionalFormRuntime } from '../catalog/formRuntime';
 import {
@@ -45,21 +46,21 @@ function renderState(
   children: React.ReactNode,
 ): React.ReactNode {
   if (state === 'loading') {
-    return <div data-testid="loading-skeleton">Loading...</div>;
+    return <div data-testid="loading-skeleton">{t('catalog.state.loading')}</div>;
   }
   if (state === 'error') {
-    return <div data-testid="error-card">Error loading data</div>;
+    return <div data-testid="error-card">{t('catalog.state.error')}</div>;
   }
   if (state === 'empty') {
-    return <div data-testid="empty-placeholder">No data available</div>;
+    return <div data-testid="empty-placeholder">{t('catalog.state.empty')}</div>;
   }
 
   return (
     <>
       <span data-testid="populated-content">{children}</span>
-      {state === 'dirty' ? <span data-testid="dirty-indicator">Unsaved changes</span> : null}
-      {state === 'saving' ? <span data-testid="saving-spinner">Saving...</span> : null}
-      {state === 'stale' ? <span data-testid="stale-banner-inline">Data is stale</span> : null}
+      {state === 'dirty' ? <span data-testid="dirty-indicator">{t('catalog.state.dirty')}</span> : null}
+      {state === 'saving' ? <span data-testid="saving-spinner">{t('catalog.state.saving')}</span> : null}
+      {state === 'stale' ? <span data-testid="stale-banner-inline">{t('catalog.state.stale')}</span> : null}
     </>
   );
 }
@@ -277,7 +278,7 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
 
   const documentBody =
     blocks.length === 0 ? (
-      <div data-testid="document-empty-blocks">Empty document</div>
+      <div data-testid="document-empty-blocks">{t('document.emptyBlocks')}</div>
     ) : (
       <VirtualBlockViewport blocks={blocks} threshold={threshold} />
     );
@@ -301,7 +302,7 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
             editorApi.undo();
           }}
         >
-          Undo
+          {t('document.undo')}
         </button>
         <button
           type="button"
@@ -311,7 +312,7 @@ export const DocumentView = (props: DocumentViewProps): React.ReactElement => {
             editorApi.redo();
           }}
         >
-          Redo
+          {t('document.redo')}
         </button>
       </div>
     </article>

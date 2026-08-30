@@ -17,6 +17,28 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Poll an assertion until it holds or a generous deadline elapses, rethrowing
+ * the last failure so the test still reports the real assertion error. Retry
+ * timing crosses a backoff timer plus a second async query, so a fixed sleep
+ * flakes under CPU load; this waits only as long as the machine needs.
+ */
+async function waitFor(
+  assertion: () => void,
+  { timeout = 2000, interval = 5 }: { timeout?: number; interval?: number } = {},
+): Promise<void> {
+  const deadline = Date.now() + timeout;
+  for (;;) {
+    try {
+      assertion();
+      return;
+    } catch (error) {
+      if (Date.now() >= deadline) throw error;
+      await sleep(interval);
+    }
+  }
+}
+
 describe('cache key construction', () => {
   it('serializes params with sorted keys so property order never splits the cache', () => {
     const a = sourceCacheKey({ source: 's', params: { a: 1, b: [2, { d: 4, c: 3 }] } }, SCOPE_A);
@@ -276,9 +298,10 @@ describe('retry policy', () => {
     const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
     const handle = lifecycle.acquire({ source: 'jobs' }, SCOPE_A);
 
-    await sleep(80);
-    expect(adapter.queryCount('jobs')).toBe(2);
-    expect(handle.getSnapshot().status).toBe('success');
+    await waitFor(() => {
+      expect(adapter.queryCount('jobs')).toBe(2);
+      expect(handle.getSnapshot().status).toBe('success');
+    });
     expect(handle.getSnapshot().data).toBe('jobs-recovered');
     lifecycle.dispose();
   });
@@ -290,9 +313,10 @@ describe('retry policy', () => {
     const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
     const handle = lifecycle.acquire({ source: 'jobs' }, SCOPE_A);
 
-    await sleep(80);
-    expect(adapter.queryCount('jobs')).toBe(2);
-    expect(handle.getSnapshot().status).toBe('error');
+    await waitFor(() => {
+      expect(adapter.queryCount('jobs')).toBe(2);
+      expect(handle.getSnapshot().status).toBe('error');
+    });
     expect(handle.getSnapshot().error?.code).toBe('unavailable');
     lifecycle.dispose();
   });
@@ -304,9 +328,13 @@ describe('retry policy', () => {
     const lifecycle = createDataLifecycle({ adapter, retryBackoffMs: 5 });
     const handle = lifecycle.acquire({ source: 'jobs' }, SCOPE_A);
 
-    await sleep(60);
+    // Wait for the (non-retryable) error to surface, then assert exactly one
+    // query ran: once a forbidden error settles, the count is final, so this
+    // proves no retry without a fixed sleep racing the backoff timer.
+    await waitFor(() => {
+      expect(handle.getSnapshot().error?.code).toBe('forbidden');
+    });
     expect(adapter.queryCount('jobs')).toBe(1);
-    expect(handle.getSnapshot().error?.code).toBe('forbidden');
     lifecycle.dispose();
   });
 });

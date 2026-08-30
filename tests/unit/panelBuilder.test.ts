@@ -17,7 +17,9 @@ import {
 import { validateSpec, defaultCatalog } from '../../src/panels/spec';
 import type { PanelMeta, SpecAction, SpecSourceBinding } from '../../src/panels/types';
 
-const META: PanelMeta = { title: 'SEO', schemaVersion: 1 };
+// The builder stamps a bodyScroll:'auto' default onto every compiled meta
+// (src/panels/builder.ts; consumed by SpecRenderer's body-scroll behavior).
+const META: PanelMeta = { title: 'SEO', schemaVersion: 1, bodyScroll: 'auto' };
 
 function seoConfig() {
   return {

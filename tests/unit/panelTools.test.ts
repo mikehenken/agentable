@@ -241,9 +241,9 @@ describe('panel tool arg validation', () => {
       payload: { title: 'Proposed title' },
     });
     await Promise.resolve();
-    expect(controller.getPending).toHaveLength(1);
+    expect(controller.getPending()).toHaveLength(1);
 
-    controller.resolve(controller.getPending[0]!.id, 'approved');
+    controller.resolve(controller.getPending()[0]!.id, 'approved');
     const result = await pending;
     cleanup();
     expect(result).toEqual({

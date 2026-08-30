@@ -6,7 +6,7 @@ import {
   MERIDIAN_LABS_BRAND,
   MERIDIAN_PRODUCT_BRIEF_BLOCKS,
   MERIDIAN_WIREFRAME_FLOW,
-} from '../../examples/12-open-agent-canvas/fixtures/meridianLabs';
+} from '../../src/embed/meridian/fixtures/meridianLabs';
 import { FORBIDDEN_DEMO_BRAND_NAMES } from '../../examples/08-agent-presents/fixtures/archipelagoResorts';
 
 describe('open-agent-canvas fixtures (Meridian Labs)', () => {

@@ -385,6 +385,30 @@ export const CURATED_EXAMPLE_ENTRIES: readonly CuratedExampleEntry[] = [
     validation: { ...catalogValidation(), panelRegistry: ['job-detail', 'site-seo'] },
   },
   {
+    id: 'catalog-document-view-basic',
+    targetKind: 'catalog',
+    targetId: 'document-view',
+    title: 'Block-model document',
+    description: 'Document renderer bound to a source with pre-save undo.',
+    spec: wrapCatalogNode({
+      type: 'document-view',
+      props: { bind: 'doc' },
+    }),
+    validation: catalogValidation(),
+  },
+  {
+    id: 'catalog-document-view-virtualized',
+    targetKind: 'catalog',
+    targetId: 'document-view',
+    title: 'Virtualized long document',
+    description: 'Document renderer with a lowered virtualization threshold for long block lists.',
+    spec: wrapCatalogNode({
+      type: 'document-view',
+      props: { bind: 'doc', virtualizeThreshold: 50 },
+    }),
+    validation: catalogValidation(),
+  },
+  {
     id: 'panel-site-seo-minimal',
     targetKind: 'panel',
     targetId: 'site-seo',

@@ -103,13 +103,13 @@ describe('operatorModeBridge + toolExecutor', () => {
   it('binds enforcement when operator surface mode is active', () => {
     resetOperatorModeBridgeForTests();
     bindOperatorModeEnforcement('build');
-    expect(isOperatorModeEnforcementActive).toBe(true);
-    expect(getOperatorMode).toBe('build');
+    expect(isOperatorModeEnforcementActive()).toBe(true);
+    expect(getOperatorMode()).toBe('build');
     syncOperatorMode('ask');
-    expect(getOperatorMode).toBe('ask');
+    expect(getOperatorMode()).toBe('ask');
     unbindOperatorModeEnforcement();
-    expect(isOperatorModeEnforcementActive).toBe(false);
-    expect(getOperatorMode).toBe('auto');
+    expect(isOperatorModeEnforcementActive()).toBe(false);
+    expect(getOperatorMode()).toBe('auto');
   });
 
   it('refuses mutation tools in ask mode via tool executor', async () => {

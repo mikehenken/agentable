@@ -91,6 +91,7 @@ import { MeridianGalleryHostProvider } from './meridian/MeridianGalleryHostConte
 import { MeridianEngineBindingBridge } from './meridian/MeridianEngineBindingBridge';
 import { MeridianGalleryDemoVisuals } from './meridian/MeridianGalleryDemoVisuals';
 import { createMeridianDocumentPanelLoader } from './meridian/MeridianDocumentPanelHost';
+import { isMeridianLabsTenant } from './meridian/tenant';
 import { DEFAULT_WHITEBOARD_PANEL_REGISTRY } from '../engines/tldraw/shapes/whiteboardPanelRegistry';
 import { parseFullscreenMode } from '../engines/tldraw/hostChrome/whiteboardHostChrome';
 import type { WhiteboardFullscreenMode } from '../engines/tldraw/hostChrome/whiteboardHostChrome';
@@ -559,7 +560,7 @@ export class AgentableWhiteboardElement extends LitElement {
 
   private _isMeridianLabsTenant(resolved: ResolvedEmbedConfig): boolean {
     const tenant = resolved.tenantConfig.tenant ?? resolved.tenant ?? this.tenant;
-    return tenant === 'meridian-labs';
+    return isMeridianLabsTenant(tenant);
   }
 
   private _ensureMeridianHostBundle(): MeridianGalleryHostBundle | null {
@@ -736,7 +737,7 @@ export class AgentableWhiteboardElement extends LitElement {
       fullscreenMode: this._resolveFullscreenMode(),
       toolbarConfig: resolved.toolbarConfig ?? null,
       locale: resolved.locale,
-      meridian: tenant === 'meridian-labs',
+      meridian: isMeridianLabsTenant(tenant),
       panelDataKeys: this._panelDataRaw ? Object.keys(this._panelDataRaw).sort() : [],
       configPanels: this._configDocument?.panels ?? null,
     });

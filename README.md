@@ -1,6 +1,6 @@
 # agentable-canvas
 
-Embeddable AI canvas: chat panel, draggable workspace, voice transport (Gemini Live), and a Lit web component shell. Drop one tag into any page — React 18/19, Vue, Angular, plain HTML.
+Embeddable AI canvas: chat panel, draggable workspace, voice transport (Gemini Live), and a Lit web component shell. Drop one tag into any page: React 18/19, Vue, Angular, plain HTML.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -44,7 +44,7 @@ export default function Page() {
 }
 ```
 
-### Whiteboard (tldraw host — e.g. landi-canvas-studio)
+### Whiteboard (tldraw host, e.g. landi-canvas-studio)
 
 ```tsx
 import { LazyWhiteboardShell } from 'agentable-canvas/whiteboard';
@@ -71,23 +71,23 @@ Downstream apps (e.g. **landi-canvas-studio**) install via git ref:
 "agentable-canvas": "github:mikehenken/agentable#<sha>"
 ```
 
-After a release, bump the SHA — see [docs/setup/RELEASE.md](docs/setup/RELEASE.md).
+After a release, bump the SHA. See [docs/setup/RELEASE.md](docs/setup/RELEASE.md).
 
 ## Embedding reference
 
-- [EMBEDDING.md](EMBEDDING.md) — theming, Shadow DOM, CDN layout
-- [INSTALL.md](INSTALL.md) — install paths
-- [CHANGELOG.md](CHANGELOG.md) — version history
+- [EMBEDDING.md](EMBEDDING.md): theming, Shadow DOM, CDN layout
+- [INSTALL.md](INSTALL.md): install paths
+- [CHANGELOG.md](CHANGELOG.md): version history
 
 ## Architecture (summary)
 
-Three surfaces ship from one package: `./whiteboard` (tldraw + `PanelShape`), `./react-canvas` (absolute-positioned workspace), and `./embed` (Lit shell). Tenant brand voice is injected by hosts — never baked into the OSS core.
+Three surfaces ship from one package: `./whiteboard` (tldraw + `PanelShape`), `./react-canvas` (absolute-positioned workspace), and `./embed` (Lit shell). Tenant brand voice is injected by hosts, never baked into the OSS core.
 
 Details: [docs/development/ARCHITECTURE.md](docs/development/ARCHITECTURE.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
 ## Contributing
 

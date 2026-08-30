@@ -15,14 +15,16 @@ import { defineStaticPanel } from '../../src/panels/builder';
 import { validateSpec, defaultCatalog } from '../../src/panels/spec';
 
 describe('createCareerPack', () => {
-  it('registers four career panels in stable order (open-positions react, others schema)', () => {
+  it('registers the canonical career panels in stable order (all bespoke react)', () => {
     const pack = createCareerPack();
     expect(pack.panelIds).toEqual([...CAREER_PANEL_IDS]);
-    expect(pack.panels).toHaveLength(4);
+    expect(pack.panels).toHaveLength(CAREER_PANEL_IDS.length);
     const openPositions = pack.panels.find((panel) => panel.id === 'open-positions');
     expect(openPositions?.kind).toBe('react');
-    expect(
-      pack.panels.filter((panel) => panel.id !== 'open-positions').every((panel) => panel.kind === 'spec')).toBe(true);
+    // The career pack is the bespoke, richly-styled surface: every panel ships
+    // a dedicated React component (the generic spec-renderer path is used by
+    // other packs, e.g. support-inbox), so all panels resolve to kind 'react'.
+    expect(pack.panels.every((panel) => panel.kind === 'react')).toBe(true);
   });
 
   it('ships persona scaffold with starter prompts', () => {
@@ -94,7 +96,7 @@ describe('extendCareerPack ( extension surface)', () => {
       ],
     });
     expect(base.panelIds).toEqual(baseIds);
-    expect(base.panels).toHaveLength(4);
+    expect(base.panels).toHaveLength(CAREER_PANEL_IDS.length);
   });
 
   it('appends custom panels via extension points only', () => {

@@ -136,6 +136,7 @@ function makeStubEditor(viewport = { x: 0, y: 0, w: 800, h: 560 }): StubEditor {
     __shapes: shapes,
     getViewportPageBounds: vi.fn(() => viewport),
     getCurrentPageShapes: vi.fn(() => [...shapes.values()]),
+    getCurrentPageId: vi.fn(() => 'page:main'),
     getShape: vi.fn((id: string) => shapes.get(String(id))),
     getShapePageBounds: vi.fn((id: string) => {
       const shape = shapes.get(id);
@@ -239,9 +240,9 @@ export async function runWireframeToLayoutE2eScenario(): Promise<WireframeToLayo
   });
 
   const agentContext = { agentId: 'layout-agent', agentLabel: 'Layout Agent' };
-  const goldenGraph = loadGoldenGraph;
-  const goldenSketch = loadGoldenSketch;
-  const goldenProposal = loadGoldenProposal;
+  const goldenGraph = loadGoldenGraph();
+  const goldenSketch = loadGoldenSketch();
+  const goldenProposal = loadGoldenProposal();
 
   try {
     const drawTool = DRAWING_TOOLS.find((entry) => entry.declaration.name === 'draw_shapes');

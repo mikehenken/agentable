@@ -6,8 +6,8 @@ import { runWireframeToLayoutE2eScenario } from '../e2e/harness/wireframeToLayou
 
 describe(' wireframe-to-layout e2e scenario ', () => {
   it('runs sketch -> read -> propose layout -> HITL apply', async () => {
-    const result = await runWireframeToLayoutE2eScenario;
-    expect(result().checks.map((check) => check.name)).toEqual([
+    const result = await runWireframeToLayoutE2eScenario();
+    expect(result.checks.map((check) => check.name)).toEqual([
       'sketch wireframe via draw_shapes',
       'read_canvas returns structured graph',
       'read_canvas geometry matches golden wireframe',
@@ -16,10 +16,10 @@ describe(' wireframe-to-layout e2e scenario ', () => {
       'HITL apply queues approval for acting agent',
       'drawing workflow does not mutate panel data before apply approval',
     ]);
-    for (const check of result().checks) {
+    for (const check of result.checks) {
       expect(check.ok, `${check.name}: ${check.detail ?? ''}`).toBe(true);
     }
-    expect(result().ok).toBe(true);
-    expect(result().proposal?.slots).toHaveLength(3);
+    expect(result.ok).toBe(true);
+    expect(result.proposal?.slots).toHaveLength(3);
   });
 });
