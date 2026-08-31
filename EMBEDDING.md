@@ -22,7 +22,7 @@ Add the script tag to any HTML page:
     welcome-message="Hi! How can I help?"
   ></agentable-canvas>
 
-  <script src="https://cdn.jsdelivr.net/npm/@mikehenken/agentable-canvas@latest/dist/embed/agentable-canvas.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@mikehenken/agentable-canvas@latest/dist/embed/agentable-canvas.js"></script>
 </body>
 </html>
 ```

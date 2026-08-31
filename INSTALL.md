@@ -10,13 +10,17 @@ The fastest path. Drop the built ESM bundle into your `<head>` and place
 the custom element anywhere in the body. Works in vanilla HTML, WordPress,
 Vue, Angular, plain SSR — anything that runs JavaScript in a browser.
 
-### From a GitHub Release (recommended)
+### From npm over a CDN (recommended)
+
+The package is published to npm as
+[`@mikehenken/agentable-canvas`](https://www.npmjs.com/package/@mikehenken/agentable-canvas),
+so jsDelivr can serve the prebuilt embed bundle straight from the registry.
 
 ```html
-<!-- Pin a release and load over jsDelivr's GitHub mirror -->
+<!-- Load the embed bundle from npm over jsDelivr -->
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/gh/mikehenken/agentable@v0.0.1/dist/embed/agentable-canvas.js"
+  src="https://cdn.jsdelivr.net/npm/@mikehenken/agentable-canvas@latest/dist/embed/agentable-canvas.js"
 ></script>
 
 <agentable-canvas
@@ -27,8 +31,10 @@ Vue, Angular, plain SSR — anything that runs JavaScript in a browser.
 ></agentable-canvas>
 ```
 
-`jsdelivr.net/gh/<user>/<repo>@<tag>/<path>` resolves any file at any
-git ref. Replace `v0.0.1` with whatever release tag you want to pin.
+Pin a specific version by replacing `@latest` with a version, e.g.
+`@0.4.0`. jsDelivr also mirrors git refs at
+`cdn.jsdelivr.net/gh/mikehenken/agentable@<tag>/<path>` if you need an
+unreleased ref.
 
 ### Self-hosted
 
