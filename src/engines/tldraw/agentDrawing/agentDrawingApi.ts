@@ -5,7 +5,7 @@
  * panelShapeApi. Every created mark carries meta.agentableAgent provenance.
  */
 import type { Editor, TLShape, TLShapeId, TLShapePartial } from 'tldraw';
-import { createShapeId, toRichText } from 'tldraw';
+import { createShapeId, toRichText } from '@tldraw/tlschema';
 // tldraw's public "draw" shape schema stores stroke segments as
 // delta-encoded base64 `path` strings, not the legacy {points: {x,y,z}[]}
 // array this module used to build directly. That legacy shape is exactly

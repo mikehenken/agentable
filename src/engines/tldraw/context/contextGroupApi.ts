@@ -2,10 +2,13 @@
  * Context group frames — visual tldraw `frame` shapes that group panels by
  * site or agency workspace. Uses native `fitFrameToContent` for bounds.
  */
+import { createShapeId } from '@tldraw/tlschema';
+// Box/Vec/fitFrameToContent are editor-runtime values (used only inside
+// editor-bound fns). They keep the tldraw editor in this module's graph; the
+// provider-seam refactor to make the editor lazy is tracked as a follow-up.
 import {
   Box,
   Vec,
-  createShapeId,
   fitFrameToContent,
   type Editor,
   type TLFrameShape,

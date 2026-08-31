@@ -2,7 +2,7 @@
  * Compile logical diagram structure into draw_shapes inputs.
  */
 import type { Editor } from 'tldraw';
-import { createShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
 import {
   AGENT_EDGE_FROM_META_KEY,
   AGENT_EDGE_LABEL_META_KEY,

@@ -1,5 +1,5 @@
 import type { Editor } from 'tldraw';
-import { createShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
 import {
   findNonOverlappingPosition,
   rectsOverlap,

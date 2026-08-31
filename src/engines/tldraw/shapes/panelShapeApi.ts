@@ -23,7 +23,11 @@
  * stay framework-free.
  */
 import type { Editor } from 'tldraw';
-import { createShapeId } from 'tldraw';
+// `createShapeId` is re-exported by tldraw from @tldraw/tlschema (identical
+// impl). Importing it from the lighter tlschema package keeps this module
+// (which the eager chat path pulls in via ChatPanel) from dragging the full
+// tldraw editor barrel into the eager bundle, so the tldraw chunk stays lazy.
+import { createShapeId } from '@tldraw/tlschema';
 import { withPanelChrome } from '../../../panels/chrome';
 import {
   buildEphemeralShapePatch,

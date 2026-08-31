@@ -3,7 +3,8 @@
  * Persistence can restore a chat panel even when openChatOnMount is false — purge
  * on mount and guard the store so operator rail remains the sole chat surface.
  */
-import { createShapeId, type Editor, type TLShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
+import type { Editor, TLShapeId } from 'tldraw';
 import { CHAT_PANEL_ID } from '../../../choreography/constants';
 
 let suppressActive = false;

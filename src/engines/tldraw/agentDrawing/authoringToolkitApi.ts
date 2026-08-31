@@ -2,7 +2,7 @@
  * Imperative authoring toolkit driver for the tldraw whiteboard.
  */
 import type { Editor, TLAssetId, TLShapeId, TLShapePartial } from 'tldraw';
-import { AssetRecordType, createShapeId, toRichText } from 'tldraw';
+import { AssetRecordType, createShapeId, toRichText } from '@tldraw/tlschema';
 import { toShapeId } from './shapeRef';
 import {
   AGENT_CONNECTOR_KIND_META_KEY,
