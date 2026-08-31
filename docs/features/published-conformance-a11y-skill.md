@@ -6,6 +6,8 @@ related_docs:
   - docs/setup/RELEASE.md
   -.cursor/skills/agentable-framework/SKILL.md
 changelog:
+  - date: 2026-08-31
+    summary: Refreshed framework skill for @mikehenken/agentable-canvas@0.4.0 exports, Wave 4-8 embed builds, real repair codes, embed-builds reference, and packageExportsResolve guard.
   - date: 2026-07-21
     summary: Published conformance + axe a11y gate scaffold, framework SKILL.md, and llms.txt.
 ---
@@ -25,7 +27,7 @@ Category-defining deliverable: per-release **engine SPI conformance** and **axe 
 | Report builder | `tests/conformance/releaseReport.ts` | Markdown + fingerprint |
 | Regression gate | `tests/conformance/releaseGate.ts` | Engine + a11y + artifact thresholds |
 | Vitest suite | `tests/unit/releaseConformanceGate.test.ts` | Gate + artifact existence proofs |
-| CLI | `scripts/run-release-conformance.mjs` | CI/local runner + optional report write |
+| Exports guard | `tests/unit/packageExportsResolve.test.ts` | Every `package.json` export resolves |
 | Report template | `docs/conformance/RELEASE_REPORT.template.md` | Per-release scaffold |
 
 ## Conformance suites
@@ -51,15 +53,13 @@ Category-defining deliverable: per-release **engine SPI conformance** and **axe 
 
 ```bash
 # Vitest gate (engine + report builder + artifact checks)
-npm run test:release-conformance
+npm run test:release
 
-# Full gate: vitest + component axe + optional logs/report
-node scripts/run-release-conformance.mjs --write-log --write-report
+# Component axe smokes
+npm run test:component
 ```
 
-npm script `test:release-conformance` runs `engineConformanceTldraw.test.ts` and `releaseConformanceGate.test.ts`.
-
-Component axe smokes run via `npm run test:component` (included in the CLI script).
+`npm run test:release` runs `engineConformanceTldraw.test.ts` and `releaseConformanceGate.test.ts`.
 
 ## Regression gate defaults
 

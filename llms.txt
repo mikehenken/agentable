@@ -15,6 +15,8 @@ Embeddable AI canvas: chat panel, draggable workspace, voice transport (Gemini L
 ## Agent integration 
 
 - [Framework skill](.cursor/skills/agentable-framework/SKILL.md): panel tools, spec IR, safety invariants, workflows
+- [Package exports](.cursor/skills/agentable-framework/references/package-exports.md): published subpaths and in-repo alternatives
+- [Embed builds](.cursor/skills/agentable-framework/references/embed-builds.md): chunked ESM policy, bundle budgets, boundary guards
 - [Panel tools reference](.cursor/skills/agentable-framework/references/panel-tools.md): list/open/fill/compose/patch/run_panel_action
 - [Spec IR reference](.cursor/skills/agentable-framework/references/spec-ir.md): flat node map, bindings, validation
 - [Safety invariants](.cursor/skills/agentable-framework/references/safety-invariants.md): HITL, provenance, no trusted HTML

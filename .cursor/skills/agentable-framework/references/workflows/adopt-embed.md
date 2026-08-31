@@ -7,16 +7,20 @@ Minimal path to a working embed without touching framework internals.
 | Surface | Script tag | When |
 |---------|------------|------|
 | Full canvas | `<agentable-canvas>` | Chat + voice + engage-to-canvas |
-| Whiteboard only | whiteboard embed bundle | Spatial panels on tldraw |
-| Single panel | `<agentable-panel panel="inbox">` | Inline panel mid-page |
+| Whiteboard only | `/embed/agentable-whiteboard.js` | Spatial panels on tldraw (prebuilt bundle) |
+| Single panel | `<agentable-panel panel="inbox">` via `/embed/agentable-panel.js` | Inline panel mid-page |
 | Zero JS | `data-agentable-panel` attributes | Marketing page auto-mount |
+
+Whiteboard and panel are **not** npm export subpaths. Hosts load prebuilt files from `dist/embed/` after build, or copy from the examples site.
 
 ## 2. Install
 
 ```bash
-npm install github:mikehenken/agentable#v0.3.0
-npm run build:embed # if dist/ missing
+npm install @mikehenken/agentable-canvas
+npm run build:embed # if dist/ missing inside node_modules
 ```
+
+From the parent `sandals/` workspace root, prefer installing inside this package with `npm install --workspaces=false` to avoid hoisting surprises.
 
 ## 3. Lit full canvas
 
@@ -30,16 +34,25 @@ npm run build:embed # if dist/ missing
 <script type="module" src="/path/to/agentable-canvas.js"></script>
 ```
 
+Or import the published subpath after build:
+
+```ts
+import '@mikehenken/agentable-canvas/embed';
+```
+
 Token mint stays server-side. Never put `VITE_GEMINI_API_KEY` in host pages.
 
 ## 4. React whiteboard host
 
 ```tsx
-import { LazyWhiteboardShell } from 'agentable-canvas/whiteboard';
+import { LazyWhiteboardShell } from '@mikehenken/agentable-canvas/whiteboard';
 
 <LazyWhiteboardShell
-  config={{ tenant: 'demo', canvasMode: 'bounded' }}
-  tokenEndpoint="/api/mint-token"
+  config={{
+    tenant: 'demo',
+    persona: { tokenEndpoint: '/api/mint-token' },
+  }}
+  mode={{ kind: 'bounded', bounds: { w: 1920, h: 1080 } }}
 />
 ```
 
@@ -48,17 +61,17 @@ See `docs/setup/ADOPTER_QUICKSTART.md` for a two-panel example with custom regis
 ## 5. Domain pack
 
 ```ts
-import { createCareerPack } from 'agentable-canvas/career-pack';
- or createSupportInboxPack from support-inbox-pack for tutorial shape
+import { createCareerPack } from '@agentable/career-pack';
+// or createSupportInboxPack from @agentable/support-inbox-pack for tutorial shape
 ```
 
-Register panels on the host; framework default registry is example-only.
+Register panels on the host; framework default registry is example-only. Packs are private workspace packages under `packages/`, not npm exports of `@mikehenken/agentable-canvas`.
 
 ## 6. Verify
 
 ```bash
-npm run check:interop # embed + React smoke
-npm run test:release-conformance # engine + a11y gate scaffold
+npm run test:smoke    # gallery Playwright smoke
+npm run test:release  # engine SPI + release conformance gate
 ```
 
 ## 7. Agent integration
@@ -68,3 +81,5 @@ Point coding agents at:
 - This skill: `.cursor/skills/agentable-framework/SKILL.md`
 - Machine index: `llms.txt`
 - Live workspace (dev): canvas-over-MCP worker with OAuth scopes
+
+For local gallery with Pages Functions (`/v1/chat`, `/v1/voice/token`), use `npm run serve:site:functions` with a `.dev.vars` file (see `.dev.vars.example`). Wrangler does not read `.env.local`.

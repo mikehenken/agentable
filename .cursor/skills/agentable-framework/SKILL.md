@@ -5,7 +5,7 @@ description: Integrate with agentable-canvas — panel IR, six generic agent too
 
 # agentable-canvas framework
 
-Embeddable AI canvas: Lit embed shell, tldraw whiteboard substrate, panel registry (Tiers 1–4), DataAdapter, and six generic agent tools. Domain lives in host packs (`career-pack`, `support-inbox-pack`); the framework knows no panel ids by default.
+Embeddable AI canvas: Lit embed shell, tldraw whiteboard substrate, panel registry (Tiers 1–4), DataAdapter, and six generic agent tools. Domain lives in host packs (`@agentable/career-pack`, `@agentable/support-inbox-pack` workspace packages); the framework knows no panel ids by default.
 
 ## When to use this skill
 
@@ -15,6 +15,7 @@ Embeddable AI canvas: Lit embed shell, tldraw whiteboard substrate, panel regist
 | React whiteboard host | [references/package-exports.md](references/package-exports.md) |
 | Agent composes UI | [references/spec-ir.md](references/spec-ir.md) + [references/panel-tools.md](references/panel-tools.md) |
 | Safety HITL review | [references/safety-invariants.md](references/safety-invariants.md) |
+| Embed builds and budgets | [references/embed-builds.md](references/embed-builds.md) |
 
 Machine-readable index: [`llms.txt`](../../../llms.txt) at package root.
 
@@ -24,18 +25,25 @@ One flat-node-map spec IR, one validator, one block renderer; hosts author via `
 
 ## Package exports (published subpaths)
 
+Package name: `@mikehenken/agentable-canvas`. Always use the scoped prefix in imports.
+
 | Subpath | Use |
 |---------|-----|
-| `agentable-canvas/whiteboard` | tldraw canvas + `PanelShape` panels |
-| `agentable-canvas/embed` | Lit `<agentable-canvas>` bundle |
-| `agentable-canvas/embed/panel` | Single `<agentable-panel>` element |
-| `agentable-canvas/react` | React wrapper over Lit shell |
-| `agentable-canvas/a2ui` | A2UI v1.0 → native IR adapter (P10) |
-| `agentable-canvas/devtools` | Spec inspector + validation trace |
-| `agentable-canvas/career-pack` | Example domain pack (fixtures) |
-| `agentable-canvas/support-inbox-pack` | Second example pack adopter tutorial |
+| `@mikehenken/agentable-canvas/whiteboard` | tldraw canvas + `PanelShape` panels |
+| `@mikehenken/agentable-canvas/embed` | Lit `<agentable-canvas>` bundle |
+| `@mikehenken/agentable-canvas/react` | React wrapper over Lit shell |
+| `@mikehenken/agentable-canvas/react-canvas` | Legacy absolute-position workspace |
+| `@mikehenken/agentable-canvas/ui-ai` | AI UI primitives |
+| `@mikehenken/agentable-canvas/i18n` | Locale layer |
+| `@mikehenken/agentable-canvas/general` | Shared general components |
+| `@mikehenken/agentable-canvas/copilotkit-bridge` | Opt-in CopilotKit transport |
+| `@mikehenken/agentable-canvas/utils/hex-to-hsl` | Embed color helper |
+| `@mikehenken/agentable-canvas/styles.css` | Built Tailwind bundle |
+| `@mikehenken/agentable-canvas/embed/voice-call-button` | `<voice-call-button>` widget |
 
-Full export table: [references/package-exports.md](references/package-exports.md).
+Whiteboard and panel surfaces ship as **prebuilt** `/embed/*.js` bundles, not as npm subpaths. Domain packs are private workspace packages, not exports.
+
+Full export table and unpublished alternatives: [references/package-exports.md](references/package-exports.md).
 
 ## Six generic panel tools 
 
@@ -66,6 +74,49 @@ Schema patterns: [references/spec-ir.md](references/spec-ir.md).
 
 Full list: [references/safety-invariants.md](references/safety-invariants.md).
 
+## Wave 4 through 8 (embeds, gates, gotchas)
+
+### Chunked ESM embeds
+
+Four tldraw-bearing surfaces use shared code splitting via `vite.embed-chunking.ts` (`splitVendorChunks` + `embedDualOutput`). Single-file widgets (voice button, chips, pills) stay inlined. Thirteen `vite.embed*.config.ts` files exist; see [references/embed-builds.md](references/embed-builds.md) for the full inventory.
+
+### Bundle budgets
+
+`npm run check:bundle` enforces gzip ceilings on eager closure and reachable payload for chunked embeds. A regression needs a deliberate budget update in `scripts/check-bundle-size.mjs`, not a silent bump.
+
+### Boundary guards
+
+| Guard | Test file |
+|-------|-----------|
+| `operatorModelG3Boundary` | `tests/unit/operatorModelG3Boundary.test.ts` |
+| `embedKeyStripGuard` | `tests/unit/embedKeyStripGuard.test.ts` |
+| `engineImportBoundary` | `tests/unit/engineImportBoundary.test.ts` |
+| `panelsImportBoundary` | `tests/unit/panelsImportBoundary.test.ts` |
+| `orchestrationIdBoundary` | `tests/unit/orchestrationIdBoundary.test.ts` |
+
+### Gate commands
+
+```bash
+npm run typecheck      # CI-required since Wave 4
+npm run test:release   # engine SPI + release conformance gate
+npm run test:smoke     # gallery Playwright smoke
+npm run test:component # axe accessibility smokes
+npm run check:bundle   # gzip bundle budgets
+```
+
+### Repo gotchas
+
+- Parent `sandals/` is an npm workspace root (`sandals/package.json` lists `agentable-canvas`). Run `npm install --workspaces=false` inside this package to avoid hoisting surprises from `../node_modules`.
+- `npm run serve:site:functions` uses `wrangler pages dev`. Wrangler reads **`.dev.vars`**, not `.env.local`. Copy `.dev.vars.example` for local Pages-function emulation (see `scripts/serve-site.mjs` hint).
+
+### Canvas chrome
+
+```ts
+type WhiteboardFullscreenMode = 'canvas-expand' | 'document';
+```
+
+Defined in `src/engines/tldraw/hostChrome/whiteboardHostChrome.ts`. `canvas-expand` is the career/marketing overlay; `document` is legacy fullscreen for operator/gallery routes.
+
 ## Conformance and a11y 
 
 Per release the framework publishes:
@@ -76,8 +127,7 @@ Per release the framework publishes:
 Run locally:
 
 ```bash
-npm run test:release-conformance
-node scripts/run-release-conformance.mjs --write-log
+npm run test:release
 ```
 
 Report template: `docs/conformance/RELEASE_REPORT.template.md`.
@@ -94,6 +144,7 @@ Report template: `docs/conformance/RELEASE_REPORT.template.md`.
 ## References
 
 - [references/package-exports.md](references/package-exports.md)
+- [references/embed-builds.md](references/embed-builds.md)
 - [references/panel-tools.md](references/panel-tools.md)
 - [references/spec-ir.md](references/spec-ir.md)
 - [references/safety-invariants.md](references/safety-invariants.md)

@@ -22,6 +22,7 @@
     "source_files": [
       ".cursor/skills/agentable-framework/SKILL.md",
       ".cursor/skills/agentable-framework/references/package-exports.md",
+      ".cursor/skills/agentable-framework/references/embed-builds.md",
       ".cursor/skills/agentable-framework/references/panel-tools.md",
       ".cursor/skills/agentable-framework/references/spec-ir.md",
       ".cursor/skills/agentable-framework/references/safety-invariants.md",
@@ -32,8 +33,8 @@
       "tests/conformance/releaseGate.ts",
       "tests/unit/releaseConformanceGate.test.ts",
       "tests/unit/engineConformanceTldraw.test.ts",
+      "tests/unit/packageExportsResolve.test.ts",
       "tests/component/a11y.test.ts",
-      "scripts/run-release-conformance.mjs",
       "web-test-runner.a11y.config.js",
       "docs/conformance/RELEASE_REPORT.template.md"
     ]

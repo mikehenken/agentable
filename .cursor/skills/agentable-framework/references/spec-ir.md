@@ -54,7 +54,7 @@ Seven steps, identical for host and agent:
 
 ## A2UI ingestion 
 
-A2UI v1.0 wire payloads translate to native IR via `agentable-canvas/a2ui`. Conformance fixtures: `tests/fixtures/a2ui/conformance-fixtures.json`.
+A2UI v1.0 wire payloads translate to native IR via the ingest adapter at `src/a2ui/` (not a published npm subpath). Conformance fixtures: `tests/fixtures/a2ui/conformance-fixtures.json`.
 
 ## Migrations 
 

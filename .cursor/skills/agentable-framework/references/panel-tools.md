@@ -21,10 +21,12 @@ Host-triggered `run_panel_action` skips agent approval; destructive actions alwa
 Hosts may close the compose gate until a port-order milestone passes:
 
 ```ts
-composeGate: { id: 'seo-port', open: false }
+composeGate: { id: 'post-seo-compose', enabled: false }
 ```
 
-When closed, agents receive a structured refusal with gate id — not a silent no-op.
+`ComposeGateConfig` is `{ id, enabled, criteria? }`. The runtime `open` flag lives on `ComposeGateEvaluation` only (produced by `evaluateComposeGate`).
+
+When closed, agents receive a structured refusal with gate id, not a silent no-op.
 
 ## fill_panel vs patch_panel 
 
@@ -39,14 +41,20 @@ Returns props schema, adapter sources, actions map, and curated example specs pe
 
 ## Repair vocabulary 
 
-Validation rejections include frozen error codes, failing node id, and nearest-valid-alternative hints. Common codes:
+Validation rejections include frozen error codes from `FROZEN_REPAIR_ERROR_CODES` in `src/panels/spec/repairVocabulary.ts`, failing node id, and nearest-valid-alternative hints. Common codes:
 
 | Code | Meaning |
 |------|---------|
 | `SPEC_ACTION_REF_MISSING` | Action id not in declared actions map |
 | `VALIDATION` | Zod prop validation failed |
-| `SPEC_BUDGET_EXCEEDED` | Node count or depth budget |
-| `SPEC_URL_REJECTED` | URL sanitizer blocked value |
+| `SPEC_BUDGET_NODES` | Node count exceeds max (200) |
+| `SPEC_BUDGET_DEPTH` | Tree depth exceeds max (12) |
+| `SPEC_BUDGET_STRING` | String field exceeds per-field limit |
+| `SPEC_BUDGET_SIZE` | Total spec byte size exceeds limit |
+| `SPEC_SANITIZE_URL_SCHEME` | URL scheme not on allowlist |
+| `SPEC_SANITIZE_JAVASCRIPT_URL` | `javascript:` URL blocked |
+| `SPEC_SANITIZE_CONTROL_CHAR` | Disallowed control character in string |
+| `COMPOSE_GATE_CLOSED` | Host closed the compose gate |
 
 Agent-origin specs get one structured-error repair round, then a fallback card ( step 7).
 
