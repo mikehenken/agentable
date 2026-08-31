@@ -94,7 +94,18 @@ describe('operator model bridge G3 boundary ', () => {
       return;
     }
 
-    const bridgeScopedOffending = existing.flatMap((rel) => {
+    // The tldraw-bearing embeds are code-split: the entry .js is a facade and
+    // the bridge code lives in a chunk. Scan chunks/ too so this key-leak guard
+    // keeps its coverage under the chunked layout.
+    const chunkDir = join(root, 'dist/embed/chunks');
+    const chunkTargets = existsSync(chunkDir)
+      ? readdirSync(chunkDir)
+          .filter((name) => name.endsWith('.js'))
+          .map((name) => `dist/embed/chunks/${name}`)
+      : [];
+    const scanTargets = [...existing, ...chunkTargets];
+
+    const bridgeScopedOffending = scanTargets.flatMap((rel) => {
       const text = readFileSync(join(root, rel), 'utf8');
       const hits = grepForbidden(text);
       const bridgeScoped = hits.filter(

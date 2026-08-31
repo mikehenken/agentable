@@ -13,6 +13,7 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { embedDualOutput } from './vite.embed-chunking';
 
 export default defineConfig({
   plugins: [react()],
@@ -50,17 +51,16 @@ export default defineConfig({
         __dirname,
         'packages/career-pack/src/embed/careerWhiteboardEntry.ts'),
       name: 'CareerWhiteboard',
-      formats: ['es', 'umd'],
-      fileName: (format) =>
-        format === 'es' ? 'career-whiteboard.js': 'career-whiteboard.umd.js',
     },
     rollupOptions: {
-      output: {
-        inlineDynamicImports: true,
-        assetFileNames: (assetInfo) =>
-          assetInfo.name && assetInfo.name.endsWith('.css')
-            ? 'career-whiteboard.css': assetInfo.name || 'asset-[hash]',
-      },
+      // Dual ESM-chunked / UMD-single output; shared split policy in
+      // vite.embed-chunking.ts.
+      output: embedDualOutput({
+        esFile: 'career-whiteboard.js',
+        umdFile: 'career-whiteboard.umd.js',
+        umdName: 'CareerWhiteboard',
+        cssName: 'career-whiteboard.css',
+      }),
     },
   },
 });

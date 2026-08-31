@@ -4,6 +4,7 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin, type UserConfig } from 'vite';
+import { embedDualOutput } from './vite.embed-chunking';
 
 export interface EmbedWidgetBuildOptions {
   /** File base under dist/embed — e.g. `agentable-starter-chip` */
@@ -20,6 +21,12 @@ export interface EmbedWidgetBuildOptions {
   extraPlugins?: Plugin[];
   /** Rollup externals — operator embed uses this to omit tldraw. */
   rollupExternal?: (id: string) => boolean;
+  /**
+   * Code-split the ESM build into lazy vendor chunks (UMD stays single-file).
+   * Only the heavy tldraw-bearing surface (operator-surface-placement) opts in;
+   * the small widgets stay single-file, where chunking is pure overhead.
+   */
+  chunked?: boolean;
 }
 
 export function defineEmbedWidgetConfig(options: EmbedWidgetBuildOptions): UserConfig {
@@ -58,19 +65,29 @@ export function defineEmbedWidgetConfig(options: EmbedWidgetBuildOptions): UserC
       target: 'es2022',
       lib: {
         entry: path.resolve(process.cwd(), options.entry),
-        name: options.umdName,
-        formats: ['es', 'umd'],
-        fileName: (format) =>
-          format === 'es' ? `${options.fileBase}.js`: `${options.fileBase}.umd.js`,
+        name: options.umdName,...(options.chunked
+          ? {}
+          : {
+              formats: ['es', 'umd'] as ('es' | 'umd')[],
+              fileName: (format: string) =>
+                format === 'es' ? `${options.fileBase}.js` : `${options.fileBase}.umd.js`,
+            }),
       },
       rollupOptions: {...(options.rollupExternal
           ? { external: options.rollupExternal }: {}),
-        output: {
-          inlineDynamicImports: true,
-          assetFileNames: (assetInfo) =>
-            assetInfo.name && assetInfo.name.endsWith('.css')
-              ? `${options.fileBase}.css`: assetInfo.name || 'asset-[hash]',
-        },
+        output: options.chunked
+          ? embedDualOutput({
+              esFile: `${options.fileBase}.js`,
+              umdFile: `${options.fileBase}.umd.js`,
+              umdName: options.umdName,
+              cssName: `${options.fileBase}.css`,
+            })
+          : {
+              inlineDynamicImports: true,
+              assetFileNames: (assetInfo) =>
+                assetInfo.name && assetInfo.name.endsWith('.css')
+                  ? `${options.fileBase}.css`: assetInfo.name || 'asset-[hash]',
+            },
       },
     },
   });

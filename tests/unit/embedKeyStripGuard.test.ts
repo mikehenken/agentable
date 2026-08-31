@@ -39,10 +39,14 @@ describe('embed key-strip guard', () => {
     const shared = readFileSync(join(root, 'vite.embed-widget-shared.ts'), 'utf8');
     expect(shared, 'vite.embed-widget-shared.ts').toContain(STRIP_DEFINE);
 
+    // Shared helpers, not build configs: they hold no `define` block; the
+    // configs that consume them carry the key-strip (or delegate to the factory,
+    // which does).
+    const SHARED_HELPERS = new Set(['vite.embed-widget-shared.ts', 'vite.embed-chunking.ts']);
     const missing: string[] = [];
     for (const file of readdirSync(root)) {
       if (!file.startsWith('vite.embed') || !file.endsWith('.ts')) continue;
-      if (file === 'vite.embed-widget-shared.ts') continue;
+      if (SHARED_HELPERS.has(file)) continue;
       const text = readFileSync(join(root, file), 'utf8');
       const covered =
         text.includes('defineEmbedWidgetConfig') || text.includes(STRIP_DEFINE);
