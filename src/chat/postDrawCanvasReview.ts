@@ -11,7 +11,7 @@ import {
   type AgentToolExecutionContext,
 } from '../agents/agentContext';
 import type { CanvasShapeGraph } from '../engine/canvasPerceptionTypes';
-import { clampPixelRatio } from '../engines/tldraw/perception/canvasPerceptionApi';
+import { clampPixelRatio } from '../engines/tldraw/perception/pixelRatio';
 import { computeCanvasLints, readShapeGraph } from './canvasLints';
 
 /** Canvas tools whose successful execution places or moves marks worth reviewing. */

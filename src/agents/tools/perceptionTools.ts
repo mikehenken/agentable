@@ -10,11 +10,11 @@
 import type { CanvasPerceptionRegion } from '../../engine/canvasPerceptionTypes';
 import type { Rect } from '../../engine/types';
 import type { ToolDeclaration, ToolDefinition } from '../../panels/tools';
-import {
-  clampPixelRatio,
-  readCanvasShapeGraph,
-  screenshotCanvasRegion,
-} from '../../engines/tldraw/perception/canvasPerceptionApi';
+// Pure pixel-ratio math is imported statically (tldraw-free); the editor-coupled
+// perception driver is loaded on first tool call via dynamic import() so the
+// tldraw editor stays out of the embed's eager graph and loads only when an
+// agent actually reads or screenshots a bound canvas.
+import { clampPixelRatio } from '../../engines/tldraw/perception/pixelRatio';
 import { drawCapabilityRefusal, isDrawCapabilityAvailable } from '../engineBridge';
 import { waitForOperatorCanvasToolsReady } from '../surface/operatorCanvasToolBridge';
 
@@ -141,6 +141,9 @@ export const PERCEPTION_TOOLS: readonly ToolDefinition[] = [
       }
       const budget = readBudget(args.budget);
       try {
+        const { readCanvasShapeGraph } = await import(
+          '../../engines/tldraw/perception/canvasPerceptionApi'
+        );
         const graph = readCanvasShapeGraph({ region, budget });
         return { ok: true, result: graph };
       } catch (err) {
@@ -173,6 +176,9 @@ export const PERCEPTION_TOOLS: readonly ToolDefinition[] = [
       const pixelRatio = readPixelRatio(args.pixelRatio);
       const fallbackShapeIds = readStringArray(args.fallbackShapeIds);
       try {
+        const { screenshotCanvasRegion } = await import(
+          '../../engines/tldraw/perception/canvasPerceptionApi'
+        );
         const capture = await screenshotCanvasRegion({ region, pixelRatio, fallbackShapeIds });
         return { ok: true, result: capture };
       } catch (err) {

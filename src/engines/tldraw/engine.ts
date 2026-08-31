@@ -13,7 +13,7 @@
  * and camera reads require attachment.
  */
 import type { Editor, HistoryEntry, TLRecord, TLShapeId, TLShapePartial } from 'tldraw';
-import { createShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
 import type {
   CameraState,
   CanvasMode,

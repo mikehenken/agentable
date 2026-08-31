@@ -18,19 +18,12 @@ import {
   serializeShapeGraph,
 } from './shapeGraphSerializer';
 
+// Pixel-ratio math lives in a tldraw-free module so eager callers can import it
+// without pulling the editor; re-exported here to keep this driver's API stable.
+export { MIN_PIXEL_RATIO, MAX_PIXEL_RATIO, clampPixelRatio } from './pixelRatio';
+import { clampPixelRatio } from './pixelRatio';
+
 const DEFAULT_READ_BUDGET = 200;
-
-/** Sensible PNG pixel ratio bounds — fractional ratios below 1 are valid. */
-export const MIN_PIXEL_RATIO = 0.25;
-export const MAX_PIXEL_RATIO = 4;
-
-export function clampPixelRatio(value: number | undefined): number {
-  const base = value ?? 1;
-  if (!Number.isFinite(base)) {
-    return 1;
-  }
-  return Math.min(MAX_PIXEL_RATIO, Math.max(MIN_PIXEL_RATIO, base));
-}
 
 function requireEditor(): Editor {
   const editor = getEditor();

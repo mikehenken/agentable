@@ -4,7 +4,7 @@
  * Placement clears the live Menu (NavSidebar) expanded/collapsed chrome.
  */
 import type { Editor } from 'tldraw';
-import { createShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
 import { snapToGrid } from '../../../layout/panelLayoutEngine';
 import { defaultWhiteboardPanelSize } from '../context/contextFramePanelLayout';
 import {

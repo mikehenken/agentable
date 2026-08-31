@@ -4,7 +4,8 @@
  * Distinct from GRID_GUTTER (16px): docking uses gap=0 for admin-style shells.
  * Dock state persists on shape.meta.panelDock and cascades on resize.
  */
-import { createShapeId, type Editor, type TLShape, type TLShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
+import type { Editor, TLShape, TLShapeId } from 'tldraw';
 import { GRID_SIZE, type LayoutRect } from '../../../layout/panelLayoutEngine';
 import { GRID_GUTTER } from '../../../layout/gridLayout';
 import {

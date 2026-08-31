@@ -3,7 +3,7 @@
  * They must never be parented into a site group or auto-placed inside one.
  */
 import type { Editor, TLShapeId } from 'tldraw';
-import { createShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
 import { getContextGroupMeta } from './contextGroupApi';
 
 /** Panel ids that are workspace-wide, not site-scoped. */

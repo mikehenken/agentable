@@ -1,7 +1,8 @@
 /**
  * tldraw camera adapter for story-mode walkthrough.
  */
-import { createShapeId, type Editor, type TLShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
+import type { Editor, TLShapeId } from 'tldraw';
 import { bindWalkthroughRuntime } from '../../../agents/walkthroughBridge';
 import type { CameraQueue } from '../../../agents/camera';
 import type { WalkthroughCameraIntent, WalkthroughTarget } from '../../../agents/walkthroughTypes';

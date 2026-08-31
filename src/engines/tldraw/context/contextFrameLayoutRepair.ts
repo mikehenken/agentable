@@ -4,7 +4,8 @@
  * Only runs when panels overlap or exceed grid row-span height caps (legacy
  * skyscraper layouts). Valid user-customized positions are left untouched.
  */
-import { createShapeId, type Editor, type TLShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
+import type { Editor, TLShapeId } from 'tldraw';
 import type { LayoutRect } from '../../../layout/panelLayoutEngine';
 import {
   GRID_GUTTER,

@@ -9,7 +9,8 @@
  * `shape:ignition`. Normalizing both the draw-time id and the reference-time
  * id through this one function is what makes the round-trip resolve.
  */
-import { createShapeId, type TLShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
+import type { TLShapeId } from 'tldraw';
 
 const SHAPE_ID_PREFIX = 'shape:';
 

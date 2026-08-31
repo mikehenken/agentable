@@ -21,7 +21,8 @@
  * missing file into a failure, so the gate cannot pass by not building.
  */
 
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, stat, readdir } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,9 +33,78 @@ const KB = 1024;
 const distRoot = path.resolve(__dirname, '..', 'dist');
 const requireAll = process.env.CHECK_BUNDLE_REQUIRE_ALL === '1';
 
+// ── Chunked-ESM measurers ────────────────────────────────────────────────
+// A chunked ESM entry (inlineDynamicImports: false) is a tiny facade that
+// STATIC-imports its eager chunks and DYNAMIC-imports the lazy ones. Sizing the
+// facade file is meaningless; the honest metrics are:
+//   - `closure`: entry + every chunk reachable through STATIC import/export-from
+//                / side-effect import. The bytes a page downloads before first
+//                render. Dynamic import("...") edges (the lazy boundary) are NOT
+//                followed.
+//   - `payload`: entry + all sibling chunks. The total ESM footprint ceiling.
+
+/** Static import specifiers ("./x.js"); dynamic import("...") is not matched. */
+function staticChunkImports(code) {
+  const out = new Set();
+  const re = /(?:from|import)\s*["'](\.[^"']+\.js)["']/g;
+  let m;
+  while ((m = re.exec(code))) out.add(m[1]);
+  return [...out];
+}
+
+/** Gzipped bytes of the entry's eager static-import closure. */
+function eagerClosureBytes(entryAbsPath) {
+  const seen = new Set();
+  const stack = [entryAbsPath];
+  let total = 0;
+  while (stack.length) {
+    const file = stack.pop();
+    if (seen.has(file)) continue;
+    seen.add(file);
+    let buf;
+    try {
+      buf = readFileSync(file);
+    } catch {
+      continue;
+    }
+    total += gzipSync(buf).length;
+    for (const spec of staticChunkImports(buf.toString('utf8'))) {
+      stack.push(path.resolve(path.dirname(file), spec));
+    }
+  }
+  return total;
+}
+
+/** Gzipped bytes of the entry plus every sibling chunk (entry dir + chunks/). */
+async function payloadBytes(entryAbsPath) {
+  const dir = path.dirname(entryAbsPath);
+  const base = path.basename(entryAbsPath);
+  let total = gzipSync(await readFile(entryAbsPath)).length;
+  const chunkDir = path.join(dir, 'chunks');
+  let names = [];
+  try {
+    names = await readdir(chunkDir);
+  } catch {
+    names = [];
+  }
+  for (const n of names) {
+    if (!n.endsWith('.js') || n.endsWith('.map')) continue;
+    total += gzipSync(await readFile(path.join(chunkDir, n))).length;
+  }
+  void base;
+  return total;
+}
+
 const BUDGETS = [
   // ── tldraw-bearing embeds (RATCHET: measured 2026-08-28 +10%) ──────────
-  { file: 'embed/agentable-canvas.js', max: 4260 * KB, label: 'ESM' }, // RATCHET, measured 3866 KB
+  // agentable-canvas ESM is chunked (lazy-tldraw proof): measure the EAGER
+  // static-import closure (what loads before first render) and the total
+  // payload separately, not the 0.2 KB facade file. RATCHET measured 2026-08-30
+  // on branch wave-8-lazy-tldraw-proof. Eager closure is dominated by shiki
+  // (1648 KB, via Streamdown) + tldraw editor (601 KB); both are tracked
+  // follow-up levers to defer. mermaid (980 KB) is already lazy in this build.
+  { file: 'embed/agentable-canvas.js', measure: 'closure', max: 3160 * KB, label: 'ESM eager' }, // RATCHET, measured 2864 KB
+  { file: 'embed/agentable-canvas.js', measure: 'payload', max: 4260 * KB, label: 'ESM total' }, // RATCHET, measured 3872 KB
   { file: 'embed/agentable-canvas.umd.js', max: 3790 * KB, label: 'UMD' }, // RATCHET, measured 3438 KB
   { file: 'embed/agentable-whiteboard.js', max: 4630 * KB, label: 'ESM' }, // RATCHET, measured 4208 KB
   { file: 'embed/agentable-whiteboard.umd.js', max: 4130 * KB, label: 'UMD' }, // RATCHET, measured 3749 KB
@@ -105,7 +175,10 @@ async function main() {
       results.push({ ...budget, status: 'missing', size: 0 });
       continue;
     }
-    const size = await gzippedSize(filePath);
+    let size;
+    if (budget.measure === 'closure') size = eagerClosureBytes(filePath);
+    else if (budget.measure === 'payload') size = await payloadBytes(filePath);
+    else size = await gzippedSize(filePath);
     const overBudget = size > budget.max;
     if (overBudget) failed = true;
     results.push({ ...budget, status: overBudget ? 'over' : 'ok', size });
@@ -123,8 +196,9 @@ async function main() {
     }
     const icon = r.status === 'ok' ? '✓' : '✗';
     const ratio = ((r.size / r.max) * 100).toFixed(1);
+    const name = r.measure ? `${r.file} [${r.measure}]` : r.file;
     console.log(
-      `  ${icon}  ${r.file.padEnd(52)} ${formatKB(r.size).padStart(11)}  /  ${formatKB(r.max).padStart(11)}  (${ratio}%)`
+      `  ${icon}  ${name.padEnd(52)} ${formatKB(r.size).padStart(11)}  /  ${formatKB(r.max).padStart(11)}  (${ratio}%)`
     );
   }
   console.log('───────────────────────────────────────────────────\n');

@@ -10,7 +10,8 @@
 
  */
 
-import { createShapeId, type TLShapeId } from 'tldraw';
+import { createShapeId } from '@tldraw/tlschema';
+import type { TLShapeId } from 'tldraw';
 
 import type { PanelDock } from './panelDockEngine';
 
