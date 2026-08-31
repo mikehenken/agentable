@@ -21,7 +21,7 @@
  * missing file into a failure, so the gate cannot pass by not building.
  */
 
-import { readFile, stat, readdir } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
@@ -52,6 +52,15 @@ function staticChunkImports(code) {
   return [...out];
 }
 
+/** Static AND dynamic specifiers ("./x.js"); the optional `(` matches import(). */
+function reachableChunkImports(code) {
+  const out = new Set();
+  const re = /(?:from|import)\s*\(?\s*["'](\.[^"']+\.js)["']/g;
+  let m;
+  while ((m = re.exec(code))) out.add(m[1]);
+  return [...out];
+}
+
 /** Gzipped bytes of the entry's eager static-import closure. */
 function eagerClosureBytes(entryAbsPath) {
   const seen = new Set();
@@ -75,23 +84,32 @@ function eagerClosureBytes(entryAbsPath) {
   return total;
 }
 
-/** Gzipped bytes of the entry plus every sibling chunk (entry dir + chunks/). */
-async function payloadBytes(entryAbsPath) {
-  const dir = path.dirname(entryAbsPath);
-  const base = path.basename(entryAbsPath);
-  let total = gzipSync(await readFile(entryAbsPath)).length;
-  const chunkDir = path.join(dir, 'chunks');
-  let names = [];
-  try {
-    names = await readdir(chunkDir);
-  } catch {
-    names = [];
+/**
+ * Gzipped bytes of the entry's full REACHABLE closure (static + dynamic
+ * import() edges): the entry plus every chunk it can pull, eager or lazy. This
+ * is per-entry: the four tldraw embeds share one `chunks/` dir, so summing the
+ * whole directory would count every embed's chunks; following the entry's own
+ * import graph counts only the chunks that entry reaches.
+ */
+function payloadBytes(entryAbsPath) {
+  const seen = new Set();
+  const stack = [entryAbsPath];
+  let total = 0;
+  while (stack.length) {
+    const file = stack.pop();
+    if (seen.has(file)) continue;
+    seen.add(file);
+    let buf;
+    try {
+      buf = readFileSync(file);
+    } catch {
+      continue;
+    }
+    total += gzipSync(buf).length;
+    for (const spec of reachableChunkImports(buf.toString('utf8'))) {
+      stack.push(path.resolve(path.dirname(file), spec));
+    }
   }
-  for (const n of names) {
-    if (!n.endsWith('.js') || n.endsWith('.map')) continue;
-    total += gzipSync(await readFile(path.join(chunkDir, n))).length;
-  }
-  void base;
   return total;
 }
 
@@ -103,15 +121,27 @@ const BUDGETS = [
   // on branch wave-8-lazy-tldraw-proof. Eager closure is dominated by shiki
   // (1648 KB, via Streamdown) + tldraw editor (601 KB); both are tracked
   // follow-up levers to defer. mermaid (980 KB) is already lazy in this build.
-  { file: 'embed/agentable-canvas.js', measure: 'closure', max: 3160 * KB, label: 'ESM eager' }, // RATCHET, measured 2864 KB
-  { file: 'embed/agentable-canvas.js', measure: 'payload', max: 4260 * KB, label: 'ESM total' }, // RATCHET, measured 3872 KB
-  { file: 'embed/agentable-canvas.umd.js', max: 3790 * KB, label: 'UMD' }, // RATCHET, measured 3438 KB
-  { file: 'embed/agentable-whiteboard.js', max: 4630 * KB, label: 'ESM' }, // RATCHET, measured 4208 KB
-  { file: 'embed/agentable-whiteboard.umd.js', max: 4130 * KB, label: 'UMD' }, // RATCHET, measured 3749 KB
-  { file: 'embed/career-whiteboard.js', max: 4690 * KB, label: 'ESM' }, // RATCHET, measured 4257 KB
-  { file: 'embed/career-whiteboard.umd.js', max: 4180 * KB, label: 'UMD' }, // RATCHET, measured 3793 KB
-  { file: 'embed/agentable-operator-surface-placement.js', max: 4200 * KB, label: 'ESM' }, // RATCHET, measured 3818 KB
-  { file: 'embed/agentable-operator-surface-placement.umd.js', max: 3750 * KB, label: 'UMD' }, // RATCHET, measured 3403 KB
+  // All four tldraw-bearing ESM builds are chunked (Wave 8). Each is measured
+  // by its EAGER static-import closure (what loads before first render) and its
+  // full REACHABLE payload (entry + every chunk it can pull, static or dynamic),
+  // not the ~0.2 KB facade file. The four embeds share one chunks/ dir, so the
+  // payload follows each entry's own import graph. Closure is well under payload
+  // on every embed because mermaid (~980 KB) is lazy. On the whiteboards tldraw
+  // is eager (the embed IS the whiteboard); only the canvas can defer it, and
+  // even there it stays eager today via the panelShapeApi coupling (follow-up).
+  // RATCHET measured 2026-08-30, +10%; may only move DOWN.
+  { file: 'embed/agentable-canvas.js', measure: 'closure', max: 3160 * KB, label: 'ESM eager' }, // RATCHET, measured 2866 KB
+  { file: 'embed/agentable-canvas.js', measure: 'payload', max: 4260 * KB, label: 'ESM total' }, // RATCHET, measured 3874 KB
+  { file: 'embed/agentable-canvas.umd.js', max: 3790 * KB, label: 'UMD' }, // RATCHET, measured 3443 KB
+  { file: 'embed/agentable-whiteboard.js', measure: 'closure', max: 3550 * KB, label: 'ESM eager' }, // RATCHET, measured 3223 KB
+  { file: 'embed/agentable-whiteboard.js', measure: 'payload', max: 4630 * KB, label: 'ESM total' }, // RATCHET, measured 4206 KB
+  { file: 'embed/agentable-whiteboard.umd.js', max: 4130 * KB, label: 'UMD' }, // RATCHET, measured 3751 KB
+  { file: 'embed/career-whiteboard.js', measure: 'closure', max: 3590 * KB, label: 'ESM eager' }, // RATCHET, measured 3259 KB
+  { file: 'embed/career-whiteboard.js', measure: 'payload', max: 4695 * KB, label: 'ESM total' }, // RATCHET, measured 4264 KB
+  { file: 'embed/career-whiteboard.umd.js', max: 4180 * KB, label: 'UMD' }, // RATCHET, measured 3797 KB
+  { file: 'embed/agentable-operator-surface-placement.js', measure: 'closure', max: 3120 * KB, label: 'ESM eager' }, // RATCHET, measured 2830 KB
+  { file: 'embed/agentable-operator-surface-placement.js', measure: 'payload', max: 4200 * KB, label: 'ESM total' }, // RATCHET, measured 3815 KB
+  { file: 'embed/agentable-operator-surface-placement.umd.js', max: 3750 * KB, label: 'UMD' }, // RATCHET, measured 3404 KB
 
   // ── embed stylesheets (RATCHET: tldraw fonts/assets are inlined today; ──
   // ── the lazy-tldraw wave externalizes them and these ratchet down)     ──
@@ -177,7 +207,7 @@ async function main() {
     }
     let size;
     if (budget.measure === 'closure') size = eagerClosureBytes(filePath);
-    else if (budget.measure === 'payload') size = await payloadBytes(filePath);
+    else if (budget.measure === 'payload') size = payloadBytes(filePath);
     else size = await gzippedSize(filePath);
     const overBudget = size > budget.max;
     if (overBudget) failed = true;

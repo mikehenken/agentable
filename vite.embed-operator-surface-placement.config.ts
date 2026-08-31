@@ -74,6 +74,8 @@ export default defineEmbedWidgetConfig({
   umdName: 'AgentableOperatorSurfacePlacement',
   entry: 'src/embed/agentable-operator-surface-placement.ts',
   reactSurface: true,
+  // Heavy tldraw-bearing surface: code-split the ESM build (UMD stays single).
+  chunked: true,
   extraPlugins: [operatorEmbedProxyPlugin],
   resolveAlias: {
     [canvasToolsPath]: proxyPath,

@@ -13,6 +13,7 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { embedDualOutput } from './vite.embed-chunking';
 
 export default defineConfig({
   plugins: [react()],
@@ -53,17 +54,17 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/embed/agentable-whiteboard.ts'),
       name: 'AgentableWhiteboard',
-      formats: ['es', 'umd'],
-      fileName: (format) =>
-        format === 'es' ? 'agentable-whiteboard.js' : 'agentable-whiteboard.umd.js',
     },
     rollupOptions: {
-      output: {
-        inlineDynamicImports: true,
-        assetFileNames: (assetInfo) =>
-          assetInfo.name && assetInfo.name.endsWith('.css')
-            ? 'agentable-whiteboard.css' : assetInfo.name || 'asset-[hash]',
-      },
+      // Dual ESM-chunked / UMD-single output; shared split policy in
+      // vite.embed-chunking.ts. tldraw is eager here (this embed IS the
+      // whiteboard) but mermaid/shiki still split into lazy chunks.
+      output: embedDualOutput({
+        esFile: 'agentable-whiteboard.js',
+        umdFile: 'agentable-whiteboard.umd.js',
+        umdName: 'AgentableWhiteboard',
+        cssName: 'agentable-whiteboard.css',
+      }),
     },
   },
 });
